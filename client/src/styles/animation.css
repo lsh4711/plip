@@ -1,0 +1,16 @@
+.smooth {
+  animation-name: smoothAppear;
+  animation-duration: 2s;
+  animation-duration: leaner;
+}
+
+@keyframes smoothAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-5%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
