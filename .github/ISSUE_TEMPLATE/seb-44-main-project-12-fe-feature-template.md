@@ -1,8 +1,8 @@
 ---
-name: SEB 44 Main Project 12 Backend Feature Template
+name: SEB 44 Main Project 12 FrontEnd Feature Template
 about: 코드스테이츠 44기 Main Project 12팀 이슈 템플릿입니다.
-title: "[Server][FEAT] 기능 구현 이슈 제목"
-labels: ''
+title: "[Client][FEAT] 기능 구현 이슈 제목"
+labels: Client, feat
 assignees: ''
 
 ---
