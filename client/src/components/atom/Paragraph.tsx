@@ -4,7 +4,7 @@ import React, { ComponentPropsWithoutRef } from 'react';
 
 const ParagraphVariants = cva(
   `
-   font-bold smooth duration-300 transition-all
+   font-normal smooth duration-300 transition-all
   `,
   {
     variants: {
