@@ -24,7 +24,7 @@ interface InputProps extends ComponentPropsWithRef<'input'>, VariantProps<typeof
 }
 
 const Input = (
-  { type, className, variant, ...attributes }: InputProps,
+  { type = 'text', className, variant, ...attributes }: InputProps,
   ref: Ref<HTMLInputElement>
 ) => {
   return (
