@@ -1,5 +1,8 @@
 package com.server.domain.member.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,13 +15,13 @@ public class MemberDto {
     @AllArgsConstructor
     @Getter
     public static class Post {
-        /**
-         * TODO: 이메일은 이메일 형식 검증 필요,
-         *       닉네임은 문자, 숫자로만 이루어져 있으며 2글자 이상 8글자 이하
-         *       비밀번호는 8자리 이상 영문, 숫자, 특문을 합쳐야 한다.
-         * */
+        @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")
+        @NotBlank(message = "이메일은 필수 입력 값입니다.")
         private String email;
+        @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}", message = "비밀번호는 8~16자 영문, 숫자, 특수문자를 사용하세요.")
         private String password;
+        @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,8}$", message = "닉네임은 특수문자를 제외한 2~8자리여야 합니다.")
+        @NotBlank(message = "닉네임은 필수 입력 값입니다.")
         private String nickname;
     }
 }

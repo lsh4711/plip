@@ -2,6 +2,8 @@ package com.server.domain.member.controller;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +27,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> postMember(@RequestBody MemberDto.Post request) {
+    public ResponseEntity<?> postMember(@Valid @RequestBody MemberDto.Post request) {
         Member createMember = memberService.createMember(memberMapper.memberDtoPostToMember(request));
         URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, createMember.getMemberId());
         return ResponseEntity.created(location).build();

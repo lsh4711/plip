@@ -51,4 +51,8 @@ public class Member {
         SOCIAL("ROLE_SOCIAL");
         private final String value;
     }
+
+    public void updateEncryptedPassword(String password) {
+        this.password = password;
+    }
 }
