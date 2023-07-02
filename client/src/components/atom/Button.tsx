@@ -1,31 +1,44 @@
 import { cva, VariantProps } from 'class-variance-authority';
-import { ButtonHTMLAttributes, FC } from 'react';
+import { ButtonHTMLAttributes } from 'react';
 
 import { cn } from '@/utils';
 
 export const ButtonVariants = cva(
   `
-  flex justify-center items-center active:scale-95 rounded-xl 
-  text-sm font-bold text-slate-100 transition-all shadow-md
-  hover:scale-105 duration-200 smooth
+  flex justify-center items-center rounded-xl 
+  text-base font-extrabold text-slate-600 transition-all
+  duration-200 smooth
   `,
   {
     variants: {
       variant: {
-        default: ' shadow-none active:scale-100',
-        grey: ' bg-slate-buttongrey ',
-        blue: ' bg-accent-blue',
+        default: ' text-white dark:text-zinc-900',
+        ring: ' ring-1 ring-[#343539] ',
+        primary: 'bg-[#4568DC] text-white dark:text-white',
       },
       size: {
+        default: 'py-[10px] px-[16px] ',
+        lg: 'py-[13.5px] w-[460px]',
+      },
+      hovercolor: {
         default: '',
-        md: ' w-[6.875rem] h-[2.375rem] text-[1rem] rounded-md',
-        lg: 'w-[21.875rem] h-[7.5rem] text-[3rem] rounded-3xl',
-        wlg: 'w-[24rem] h-[5.25rem] text-[2rem]',
+        active: ' hover:bg-sky-500',
+      },
+      hoveropacity: {
+        default: '',
+        active: ' hover:opacity-70',
+      },
+      activecolor: {
+        default: '',
+        active: ' active:hover:bg-blue-700 hover:opacity-100',
       },
     },
     defaultVariants: {
       variant: 'default',
       size: 'default',
+      hovercolor: 'default',
+      hoveropacity: 'default',
+      activecolor: 'default',
     },
   }
 );
@@ -33,15 +46,28 @@ export const ButtonVariants = cva(
 interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof ButtonVariants> {
-  label?: string;
-  children?: React.ReactElement;
+  children: React.ReactNode;
 }
 
-const Button: FC<ButtonProps> = ({ variant, size, children, label, className, ...attributes }) => {
+const Button = ({
+  variant,
+  size,
+  hovercolor,
+  hoveropacity,
+  activecolor,
+  children,
+  className,
+  ...attributes
+}: ButtonProps) => {
   return (
-    <button className={`${cn(ButtonVariants({ variant, size }))} ${className}`} {...attributes}>
-      {children && children}
-      {label && label}
+    <button
+      className={cn(
+        ButtonVariants({ variant, size, hoveropacity, hovercolor, activecolor }),
+        className
+      )}
+      {...attributes}
+    >
+      {children}
     </button>
   );
 };
