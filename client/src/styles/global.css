@@ -1,6 +1,12 @@
+@font-face {
+  font-family: 'inter';
+  src: url('/public/font/Inter-VariableFont_slnt\,wght.ttf');
+}
+
 html,
 body {
   overflow-x: hidden;
+  font-family: 'inter';
 }
 
 ::-webkit-scrollbar {
