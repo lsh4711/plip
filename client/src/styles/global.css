@@ -19,3 +19,10 @@ input {
   appearance: none;
   outline: none;
 }
+
+/* 로고 그라디언트입니다. */
+.gradient-text {
+  background: linear-gradient(to right, #4568dc, #b06ab3);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

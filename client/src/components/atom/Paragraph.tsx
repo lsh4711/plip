@@ -4,7 +4,7 @@ import React, { ComponentPropsWithoutRef } from 'react';
 
 const ParagraphVariants = cva(
   `
-   font-normal smooth duration-300 transition-all
+   smooth duration-300 transition-all
   `,
   {
     variants: {
@@ -21,10 +21,15 @@ const ParagraphVariants = cva(
         gray: ' text-[#BBBBBB]',
         black: ' text-black',
       },
+      weight: {
+        default: 'font-normal',
+        bold: 'font-bold',
+      },
     },
     defaultVariants: {
       size: 'default',
       variant: 'default',
+      weight: 'default',
     },
   }
 );

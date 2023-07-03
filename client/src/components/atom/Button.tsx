@@ -17,8 +17,8 @@ export const ButtonVariants = cva(
         primary: 'bg-[#4568DC] text-white dark:text-white',
       },
       size: {
-        default: 'py-[10px] px-[16px] ',
-        lg: 'py-[13.5px] w-[460px]',
+        default: 'py-[0.625rem] px-4 ',
+        lg: 'py-[0.844rem] px-4',
       },
       hovercolor: {
         default: '',
@@ -36,7 +36,7 @@ export const ButtonVariants = cva(
     defaultVariants: {
       variant: 'default',
       size: 'default',
-      hovercolor: 'default',
+      hovercolor: 'active',
       hoveropacity: 'default',
       activecolor: 'default',
     },
