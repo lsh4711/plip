@@ -23,6 +23,12 @@ spring:
           timeout: 5000
           starttls:
             enable: true
+jwt:
+  key:
+    secret: ${JWT_SECRET_KEY}
+  access-token-expiration-minutes: ${ACCESS_EXPIRATION_MINUTES}
+  refresh-token-expiration-minutes: ${REFRESH_EXPIRATION_MINUTES}
+
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
