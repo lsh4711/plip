@@ -27,9 +27,10 @@ import com.google.gson.Gson;
 import com.server.domain.mail.controller.MailController;
 import com.server.domain.mail.dto.MailDto;
 import com.server.domain.mail.service.MailService;
+import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.config.SecurityConfig;
 
-@Import({SecurityConfig.class})
+@Import({SecurityConfig.class, JwtTokenizer.class})
 @WebMvcTest(MailController.class)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs

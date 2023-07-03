@@ -3,26 +3,31 @@ package com.server.helper;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.http.HttpMethod;
-
 import com.server.domain.member.dto.MemberDto;
+import com.server.global.auth.dto.LoginDto;
 
 public class StubData {
     public static class MockMember {
-        private static Map<HttpMethod, Object> stubRequestBody;
+        private static Map<String, Object> stubRequestBody;
 
         static {
             stubRequestBody = new HashMap<>();
-            MemberDto.Post post = MemberDto.Post.builder()
+            MemberDto.Post memberPost = MemberDto.Post.builder()
                 .email("test123@naver.com")
                 .password("q12345678!")
                 .nickname("테스트계정")
                 .build();
-            stubRequestBody.put(HttpMethod.POST, post);
+
+            LoginDto loginDto = LoginDto.builder()
+                .username("test123@naver.com")
+                .password("q12345678@")
+                .build();
+            stubRequestBody.put("memberPost", memberPost);
+            stubRequestBody.put("loginDto", loginDto);
         }
 
-        public static Object getRequestBody(HttpMethod method) {
-            return stubRequestBody.get(method);
+        public static Object getRequestBody(String valueName) {
+            return stubRequestBody.get(valueName);
         }
     }
 }
