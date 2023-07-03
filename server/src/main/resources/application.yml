@@ -11,6 +11,15 @@ spring:
       hibernate:
         ddl-auto: create
         format_sql: true
+  servlet:
+    multipart:
+      enabled: true
+      location: ${IMAGE_STORAGE_LOCATION}
+      maxFileSize: 10MB
+      maxRequestSize: 10MB
+    web:
+      resources:
+        static-locations: classpath:/
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
