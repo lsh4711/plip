@@ -27,9 +27,9 @@ public class MailService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
-            mimeMessageHelper.setTo(email); // 메일 수신자
-            mimeMessageHelper.setSubject("[PLIP] 이메일 인증을 위한 인증코드를 발송했습니다."); // 메일 제목
-            mimeMessageHelper.setText(setContext(authCode), true); // 메일 본문 내용, HTML 여부
+            mimeMessageHelper.setTo(email);
+            mimeMessageHelper.setSubject("[PLIP] 이메일 인증을 위한 인증코드를 발송했습니다.");
+            mimeMessageHelper.setText(setContext(authCode), true);
             javaMailSender.send(mimeMessage);
             return authCode;
         } catch (MessagingException e) {
