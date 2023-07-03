@@ -32,8 +32,7 @@ public class SecurityConfig {
             .and()
             .authorizeRequests()
             .anyRequest().permitAll();
-        //.formLogin().disable()
-        //.httpBasic().disable()
+      
         return http.build();
     }
 
