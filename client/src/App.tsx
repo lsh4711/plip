@@ -1,5 +1,6 @@
+import SignUpPage from './pages/SignUpPage';
+
 export default function App() {
-  return (
-    <main className="flex flex-col items-center justify-center overflow-x-hidden py-24"></main>
-  );
+  console.log(import.meta.env.VITE_BASE_URL);
+  return <SignUpPage />;
 }
