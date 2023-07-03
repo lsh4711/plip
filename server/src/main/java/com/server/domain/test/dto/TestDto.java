@@ -12,4 +12,5 @@ public class TestDto {
     public static class Patch {
         private String message;
     }
+
 }
