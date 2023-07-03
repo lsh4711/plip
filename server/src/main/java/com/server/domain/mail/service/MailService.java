@@ -11,17 +11,22 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import com.server.domain.member.service.MemberService;
+import com.server.global.exception.CustomException;
+import com.server.global.exception.ExceptionCode;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MailService {
     private final JavaMailSender javaMailSender;
-    private final MemberService memberService;
     private final SpringTemplateEngine templateEngine;
 
+    /**
+     * TODO: 메일이 있는지 검사를 해야할까?? 추후에 생각해보고 리팩토링
+     * */
     public String sendMail(String email) {
         String authCode = createCode();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -33,7 +38,8 @@ public class MailService {
             javaMailSender.send(mimeMessage);
             return authCode;
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            log.info("##" + email + " 메일 보내기 실패!! 에러 메시지: " + e);
+            throw new CustomException(ExceptionCode.MAIL_SEND_FAIL);
         }
     }
 
@@ -46,8 +52,6 @@ public class MailService {
     private String createCode() {
         Random random = new Random();
         StringBuffer key = new StringBuffer();
-
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         for (int i = 0; i < 8; i++) {
             int index = random.nextInt(4);
