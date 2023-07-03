@@ -32,6 +32,7 @@ public class SecurityConfig {
             .and()
             .authorizeRequests()
             .anyRequest().permitAll();
+
         return http.build();
     }
 
