@@ -8,6 +8,7 @@ public enum ExceptionCode {
     EMAIL_EXISTS("email exists", 409),
     NICKNAME_EXISTS("nickname exists", 409),
     MAIL_SEND_FAIL("send mail fail", 500);
+  
     private String message;
     private int statusCode;
 
