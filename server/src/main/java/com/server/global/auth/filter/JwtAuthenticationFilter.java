@@ -1,9 +1,6 @@
 package com.server.global.auth.filter;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,8 +14,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.server.domain.member.entity.Member;
+import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.dto.LoginDto;
-import com.server.global.auth.jwt.JwtTokenizer;
+import com.server.global.auth.jwt.DelegateTokenUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -26,7 +24,8 @@ import lombok.SneakyThrows;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenizer jwtTokenizer;
+    private final RefreshTokenService refreshTokenService;
+    private final DelegateTokenUtil delegateTokenUtil;
 
     @SneakyThrows
     @Override
@@ -47,37 +46,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Authentication authResult) throws ServletException, IOException {
         Member member = (Member)authResult.getPrincipal();
 
-        String accessToken = delegateAccessToken(member);
-        String refreshToken = delegateRefreshToken(member);
+        String accessToken = delegateTokenUtil.delegateAccessToken(member);
+        String refreshToken = delegateTokenUtil.delegateRefreshToken(member);
 
         response.setHeader("Authorization", "Bearer " + accessToken);
         response.setHeader("Refresh", refreshToken);
-
+        refreshTokenService.saveTokenInfo(member.getMemberId(), refreshToken, accessToken);
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
-    }
-
-    private String delegateAccessToken(Member member) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", member.getEmail());
-        claims.put("role", member.getRole());
-
-        String subject = member.getEmail();
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
-
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-
-        String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
-
-        return accessToken;
-    }
-
-    private String delegateRefreshToken(Member member) {
-        String subject = member.getEmail();
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-
-        String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
-
-        return refreshToken;
     }
 }

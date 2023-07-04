@@ -16,8 +16,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.handler.MemberAuthenticationEntryPoint;
+import com.server.global.auth.jwt.DelegateTokenUtil;
 import com.server.global.auth.jwt.JwtTokenizer;
+import com.server.global.auth.utils.AccessTokenRenewalUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +29,9 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity(debug = false)
 public class SecurityConfig {
     private final JwtTokenizer jwtTokenizer;
+    private final RefreshTokenService refreshTokenService;
+    private final AccessTokenRenewalUtil accessTokenRenewalUtil;
+    private final DelegateTokenUtil delegateTokenUtil;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -51,7 +57,7 @@ public class SecurityConfig {
 
     @Bean
     public CustomFilterConfig customFilterConfigurers() {
-        return new CustomFilterConfig(jwtTokenizer);
+        return new CustomFilterConfig(jwtTokenizer, refreshTokenService, delegateTokenUtil, accessTokenRenewalUtil);
     }
 
     @Bean

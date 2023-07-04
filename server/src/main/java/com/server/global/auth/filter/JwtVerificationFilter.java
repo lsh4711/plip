@@ -17,7 +17,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.server.global.auth.jwt.JwtTokenizer;
+import com.server.global.auth.utils.AccessTokenRenewalUtil;
+import com.server.global.auth.utils.Token;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,16 +28,20 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
+    private final AccessTokenRenewalUtil accessTokenRenewalUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
+        String jws = request.getHeader("Authorization").replace("Bearer ", "");
         try {
-            Map<String, Object> claims = verifyJws(request);
+            Map<String, Object> claims = verifyJws(request, jws);
             setAuthenticationToContext(claims);
-            /**
-             *  TODO: 익셉션은 글로벌하게 잡으면 안된다. 추후에 리팩토링
-             * */
+        } catch (ExpiredJwtException eje) {
+            log.error("### 토큰이 만료됐습니다.");
+            Token token = accessTokenRenewalUtil.renewAccessToken(jws);
+            response.setHeader("Authorization", "Bearer " + token.getAccessToken());
+            response.setHeader("Refresh", token.getRefreshToken());
         } catch (Exception e) {
             log.info("### 토큰 검증 오류 : " + e);
             request.setAttribute("exception", e);
@@ -50,8 +57,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
         return authorization == null || !authorization.startsWith("Bearer");
     }
 
-    private Map<String, Object> verifyJws(HttpServletRequest request) {
-        String jws = request.getHeader("Authorization").replace("Bearer ", "");
+    private Map<String, Object> verifyJws(HttpServletRequest request, String jws) {
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
         Map<String, Object> claims = jwtTokenizer.getClaims(jws, base64EncodedSecretKey).getBody();
 

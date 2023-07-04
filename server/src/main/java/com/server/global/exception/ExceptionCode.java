@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ExceptionCode {
     TEST_CODE("테스트", 200),
+    REFRESH_TOKEN_NOT_FOUND("RefreshToken not found", 404),
     EXPIRED_TOKEN("Token has expired", 401),
     SIGNATURE_INVALID("Invalid jwt signature", 401),
     ACCESS_DENIED("This account is inaccessible", 401),
