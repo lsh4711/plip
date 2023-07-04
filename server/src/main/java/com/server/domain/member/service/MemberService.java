@@ -7,6 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.repository.MemberRepository;
 
+import com.server.global.exception.CustomException;
+import com.server.global.exception.ExceptionCode;
+
+
 import lombok.RequiredArgsConstructor;
 
 @Transactional
@@ -25,18 +29,15 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    /**
-     * TODO: 추후에 공통 모듈 추가되면 커스텀 익셉션으로 수정 및 익셉션 추가
-     * */
     @Transactional(readOnly = true)
     public void checkExistNickname(Member member) {
         if (memberRepository.existsByNickname(member.getNickname()))
-            throw new IllegalStateException("중복 닉네임 입니다.");
+            throw new CustomException(ExceptionCode.NICKNAME_EXISTS);
     }
 
     @Transactional(readOnly = true)
     public void checkExistEmail(Member member) {
         if (memberRepository.existsByEmail(member.getEmail()))
-            throw new IllegalStateException("중복 이메일 입니다.");
+            throw new CustomException(ExceptionCode.EMAIL_EXISTS);
     }
 }
