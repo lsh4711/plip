@@ -12,7 +12,7 @@ const HeadingVariants = cva(
         default: 'text-[1.125rem]',
         sm: 'text-[1.375rem]',
         md: 'text-[1.625rem]',
-        lg: 'text-[1.75rem]',
+        lg: 'text-[1.875rem]',
         xl: 'text-[3.375rem]',
       },
       variant: {
