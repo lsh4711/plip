@@ -125,4 +125,34 @@ public class MemberControllerTest {
                 );
     }
 
+    @Test
+    @DisplayName("회원을 탈퇴한다.")
+    void deleteMember() throws Exception {
+        //given
+        doNothing().when(service).deleteMember(Mockito.anyString());
+        //when
+        ResultActions actions =
+            mockMvc.perform(
+                    post(MEMBER_DEFULT_URI)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                //then
+                .andExpect(status().isNoContent())
+                .andDo(
+                    MockMvcRestDocumentationWrapper.document("회원 삭제 예제",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                .description("회원 삭제")
+                                .requestHeaders(
+                                    headerWithName("Authorization").description("발급받은 인증 토큰")
+                                )
+                                .responseFields()
+                                .build()
+                        )
+                    )
+                );
+    }
+
 }

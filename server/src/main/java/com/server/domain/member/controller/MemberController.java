@@ -1,16 +1,16 @@
 package com.server.domain.member.controller;
 
 import java.net.URI;
+import java.security.Principal;
 
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
-
 
 import com.server.domain.member.dto.MemberDto;
 import com.server.domain.member.entity.Member;
@@ -33,6 +33,12 @@ public class MemberController {
         Member createMember = memberService.createMember(memberMapper.memberDtoPostToMember(request));
         URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, createMember.getMemberId());
         return ResponseEntity.created(location).build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteMember(Principal principal) {
+        memberService.deleteMember(principal.getName());
+        return ResponseEntity.noContent().build();
     }
 }
 
