@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.server.global.audit.BaseEntity;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Record {
+public class Record extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long recordId;
@@ -28,23 +30,15 @@ public class Record {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false, columnDefinition = "DATETIME(0)")
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(nullable = false, columnDefinition = "DATETIME(0)")
-    private LocalDateTime modifiedAt = LocalDateTime.now();
-
     private Long memberId;
 
     //Place_Schedules 외래키 Record:Place_Schedules -> N:1
     private Long placeScheduleId;
 
     @Builder
-    public Record(Long recordId, String title, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public Record(Long recordId, String title, String content) {
         this.recordId = recordId;
         this.title = title;
         this.content = content;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
     }
 }
