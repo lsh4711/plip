@@ -1,12 +1,10 @@
-import Header from '@/components/common/Header';
-import { Outlet } from 'react-router-dom';
+import SideBar from '@/components/common/SideBar';
 interface MyPageProps {}
 
 const MyPage = ({}: MyPageProps) => {
   return (
     <>
-      <Header />
-      <Outlet />
+      <SideBar />
     </>
   );
 };

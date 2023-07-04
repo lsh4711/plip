@@ -1,7 +1,14 @@
+import SideBar from '@/components/common/SideBar';
+
 interface MyTripPageProps {}
 
 const MyTripPage = ({}: MyTripPageProps) => {
-  return <div>MyTripPage</div>;
+  return (
+    <>
+      <SideBar />
+      <div>MyTripPage</div>
+    </>
+  );
 };
 
 export default MyTripPage;
