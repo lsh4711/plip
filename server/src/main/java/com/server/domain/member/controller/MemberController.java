@@ -26,6 +26,7 @@ public class MemberController {
     private final MemberMapper memberMapper;
     private final MemberService memberService;
 
+
     @PostMapping("/signup")
     public ResponseEntity<?> postMember(@Valid @RequestBody MemberDto.Post request) {
         Member createMember = memberService.createMember(memberMapper.memberDtoPostToMember(request));

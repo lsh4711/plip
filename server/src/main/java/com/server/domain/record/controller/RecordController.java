@@ -100,7 +100,7 @@ public class RecordController {
     }
 
 
-    //이미지 로드 - 바이트 코드를 리턴
+    //이미지 조회 - 바이트 코드를 리턴
     @GetMapping("/{record-id}/img")
     public ResponseEntity<?> getRecordImg(@PathVariable("record-id") String recordId) {
         Long userId = 1L;
