@@ -4,14 +4,13 @@ import { ComponentPropsWithRef, forwardRef, Ref } from 'react';
 
 const InputVariants = cva(
   `
- rounded-full, py-2 , px-4 transition-all duration-300 hover:scale-105
+  py-[14.5px] pl-[17px] placeholder:text-[#BBBBBB] border border-[#BBBBBB] rounded-lg 
+   text-zinc-500 text-sm
 `,
   {
     variants: {
       variant: {
         default: '',
-        search: 'bg-zinc-500',
-        user: 'bg-zinc-100',
       },
     },
     defaultVariants: {
@@ -25,7 +24,7 @@ interface InputProps extends ComponentPropsWithRef<'input'>, VariantProps<typeof
 }
 
 const Input = (
-  { type, className, variant, ...attributes }: InputProps,
+  { type = 'text', className, variant, ...attributes }: InputProps,
   ref: Ref<HTMLInputElement>
 ) => {
   return (

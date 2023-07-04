@@ -1,6 +1,12 @@
+@font-face {
+  font-family: 'inter';
+  src: url('/public/font/Inter-VariableFont_slnt\,wght.ttf');
+}
+
 html,
 body {
   overflow-x: hidden;
+  font-family: 'inter';
 }
 
 ::-webkit-scrollbar {
@@ -12,4 +18,11 @@ input {
   -moz-appearance: none;
   appearance: none;
   outline: none;
+}
+
+/* 로고 그라디언트입니다. */
+.gradient-text {
+  background: linear-gradient(to right, #4568dc, #b06ab3);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
