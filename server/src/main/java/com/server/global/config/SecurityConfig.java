@@ -48,7 +48,7 @@ public class SecurityConfig {
             .apply(customFilterConfigurers())
             .and()
             .authorizeHttpRequests(authorize -> authorize
-                .antMatchers("/*/users/**").permitAll()
+                .antMatchers("/*/users").authenticated()
                 .anyRequest().permitAll()
             );
 
