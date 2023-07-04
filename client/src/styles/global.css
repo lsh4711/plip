@@ -1,9 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap%27');
+@font-face {
+  font-family: 'inter';
+  src: url('/public/font/Inter-VariableFont_slnt\,wght.ttf');
+}
 
 html,
 body {
   overflow-x: hidden;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'inter';
 }
 
 ::-webkit-scrollbar {
@@ -17,7 +20,9 @@ input {
   outline: none;
 }
 
-h1 {
-  font-weight: 700;
-  font-size: 1.75rem;
+/* 로고 그라디언트입니다. */
+.gradient-text {
+  background: linear-gradient(to right, #4568dc, #b06ab3);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

@@ -14,3 +14,19 @@
     transform: translateY(0);
   }
 }
+.ct {
+  background-color: #fe4a49;
+  animation: ct 6s infinite;
+}
+
+@keyframes ct {
+  25% {
+    background-color: #2ab7ca;
+  }
+  50% {
+    background-color: #fed766;
+  }
+  75% {
+    background-color: #faa275;
+  }
+}
