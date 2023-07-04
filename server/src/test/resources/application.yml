@@ -17,8 +17,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${EMAIL_USERNAME}
-    password: ${EMAIL_PASSWORD}
+    username: dsdasdsa@naver.com
+    password: sdadsadsadsd
     properties:
       mail:
         smtp:
@@ -28,9 +28,9 @@ spring:
             enable: true
 jwt:
   key:
-    secret: ${JWT_SECRET_KEY}
-  access-token-expiration-minutes: ${ACCESS_EXPIRATION_MINUTES}
-  refresh-token-expiration-minutes: ${REFRESH_EXPIRATION_MINUTES}
+    secret: testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest
+  access-token-expiration-minutes: 1
+  refresh-token-expiration-minutes: 1
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8

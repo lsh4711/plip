@@ -16,9 +16,23 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.server.domain.token.service.RefreshTokenService;
+import com.server.global.auth.handler.MemberAuthenticationEntryPoint;
+import com.server.global.auth.jwt.DelegateTokenUtil;
+import com.server.global.auth.jwt.JwtTokenizer;
+import com.server.global.auth.utils.AccessTokenRenewalUtil;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity(debug = false)
 public class SecurityConfig {
+    private final JwtTokenizer jwtTokenizer;
+    private final RefreshTokenService refreshTokenService;
+    private final AccessTokenRenewalUtil accessTokenRenewalUtil;
+    private final DelegateTokenUtil delegateTokenUtil;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -26,13 +40,24 @@ public class SecurityConfig {
             .and()
             .csrf().disable()
             .cors(withDefaults())
-            .exceptionHandling()
-            .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .authorizeRequests()
-            .anyRequest().permitAll();
+            .exceptionHandling()
+            .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+            .and()
+            .apply(customFilterConfigurers())
+            .and()
+            .authorizeHttpRequests(authorize -> authorize
+                .antMatchers("/*/users/**").permitAll()
+                .anyRequest().permitAll()
+            );
+
         return http.build();
+    }
+
+    @Bean
+    public CustomFilterConfig customFilterConfigurers() {
+        return new CustomFilterConfig(jwtTokenizer, refreshTokenService, delegateTokenUtil, accessTokenRenewalUtil);
     }
 
     @Bean
