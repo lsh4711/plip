@@ -1,5 +1,6 @@
 import { Button, HeadingParagraph, Input, Paragraph } from '@/components';
 import { zodResolver } from '@hookform/resolvers/zod';
+import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -9,14 +10,11 @@ let passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
 
 const signupSchema = z
   .object({
-    email: z
-      .string()
-      .min(1, { message: '이메일을 입력해주세요' })
-      .email({ message: '유효하지 않은 이메일 양식입니다.' }),
-    authnumber: z.string(),
-    nickname: z.string().min(2).max(10),
-    password: z.string().regex(passwordRegex),
-    checkpassword: z.string().regex(passwordRegex),
+    email: z.string().nonempty().email({ message: '유효하지 않은 이메일 양식입니다.' }),
+    authnumber: z.string().optional(),
+    nickname: z.string().nonempty().min(2).max(10),
+    password: z.string().nonempty().regex(passwordRegex),
+    checkpassword: z.string().nonempty().regex(passwordRegex),
   })
   .superRefine(({ checkpassword, password }, ctx) => {
     if (checkpassword !== password) {
@@ -37,11 +35,14 @@ export type SingupType = z.infer<typeof signupSchema>;
 
 const SignUpPage = ({}: SignUpPageProps) => {
   const signupForm = useForm<SingupType>({
+    mode: 'all',
     resolver: zodResolver(signupSchema),
   });
   const onSubmit: SubmitHandler<SingupType> = (data) => {
     console.log(data);
   };
+
+  const emailCredentailsRequest = () => {};
 
   return (
     <main className="mx-auto flex h-screen max-w-[1024px] flex-col items-center justify-center ">
@@ -53,25 +54,35 @@ const SignUpPage = ({}: SignUpPageProps) => {
         </HeadingParagraph>
       </div>
       <div className="">
-        <form action="" className=" flex w-[460px] flex-col gap-y-7">
-          <div className="flex justify-between gap-6">
-            <Input
-              placeholder="이메일을 입력해 주세요."
-              className=" flex-grow"
-              {...signupForm.register('email', {
-                onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-                  const nowdata = signupForm.getValues('email');
-                },
-              })}
-            />
-            <Button variant={'primary'} type="button">
-              인증 요청
-            </Button>
+        <form action="" className=" flex w-[460px] flex-col gap-y-6">
+          <div className="">
+            <div className="flex justify-between gap-6">
+              <Input
+                placeholder="이메일을 입력해 주세요."
+                className=" flex-grow"
+                {...signupForm.register('email', {
+                  onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+                    const nowdata = signupForm.getValues('email');
+                    console.log(nowdata);
+                  },
+                })}
+              />
+              <Button variant={'primary'} type="button" onClick={() => emailCredentailsRequest()}>
+                인증 요청
+              </Button>
+            </div>
+            <div>
+              {signupForm.formState.errors.email?.message && signupForm.getValues('email') !== ''
+                ? signupForm.formState.errors.email.message
+                : null}
+            </div>
           </div>
+
           <div className="flex justify-between gap-6">
             <Input
               placeholder="인증번호를 입력해 주세요."
               className=" flex-grow"
+              disabled
               {...signupForm.register('authnumber')}
             />
             <Button variant={'primary'} type="button" className="">
