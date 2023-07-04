@@ -1,5 +1,5 @@
 # We are the Covengers
-![logo]()
+![logo](https://github.com/codestates-seb/seb44_main_012/assets/120231876/fa8c7064-ec0d-4b78-b2a0-78c6a5e15bff)
 
 - **Team name**: 코벤져스
 
