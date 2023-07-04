@@ -8,12 +8,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Record {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,4 +39,12 @@ public class Record {
     //Place_Schedules 외래키 Record:Place_Schedules -> N:1
     private Long placeScheduleId;
 
+    @Builder
+    public Record(Long recordId, String title, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        this.recordId = recordId;
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+    }
 }
