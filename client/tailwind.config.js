@@ -6,4 +6,5 @@ export default {
   },
   plugins: [],
   darkMode: 'class',
+  include: ['./src/custom.d.ts'],
 };

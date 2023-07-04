@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap%27');
+
 html,
 body {
   overflow-x: hidden;
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -12,4 +15,9 @@ input {
   -moz-appearance: none;
   appearance: none;
   outline: none;
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 1.75rem;
 }
