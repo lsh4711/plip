@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,12 +26,9 @@ import com.google.gson.Gson;
 import com.server.domain.mail.controller.MailController;
 import com.server.domain.mail.dto.MailDto;
 import com.server.domain.mail.service.MailService;
-import com.server.global.auth.jwt.JwtTokenizer;
-import com.server.global.config.SecurityConfig;
 
-@Import({SecurityConfig.class, JwtTokenizer.class})
 @WebMvcTest(MailController.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureRestDocs
 public class MailControllerTest {
     private final String MAIL_DEFULT_URI = "/api/mail";
