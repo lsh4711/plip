@@ -38,7 +38,6 @@ public class MemberService {
         if (memberRepository.existsByEmail(member.getEmail()))
             throw new CustomException(ExceptionCode.EMAIL_EXISTS);
     }
-
     public Member findMember(long memberId) {
         return memberRepository.findById(memberId).get();
     }

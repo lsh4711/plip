@@ -1,6 +1,6 @@
 package com.server.global.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.config.Customizer.*;
 
 import java.util.List;
 
@@ -36,21 +36,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .headers().frameOptions().sameOrigin()
-                .and()
-                .csrf().disable()
-                .cors(withDefaults())
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+            .headers().frameOptions().sameOrigin()
+            .and()
+            .csrf().disable()
+            .cors(withDefaults())
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
 
-                .exceptionHandling()
-                .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
-                .and()
-                .apply(customFilterConfigurers())
-                .and()
-                .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers("/*/users/**").permitAll()
-                        .anyRequest().permitAll());
+            .exceptionHandling()
+            .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+            .and()
+            .apply(customFilterConfigurers())
+            .and()
+            .authorizeHttpRequests(authorize -> authorize
+                .antMatchers("/*/users/**").permitAll()
+                .anyRequest().permitAll()
+            );
 
         return http.build();
     }

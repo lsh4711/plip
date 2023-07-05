@@ -4,6 +4,8 @@ package com.server.helper;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,10 +16,7 @@ import com.server.domain.record.dto.RecordDto;
 import com.server.global.auth.dto.LoginDto;
 import com.server.global.auth.jwt.JwtTokenizer;
 
-
-
 public class StubData {
-
     public static class MockSecurity {
         public static String getValidAccessToken(String secretKey, String role) {
             JwtTokenizer jwtTokenizer = new JwtTokenizer();
