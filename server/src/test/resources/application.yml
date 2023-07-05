@@ -17,18 +17,17 @@ spring:
   servlet:
     multipart:
       enabled: true
-      location: ${IMAGE_STORAGE_LOCATION}
+      location: /Users/jiinpark/Dev/Projects/main-project/seb44_main_012/server/src/test/resources/images
       maxFileSize: 10MB
       maxRequestSize: 10MB
     web:
       resources:
         static-locations: classpath:/
-
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${EMAIL_USERNAME}
-    password: ${EMAIL_PASSWORD}
+    username: dsdasdsa@naver.com
+    password: sdadsadsadsd
     properties:
       mail:
         smtp:
@@ -36,12 +35,11 @@ spring:
           timeout: 5000
           starttls:
             enable: true
-
 jwt:
   key:
-    secret: ${JWT_SECRET_KEY}
-  access-token-expiration-minutes: ${ACCESS_EXPIRATION_MINUTES} #1분
-  refresh-token-expiration-minutes: ${REFRESH_EXPIRATION_MINUTES} #3일
+    secret: testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest
+  access-token-expiration-minutes: 1
+  refresh-token-expiration-minutes: 1
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
