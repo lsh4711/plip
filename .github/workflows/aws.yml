@@ -6,8 +6,11 @@ on:
 
 permissions:
   contents: read
-  
+
 env:
+  S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+  CODEDEPLOY_APP_NAME: ${{ secrets.CODEDEPLOY_APP_NAME }}
+  CODEDEPLOY_GROUP_NAME: ${{ secrets.CODEDEPLOY_GROUP_NAME }}
   ACCESS_EXPIRATION_MINUTES: ${{ secrets.ACCESS_EXPIRATION_MINUTES }}
   EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
   EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
