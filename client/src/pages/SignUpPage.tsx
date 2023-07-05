@@ -61,7 +61,7 @@ const SignUpPage = () => {
 
   return (
     <main className="mx-auto flex max-w-[1024px] flex-col  ">
-      <div className=" mt-36 flex flex-col items-center justify-center">
+      <div className=" mt-12 flex flex-col items-center justify-center">
         <div className="mb-10">
           <HeadingParagraph variant={'darkgray'} size="lg" className=" text-center">
             PliP에 가입하여

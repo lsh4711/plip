@@ -44,7 +44,9 @@ const Header = ({ isHome }: HeaderProps) => {
   const isLogin = false; // 로그인 상태 구현전 임시 변수입니다.
 
   return (
-    <header className={`fixed left-0 top-0 z-50 h-[80px] w-full ${!isHome && 'border border-b-2'}`}>
+    <header
+      className={`sticky left-0 top-0 z-50 h-[80px] w-full ${!isHome && 'border border-b-2'}`}
+    >
       <nav className="m-auto flex h-full w-[90%] items-center justify-between">
         <Link to="/">
           <div className="flex items-center gap-2">

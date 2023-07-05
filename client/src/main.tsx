@@ -17,6 +17,7 @@ import PlanDetailPage from './pages/PlanDetailPage';
 import PlanMapPage from './pages/PlanMapPage';
 import PlanPage from './pages/PlanPage';
 import SignUpPage from './pages/SignUpPage';
+import FindPasswordPage from './pages/FindPasswordPage';
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
       { path: 'signup', element: <SignUpPage /> },
       { path: 'plan', element: <PlanPage /> },
       { path: 'mypage', element: <MyPage /> },
+      { path: 'login/password', element: <FindPasswordPage /> },
       { path: 'mypage/mytrip', element: <MyTripPage /> },
       { path: 'mypage/myrecord', element: <MyRecordPage /> },
       { path: 'mypage/footprint', element: <FootPrintPage /> },

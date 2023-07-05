@@ -26,7 +26,7 @@ const LoginPage = ({}: LoginPageProps) => {
     console.log(data);
   };
   return (
-    <main className="mx-auto flex max-w-[1024px] flex-col items-center justify-center pt-48">
+    <main className="mx-auto flex max-w-[1024px] flex-col items-center justify-center pt-24">
       <div className="flex flex-col items-center justify-center">
         <div className=" mb-10">
           <HeadingParagraph
