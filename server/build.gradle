@@ -85,7 +85,7 @@ dependencies {
 // }
 
 bootJar {
-    dependsOn(':openapi3')
+    // dependsOn(':openapi3')
     archivesBaseName = 'teamdev'
     archiveFileName = 'teamdev.jar'
     archiveVersion = "0.0.0"
