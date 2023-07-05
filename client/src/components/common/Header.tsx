@@ -26,16 +26,16 @@ const AfterLogin = () => {
       <MypageIcon />
       <NotifyIcon />
       <ProfileIcon />
-      <div className="align-center flex text-xl">
+      <div className="flex items-center text-sm">
         {username} 님
-        <ArrowDownIcon width={24} height={24} />
+        <ArrowDownIcon width={12} height={12} />
       </div>
     </>
   );
 };
 
 const Header = ({}: HeaderProps) => {
-  const isLogin = false; // 로그인 상태 구현전 임시 변수입니다.
+  const isLogin = true; // 로그인 상태 구현전 임시 변수입니다.
 
   return (
     <header className=" h-[80px] w-full border border-b-2">
