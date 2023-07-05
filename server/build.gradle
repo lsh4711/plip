@@ -68,10 +68,10 @@ dependencies {
 
 }
 
-tasks.named('test') {
+// tasks.named('test') {
     //outputs.dir snippetsDir
-    useJUnitPlatform()
-}
+    // useJUnitPlatform()
+// }
 
 tasks.withType(GenerateSwaggerUI) {
     dependsOn 'openapi3'
