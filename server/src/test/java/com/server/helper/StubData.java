@@ -1,9 +1,6 @@
 package com.server.helper;
 
-
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,19 +49,32 @@ public class StubData {
                 .username("test123@naver.com")
                 .password("q12345678@")
                 .build();
+
+            MemberDto.Patch memberPatch = MemberDto.Patch.builder()
+                .nickname("테스트수정테스트")
+                .password("q12345678!")
+                .build();
+
             stubRequestBody.put("memberPost", memberPost);
             stubRequestBody.put("loginDto", loginDto);
+            stubRequestBody.put("memberPatch", memberPatch);
         }
 
         public static Object getRequestBody(String valueName) {
             return stubRequestBody.get(valueName);
         }
+
+        public static MemberDto.Response getSingleResponseBody() {
+            return MemberDto.Response.builder()
+                .nickname("테스트수정계정")
+                .build();
+        }
     }
 
-    public static class MockRecord{
+    public static class MockRecord {
         private static Map<HttpMethod, Object> stubRequestBody;
 
-        static{
+        static {
             stubRequestBody = new HashMap<>();
             RecordDto.Post post = RecordDto.Post.builder()
                 .title("서울 롯데월드")

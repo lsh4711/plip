@@ -129,6 +129,85 @@ public class MemberControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("회원정보를 수정한다.")
+    void patchMember() throws Exception {
+        //given
+        MemberDto.Patch request = (MemberDto.Patch)StubData.MockMember.getRequestBody("memberPatch");
+        String jsonData = gson.toJson(request);
+
+        given(mapper.memberDtoPatchToMember(Mockito.any(MemberDto.Patch.class))).willReturn(Member.builder().build());
+        given(service.updateMember(Mockito.anyString(), Mockito.any(Member.class))).willReturn(
+            Member.builder().memberId(1L).build());
+
+        //when
+        ResultActions actions =
+            mockMvc.perform(
+                    patch(MEMBER_DEFULT_URI)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer {Access Token}")
+                        .content(jsonData)
+                )
+                //then
+                .andExpect(status().isCreated())
+                .andDo(
+                    MockMvcRestDocumentationWrapper.document("회원 수정 예제",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                .description("회원 수정")
+                                .requestHeaders(
+                                    headerWithName("Authorization").description("발급받은 인증 토큰")
+                                )
+                                .build()
+                        )
+                    )
+                );
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("로그인한 회원정보를 조회한다.")
+    void getLoginMember() throws Exception {
+        //given
+        MemberDto.Response response = StubData.MockMember.getSingleResponseBody();
+        String jsonData = gson.toJson(response);
+
+        given(service.findMemberByEmail(Mockito.anyString())).willReturn(Member.builder().memberId(1L).build());
+        given(mapper.memberToMemberDtoResponse(Mockito.any(Member.class))).willReturn(response);
+
+        //when
+        ResultActions actions =
+            mockMvc.perform(
+                    get(MEMBER_DEFULT_URI)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer {Access Token}")
+                        .content(jsonData)
+                )
+                //then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.nickname").value(response.getNickname()))
+                .andDo(
+                    MockMvcRestDocumentationWrapper.document("회원 조회 예제",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                .description("회원 조회")
+                                .requestHeaders(
+                                    headerWithName("Authorization").description("발급받은 인증 토큰")
+                                )
+                                .responseFields(
+                                    fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("회원 닉네임")
+                                )
+                                .build()
+                        )
+                    )
+                );
+    }
+
+    @Test
+    @WithMockUser
     @DisplayName("회원을 탈퇴한다.")
     void deleteMember() throws Exception {
         //given

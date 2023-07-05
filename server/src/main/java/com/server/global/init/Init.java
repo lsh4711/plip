@@ -9,7 +9,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.domain.member.entity.Member;
-import com.server.domain.member.service.MemberService;
+import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.service.PlaceService;
 import com.server.domain.schedule.entity.Schedule;
@@ -19,16 +19,16 @@ import com.server.domain.schedule.service.ScheduleService;
 
 @RestController
 public class Init {
-    private MemberService memberService;
+    private MemberRepository memberRepository;
     private ScheduleService scheduleService;
     private SchedulePlaceService schedulePlaceService;
     private PlaceService placeService;
 
-    public Init(MemberService memberService,
-            ScheduleService scheduleService,
-            SchedulePlaceService schedulePlaceService,
-            PlaceService placeService) {
-        this.memberService = memberService;
+    public Init(MemberRepository memberRepository,
+        ScheduleService scheduleService,
+        SchedulePlaceService schedulePlaceService,
+        PlaceService placeService) {
+        this.memberRepository = memberRepository;
         this.scheduleService = scheduleService;
         this.schedulePlaceService = schedulePlaceService;
         this.placeService = placeService;
@@ -37,16 +37,19 @@ public class Init {
     @PostConstruct
     public void init() {
         Member member = Member.builder()
-                .email("lsh@naver.com")
-                .password("lshlshlshlsh1234!@")
-                .nickname("음악")
-                .build();
-
-        memberService.createMember(member);
+            .email("lsh@naver.com")
+            .password("lshlshlshlsh1234!@")
+            .nickname("음악")
+            .build();
+        /**
+         * @author 다영
+         * 테스트 코드 오류로 service -> repository로 수정
+         * */
+        memberRepository.save(member);
 
         Member newMember = Member.builder()
-                .memberId(1L)
-                .build();
+            .memberId(1L)
+            .build();
         Schedule schedule = new Schedule();
         schedule.setCity("제주도");
         schedule.setTitle("즐거운 여행 제목");

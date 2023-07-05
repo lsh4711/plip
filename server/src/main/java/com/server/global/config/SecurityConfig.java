@@ -42,7 +42,6 @@ public class SecurityConfig {
             .cors(withDefaults())
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-
             .exceptionHandling()
             .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
             .and()
