@@ -45,7 +45,9 @@ const Header = ({ isHome }: HeaderProps) => {
 
   return (
     <header
-      className={`fixed left-0 top-0 z-50 h-[80px] w-full px-12 ${!isHome && 'border border-b-2'}`}
+      className={`fixed left-0 top-0 z-50 h-[80px] w-full px-12 ${
+        !isHome && 'border border-b-2 bg-white'
+      }`}
     >
       <nav className="m-auto flex h-full items-center justify-between">
         <Link to="/">
