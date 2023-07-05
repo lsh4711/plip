@@ -13,7 +13,7 @@ const PlanPage = ({}: PlanPageProps) => {
   const [selectedRegion, setSelectedRegion] = useState<(typeof regions)[number] | null>(null);
 
   return (
-    <main className="smooth relative flex h-full w-full max-w-7xl flex-col px-6 transition-all duration-300 xl:px-0">
+    <main className="smooth relative flex h-full w-full max-w-7xl flex-col px-12 transition-all duration-300 ">
       <div className="flex justify-between">
         <HeadingParagraph
           size={'md'}

@@ -6,7 +6,7 @@ import { cn } from '@/utils';
 export const ButtonVariants = cva(
   `
   flex justify-center items-center rounded-xl 
-  text-base font-extrabold text-slate-600 transition-all
+  text-base font-bold text-slate-600 transition-all
   duration-500 smooth
   `,
   {
