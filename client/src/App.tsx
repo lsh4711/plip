@@ -9,9 +9,7 @@ export default function App() {
   return (
     <>
       {isHome ? '랜딩 페이지 헤더' : <Header />}
-      <main className="flex flex-col items-center justify-center overflow-x-hidden py-24">
-        <Outlet />
-      </main>
+      <Outlet />
     </>
   );
 }
