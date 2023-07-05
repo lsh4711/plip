@@ -105,6 +105,7 @@ public class RecordController {
     public ResponseEntity<?> getRecordImg(@PathVariable("record-id") String recordId) {
         Long userId = 1L;
         String dirName = location + "/" + userId + "/" + recordId;
+
         List<Resource> imageFiles = ImageManager.loadImages(dirName);
         if (imageFiles.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -114,6 +115,7 @@ public class RecordController {
         for (Resource imageFile : imageFiles) {
             try {
                 Resource imageResource = new UrlResource(imageFile.getURI());
+                System.out.println(imageFile.getURI());
                 if (imageResource.exists()) {
                     String imageBase64 = Base64.getEncoder()
                         .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));

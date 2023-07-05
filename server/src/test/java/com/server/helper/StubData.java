@@ -82,8 +82,8 @@ public class StubData {
                 .title("서울 롯데월드")
                 .content("롯데월드에서는..")
                 .memberId(1L)
-                // .createdAt(LocalDateTime.now().withNano(0))
-                // .modifiedAt(LocalDateTime.now().withNano(0))
+                .createdAt(LocalDateTime.now().withNano(0))
+                .modifiedAt(LocalDateTime.now().withNano(0))
                 .build();
             stubRequestBody.put(HttpMethod.GET, response);
         }

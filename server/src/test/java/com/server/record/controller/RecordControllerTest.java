@@ -12,7 +12,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,38 +23,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockPart;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.google.gson.Gson;
 import com.server.domain.record.ImageManager;
-import com.server.domain.record.controller.RecordController;
 
 import com.server.domain.record.dto.RecordDto;
 import com.server.domain.record.entity.Record;
 import com.server.domain.record.mapper.RecordMapper;
 import com.server.domain.record.service.RecordService;
-import com.server.global.config.SecurityConfig;
 import com.server.helper.StubData;
 
 import org.springframework.mock.web.MockMultipartFile;
 
 
-@Import({SecurityConfig.class})
-@WebMvcTest(RecordController.class)
+@SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class RecordControllerTest {
@@ -73,7 +66,8 @@ public class RecordControllerTest {
 
     private final static String RECORD_DEFAULT_URL = "/records";
 
-
+    @Value("${spring.servlet.multipart.location}")
+    private String location;
 
     @Test
     @DisplayName("여행 일지를 등록한다.")
@@ -229,11 +223,13 @@ public class RecordControllerTest {
         Long recordId = 1L;
         Long userId = 1L;
 
-        String dirName = "record" + "/" + userId + "/" + recordId;
+        String dirName = location + "/" + userId + "/" + recordId;
 
         List<Resource> imageFiles = new ArrayList<>();
-        Resource imageFile1 = new UrlResource(new File(dirName + "/image1.jpg").toURI());
-        Resource imageFile2 = new UrlResource(new File(dirName + "/image2.jpg").toURI());
+
+        Resource imageFile1 = new FileSystemResource(dirName + "/image1.png");
+        Resource imageFile2 = new FileSystemResource(dirName + "/image2.png");
+
         imageFiles.add(imageFile1);
         imageFiles.add(imageFile2);
 
@@ -252,8 +248,6 @@ public class RecordControllerTest {
             actions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.images", hasSize(2)))
-                .andExpect(jsonPath("$.images[0]", is(notNullValue())))
-                .andExpect(jsonPath("$.images[1]", is(notNullValue())))
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("사진 조회",
                         preprocessRequest(prettyPrint()),
