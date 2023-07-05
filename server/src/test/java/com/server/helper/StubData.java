@@ -14,10 +14,7 @@ import com.server.domain.record.dto.RecordDto;
 import com.server.global.auth.dto.LoginDto;
 import com.server.global.auth.jwt.JwtTokenizer;
 
-
-
 public class StubData {
-
     public static class MockSecurity {
         public static String getValidAccessToken(String secretKey, String role) {
             JwtTokenizer jwtTokenizer = new JwtTokenizer();
