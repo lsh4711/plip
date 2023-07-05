@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
 import { ReactComponent as MypageIcon } from '../../assets/icons/mypage.svg';
 import { ReactComponent as NotifyIcon } from '../../assets/icons/notification.svg';
@@ -6,14 +7,19 @@ import { ReactComponent as LogoIcon } from '../../assets/logo.svg';
 
 import Button from '../atom/Button';
 
-interface HeaderProps {}
+interface HeaderProps {
+  isHome?: boolean;
+}
 
-const BeforeLogin = () => {
+const BeforeLogin = ({ isHome }: { isHome?: boolean }) => {
+  console.log(isHome);
   return (
     <>
-      <Button>Sigin in</Button>
+      <Button className={isHome ? 'text-white ' : ''}>
+        <Link to="/login">Sigin in</Link>
+      </Button>
       <Button variant={'primary'} className="font-normal">
-        Sigin up
+        <Link to="/signup">Sigin up</Link>
       </Button>
     </>
   );
@@ -34,17 +40,21 @@ const AfterLogin = () => {
   );
 };
 
-const Header = ({}: HeaderProps) => {
-  const isLogin = true; // 로그인 상태 구현전 임시 변수입니다.
+const Header = ({ isHome }: HeaderProps) => {
+  const isLogin = false; // 로그인 상태 구현전 임시 변수입니다.
 
   return (
-    <header className=" h-[80px] w-full border border-b-2">
+    <header className={`fixed left-0 top-0 z-50 h-[80px] w-full ${!isHome && 'border border-b-2'}`}>
       <nav className="m-auto flex h-full w-[90%] items-center justify-between">
-        <div className="flex items-center gap-2">
-          <LogoIcon width={35} height={35} />
-          <span className="gradient-text text-xl font-bold">PliP</span>
+        <Link to="/">
+          <div className="flex items-center gap-2">
+            <LogoIcon width={35} height={35} />
+            <span className="gradient-text text-xl font-bold">PliP</span>
+          </div>
+        </Link>
+        <div className="flex items-center gap-4">
+          {isLogin ? <AfterLogin /> : <BeforeLogin isHome={isHome} />}
         </div>
-        <div className="flex items-center gap-4">{isLogin ? <AfterLogin /> : <BeforeLogin />}</div>
       </nav>
     </header>
   );
