@@ -9,4 +9,6 @@ import com.server.domain.member.entity.Member;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface MemberMapper {
     Member memberDtoPostToMember(MemberDto.Post request);
+
+    Member memberDtoPatchToMember(MemberDto.Patch request);
 }
