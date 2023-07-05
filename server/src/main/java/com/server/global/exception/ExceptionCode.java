@@ -15,6 +15,8 @@ public enum ExceptionCode {
     UNAUTHORIZED("invalid token Data", 401),
     MEMBER_NOT_FOUND("Member not found", 404),
     EMAIL_EXISTS("Email exists", 409),
+    AUTH_MAIL_CODE_NOT_FOUND("Auth mail code not found", 404),
+    AUTH_MAIL_CODE_MISMATCH("Auth mail code is mismatch", 403),
     NICKNAME_EXISTS("Nickname exists", 409),
     MAIL_SEND_FAIL("Send mail fail", 500);
 
