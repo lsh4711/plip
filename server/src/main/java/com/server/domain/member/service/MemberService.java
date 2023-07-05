@@ -6,10 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.repository.MemberRepository;
-
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
-
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,5 +37,12 @@ public class MemberService {
     public void checkExistEmail(Member member) {
         if (memberRepository.existsByEmail(member.getEmail()))
             throw new CustomException(ExceptionCode.EMAIL_EXISTS);
+    }
+    public Member findMember(long memberId) {
+        return memberRepository.findById(memberId).get();
+    }
+
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email).get();
     }
 }

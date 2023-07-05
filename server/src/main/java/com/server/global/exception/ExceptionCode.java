@@ -2,9 +2,7 @@ package com.server.global.exception;
 
 import lombok.Getter;
 
-@Getter
 public enum ExceptionCode {
-
     TEST_CODE("테스트", 200),
     RECORD_NOT_FOUND("Record Not Found.",404 ),
     RECORD_EXISTS("Record already exists.",409 ),
@@ -20,18 +18,15 @@ public enum ExceptionCode {
     NICKNAME_EXISTS("Nickname exists", 409),
     MAIL_SEND_FAIL("Send mail fail", 500),
     NOT_IMPLEMENTATION("Not Implementation", 501);
-
-
+  
     @Getter
     private String message;
 
     @Getter
     private int statusCode;
 
-    ExceptionCode(String message,int statusCode) {
+    ExceptionCode(String message, int statusCode) {
         this.message = message;
         this.statusCode = statusCode;
     }
 }
-
-

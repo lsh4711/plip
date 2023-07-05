@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-
 import com.server.domain.member.dto.MemberDto;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.mapper.MemberMapper;
@@ -27,7 +26,6 @@ public class MemberController {
     private final String MEMBER_DEFAULT_URL = "/api/users";
     private final MemberMapper memberMapper;
     private final MemberService memberService;
-
 
     @PostMapping("/signup")
     public ResponseEntity<?> postMember(@Valid @RequestBody MemberDto.Post request) {
