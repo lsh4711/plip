@@ -7,12 +7,12 @@ export const ButtonVariants = cva(
   `
   flex justify-center items-center rounded-xl 
   text-base font-extrabold text-slate-600 transition-all
-  duration-200 smooth
+  duration-500 smooth
   `,
   {
     variants: {
       variant: {
-        default: ' text-white dark:text-zinc-900',
+        default: ' text-zinc-900 dark:text-white',
         ring: ' ring-1 ring-[#343539] ',
         primary: 'bg-[#4568DC] text-white dark:text-white',
       },
@@ -22,7 +22,7 @@ export const ButtonVariants = cva(
       },
       hovercolor: {
         default: '',
-        active: ' hover:bg-sky-500',
+        active: 'hover:bg-gradient-to-r hover:from-[#4568dc] hover:to-[#b06ab3] ',
       },
       hoveropacity: {
         default: '',

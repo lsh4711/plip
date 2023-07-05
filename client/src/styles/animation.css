@@ -1,6 +1,6 @@
 .smooth {
   animation-name: smoothAppear;
-  animation-duration: 2s;
+  animation-duration: 3s;
   animation-duration: leaner;
 }
 
@@ -28,5 +28,26 @@
   }
   75% {
     background-color: #faa275;
+  }
+}
+
+.randing {
+  animation: randing 10s infinite;
+  animation-direction: alternate;
+}
+
+@keyframes randing {
+  25% {
+    background-image: url('/src/assets/imgs/gyeonggi.jpg');
+  }
+  50% {
+    background-image: url('/src/assets/imgs/광안대교.jpg');
+  }
+  75% {
+    background-image: url('/src/assets/imgs/제주도.jpg');
+  }
+
+  100% {
+    background-image: url('/src/assets/imgs/서울.jpg');
   }
 }

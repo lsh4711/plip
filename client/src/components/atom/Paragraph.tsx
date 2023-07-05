@@ -26,6 +26,7 @@ const ParagraphVariants = cva(
       weight: {
         default: 'font-normal',
         bold: 'font-bold',
+        extrabold: 'font-extrabold',
       },
     },
     defaultVariants: {
