@@ -6,14 +6,15 @@ import { cn } from '@/utils';
 export const ButtonVariants = cva(
   `
   flex justify-center items-center rounded-xl 
-  text-base font-bold text-slate-600 transition-all
-  duration-500 smooth
+  text-base font-bold transition-all
+  duration-200 smooth
   `,
   {
     variants: {
       variant: {
-        default: ' text-zinc-900 dark:text-white',
-        ring: ' ring-1 ring-[#343539] ',
+
+        default: ' text-[#343539]',
+        ring: ' ring-1 ring-[#343539] text-[#343539]',
         primary: 'bg-[#4568DC] text-white dark:text-white',
       },
       size: {
@@ -36,8 +37,8 @@ export const ButtonVariants = cva(
     defaultVariants: {
       variant: 'default',
       size: 'default',
-      hovercolor: 'active',
-      hoveropacity: 'default',
+      hovercolor: 'default',
+      hoveropacity: 'active',
       activecolor: 'default',
     },
   }
