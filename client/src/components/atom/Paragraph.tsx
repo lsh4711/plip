@@ -16,10 +16,12 @@ const ParagraphVariants = cva(
         xl: 'text-[3.375rem]',
       },
       variant: {
-        default: ' text-white',
-        blue: 'text-[#3E68FF]',
+        default: 'text-zinc-400 dark:text-zinc-400',
+        white: ' text-white',
+        blue: 'text-[#3E68FF] dark:text-[#3E68FF]',
         gray: ' text-[#BBBBBB]',
         black: ' text-black',
+        red: 'text-red-500',
       },
       weight: {
         default: 'font-normal',
@@ -41,15 +43,16 @@ interface ParagraphProps
   className?: string;
 }
 
-const Paragraph = ({ children, className, ...attributes }: ParagraphProps) => {
+const Paragraph = ({
+  children,
+  className,
+  size,
+  variant,
+  weight,
+  ...attributes
+}: ParagraphProps) => {
   return (
-    <p
-      className={cn(
-        ' smooth text-xs text-zinc-400 dark:text-zinc-400 md:text-sm lg:text-base',
-        className
-      )}
-      {...attributes}
-    >
+    <p className={cn(ParagraphVariants({ size, variant, weight }), className)} {...attributes}>
       {children}
     </p>
   );
