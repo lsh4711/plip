@@ -40,8 +40,8 @@ spring:
 jwt:
   key:
     secret: ${JWT_SECRET_KEY}
-  access-token-expiration-minutes: ${ACCESS_EXPIRATION_MINUTES}
-  refresh-token-expiration-minutes: ${REFRESH_EXPIRATION_MINUTES}
+  access-token-expiration-minutes: ${ACCESS_EXPIRATION_MINUTES} #1분
+  refresh-token-expiration-minutes: ${REFRESH_EXPIRATION_MINUTES} #3일
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8

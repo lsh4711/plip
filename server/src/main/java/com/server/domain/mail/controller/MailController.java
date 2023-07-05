@@ -2,15 +2,15 @@ package com.server.domain.mail.controller;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.server.domain.mail.dto.AuthMailCodeDto;
 import com.server.domain.mail.dto.MailDto;
+import com.server.domain.mail.mapper.AuthMailCodeMapper;
 import com.server.domain.mail.service.MailService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,11 +21,17 @@ import lombok.RequiredArgsConstructor;
 public class MailController {
 
     private final MailService mailService;
+    private final AuthMailCodeMapper authMailCodeMapper;
 
+    @PostMapping("/signup")
+    public ResponseEntity<?> postSendEmail(@Valid @RequestBody MailDto.Post request) {
+        mailService.sendMail(request.getEmail());
+        return ResponseEntity.ok().build();
+    }
 
-    @PostMapping("signup")
-    public ResponseEntity<?> postAuthEmail(@Valid @RequestBody MailDto.Post request) {
-        String authCode = mailService.sendMail(request.getEmail());
-        return new ResponseEntity<>(new MailDto.Response(authCode), HttpStatus.OK);
+    @PostMapping("/auth")
+    public ResponseEntity<?> postAuthEmail(@RequestBody AuthMailCodeDto.Post request) {
+        mailService.authenticationMailCode(authMailCodeMapper.authMailCodeDtoPostToAuthMailCode(request));
+        return ResponseEntity.ok().build();
     }
 }

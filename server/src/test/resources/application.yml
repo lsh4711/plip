@@ -14,6 +14,10 @@ spring:
       hibernate:
         ddl-auto: create
         format_sql: true
+  servlet:
+    multipart:
+      enabled: true
+      location: ${IMAGE_STORAGE_LOCATION}
   mail:
     host: smtp.gmail.com
     port: 587

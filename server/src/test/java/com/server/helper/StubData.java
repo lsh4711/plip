@@ -1,10 +1,11 @@
 package com.server.helper;
 
 
+import java.time.LocalDateTime;
+
 import java.util.Calendar;
 import java.util.Date;
 
-import java.time.LocalDateTime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,11 +13,11 @@ import java.util.Map;
 import org.springframework.http.HttpMethod;
 
 import com.server.domain.member.dto.MemberDto;
+import com.server.domain.record.dto.RecordDto;
 
 import com.server.global.auth.dto.LoginDto;
 import com.server.global.auth.jwt.JwtTokenizer;
 
-import com.server.domain.record.dto.RecordDto;
 
 
 public class StubData {
@@ -81,8 +82,8 @@ public class StubData {
                 .title("서울 롯데월드")
                 .content("롯데월드에서는..")
                 .memberId(1L)
-                .createdAt(LocalDateTime.now().withNano(0))
-                .modifiedAt(LocalDateTime.now().withNano(0))
+                // .createdAt(LocalDateTime.now().withNano(0))
+                // .modifiedAt(LocalDateTime.now().withNano(0))
                 .build();
             stubRequestBody.put(HttpMethod.GET, response);
         }
