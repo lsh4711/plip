@@ -1,7 +1,7 @@
 interface mapProps {}
 
-const map = ({}: mapProps) => {
+const Map = ({}: mapProps) => {
   return <div>map</div>;
 };
 
-export default map;
+export default Map;
