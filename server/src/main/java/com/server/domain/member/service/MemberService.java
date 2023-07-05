@@ -42,22 +42,26 @@ public class MemberService {
     }
 
     public void deleteMember(String email) {
-        Member member = getMemberByEmail(email);
+        Member member = findMemberByEmail(email);
         memberRepository.delete(member);
     }
 
     @Transactional(readOnly = true)
-    public Member getMemberByEmail(String email) {
+    public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
             .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
     public Member updateMember(String name, Member patchMember) {
-        Member member = getMemberByEmail(name);
+        Member member = findMemberByEmail(name);
         Optional.ofNullable(patchMember.getPassword())
             .ifPresent(member::setPassword);
         Optional.ofNullable(patchMember.getNickname())
             .ifPresent(member::setNickname);
         return member;
+    }
+
+    public Member findMember(long memberId) {
+        return memberRepository.findById(memberId).get();
     }
 }
