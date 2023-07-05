@@ -14,8 +14,6 @@ spring:
       hibernate:
         ddl-auto: create
         format_sql: true
-<<<<<<< HEAD
-=======
   servlet:
     multipart:
       enabled: true
@@ -26,7 +24,6 @@ spring:
       resources:
         static-locations: classpath:/
 
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
   mail:
     host: smtp.gmail.com
     port: 587
@@ -39,8 +36,6 @@ spring:
           timeout: 5000
           starttls:
             enable: true
-<<<<<<< HEAD
-=======
 
 jwt:
   key:
@@ -48,7 +43,6 @@ jwt:
   access-token-expiration-minutes: ${ACCESS_EXPIRATION_MINUTES} #1분
   refresh-token-expiration-minutes: ${REFRESH_EXPIRATION_MINUTES} #3일
 
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8

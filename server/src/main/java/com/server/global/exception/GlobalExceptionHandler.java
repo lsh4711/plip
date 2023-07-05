@@ -1,11 +1,8 @@
 package com.server.global.exception;
 
-<<<<<<< HEAD
 import java.time.format.DateTimeParseException;
 
 import org.springframework.http.HttpStatus;
-=======
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,7 +13,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity customExceptionHandler(CustomException e) {
         return new ResponseEntity<>(e.getMessage(), e.getStatus());
     }
-<<<<<<< HEAD
 
     @ExceptionHandler
     public ResponseEntity dateTimeParseExceptionHandler(DateTimeParseException e) {
@@ -27,6 +23,4 @@ public class GlobalExceptionHandler {
     public ResponseEntity exceptionHandler(Exception e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-=======
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
 }

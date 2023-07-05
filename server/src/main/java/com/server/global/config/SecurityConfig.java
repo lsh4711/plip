@@ -1,6 +1,6 @@
 package com.server.global.config;
 
-import static org.springframework.security.config.Customizer.*;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 import java.util.List;
 
@@ -16,11 +16,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-<<<<<<< HEAD
-@Configuration
-@EnableWebSecurity(debug = false)
-public class SecurityConfig {
-=======
 import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.handler.MemberAuthenticationEntryPoint;
 import com.server.global.auth.jwt.DelegateTokenUtil;
@@ -38,49 +33,34 @@ public class SecurityConfig {
     private final AccessTokenRenewalUtil accessTokenRenewalUtil;
     private final DelegateTokenUtil delegateTokenUtil;
 
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .headers().frameOptions().sameOrigin()
-            .and()
-            .csrf().disable()
-            .cors(withDefaults())
-<<<<<<< HEAD
-            .exceptionHandling()
-            .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .authorizeRequests()
-            .anyRequest().permitAll();
-      
-=======
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
+                .headers().frameOptions().sameOrigin()
+                .and()
+                .csrf().disable()
+                .cors(withDefaults())
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
 
-            .exceptionHandling()
-            .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
-            .and()
-            .apply(customFilterConfigurers())
-            .and()
-            .authorizeHttpRequests(authorize -> authorize
-                .antMatchers("/*/users/**").permitAll()
-                .anyRequest().permitAll()
-            );
+                .exceptionHandling()
+                .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+                .and()
+                .apply(customFilterConfigurers())
+                .and()
+                .authorizeHttpRequests(authorize -> authorize
+                        .antMatchers("/*/users/**").permitAll()
+                        .anyRequest().permitAll());
 
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
         return http.build();
     }
 
     @Bean
-<<<<<<< HEAD
-=======
     public CustomFilterConfig customFilterConfigurers() {
         return new CustomFilterConfig(jwtTokenizer, refreshTokenService, delegateTokenUtil, accessTokenRenewalUtil);
     }
 
     @Bean
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }

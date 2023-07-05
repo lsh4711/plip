@@ -6,14 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.repository.MemberRepository;
-
-<<<<<<< HEAD
-=======
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
-
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
 import lombok.RequiredArgsConstructor;
 
 @Transactional
@@ -32,27 +27,16 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-<<<<<<< HEAD
-    /**
-     * TODO: 추후에 공통 모듈 추가되면 커스텀 익셉션으로 수정 및 익셉션 추가
-     * */
-    @Transactional(readOnly = true)
-    public void checkExistNickname(Member member) {
-        if (memberRepository.existsByNickname(member.getNickname()))
-            throw new IllegalStateException("중복 닉네임 입니다.");
-=======
     @Transactional(readOnly = true)
     public void checkExistNickname(Member member) {
         if (memberRepository.existsByNickname(member.getNickname()))
             throw new CustomException(ExceptionCode.NICKNAME_EXISTS);
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
     }
 
     @Transactional(readOnly = true)
     public void checkExistEmail(Member member) {
         if (memberRepository.existsByEmail(member.getEmail()))
-<<<<<<< HEAD
-            throw new IllegalStateException("중복 이메일 입니다.");
+            throw new CustomException(ExceptionCode.EMAIL_EXISTS);
     }
 
     public Member findMember(long memberId) {
@@ -61,8 +45,5 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).get();
-=======
-            throw new CustomException(ExceptionCode.EMAIL_EXISTS);
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
     }
 }

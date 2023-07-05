@@ -1,33 +1,16 @@
 package com.server.helper;
 
-<<<<<<< HEAD
-=======
 
 import java.time.LocalDateTime;
-
 import java.util.Calendar;
 import java.util.Date;
-
-
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpMethod;
 
 import com.server.domain.member.dto.MemberDto;
-<<<<<<< HEAD
-
-public class StubData {
-    public static class MockMember {
-        private static Map<HttpMethod, Object> stubRequestBody;
-
-        static {
-            stubRequestBody = new HashMap<>();
-            MemberDto.Post post = MemberDto.Post.builder()
-=======
 import com.server.domain.record.dto.RecordDto;
-
 import com.server.global.auth.dto.LoginDto;
 import com.server.global.auth.jwt.JwtTokenizer;
 
@@ -61,14 +44,10 @@ public class StubData {
         static {
             stubRequestBody = new HashMap<>();
             MemberDto.Post memberPost = MemberDto.Post.builder()
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
                 .email("test123@naver.com")
                 .password("q12345678!")
                 .nickname("테스트계정")
                 .build();
-<<<<<<< HEAD
-            stubRequestBody.put(HttpMethod.POST, post);
-=======
 
             LoginDto loginDto = LoginDto.builder()
                 .username("test123@naver.com")
@@ -103,7 +82,6 @@ public class StubData {
                 .modifiedAt(LocalDateTime.now().withNano(0))
                 .build();
             stubRequestBody.put(HttpMethod.GET, response);
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
         }
 
         public static Object getRequestBody(HttpMethod method) {

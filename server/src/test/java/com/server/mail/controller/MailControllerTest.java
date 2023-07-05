@@ -1,11 +1,14 @@
 package com.server.mail.controller;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.*;
-import static org.mockito.BDDMockito.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,10 +18,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-<<<<<<< HEAD
-import org.springframework.context.annotation.Import;
-=======
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,15 +27,6 @@ import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.google.gson.Gson;
 import com.server.domain.mail.controller.MailController;
-<<<<<<< HEAD
-import com.server.domain.mail.dto.MailDto;
-import com.server.domain.mail.service.MailService;
-import com.server.global.config.SecurityConfig;
-
-@Import({SecurityConfig.class})
-@WebMvcTest(MailController.class)
-@AutoConfigureMockMvc
-=======
 import com.server.domain.mail.dto.AuthMailCodeDto;
 import com.server.domain.mail.dto.MailDto;
 import com.server.domain.mail.entity.AuthMailCode;
@@ -45,7 +35,6 @@ import com.server.domain.mail.service.MailService;
 
 @WebMvcTest(MailController.class)
 @AutoConfigureMockMvc(addFilters = false)
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
 @AutoConfigureRestDocs
 public class MailControllerTest {
     private final String MAIL_DEFULT_URI = "/api/mail";
@@ -55,14 +44,6 @@ public class MailControllerTest {
     private Gson gson;
     @MockBean
     private MailService service;
-<<<<<<< HEAD
-
-    @Test
-    @DisplayName("이메일 인증을 한다.")
-    void authEmail() throws Exception {
-        //given
-        String authCode = "abcd1234";
-=======
     @MockBean
     private AuthMailCodeMapper authMailCodeMapper;
 
@@ -70,17 +51,12 @@ public class MailControllerTest {
     @DisplayName("사용자에게 이메일로 인증코드를 보낸다.")
     void sendEmail() throws Exception {
         //given
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
         MailDto.Post request = MailDto.Post.builder()
             .email("test@naver.com")
             .build();
         String jsonData = gson.toJson(request);
 
-<<<<<<< HEAD
-        given(service.sendMail(Mockito.anyString())).willReturn(authCode);
-=======
         doNothing().when(service).sendMail(Mockito.anyString());
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
         //when
         ResultActions actions =
             mockMvc.perform(
@@ -91,9 +67,6 @@ public class MailControllerTest {
                 )
                 //then
                 .andExpect(status().isOk())
-<<<<<<< HEAD
-                .andExpect(jsonPath("$.authCode").value(authCode))
-=======
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("이메일 전송 예제",
                         preprocessRequest(prettyPrint()),
@@ -133,7 +106,6 @@ public class MailControllerTest {
                 )
                 //then
                 .andExpect(status().isOk())
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("이메일 인증 예제",
                         preprocessRequest(prettyPrint()),
@@ -142,13 +114,7 @@ public class MailControllerTest {
                             ResourceSnippetParameters.builder()
                                 .description("이메일 인증")
                                 .requestFields(
-<<<<<<< HEAD
-                                    fieldWithPath("email").type(JsonFieldType.STRING).description("이메일")
-                                )
-                                .responseFields(
-=======
                                     fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
->>>>>>> 21e43da99e0660e1051c1412b2b6dade9bafe523
                                     fieldWithPath("authCode").type(JsonFieldType.STRING).description("인증 코드")
                                 )
                                 .build()
