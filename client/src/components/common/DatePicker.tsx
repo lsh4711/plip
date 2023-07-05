@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 interface Props extends ReactDatePickerProps {}
 
-function DatePicker({ placeholderText, selected, onChange }: Props) {
+function DatePicker({ placeholderText, selected, onChange, minDate }: Props) {
   const [startDate, setStartDate] = useState<Date | null>();
 
   return (
@@ -17,6 +17,7 @@ function DatePicker({ placeholderText, selected, onChange }: Props) {
         selected={selected}
         onChange={onChange}
         shouldCloseOnSelect={false}
+        minDate={minDate}
         className="bg-transparent text-[#343539]"
       />
     </label>

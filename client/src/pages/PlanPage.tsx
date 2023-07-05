@@ -4,6 +4,8 @@ import { Button, HeadingParagraph } from '@/components';
 import DatePicker from '@/components/common/DatePicker';
 import RegionCard from '@/components/common/RegionCard';
 import { regionInfos, regions } from '@/datas/regions';
+import getTripPeriod from '@/utils/getTripPeriod';
+import dayjs from 'dayjs';
 
 interface PlanPageProps {}
 
@@ -36,15 +38,26 @@ const PlanPage = ({}: PlanPageProps) => {
           <DatePicker
             placeholderText="가는 날 선택"
             selected={startDate}
-            onChange={(date) => setStartDate(date)}
+            onChange={(date) => {
+              setStartDate(date);
+              if (!endDate || dayjs(date).isAfter(endDate)) {
+                setEndDate(date);
+              }
+            }}
           />
           <span className="text-xs text-white md:mx-4 md:text-[#343539]">~</span>
           <DatePicker
             placeholderText="오는 날 선택"
             selected={endDate}
             onChange={(date) => setEndDate(date)}
+            minDate={startDate}
           />
-          <span className="mt-2 text-[#343539] md:ml-4">(총 M박 N일 간)</span>
+          {startDate && endDate && (
+            <span className="mt-2 text-[#343539] md:ml-4">{`(${getTripPeriod(
+              startDate,
+              endDate
+            )})`}</span>
+          )}
         </div>
       </section>
       <section className="mb-3 mt-7">
