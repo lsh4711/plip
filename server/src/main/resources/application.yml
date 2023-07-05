@@ -1,9 +1,9 @@
 server:
   port: 8000
 spring:
-  redis:
-    host: localhost
-    port: 6379
+  # redis:
+    # host: localhost
+    # port: 6379
   h2:
     console:
       enabled: true
