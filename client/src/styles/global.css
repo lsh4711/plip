@@ -1,12 +1,18 @@
 @font-face {
   font-family: 'inter';
-  src: url('/public/font/Inter-VariableFont_slnt\,wght.ttf');
+  font-weight: 700;
+  src: url('/font/Inter-Bold.ttf') format('ttf');
+}
+
+@font-face {
+  font-family: 'inter';
+  font-weight: 400;
+  src: url('/font/Inter-Regular.ttf') format('ttf');
 }
 
 html,
 body {
   overflow-x: hidden;
-  font-family: 'inter';
 }
 
 #root {
@@ -30,4 +36,8 @@ input {
   background: linear-gradient(to right, #4568dc, #b06ab3);
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+input[type='text']:disabled {
+  background: #e4e4e4;
 }
