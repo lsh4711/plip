@@ -1,4 +1,5 @@
 import { Button, HeadingParagraph, Input } from '@/components';
+import OauthUI from '@/components/helper/OauthUI';
 import { useLoginMutation } from '@/queries';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -25,7 +26,7 @@ const LoginPage = ({}: LoginPageProps) => {
     console.log(data);
   };
   return (
-    <main className="mx-auto flex h-screen max-w-[1024px] flex-col items-center justify-center">
+    <main className="mx-auto flex max-w-[1024px] flex-col items-center justify-center">
       <div className=" mb-10">
         <HeadingParagraph
           variant={'darkgray'}
@@ -50,6 +51,7 @@ const LoginPage = ({}: LoginPageProps) => {
             Sign up
           </Button>
         </form>
+        <OauthUI />
       </div>
     </main>
   );

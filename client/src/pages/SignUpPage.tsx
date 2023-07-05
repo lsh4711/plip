@@ -1,6 +1,5 @@
 import { Button, HeadingParagraph, Input, Paragraph } from '@/components';
-import { ReactComponent as KakaoIcon } from '@/assets/icons/kakaoauth.svg';
-import { ReactComponent as NaverIcon } from '@/assets/icons/naverauth.svg';
+import OauthUI from '@/components/helper/OauthUI';
 
 import useThrottle from '@/hooks/useThrottle';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -61,7 +60,7 @@ const SignUpPage = () => {
   }, 2000);
 
   return (
-    <main className="mx-auto flex h-screen max-w-[1024px] flex-col items-center justify-center ">
+    <main className="mx-auto flex  max-w-[1024px] flex-col items-center justify-center ">
       <div className=" mb-10">
         <HeadingParagraph variant={'darkgray'} size="lg" className=" text-center">
           PliP에 가입하여
@@ -160,23 +159,7 @@ const SignUpPage = () => {
             Sign up
           </Button>
         </form>
-        <div className=" mt-6 flex items-center justify-center gap-x-5">
-          <Button hovercolor={'default'} hoveropacity={'active'}>
-            <KakaoIcon />
-          </Button>
-          <Button hovercolor={'default'} hoveropacity={'active'}>
-            <NaverIcon />
-          </Button>
-        </div>
-        <div className=" my-6 flex flex-col items-center justify-center gap-y-6">
-          <Paragraph>또는</Paragraph>
-          <Paragraph>
-            이미 회원이신가요?{' '}
-            <a href="/" className=" text-blue-500">
-              로그인하기
-            </a>
-          </Paragraph>
-        </div>
+        <OauthUI />
       </div>
     </main>
   );
