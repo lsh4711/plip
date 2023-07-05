@@ -1,75 +1,7 @@
-import { cva, VariantProps } from 'class-variance-authority';
-import { ButtonHTMLAttributes } from 'react';
+interface ButtonProps {}
 
-import { cn } from '@/utils';
-
-export const ButtonVariants = cva(
-  `
-  flex justify-center items-center rounded-xl 
-  text-base font-extrabold transition-all
-  duration-200 smooth
-  `,
-  {
-    variants: {
-      variant: {
-        default: ' text-[#343539]',
-        ring: ' ring-1 ring-[#343539] text-[#343539]',
-        primary: 'bg-[#4568DC] text-white dark:text-white',
-      },
-      size: {
-        default: 'py-[0.625rem] px-4 ',
-        lg: 'py-[0.844rem] px-4',
-      },
-      hovercolor: {
-        default: '',
-        active: ' hover:bg-sky-500',
-      },
-      hoveropacity: {
-        default: '',
-        active: ' hover:opacity-70',
-      },
-      activecolor: {
-        default: '',
-        active: ' active:hover:bg-blue-700 hover:opacity-100',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-      hovercolor: 'default',
-      hoveropacity: 'active',
-      activecolor: 'default',
-    },
-  }
-);
-
-interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof ButtonVariants> {
-  children: React.ReactNode;
-}
-
-const Button = ({
-  variant,
-  size,
-  hovercolor,
-  hoveropacity,
-  activecolor,
-  children,
-  className,
-  ...attributes
-}: ButtonProps) => {
-  return (
-    <button
-      className={cn(
-        ButtonVariants({ variant, size, hoveropacity, hovercolor, activecolor }),
-        className
-      )}
-      {...attributes}
-    >
-      {children}
-    </button>
-  );
+const Button = ({}: ButtonProps) => {
+  return <div>Button</div>;
 };
 
 export default Button;
