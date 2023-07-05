@@ -36,21 +36,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .headers().frameOptions().sameOrigin()
-                .and()
-                .csrf().disable()
-                .cors(withDefaults())
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-
-                .exceptionHandling()
-                .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
-                .and()
-                .apply(customFilterConfigurers())
-                .and()
-                .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers("/*/users/**").permitAll()
-                        .anyRequest().permitAll());
+            .headers().frameOptions().sameOrigin()
+            .and()
+            .csrf().disable()
+            .cors(withDefaults())
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+            .and()
+            .apply(customFilterConfigurers())
+            .and()
+            .authorizeHttpRequests(authorize -> authorize
+                .antMatchers("/*/users").authenticated()
+                .anyRequest().permitAll()
+            );
 
         return http.build();
     }
