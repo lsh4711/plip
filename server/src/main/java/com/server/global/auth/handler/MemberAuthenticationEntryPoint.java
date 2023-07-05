@@ -35,6 +35,7 @@ public class MemberAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     /**
      * TODO: 중복 코드 발생
+     *      세세한 에러 핸들링 예정
      * */
     private void sendErrorResponse(HttpServletResponse response) throws IOException {
         Gson gson = new Gson();

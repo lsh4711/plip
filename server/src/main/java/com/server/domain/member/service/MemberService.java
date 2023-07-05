@@ -1,5 +1,7 @@
 package com.server.domain.member.service;
 
+import java.util.Optional;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +25,7 @@ public class MemberService {
         checkExistNickname(member);
 
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
-        member.updateEncryptedPassword(encryptedPassword);
+        member.setPassword(encryptedPassword);
         return memberRepository.save(member);
     }
 
@@ -38,11 +40,28 @@ public class MemberService {
         if (memberRepository.existsByEmail(member.getEmail()))
             throw new CustomException(ExceptionCode.EMAIL_EXISTS);
     }
-    public Member findMember(long memberId) {
-        return memberRepository.findById(memberId).get();
+
+    public void deleteMember(String email) {
+        Member member = findMemberByEmail(email);
+        memberRepository.delete(member);
     }
 
+    @Transactional(readOnly = true)
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).get();
+        return memberRepository.findByEmail(email)
+            .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
+    }
+
+    public Member updateMember(String name, Member patchMember) {
+        Member member = findMemberByEmail(name);
+        Optional.ofNullable(patchMember.getPassword())
+            .ifPresent(member::setPassword);
+        Optional.ofNullable(patchMember.getNickname())
+            .ifPresent(member::setNickname);
+        return member;
+    }
+
+    public Member findMember(long memberId) {
+        return memberRepository.findById(memberId).get();
     }
 }
