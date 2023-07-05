@@ -7,7 +7,7 @@ interface HomeProps {}
 const Home = ({}: HomeProps) => {
   return (
     <>
-      <div className="randing relative h-full w-full bg-[url('../assets/imgs/gyeonggi.jpg')] bg-cover bg-center bg-no-repeat">
+      <div className="randing relative h-full w-full bg-[url('../assets/imgs/gyeonggi.webp')] bg-cover bg-center bg-no-repeat">
         <Header isHome={true} />
         <div className="absolute bottom-[80px] left-[80px] z-50">
           <Paragraph size={'xl'} variant={'white'} weight={'extrabold'}>

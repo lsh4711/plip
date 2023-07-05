@@ -38,16 +38,16 @@
 
 @keyframes randing {
   25% {
-    background-image: url('/src/assets/imgs/gyeonggi.jpg');
+    background-image: url('/src/assets/imgs/gyeonggi.webp');
   }
   50% {
-    background-image: url('/src/assets/imgs/광안대교.jpg');
+    background-image: url('/src/assets/imgs/광안대교.webp');
   }
   75% {
-    background-image: url('/src/assets/imgs/제주도.jpg');
+    background-image: url('/src/assets/imgs/제주도.webp');
   }
 
   100% {
-    background-image: url('/src/assets/imgs/서울.jpg');
+    background-image: url('/src/assets/imgs/서울.webp');
   }
 }
