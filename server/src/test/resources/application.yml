@@ -17,7 +17,12 @@ spring:
   servlet:
     multipart:
       enabled: true
-      location: ${IMAGE_STORAGE_LOCATION}
+      location: /Users/jiinpark/Dev/Projects/main-project/seb44_main_012/server/src/test/resources/images
+      maxFileSize: 10MB
+      maxRequestSize: 10MB
+    web:
+      resources:
+        static-locations: classpath:/
   mail:
     host: smtp.gmail.com
     port: 587
