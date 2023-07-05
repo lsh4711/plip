@@ -2,6 +2,7 @@ package com.server.domain.mail.controller;
 
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/mail")
 @RestController
 public class MailController {
+
     private final MailService mailService;
     private final AuthMailCodeMapper authMailCodeMapper;
 
