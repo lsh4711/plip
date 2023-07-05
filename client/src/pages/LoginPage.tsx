@@ -26,32 +26,34 @@ const LoginPage = ({}: LoginPageProps) => {
     console.log(data);
   };
   return (
-    <main className="mx-auto flex max-w-[1024px] flex-col items-center justify-center">
-      <div className=" mb-10">
-        <HeadingParagraph
-          variant={'darkgray'}
-          size="lg"
-          className=" flex items-center justify-center text-center"
-        >
-          로그인
-        </HeadingParagraph>
-      </div>
-      <div className="">
-        <form
-          className=" flex w-[460px] flex-col gap-y-7"
-          onSubmit={loginForm.handleSubmit(onSubmit)}
-        >
-          <Input placeholder="이메일을 입력해 주세요." {...loginForm.register('email')} />
-          <Input
-            placeholder="비밀번호를 입력해 주세요."
-            type={'password'}
-            {...loginForm.register('password')}
-          />
-          <Button variant={'primary'} size="lg">
-            Sign up
-          </Button>
-        </form>
-        <OauthUI />
+    <main className="mx-auto flex max-w-[1024px] flex-col items-center justify-center pt-48">
+      <div className="flex flex-col items-center justify-center">
+        <div className=" mb-10">
+          <HeadingParagraph
+            variant={'darkgray'}
+            size="lg"
+            className=" flex items-center justify-center text-center"
+          >
+            로그인
+          </HeadingParagraph>
+        </div>
+        <div className="">
+          <form
+            className=" flex w-[460px] flex-col gap-y-7"
+            onSubmit={loginForm.handleSubmit(onSubmit)}
+          >
+            <Input placeholder="이메일을 입력해 주세요." {...loginForm.register('email')} />
+            <Input
+              placeholder="비밀번호를 입력해 주세요."
+              type={'password'}
+              {...loginForm.register('password')}
+            />
+            <Button variant={'primary'} size="lg">
+              Sign up
+            </Button>
+          </form>
+          <OauthUI />
+        </div>
       </div>
     </main>
   );

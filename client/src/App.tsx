@@ -16,9 +16,7 @@ export default function App() {
       ) : (
         <>
           <Header />
-          <main className="flex flex-col items-center justify-center overflow-x-hidden py-24">
-            <Outlet />
-          </main>
+          <Outlet />
         </>
       )}
     </>
