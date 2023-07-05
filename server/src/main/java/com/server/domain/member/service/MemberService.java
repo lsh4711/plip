@@ -39,4 +39,12 @@ public class MemberService {
         if (memberRepository.existsByEmail(member.getEmail()))
             throw new IllegalStateException("중복 이메일 입니다.");
     }
+
+    public Member findMember(long memberId) {
+        return memberRepository.findById(memberId).get();
+    }
+
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email).get();
+    }
 }

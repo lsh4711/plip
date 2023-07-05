@@ -44,6 +44,9 @@ public class Init {
 
         memberService.createMember(member);
 
+        Member newMember = Member.builder()
+                .memberId(1L)
+                .build();
         Schedule schedule = new Schedule();
         schedule.setCity("제주도");
         schedule.setTitle("즐거운 여행 제목");
@@ -51,6 +54,7 @@ public class Init {
         schedule.setMemberCount(5);
         schedule.setStartDate(LocalDate.now());
         schedule.setEndDate(LocalDate.now().plusDays(3));
+        schedule.setMember(newMember);
 
         scheduleService.saveSchedule(schedule);
 
@@ -74,13 +78,13 @@ public class Init {
             SchedulePlace schedulePlace = new SchedulePlace();
             schedulePlace.setSchedule(newSchedule);
             schedulePlace.setPlace(newPlace);
-            schedulePlace.setDay(1);
-            schedulePlace.setOrder(i);
+            schedulePlace.setDays(1);
+            schedulePlace.setOrders(i);
             schedulePlaces.add(schedulePlace);
         }
 
         placeService.savePlaces(places);
-        // schedulePlaceService.saveSchedulePlaces(schedulePlaces);
+        schedulePlaceService.saveSchedulePlaces(schedulePlaces);
 
     }
 }

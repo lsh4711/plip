@@ -22,12 +22,12 @@ public class PlaceDto {
         @NotBlank
         private String longitude;
 
-        // schedulePlace
+        // SchedulePlace
         @NotBlank
-        private int day;
+        private int days;
 
         @NotBlank
-        private int order;
+        private int orders;
     }
 
     @Getter

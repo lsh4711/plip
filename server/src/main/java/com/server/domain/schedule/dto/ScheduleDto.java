@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.server.domain.place.dto.PlaceDto;
+import com.server.global.validator.DateValid;
 
 import lombok.Getter;
 
@@ -19,14 +21,14 @@ public class ScheduleDto {
         @NotBlank
         private String city;
 
-        @NotBlank
+        @DateValid
         private LocalDate startDate;
 
-        @NotBlank
+        @DateValid
         private LocalDate endDate;
 
-        @NotBlank
-        private List<PlaceDto.Post> places;
+        @NotNull
+        private List<PlaceDto.Post> placeDtos;
     }
 
     @Getter
