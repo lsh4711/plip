@@ -13,6 +13,7 @@ import javax.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +32,7 @@ import com.server.domain.record.dto.RecordDto;
 import com.server.domain.record.entity.Record;
 import com.server.domain.record.mapper.RecordMapper;
 import com.server.domain.record.service.RecordService;
+import com.server.global.dto.MultiResponseDto;
 import com.server.global.dto.SingleResponseDto;
 import com.server.global.utils.UriCreator;
 
@@ -58,10 +60,6 @@ public class RecordController {
     public ResponseEntity<?> postRecord(@Valid @RequestBody RecordDto.Post requestBody) {
         Record record = mapper.recordPostToRecord(requestBody);
 
-        Long userId = 1L;
-
-        record.setMemberId(userId);
-
         Record createdRecord = recordService.createRecord(record);
 
         URI location = UriCreator.createUri(RECORD_DEFAULT_URL, createdRecord.getRecordId());
@@ -77,6 +75,36 @@ public class RecordController {
             new SingleResponseDto<>(mapper.recordToRecordResponse(record)), HttpStatus.OK
         );
     }
+
+    //memberId로 여행일지 조회
+    @GetMapping
+    public ResponseEntity<?> getRecordsByMemberId(@RequestParam @Positive int page, @RequestParam @Positive int size){
+        Page<Record> pageRecords = recordService.findAllRecords(page-1, size);
+        List<Record> records = pageRecords.getContent();
+
+        return new ResponseEntity<>(
+            new MultiResponseDto<>(
+                mapper.recordsToRecordResponses(records), pageRecords
+            ),
+            HttpStatus.OK
+        );
+    }
+
+    //placeId로 여행일지 조회
+    // @GetMapping("/place/{place-id}")
+    // public ResponseEntity<?> getRecordsByPlaceId(@PathVariable Long placeId){
+    //     List<Record> records = new ArrayList<>();
+    //
+    //     Optional<Schedule_Place> schedulePlaceOptional = schedulePlaceRepository.findById(placeId);
+    //     if (schedulePlaceOptional.isPresent()) {
+    //         Schedule_Place schedulePlace = schedulePlaceOptional.get();
+    //         records = schedulePlace.getRecords();
+    //     }
+    //
+    //     return records;
+    //
+    // }
+
 
     //이미지 업로드
     @PostMapping("/{record-id}/img")
