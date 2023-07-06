@@ -37,7 +37,7 @@ import com.server.global.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/records")
+@RequestMapping("/api/records")
 @Validated
 @Slf4j
 public class RecordController {

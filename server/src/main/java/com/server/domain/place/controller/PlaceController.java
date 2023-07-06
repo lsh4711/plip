@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.server.domain.place.service.PlaceService;
 
 @RestController
-@RequestMapping("/places")
+@RequestMapping("/api/places")
 public class PlaceController {
     private PlaceService placeService;
 
