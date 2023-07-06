@@ -1,8 +1,4 @@
-import { Provider as RTKProvider } from 'react-redux';
-import { DropDownMenuProvider } from '@/contexts/DropDownMenuContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-import { store as RTKStore } from '@/stores/store';
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -17,13 +13,7 @@ const Providers = ({ children }: ProvidersProps) => {
     },
   });
 
-  return (
-    <RTKProvider store={RTKStore}>
-      <QueryClientProvider client={queryClient}>
-        <DropDownMenuProvider>{children}</DropDownMenuProvider>
-      </QueryClientProvider>
-    </RTKProvider>
-  );
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };
 
 export default Providers;

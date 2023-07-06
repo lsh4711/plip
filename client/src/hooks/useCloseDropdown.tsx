@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 type Props = (
   el: React.RefObject<HTMLDivElement>,
