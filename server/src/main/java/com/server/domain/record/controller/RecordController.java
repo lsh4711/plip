@@ -17,7 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,11 +41,11 @@ import com.server.global.utils.UriCreator;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/records")
+@RequestMapping("/api/records")
 @Validated
 @Slf4j
 public class RecordController {
-    private final static String RECORD_DEFAULT_URL = "/records";
+    private final static String RECORD_DEFAULT_URL = "/api/records";
     private final RecordMapper mapper;
 
     private final RecordService recordService;
@@ -56,6 +58,7 @@ public class RecordController {
         this.recordService = recordService;
     }
 
+    //여행일지 등록
     @PostMapping
     public ResponseEntity<?> postRecord(@Valid @RequestBody RecordDto.Post requestBody) {
         Record record = mapper.recordPostToRecord(requestBody);
@@ -67,6 +70,21 @@ public class RecordController {
         return ResponseEntity.created(location).build();
     }
 
+    //여행일지 수정
+    @PatchMapping("/{record-id}")
+    public ResponseEntity<?> patchRecord(@PathVariable("record-id") @Positive long recordId,
+        @Valid @RequestBody RecordDto.Patch requestBody){
+        requestBody.setRecordId(recordId);
+
+        Record record = mapper.recordPatchToRecord(requestBody);
+
+        Record updatedRecord = recordService.updateRecord(record);
+
+        return new ResponseEntity<>(new SingleResponseDto<>(mapper.recordToRecordResponse(updatedRecord)),
+            HttpStatus.OK);
+    }
+
+    //recordId로 여행일지 조회
     @GetMapping("/{record-id}")
     public ResponseEntity<?> getRecord(@PathVariable("record-id") @Positive long recordId) {
         Record record = recordService.findRecord(recordId);
@@ -102,8 +120,15 @@ public class RecordController {
     //     }
     //
     //     return records;
-    //
     // }
+
+    //여행일지 삭제
+    @DeleteMapping("/{record-id}")
+    public ResponseEntity deleteRecord(@PathVariable("record-id") @Positive long recordId){
+        recordService.deleteRecord(recordId);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 
 
     //이미지 업로드

@@ -4,7 +4,6 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.BDDMockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -34,7 +33,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -56,7 +54,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import springfox.documentation.staticdocs.Swagger2MarkupResultHandler;
 
 @SpringBootTest
 @MockBean(JpaMetamodelMappingContext.class)
@@ -75,7 +72,7 @@ public class RecordControllerTest {
     @MockBean
     private RecordMapper mapper;
 
-    private final static String RECORD_DEFAULT_URL = "/records";
+    private final static String RECORD_DEFAULT_URL = "/api/records";
 
     @Value("${spring.servlet.multipart.location}")
     private String location;
@@ -85,7 +82,7 @@ public class RecordControllerTest {
     void postRecordTest() throws Exception{
         
         //given
-        RecordDto.Post request = (RecordDto.Post)StubData.MockRecord.getRequestBody(HttpMethod.POST);
+        RecordDto.Post request = (RecordDto.Post)StubData.MockRecord.getRequestBody("recordPost");
         String jsonData = gson.toJson(request);
 
 
@@ -103,7 +100,7 @@ public class RecordControllerTest {
         //then
         actions
             .andExpect(status().isCreated())
-            .andExpect(header().string("Location", is(startsWith("/records/"))))
+            .andExpect(header().string("Location", is(startsWith("/api/records/"))))
             .andDo(
                 MockMvcRestDocumentationWrapper.document("일지 등록",
                     preprocessRequest(prettyPrint()),
@@ -125,12 +122,77 @@ public class RecordControllerTest {
         
     
     }
+
+
+    @Test
+    @DisplayName("여행일지를 수정한다.")
+    void RecordControllerTest() throws Exception{
+        //given
+
+        RecordDto.Patch request = (RecordDto.Patch)StubData.MockRecord.getRequestBody("recordPatch");
+        String jsonData = gson.toJson(request);
+
+        given(mapper.recordPatchToRecord(Mockito.any(RecordDto.Patch.class))).willReturn(
+            Record.builder().recordId(1L).build());
+
+        given(service.updateRecord(Mockito.any(Record.class))).willReturn(Record.builder().recordId(1L).build());
+
+        RecordDto.Response response = (RecordDto.Response)StubData.MockRecord.getRequestBody("recordPatchResponse");
+
+        given(mapper.recordToRecordResponse(Mockito.any(Record.class))).willReturn(response);
+
+        //when
+        ResultActions actions =
+            mockMvc.perform(
+                patch(RECORD_DEFAULT_URL + "/{record-id}", response.getRecordId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonData)
+            );
+
+
+        //then
+        actions
+            .andExpect(status().isOk())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("일지 수정",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    pathParameters(
+                        List.of(parameterWithName("record-id").description("일지 식별자 ID"))
+                    ),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("일지 수정")
+                            .requestFields(
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("내용")
+                            )
+                            .responseFields(
+                                List.of(
+                                    fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터").optional(),
+                                    fieldWithPath("data.recordId").type(JsonFieldType.NUMBER).description("일지 식별자"),
+                                    fieldWithPath("data.title").type(JsonFieldType.STRING).description("제목"),
+                                    fieldWithPath("data.content").type(JsonFieldType.STRING).description("내용"),
+                                    fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                    fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("작성 날짜"),
+                                    fieldWithPath("data.modifiedAt").type(JsonFieldType.STRING).description("수정 날짜")
+                                )
+                            )
+                            .build()
+
+                    )
+                )
+            );
+    }
+
+
+
     
     @Test
     @DisplayName("여행 일지를 조회한다.")
     void getRecordTest() throws Exception{
         //given
-        RecordDto.Response response = (RecordDto.Response)StubData.MockRecord.getRequestBody(HttpMethod.GET);
+        RecordDto.Response response = (RecordDto.Response)StubData.MockRecord.getRequestBody("recordResponse");
 
         given(service.findRecord(Mockito.anyLong())).willReturn(Record.builder().build());
         given(mapper.recordToRecordResponse(Mockito.any(Record.class))).willReturn(response);
@@ -253,6 +315,37 @@ public class RecordControllerTest {
     }
 
 
+    @Test
+    @DisplayName("여행 일지를 삭제한다.")
+    void deleteRecordTest() throws Exception{
+        //given
+        long recordId = 1L;
+
+        doNothing().when(service).deleteRecord(recordId);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+            delete(RECORD_DEFAULT_URL + "/{record-id}", recordId)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actions.andExpect(status().isNoContent())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("여행일지 삭제",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    pathParameters(
+                        parameterWithName("record-id").description("일지 식별자 ID")
+                    )
+                )
+            );
+
+
+    }
+
+
+
+
 
 
     @Test
@@ -285,7 +378,7 @@ public class RecordControllerTest {
             //then
             actions
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", is(startsWith("/records/"))))
+                .andExpect(header().string("Location", is(startsWith("/api/records/"))))
                 .andDo(
                     MockMvcRestDocumentationWrapper.document("사진 등록",
                         preprocessRequest(prettyPrint()),
@@ -296,9 +389,6 @@ public class RecordControllerTest {
                         resource(
                             ResourceSnippetParameters.builder()
                                 .description("사진 등록")
-                                .responseHeaders(
-                                    headerWithName(HttpHeaders.LOCATION).description("Location header. 등록된 리소스의 URI")
-                                )
                                 .build()
                         )
                     )

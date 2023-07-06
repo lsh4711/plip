@@ -13,6 +13,8 @@ import com.server.domain.record.entity.Record;
 public interface RecordMapper {
     Record recordPostToRecord(RecordDto.Post requestBody);
 
+    Record recordPatchToRecord(RecordDto.Patch requestBody);
+
     @Mapping(target="memberId", source="record.member.memberId")
     RecordDto.Response recordToRecordResponse(Record record);
 

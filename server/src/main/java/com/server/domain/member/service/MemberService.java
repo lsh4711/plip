@@ -8,11 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.repository.MemberRepository;
-
-import com.server.global.exception.BusinessLogicException;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
-
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +25,7 @@ public class MemberService {
         checkExistNickname(member);
 
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
-        member.updateEncryptedPassword(encryptedPassword);
+        member.setPassword(encryptedPassword);
         return memberRepository.save(member);
     }
 
@@ -44,13 +41,29 @@ public class MemberService {
             throw new CustomException(ExceptionCode.EMAIL_EXISTS);
     }
 
+
+    public void deleteMember(String email) {
+        Member member = findMemberByEmail(email);
+        memberRepository.delete(member);
+    }
+
     //회원이메일로 등록된 회원인지 검증
-    public Member findVerifiedMember(String email){
-        Optional<Member> optionalMember =
-            memberRepository.findByEmail(email);
-        Member findMember =
-            optionalMember.orElseThrow(() ->
-                new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        return findMember;
+    @Transactional(readOnly = true)
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+            .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
+    }
+
+    public Member updateMember(String name, Member patchMember) {
+        Member member = findMemberByEmail(name);
+        Optional.ofNullable(patchMember.getPassword())
+            .ifPresent(member::setPassword);
+        Optional.ofNullable(patchMember.getNickname())
+            .ifPresent(member::setNickname);
+        return member;
+    }
+
+    public Member findMember(long memberId) {
+        return memberRepository.findById(memberId).get();
     }
 }

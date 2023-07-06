@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 public class RecordDto {
 
@@ -14,6 +15,19 @@ public class RecordDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Post {
+        private String title;
+        private String content;
+
+    }
+
+
+    @Getter
+    @Setter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Patch {
+        private Long recordId;
         private String title;
         private String content;
 
