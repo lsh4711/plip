@@ -46,8 +46,8 @@ public class StubData {
                 .build();
 
             LoginDto loginDto = LoginDto.builder()
-                .username("test123@naver.com")
-                .password("q12345678@")
+                .username("test@naver.com")
+                .password("12345678a!")
                 .build();
 
             MemberDto.Patch memberPatch = MemberDto.Patch.builder()

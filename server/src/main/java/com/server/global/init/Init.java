@@ -1,5 +1,6 @@
 package com.server.global.init;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,31 +17,39 @@ import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.domain.schedule.service.ScheduleService;
+import com.server.global.auth.jwt.DelegateTokenUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 public class Init {
     private MemberRepository memberRepository;
     private ScheduleService scheduleService;
     private SchedulePlaceService schedulePlaceService;
     private PlaceService placeService;
+    private DelegateTokenUtil delegateTokenUtil;
 
     public Init(MemberRepository memberRepository,
         ScheduleService scheduleService,
         SchedulePlaceService schedulePlaceService,
-        PlaceService placeService) {
+        PlaceService placeService,
+        DelegateTokenUtil delegateTokenUtil) {
         this.memberRepository = memberRepository;
         this.scheduleService = scheduleService;
         this.schedulePlaceService = schedulePlaceService;
         this.placeService = placeService;
+        this.delegateTokenUtil = delegateTokenUtil;
     }
 
     @PostConstruct
-    public void init() {
+    public void init() throws ParseException {
         Member member = Member.builder()
-            .email("lsh@naver.com")
-            .password("lshlshlshlsh1234!@")
-            .nickname("음악")
+            .email("test@naver.com")
+            .password("12345678a!")
+            .nickname("테스트계정")
             .build();
+        //log.info("테스트용 토큰을 발급했습니다: " + delegateTokenUtil.delegateTestAccessToken(member));
         /**
          * @author 다영
          * 테스트 코드 오류로 service -> repository로 수정
