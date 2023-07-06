@@ -49,6 +49,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     runtimeOnly 'com.h2database:h2'
+    testImplementation 'com.h2database:h2' // 추가됨
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -68,7 +69,7 @@ dependencies {
 }
 
 tasks.named('test') {
-    //outputs.dir snippetsDir
+    outputs.dir snippetsDir
     useJUnitPlatform()
 }
 
@@ -85,10 +86,13 @@ tasks.withType(GenerateSwaggerUI) {
 
 bootJar {
     dependsOn(':openapi3')
+    archivesBaseName = 'teamdev'
+    archiveFileName = 'teamdev.jar'
+    archiveVersion = "0.0.0"
 }
 
 openapi3 {
-    server = "http://localhost:8080"
+    server = "https://teamdev.shop:8000"
     title = "코벤져스 API 문서"
     description = "Spring REST Docs with SwaggerUI."
     version = "0.0.1"

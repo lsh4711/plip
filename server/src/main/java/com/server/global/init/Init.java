@@ -69,7 +69,7 @@ public class Init {
             Place place = new Place();
             place.setApiId(i * 10 + i);
             place.setName(placeNames[i - 1]);
-            place.setAddress("제주도 무슨동 무슨길" + 1);
+            place.setAddress("제주도 무슨동 무슨길" + i);
             place.setLatitude(String.format("%d.%d", i * 205 + i * 17 + i * 8, i * 27));
             place.setLongitude(String.format("%d.%d", i * 121 + i * 23 + i * 3, i * 31));
             places.add(place);

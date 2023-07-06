@@ -1,3 +1,5 @@
+server:
+  port: 8000
 spring:
   redis:
     host: localhost
@@ -17,7 +19,7 @@ spring:
   servlet:
     multipart:
       enabled: true
-      location: /Users/jiinpark/Dev/Projects/main-project/seb44_main_012/server/src/test/resources/images
+      location: ${IMAGE_STORAGE_LOCATION}
       maxFileSize: 10MB
       maxRequestSize: 10MB
     web:
