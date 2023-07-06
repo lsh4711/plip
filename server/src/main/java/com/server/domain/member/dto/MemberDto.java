@@ -40,9 +40,6 @@ public class MemberDto {
         private String nickname;
     }
 
-    @Builder
-    @AllArgsConstructor
-    @Getter
     public static class Response {
         private String nickname;
     }
