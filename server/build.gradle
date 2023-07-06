@@ -78,7 +78,7 @@ dependencies {
 
 //     delete file('src/main/resources/static/docs/')
 //     copy {
-//         from "build/resources/main/static/docs"
+//         from "build/resources/main/static"
 //         into "src/main/resources/static/docs/"
 
 //     }
@@ -98,5 +98,5 @@ openapi3 {
     version = "0.0.1"
     outputFileNamePrefix = 'open-api-3.0.1'
     format = 'json'
-    outputDirectory = 'build/resources/main/static/docs'
+    outputDirectory = 'build/resources/main'
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.server.domain.test.dto.TestDto;
 import com.server.domain.test.entity.Test;
@@ -53,8 +54,8 @@ public class TestController {
     }
 
     @GetMapping
-    public String getTest() {
-        return "접속 성공";
+    public ModelAndView getTest() {
+        return new ModelAndView("test.html");
     }
 
     @GetMapping("/error")
