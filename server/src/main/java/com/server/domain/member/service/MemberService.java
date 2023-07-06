@@ -41,11 +41,13 @@ public class MemberService {
             throw new CustomException(ExceptionCode.EMAIL_EXISTS);
     }
 
+
     public void deleteMember(String email) {
         Member member = findMemberByEmail(email);
         memberRepository.delete(member);
     }
 
+    //회원이메일로 등록된 회원인지 검증
     @Transactional(readOnly = true)
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
