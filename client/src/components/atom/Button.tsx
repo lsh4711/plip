@@ -6,7 +6,7 @@ import { cn } from '@/utils';
 export const ButtonVariants = cva(
   `
   flex justify-center items-center rounded-xl 
-  text-base font-extrabold transition-all
+  text-base font-bold transition-all
   duration-200 smooth
   `,
   {
@@ -22,7 +22,7 @@ export const ButtonVariants = cva(
       },
       hovercolor: {
         default: '',
-        active: ' hover:bg-sky-500',
+        active: 'hover:bg-gradient-to-r hover:from-[#4568dc] hover:to-[#b06ab3] ',
       },
       hoveropacity: {
         default: '',
@@ -36,8 +36,8 @@ export const ButtonVariants = cva(
     defaultVariants: {
       variant: 'default',
       size: 'default',
-      hovercolor: 'default',
-      hoveropacity: 'active',
+      hovercolor: 'active',
+      hoveropacity: 'default',
       activecolor: 'default',
     },
   }
