@@ -6,6 +6,7 @@ import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class MemberDto {
     private MemberDto() {
@@ -13,6 +14,7 @@ public class MemberDto {
 
     @Builder
     @AllArgsConstructor
+    @NoArgsConstructor
     @Getter
     public static class Post {
         @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")

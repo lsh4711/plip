@@ -5,12 +5,14 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class RecordDto {
 
     @Getter
-    @AllArgsConstructor
     @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Post {
         private String title;
         private String content;
@@ -18,8 +20,10 @@ public class RecordDto {
     }
 
     @Getter
-    @AllArgsConstructor
+
     @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Response {
         private Long recordId;
         private String title;
