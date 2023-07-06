@@ -4,3 +4,6 @@ export { default as Image } from './atom/Image';
 export { default as Input } from './atom/Input';
 export { default as Paragraph } from './atom/Paragraph';
 export { default as OuathUI } from './helper/OauthUI';
+export { default as MypageSideNav } from './helper/MypageSideNav';
+export { default as SortingToolbar } from './helper/SortingToolbar';
+export { default as MyrecordImg } from './common/MyrecordImg';
