@@ -20,6 +20,7 @@ import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.handler.MemberAuthenticationEntryPoint;
 import com.server.global.auth.jwt.DelegateTokenUtil;
 import com.server.global.auth.jwt.JwtTokenizer;
+import com.server.global.auth.userdetails.CustomOAuth2UserService;
 import com.server.global.auth.utils.AccessTokenRenewalUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class SecurityConfig {
     private final RefreshTokenService refreshTokenService;
     private final AccessTokenRenewalUtil accessTokenRenewalUtil;
     private final DelegateTokenUtil delegateTokenUtil;
+    private final CustomOAuth2UserService oAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -45,6 +47,13 @@ public class SecurityConfig {
             .exceptionHandling()
             .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
             .and()
+            .oauth2Login(oauth2 -> oauth2
+                    //   .loginPage("/api/oath/login")
+                    .userInfoEndpoint()
+                    .userService(oAuth2UserService)
+                //.and()
+                //.successHandler(new OAuth2SuccessHandler(delegateTokenService))
+            )
             .apply(customFilterConfigurers())
             .and()
             .authorizeHttpRequests(authorize -> authorize

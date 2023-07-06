@@ -46,6 +46,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     compileOnly 'org.projectlombok:lombok'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     runtimeOnly 'com.h2database:h2'
@@ -64,7 +65,6 @@ dependencies {
     testImplementation 'org.mockito:mockito-inline'
 
 
-
 }
 
 tasks.named('test') {
@@ -77,7 +77,7 @@ tasks.withType(GenerateSwaggerUI) {
 
     delete file('src/main/resources/static/docs/')
     copy {
-        from "build/resources/main/static/docs"
+        from "build/resources/main"
         into "src/main/resources/static/docs/"
 
     }
@@ -94,5 +94,5 @@ openapi3 {
     version = "0.0.1"
     outputFileNamePrefix = 'open-api-3.0.1'
     format = 'json'
-    outputDirectory = 'build/resources/main/static/docs'
+    outputDirectory = 'build/resources/main'
 }
