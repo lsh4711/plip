@@ -9,7 +9,7 @@ export interface RecordGetRequest {
   recordId: number | string;
 }
 
-export interface Records {
+export interface Record {
   recordId: number | string;
   title: string;
   content: string;
@@ -20,12 +20,12 @@ export interface Records {
 
 //GET : /records/{record-id}
 export interface RecordGetResponse {
-  data: Records;
+  data: Record;
 }
 
 //GET : /records?page=1&size=10
 
-export interface GetRecordsBymemberIdResponse extends Records {}
+export interface GetRecordsBymemberIdResponse extends Record {}
 
 //GET : /records/place/{place-id}
 export interface GetRecordsByPlaceIdRequest {
@@ -34,4 +34,4 @@ export interface GetRecordsByPlaceIdRequest {
 
 //GET : /records/place/{place-id}
 
-export interface GetRecordsByPlaceIdResponse extends Records {}
+export interface GetRecordsByPlaceIdResponse extends Record {}
