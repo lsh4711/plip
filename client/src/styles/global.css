@@ -15,6 +15,16 @@ body {
   overflow-x: hidden;
 }
 
+body::after {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  z-index: -1;
+  content: url('/src/assets/imgs/gyeonggi.webp') url('/src/assets/imgs/광안대교.webp')
+    url('/src/assets/imgs/제주도.webp') url('/src/assets/imgs/서울.webp');
+}
+
 #root {
   width: 100%;
   height: 100vh;
