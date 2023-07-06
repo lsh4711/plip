@@ -15,6 +15,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -27,6 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -37,6 +43,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.google.gson.Gson;
+import com.server.domain.member.entity.Member;
 import com.server.domain.record.ImageManager;
 
 import com.server.domain.record.dto.RecordDto;
@@ -46,9 +53,13 @@ import com.server.domain.record.service.RecordService;
 import com.server.helper.StubData;
 
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import springfox.documentation.staticdocs.Swagger2MarkupResultHandler;
 
 @SpringBootTest
+@MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 public class RecordControllerTest {
@@ -120,7 +131,6 @@ public class RecordControllerTest {
     void getRecordTest() throws Exception{
         //given
         RecordDto.Response response = (RecordDto.Response)StubData.MockRecord.getRequestBody(HttpMethod.GET);
-        String jsonData = gson.toJson(response);
 
         given(service.findRecord(Mockito.anyLong())).willReturn(Record.builder().build());
         given(mapper.recordToRecordResponse(Mockito.any(Record.class))).willReturn(response);
@@ -162,6 +172,88 @@ public class RecordControllerTest {
             );
 
     }
+
+    @Test
+    @DisplayName("전체 여행 일지를 조회한다.")
+    @WithMockUser(username = "user@gmail.com",password="1234",roles="USER")
+    void getRecordsByMemberId() throws Exception{
+        //given
+        Member member = Member.builder().memberId(1L).build();
+
+        Record record1 = Record.builder().recordId(1L).title("서울 롯데월드").content("서울 롯데월드에서는...").build();
+        record1.setMember(member);
+
+        Record record2 = Record.builder().recordId(2L).title("서울 남산타워").content("서울 남산타워에서는...").build();
+        record2.setMember(member);
+
+        Page<Record> pageRecords = new PageImpl<>(
+            List.of(record1, record2),
+            PageRequest.of(0, 10,
+                Sort.by("recordId").descending()), 2
+        );
+
+        List<RecordDto.Response> responses = StubData.MockRecord.getRequestDatas("recordResponses");
+
+        given(service.findAllRecords(Mockito.anyInt(), Mockito.anyInt())).willReturn(pageRecords);
+        given(mapper.recordsToRecordResponses(Mockito.anyList())).willReturn(responses);
+
+        String page = "1";
+        String size = "10";
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("page", page);
+        queryParams.add("size", size);
+
+
+        //when
+        ResultActions actions = mockMvc.perform(
+            get(RECORD_DEFAULT_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .params(queryParams)
+                .accept(MediaType.APPLICATION_JSON)
+
+        );
+
+        //then
+        actions
+            .andExpect(status().isOk())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("전체 일지 조회",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    requestParameters(
+                        List.of(
+                            parameterWithName("page").description("Page 번호"),
+                            parameterWithName("size").description("Page Size")
+                        )
+                    ),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("전체 일지 조회")
+                            .responseFields(
+                                List.of(
+                                    fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터").optional(),
+                                    fieldWithPath("data[].recordId").type(JsonFieldType.NUMBER).description("일지 식별자"),
+                                    fieldWithPath("data[].title").type(JsonFieldType.STRING).description("제목"),
+                                    fieldWithPath("data[].content").type(JsonFieldType.STRING).description("내용"),
+                                    fieldWithPath("data[].memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                    fieldWithPath("data[].createdAt").type(JsonFieldType.STRING).description("작성 날짜"),
+                                    fieldWithPath("data[].modifiedAt").type(JsonFieldType.STRING).description("수정 날짜"),
+                                    fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
+                                    fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER).description("페이지 번호"),
+                                    fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER).description("페이지 사이즈"),
+                                    fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER).description("전체 건 수"),
+                                    fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수")
+                                )
+                            )
+                            .build()
+                    )
+                )
+            );
+
+    }
+
+
+
 
     @Test
     @DisplayName("사진들을 등록한다.")
