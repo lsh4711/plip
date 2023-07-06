@@ -111,7 +111,7 @@ public class MemberControllerTest {
         String jsonData = gson.toJson(request);
 
         repository.save(
-            Member.builder().memberId(1L).email("test123@naver.com").password(passwordEncoder.encode("q12345678@"))
+            Member.builder().memberId(1L).email("test@naver.com").password(passwordEncoder.encode("12345678a!"))
                 .nickname("test").build());
         //when
         ResultActions actions =

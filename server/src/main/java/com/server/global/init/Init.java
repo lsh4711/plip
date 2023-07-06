@@ -17,7 +17,6 @@ import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.domain.schedule.service.ScheduleService;
-import com.server.global.auth.jwt.DelegateTokenUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,18 +27,15 @@ public class Init {
     private ScheduleService scheduleService;
     private SchedulePlaceService schedulePlaceService;
     private PlaceService placeService;
-    private DelegateTokenUtil delegateTokenUtil;
 
     public Init(MemberRepository memberRepository,
         ScheduleService scheduleService,
         SchedulePlaceService schedulePlaceService,
-        PlaceService placeService,
-        DelegateTokenUtil delegateTokenUtil) {
+        PlaceService placeService) {
         this.memberRepository = memberRepository;
         this.scheduleService = scheduleService;
         this.schedulePlaceService = schedulePlaceService;
         this.placeService = placeService;
-        this.delegateTokenUtil = delegateTokenUtil;
     }
 
     @PostConstruct
