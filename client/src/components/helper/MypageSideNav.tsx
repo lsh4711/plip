@@ -40,7 +40,7 @@ const buttonArray = [
   },
   {
     subject: '북마크',
-    slug: '',
+    slug: '/mypage/bookmark',
   },
   {
     subject: '나의 일지',
