@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useMatch } from 'react-router-dom';
 import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
 import { ReactComponent as MypageIcon } from '../../assets/icons/mypage.svg';
 import { ReactComponent as NotifyIcon } from '../../assets/icons/notification.svg';
@@ -14,7 +14,7 @@ interface HeaderProps {
   isHome?: boolean;
 }
 
-const BeforeLogin = ({ isHome }: { isHome?: boolean }) => {
+const BeforeLogin = ({ isHome }: HeaderProps) => {
   console.log(isHome);
   return (
     <>
@@ -28,7 +28,7 @@ const BeforeLogin = ({ isHome }: { isHome?: boolean }) => {
   );
 };
 
-const AfterLogin = ({ isHome }: { isHome?: boolean }) => {
+const AfterLogin = ({ isHome }: HeaderProps) => {
   const username = '유보검'; // 임시 변수
 
   const ref = useRef<HTMLDivElement>(null);
