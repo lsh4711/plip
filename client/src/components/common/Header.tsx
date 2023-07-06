@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
 import { ReactComponent as MypageIcon } from '../../assets/icons/mypage.svg';
@@ -6,6 +7,8 @@ import { ReactComponent as ProfileIcon } from '../../assets/icons/profile.svg';
 import { ReactComponent as LogoIcon } from '../../assets/logo.svg';
 
 import Button from '../atom/Button';
+import DropDownMenus from './DropDownMenus';
+import { useCloseDropdown } from '@/hooks/useCloseDropdown';
 
 interface HeaderProps {
   isHome?: boolean;
@@ -25,23 +28,38 @@ const BeforeLogin = ({ isHome }: { isHome?: boolean }) => {
   );
 };
 
-const AfterLogin = () => {
+const AfterLogin = ({ isHome }: { isHome?: boolean }) => {
   const username = '유보검'; // 임시 변수
+
+  const ref = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useCloseDropdown(ref, false);
+
   return (
     <>
-      <MypageIcon />
-      <NotifyIcon />
-      <ProfileIcon />
-      <div className="flex items-center text-sm">
+      <Link to="/mypage/mytrip">
+        <MypageIcon />
+      </Link>
+      <Link to="#">
+        <NotifyIcon />
+      </Link>
+      <Link to="/mypage">
+        <ProfileIcon />
+      </Link>
+      <div
+        className={`flex cursor-pointer select-none items-center text-sm ${isHome && 'text-white'}`}
+        ref={ref}
+        onClick={() => setIsOpen(!isOpen)}
+      >
         {username} 님
-        <ArrowDownIcon width={12} height={12} />
+        <ArrowDownIcon width={18} height={18} transform={isOpen ? 'rotate(180)' : ''} />
+        {isOpen && <DropDownMenus />}
       </div>
     </>
   );
 };
 
 const Header = ({ isHome }: HeaderProps) => {
-  const isLogin = false; // 로그인 상태 구현전 임시 변수입니다.
+  const isLogin = true; // 로그인 상태 구현전 임시 변수입니다.
 
   return (
     <header
@@ -56,8 +74,8 @@ const Header = ({ isHome }: HeaderProps) => {
             <span className="gradient-text text-xl font-bold">PliP</span>
           </div>
         </Link>
-        <div className="flex items-center gap-4">
-          {isLogin ? <AfterLogin /> : <BeforeLogin isHome={isHome} />}
+        <div className="relative flex items-center gap-4">
+          {isLogin ? <AfterLogin isHome={isHome} /> : <BeforeLogin isHome={isHome} />}
         </div>
       </nav>
     </header>
