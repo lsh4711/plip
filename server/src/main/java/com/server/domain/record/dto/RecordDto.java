@@ -8,12 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 public class RecordDto {
 
     @Getter
     @Builder
-    @AllArgsConstructor
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class Post {
         private String title;
         private String content;
@@ -34,10 +35,10 @@ public class RecordDto {
     }
 
     @Getter
-
     @Builder
-    @AllArgsConstructor
     @NoArgsConstructor
+    @AllArgsConstructor
+
     public static class Response {
         private Long recordId;
         private String title;
