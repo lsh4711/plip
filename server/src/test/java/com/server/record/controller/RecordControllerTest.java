@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -72,7 +71,7 @@ public class RecordControllerTest {
     @MockBean
     private RecordMapper mapper;
 
-    private final static String RECORD_DEFAULT_URL = "/records";
+    private final static String RECORD_DEFAULT_URL = "/api/records";
 
     @Value("${spring.servlet.multipart.location}")
     private String location;
@@ -93,7 +92,7 @@ public class RecordControllerTest {
             post(RECORD_DEFAULT_URL)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(jsonData));
-
+        System.out.println(RECORD_DEFAULT_URL);
         //then
         actions
                 .andExpect(status().isCreated())
@@ -208,7 +207,6 @@ public class RecordControllerTest {
 
     @Test
     @DisplayName("등록한 사진을 조회한다.")
-    @Disabled
     void getRecordImgTest() throws Exception {
         //given
         Long recordId = 1L;
@@ -217,6 +215,7 @@ public class RecordControllerTest {
         String dirName = location + "/" + userId + "/" + recordId;
 
         List<Resource> imageFiles = new ArrayList<>();
+        System.out.println(dirName);
         Resource imageFile1 = new FileSystemResource(dirName + "/image1.png");
         Resource imageFile2 = new FileSystemResource(dirName + "/image2.png");
 
