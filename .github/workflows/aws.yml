@@ -21,8 +21,16 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        redis-version: [4, 5]
 
     steps:
+    - name: Start Redis v${{ matrix.redis-version }}
+      uses: superchargejs/redis-github-action@1.1.0
+      with:
+        redis-version: ${{ matrix.redis-version }}
+
     - uses: actions/checkout@v3
     - name: Set up JDK 11
       uses: actions/setup-java@v3
