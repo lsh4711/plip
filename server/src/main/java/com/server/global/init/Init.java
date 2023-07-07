@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.domain.member.entity.Member;
@@ -38,7 +36,7 @@ public class Init {
         this.placeService = placeService;
     }
 
-    @PostConstruct
+    // @PostConstruct
     public void init() throws ParseException {
         Member member = Member.builder()
             .email("test@naver.com")
