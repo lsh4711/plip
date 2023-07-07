@@ -34,8 +34,8 @@ public class Init {
     @PostConstruct
     public void init() {
         Member member = Member.builder()
-                .email("lsh@naver.com")
-                .password("lshlshlshlsh1234!@")
+                .email("test@naver.com")
+                .password("12345678a!")
                 .nickname("음악")
                 .build();
 

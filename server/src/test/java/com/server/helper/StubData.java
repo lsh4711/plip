@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpMethod;
-
 import com.server.domain.member.dto.MemberDto;
 import com.server.domain.record.dto.RecordDto;
 import com.server.global.auth.dto.LoginDto;
@@ -53,7 +51,7 @@ public class StubData {
 
             MemberDto.Patch memberPatch = MemberDto.Patch.builder()
                 .nickname("테스트수정테스트")
-                .password("q12345678!")
+                .password("12345678!a")
                 .build();
 
             stubRequestBody.put("memberPost", memberPost);
@@ -86,7 +84,7 @@ public class StubData {
                 .build();
             stubRequestBody.put("recordPost", post);
 
-            RecordDto.Patch patch=RecordDto.Patch.builder()
+            RecordDto.Patch patch = RecordDto.Patch.builder()
                 .title("서울 남산")
                 .content("남산에서는..")
                 .build();
@@ -112,7 +110,7 @@ public class StubData {
                 .build();
             stubRequestBody.put("recordPatchResponse", patchResponse);
 
-            List<RecordDto.Response> responses= List.of(
+            List<RecordDto.Response> responses = List.of(
                 RecordDto.Response.builder()
                     .recordId(1L)
                     .title("서울 롯데월드")
@@ -139,7 +137,9 @@ public class StubData {
             return stubRequestBody.get(valueName);
         }
 
-        public static List<RecordDto.Response> getRequestDatas(String valueName) {return stubDatas.get(valueName);}
+        public static List<RecordDto.Response> getRequestDatas(String valueName) {
+            return stubDatas.get(valueName);
+        }
 
     }
 }
