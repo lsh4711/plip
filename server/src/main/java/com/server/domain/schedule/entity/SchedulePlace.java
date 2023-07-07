@@ -39,8 +39,7 @@ public class SchedulePlace extends BaseEntity {
     @JoinColumn(name = "scheduleId")
     private Schedule schedule;
 
-    // @ManyToOne
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "placeId")
     private Place place;
 
