@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 public class RecordDto {
-
     @Getter
     @Builder
     @NoArgsConstructor
@@ -19,6 +19,17 @@ public class RecordDto {
 
     }
 
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Patch {
+        private Long recordId;
+        private String title;
+        private String content;
+
+    }
 
     @Getter
     @Builder

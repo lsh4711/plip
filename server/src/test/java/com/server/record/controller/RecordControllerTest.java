@@ -84,7 +84,7 @@ public class RecordControllerTest {
     @MockBean
     private RecordMapper mapper;
 
-    private final static String RECORD_DEFAULT_URL = "/api/records";
+    private static final String RECORD_DEFAULT_URL = "/api/records";
 
     @Value("${spring.servlet.multipart.location}")
     private String location;
@@ -131,7 +131,7 @@ public class RecordControllerTest {
 
     @Test
     @DisplayName("여행일지를 수정한다.")
-    void RecordControllerTest() throws Exception {
+    void patchRecordTest() throws Exception {
         //given
 
         RecordDto.Patch request = (RecordDto.Patch)StubData.MockRecord.getRequestBody("recordPatch");
@@ -331,7 +331,6 @@ public class RecordControllerTest {
                                     .build()))
 
                 );
-
     }
 
     @Test

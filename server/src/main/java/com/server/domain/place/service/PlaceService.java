@@ -44,9 +44,7 @@ public class PlaceService {
     public List<Place> placeDtosToPlaces(List<PlaceDto.Post> placedtos) {
         return placeMapper.postDtosToPlaces(placedtos);
     }
-    
 
-    //placeId로 여행일지 찾기
     public List<Record> findRecords(Long placeId) {
         List<Record> records = new ArrayList<>();
         Optional<SchedulePlace> schedulePlaceOptional = schedulePlaceRepository.findByPlacePlaceId(placeId);
