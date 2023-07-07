@@ -4,15 +4,15 @@ spring:
       client:
         registration:
           naver:
-            client-id: 6Gh23vdkC8umKingjm3x
-            client-secret: sSojvufjAB
+            client-id: ${NAVER_CLIENT_ID}
+            client-secret: ${NAVER_CLIENT_SECRET}
             redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
             scope: name,email,profile_image
             client-name: Naver
           kakao:
-            client-id: 6702e9bc4e58e7ce9d9e235ac33d007a
-            client-secret: gqh9dw2Uxcepytg13iuMxgRFeBZJQafC
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
             redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
             client-authentication-method: POST
