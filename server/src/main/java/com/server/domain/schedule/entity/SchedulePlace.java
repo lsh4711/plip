@@ -27,6 +27,7 @@ public class SchedulePlace extends BaseEntity {
 
     private Integer days;
     private Integer orders;
+    private Boolean bookmark;
     // private LocalDateTime startDate; // 현재 불필요
     // private LocalDateTime endDate; // 현재 불필요
 

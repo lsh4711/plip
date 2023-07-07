@@ -4,6 +4,7 @@ import lombok.Getter;
 
 public enum ExceptionCode {
     TEST_CODE("테스트", 200),
+    SCHEDULE_NOT_FOUND("Schedule Not Found.", 404),
     RECORD_NOT_FOUND("Record Not Found.", 404),
     RECORD_EXISTS("Record already exists.", 409),
     REFRESH_TOKEN_NOT_FOUND("RefreshToken not found", 404),

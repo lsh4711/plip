@@ -25,9 +25,9 @@ public class Init {
     private PlaceService placeService;
 
     public Init(MemberRepository memberRepository,
-        ScheduleService scheduleService,
-        SchedulePlaceService schedulePlaceService,
-        PlaceService placeService) {
+            ScheduleService scheduleService,
+            SchedulePlaceService schedulePlaceService,
+            PlaceService placeService) {
         this.memberRepository = memberRepository;
         this.scheduleService = scheduleService;
         this.schedulePlaceService = schedulePlaceService;
@@ -37,10 +37,10 @@ public class Init {
     @PostConstruct
     public void init() {
         Member member = Member.builder()
-            .email("lsh@naver.com")
-            .password("lshlshlshlsh1234!@")
-            .nickname("음악")
-            .build();
+                .email("lsh@naver.com")
+                .password("lshlshlshlsh1234!@")
+                .nickname("음악")
+                .build();
         /**
          * @author 다영
          * 테스트 코드 오류로 service -> repository로 수정
@@ -48,8 +48,8 @@ public class Init {
         memberRepository.save(member);
 
         Member newMember = Member.builder()
-            .memberId(1L)
-            .build();
+                .memberId(1L)
+                .build();
         Schedule schedule = new Schedule();
         schedule.setCity("제주도");
         schedule.setTitle("즐거운 여행 제목");
@@ -88,6 +88,5 @@ public class Init {
 
         placeService.savePlaces(places);
         schedulePlaceService.saveSchedulePlaces(schedulePlaces);
-
     }
 }

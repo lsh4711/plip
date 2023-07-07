@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.server.domain.place.dto.PlaceDto;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.mapper.PlaceMapper;
 import com.server.domain.place.repository.PlaceRepository;
@@ -34,9 +33,5 @@ public class PlaceService {
         //     Place savedPlace = placeRepository.save(place);
         //     System.out.println("CREATED");
         // }
-    }
-
-    public List<Place> placeDtosToPlaces(List<PlaceDto.Post> placedtos) {
-        return placeMapper.placeDtosToPlaces(placedtos);
     }
 }
