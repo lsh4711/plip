@@ -1,22 +1,17 @@
 package com.server.member.controller;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
+import static com.epages.restdocs.apispec.ResourceDocumentation.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -27,7 +22,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -40,11 +34,13 @@ import com.server.domain.member.mapper.MemberMapper;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.member.service.MemberService;
 import com.server.global.auth.dto.LoginDto;
+import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.helper.StubData;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MemberControllerTest {
     private final String MEMBER_DEFULT_URI = "/api/users";
     @Autowired
@@ -59,6 +55,16 @@ public class MemberControllerTest {
     private MemberRepository repository;
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtTokenizer jwtTokenizer;
+
+    private String accessTokenForUser;
+
+    @BeforeAll
+    public void init() {
+        accessTokenForUser = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey(), "USER");
+    }
 
     @Test
     @DisplayName("회원 가입을 한다.")
@@ -105,7 +111,7 @@ public class MemberControllerTest {
         String jsonData = gson.toJson(request);
 
         repository.save(
-            Member.builder().memberId(1L).email("test123@naver.com").password(passwordEncoder.encode("q12345678@"))
+            Member.builder().memberId(1L).email("test@naver.com").password(passwordEncoder.encode("12345678a!"))
                 .nickname("test").build());
         //when
         ResultActions actions =
@@ -135,7 +141,6 @@ public class MemberControllerTest {
     }
 
     @Test
-    @WithMockUser
     @DisplayName("회원정보를 수정한다.")
     void patchMember() throws Exception {
         //given
@@ -151,7 +156,7 @@ public class MemberControllerTest {
             mockMvc.perform(
                     patch(MEMBER_DEFULT_URI)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer {Access Token}")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
                         .content(jsonData)
                 )
                 //then
@@ -173,12 +178,10 @@ public class MemberControllerTest {
     }
 
     @Test
-    @WithMockUser
     @DisplayName("로그인한 회원정보를 조회한다.")
     void getLoginMember() throws Exception {
         //given
         MemberDto.Response response = StubData.MockMember.getSingleResponseBody();
-        String jsonData = gson.toJson(response);
 
         given(service.findMemberByEmail(Mockito.anyString())).willReturn(Member.builder().memberId(1L).build());
         given(mapper.memberToMemberDtoResponse(Mockito.any(Member.class))).willReturn(response);
@@ -188,8 +191,7 @@ public class MemberControllerTest {
             mockMvc.perform(
                     get(MEMBER_DEFULT_URI)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer {Access Token}")
-                        .content(jsonData)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
                 )
                 //then
                 .andExpect(status().isOk())
@@ -214,7 +216,6 @@ public class MemberControllerTest {
     }
 
     @Test
-    @WithMockUser
     @DisplayName("회원을 탈퇴한다.")
     void deleteMember() throws Exception {
         //given
@@ -223,7 +224,7 @@ public class MemberControllerTest {
         ResultActions actions =
             mockMvc.perform(
                     delete(MEMBER_DEFULT_URI)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer {Access Token}")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
                         .contentType(MediaType.APPLICATION_JSON)
                 )
                 //then
