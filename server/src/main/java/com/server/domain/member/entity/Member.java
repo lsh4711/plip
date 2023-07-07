@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -31,7 +32,7 @@ public class Member extends BaseEntity {
     private Long memberId;
     @Column(nullable = false)
     private String email;
-    @Column(nullable = false)
+    @Column
     private String password;
     @Column(nullable = false)
     private String nickname;
