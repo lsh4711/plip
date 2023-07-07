@@ -1,5 +1,5 @@
 import { Button, HeadingParagraph, Input } from '@/components';
-import OauthUI from '@/components/helper/OauthUI';
+import { OauthUI } from '@/components';
 import { useLoginMutation } from '@/queries';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -26,7 +26,7 @@ const LoginPage = ({}: LoginPageProps) => {
     console.log(data);
   };
   return (
-    <main className="mx-auto flex max-w-[1024px] flex-col items-center justify-center">
+    <main className="mx-auto mt-24 flex max-w-[1024px] flex-col items-center justify-center">
       <div className=" mb-10">
         <HeadingParagraph
           variant={'darkgray'}
