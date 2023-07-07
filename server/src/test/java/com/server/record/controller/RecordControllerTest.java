@@ -84,7 +84,7 @@ public class RecordControllerTest {
     @MockBean
     private RecordMapper mapper;
 
-    private static final String RECORD_DEFAULT_URL = "/api/records";
+    private final static String RECORD_DEFAULT_URL = "/api/records";
 
     @Value("${spring.servlet.multipart.location}")
     private String location;
@@ -131,7 +131,7 @@ public class RecordControllerTest {
 
     @Test
     @DisplayName("여행일지를 수정한다.")
-    void patchRecordTest() throws Exception {
+    void RecordControllerTest() throws Exception {
         //given
 
         RecordDto.Patch request = (RecordDto.Patch)StubData.MockRecord.getRequestBody("recordPatch");
@@ -172,7 +172,15 @@ public class RecordControllerTest {
                                             fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터")
                                                     .optional(),
                                             fieldWithPath("data.recordId").type(JsonFieldType.NUMBER)
-                                                    .description("일지 식별자")))
+                                                    .description("일지 식별자"),
+                                            fieldWithPath("data.title").type(JsonFieldType.STRING).description("제목"),
+                                            fieldWithPath("data.content").type(JsonFieldType.STRING).description("내용"),
+                                            fieldWithPath("data.memberId").type(JsonFieldType.NUMBER)
+                                                    .description("회원 식별자"),
+                                            fieldWithPath("data.createdAt").type(JsonFieldType.STRING)
+                                                    .description("작성 날짜"),
+                                            fieldWithPath("data.modifiedAt").type(JsonFieldType.STRING)
+                                                    .description("수정 날짜")))
                                     .build()
 
                         )));
@@ -331,6 +339,7 @@ public class RecordControllerTest {
                                     .build()))
 
                 );
+
     }
 
     @Test
@@ -425,5 +434,4 @@ public class RecordControllerTest {
         }
 
     }
-
 }
