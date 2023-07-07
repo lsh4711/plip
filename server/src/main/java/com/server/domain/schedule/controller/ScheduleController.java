@@ -91,7 +91,7 @@ public class ScheduleController {
         ScheduleResponse scheduleResponse = scheduleMapper.scheduleToScheduleResponse(foundSchedule);
         scheduleResponse.setPlaces(placeResponses);
 
-        // 나중에 member의 모든 정보 대신 공개해도 되는 정보만 포함해야함
+        // 나중에 member의 모든 정보대신 공개해도 되는 정보만 포함해야함
         return new ResponseEntity<>(scheduleResponse, HttpStatus.OK);
     }
 
