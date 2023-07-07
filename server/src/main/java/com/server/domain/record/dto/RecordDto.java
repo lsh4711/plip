@@ -19,6 +19,7 @@ public class RecordDto {
 
     }
 
+
     @Getter
     @Builder
     @NoArgsConstructor
