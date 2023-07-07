@@ -1,12 +1,11 @@
 package com.server.global.config;
 
-import static org.springframework.security.config.Customizer.*;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -42,32 +41,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .headers().frameOptions().sameOrigin()
-            .and()
-            .csrf().disable()
-            .cors(withDefaults())
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .exceptionHandling()
-            .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
-            .and()
-            .oauth2Login(oauth2 -> oauth2
-                .userInfoEndpoint()
-                .userService(oAuth2UserService)
+                .headers().frameOptions().sameOrigin()
                 .and()
-                .successHandler(new OAuth2SuccessHandler(delegateTokenUtil, refreshTokenService, memberRepository))
-            )
-            .apply(customFilterConfigurers())
-            .and()
-            .authorizeHttpRequests(authorize -> authorize
-                .antMatchers("/*/users/**").permitAll()
-                .antMatchers("/*/mail/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/*/records").permitAll()
-                .antMatchers(HttpMethod.GET, "/*/records/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/*/schedules/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/*/places/**").permitAll()
-                .anyRequest().authenticated()
-            );
+                .csrf().disable()
+                .cors(withDefaults())
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+                .and()
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint()
+                        .userService(oAuth2UserService)
+                        .and()
+                        .successHandler(
+                            new OAuth2SuccessHandler(delegateTokenUtil, refreshTokenService, memberRepository)))
+                .apply(customFilterConfigurers())
+                .and()
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().permitAll());
 
         return http.build();
     }

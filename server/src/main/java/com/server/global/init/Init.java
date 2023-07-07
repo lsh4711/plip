@@ -34,16 +34,16 @@ public class Init {
     @PostConstruct
     public void init() {
         Member member = Member.builder()
-            .email("test@naver.com")
-            .password("12345678a!")
-            .nickname("음악")
-            .build();
+                .email("test@naver.com")
+                .password("12345678a!")
+                .nickname("음악")
+                .build();
 
         memberService.createMember(member);
 
         Member newMember = Member.builder()
-            .memberId(1L)
-            .build();
+                .memberId(1L)
+                .build();
         Schedule schedule = new Schedule();
         schedule.setRegion("제주도");
         schedule.setTitle("즐거운 여행 제목");
