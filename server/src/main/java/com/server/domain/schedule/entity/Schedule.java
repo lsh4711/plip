@@ -29,7 +29,7 @@ public class Schedule extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long scheduleId;
 
-    private String city;
+    private String region;
     private String title;
     private String content;
     private Integer memberCount;

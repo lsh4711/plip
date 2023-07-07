@@ -5,6 +5,7 @@ server:
         key-store-type: PKCS12
         key-store-password: ${KEY_STORE_PASSWORD}
 spring:
+  config.activate.on-profile: default
   redis:
     host: localhost
     port: 6379
