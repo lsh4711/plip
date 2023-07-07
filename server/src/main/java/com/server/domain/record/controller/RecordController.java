@@ -14,8 +14,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,9 +30,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.server.domain.member.entity.Member;
+import com.server.domain.member.service.MemberService;
 import com.server.domain.record.ImageManager;
 import com.server.domain.record.dto.ImageResponseDto;
 import com.server.domain.record.dto.RecordDto;
@@ -38,25 +46,23 @@ import com.server.global.dto.MultiResponseDto;
 import com.server.global.dto.SingleResponseDto;
 import com.server.global.utils.UriCreator;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/records")
+@RequiredArgsConstructor
 @Validated
 @Slf4j
 public class RecordController {
     private final static String RECORD_DEFAULT_URL = "/api/records";
+
     private final RecordMapper mapper;
 
     private final RecordService recordService;
 
-    @Value("${spring.servlet.multipart.location}")
-    private String location;
+    private final ImageManager imageManager;
 
-    public RecordController(RecordMapper mapper, RecordService recordService) {
-        this.mapper = mapper;
-        this.recordService = recordService;
-    }
 
     //여행일지 등록
     @PostMapping("/{schedule-place-id}")
@@ -120,15 +126,12 @@ public class RecordController {
     //이미지 업로드
     @PostMapping("/{record-id}/img")
     public ResponseEntity<?> uploadRecordImg(@PathVariable("record-id") String recordId,
-            @RequestParam("images") List<MultipartFile> images) {
-        Long userId = 1L;
-        String dirName = location + "/" + userId + "/" + recordId;
+        @RequestParam("images") List<MultipartFile> images) {
 
         try {
-            Boolean uploadResult = ImageManager.uploadImages(images, dirName);
+            Boolean uploadResult = imageManager.uploadImages(images, recordId);
             if (uploadResult) {
-                URI location = UriCreator.createUri(RECORD_DEFAULT_URL, Long.parseLong(recordId));
-                return ResponseEntity.created(location).build();
+                return new ResponseEntity<>(HttpStatus.CREATED);
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload images.");
             }
@@ -138,13 +141,35 @@ public class RecordController {
         }
     }
 
-    //이미지 조회 - 바이트 코드를 리턴
-    @GetMapping("/{record-id}/img")
-    public ResponseEntity<?> getRecordImg(@PathVariable("record-id") String recordId) {
-        Long userId = 1L;
-        String dirName = location + "/" + userId + "/" + recordId;
 
-        List<Resource> imageFiles = ImageManager.loadImages(dirName);
+    // 이미지 1개 조회 (대표 이미지)
+    @GetMapping("/{record-id}/img/{img-id}")
+    public ResponseEntity<?> getRecordImg(@PathVariable("record-id") String recordId, @PathVariable("img-id") String imgId){
+
+        Resource imageFile = imageManager.loadImage(recordId, imgId);
+
+        try{
+            Resource imageResource = new UrlResource(imageFile.getURI());
+            byte[] imageBytes = Files.readAllBytes(imageResource.getFile().toPath());
+            String imageBase64 = Base64.getEncoder()
+                .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG);
+
+            return new ResponseEntity<>(new SingleResponseDto<>(imageBase64), HttpStatus.OK);
+
+        }catch (IOException e){
+            log.error("이미지 파일 읽기 오류: " + e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //이미지 조회 - base64 인코딩된 걸 리턴
+    @GetMapping("/{record-id}/img")
+    public ResponseEntity<?> getRecordAllImg(@PathVariable("record-id") String recordId) {
+
+        List<Resource> imageFiles = imageManager.loadImages(recordId);
         if (imageFiles.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -153,7 +178,6 @@ public class RecordController {
         for (Resource imageFile : imageFiles) {
             try {
                 Resource imageResource = new UrlResource(imageFile.getURI());
-                System.out.println(imageFile.getURI());
                 if (imageResource.exists()) {
                     String imageBase64 = Base64.getEncoder()
                             .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));

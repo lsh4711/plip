@@ -31,6 +31,7 @@ public class PlaceService {
         return null;
     }
 
+
     public List<Place> savePlaces(List<Place> places) {
         return placeRepository.saveAll(places);
 

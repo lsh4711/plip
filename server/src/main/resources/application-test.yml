@@ -20,7 +20,7 @@ spring:
   servlet:
     multipart:
       enabled: true
-      location: ${IMAGE_STORAGE_LOCATION}
+      location: src/test/resources/images
       maxFileSize: 10MB
       maxRequestSize: 10MB
     web:
