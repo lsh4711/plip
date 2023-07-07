@@ -6,11 +6,9 @@ spring:
           naver:
             client-id: 6Gh23vdkC8umKingjm3x
             client-secret: sSojvufjAB
-            redirect-uri: { baseUrl }/{action}/oauth2/code/{registrationId}
+            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
-            scope:
-              - name
-              - email.profile_image
+            scope: name,email,profile_image
             client-name: Naver
         provider:
           naver:
