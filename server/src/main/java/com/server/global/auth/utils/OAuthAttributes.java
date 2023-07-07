@@ -1,6 +1,11 @@
 package com.server.global.auth.utils;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.server.domain.member.entity.Member;
 
@@ -15,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @Builder
 @Getter
-public class OAuthAttributes {
+public class OAuthAttributes implements OAuth2User {
 
     private Map<String, Object> attributes;
     private String nameAttributeKey;
@@ -39,7 +44,7 @@ public class OAuthAttributes {
         return OAuthAttributes.builder()
             .email((String)response.get("email"))
             .nickname((String)response.get("nickname"))
-            .attributes(response)
+            .attributes(attributes)
             .nameAttributeKey(userNameAttributeName)
             .build();
     }
@@ -52,5 +57,18 @@ public class OAuthAttributes {
          * TODO: 카카오 추가 구현
          * */
         return null;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> collectors = new ArrayList<>();
+        collectors.add(() -> "ROLE_" + getRole());
+
+        return collectors;
+    }
+
+    @Override
+    public String getName() {
+        return email;
     }
 }

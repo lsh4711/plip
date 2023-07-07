@@ -16,8 +16,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.server.domain.member.mapper.MemberMapper;
 import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.handler.MemberAuthenticationEntryPoint;
+import com.server.global.auth.handler.OAuth2SuccessHandler;
 import com.server.global.auth.jwt.DelegateTokenUtil;
 import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.auth.userdetails.CustomOAuth2UserService;
@@ -34,6 +36,7 @@ public class SecurityConfig {
     private final AccessTokenRenewalUtil accessTokenRenewalUtil;
     private final DelegateTokenUtil delegateTokenUtil;
     private final CustomOAuth2UserService oAuth2UserService;
+    private final MemberMapper memberMapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -48,11 +51,10 @@ public class SecurityConfig {
             .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
             .and()
             .oauth2Login(oauth2 -> oauth2
-                    //   .loginPage("/api/oath/login")
-                    .userInfoEndpoint()
-                    .userService(oAuth2UserService)
-                //.and()
-                //.successHandler(new OAuth2SuccessHandler(delegateTokenService))
+                .userInfoEndpoint()
+                .userService(oAuth2UserService)
+                .and()
+                .successHandler(new OAuth2SuccessHandler(delegateTokenUtil, memberMapper))
             )
             .apply(customFilterConfigurers())
             .and()

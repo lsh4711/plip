@@ -1,12 +1,10 @@
 package com.server.global.auth.userdetails;
 
-import java.util.Collections;
+import java.util.Optional;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -31,19 +29,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             .getUserInfoEndpoint().getUserNameAttributeName();
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName,
             oAuth2User.getAttributes());
-
-        Member member = saveOrUpdate(attributes);
-
-        return new DefaultOAuth2User(
-            Collections.singleton(new SimpleGrantedAuthority(member.getRole().getValue())),
-            attributes.getAttributes(),
-            attributes.getNameAttributeKey());
+        validateOAuth2User(attributes);
+        return attributes;
     }
 
-    private Member saveOrUpdate(OAuthAttributes attributes) {
-        Member user = memberRepository.findByEmail(attributes.getEmail())
-            .orElse(memberMapper.oauthAttributesToMember(attributes));
-
-        return memberRepository.save(user);
+    /**
+     * 기존 회원이 소셜 로그인도 가능하게 해야할까? 지금은 가능하게 해놓은 상태
+     */
+    private void validateOAuth2User(OAuthAttributes attributes) {
+        Optional<Member> optionalMember = memberRepository.findByEmail(attributes.getEmail());
+        optionalMember.orElseGet(
+            () -> memberRepository.save(memberMapper.oauthAttributesToMember(attributes)));
     }
 }
