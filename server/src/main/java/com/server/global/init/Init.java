@@ -5,34 +5,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
 
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.place.entity.Place;
+import com.server.domain.place.repository.PlaceRepository;
 import com.server.domain.place.service.PlaceService;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
+import com.server.domain.schedule.repository.ScheduleRepository;
 import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.domain.schedule.service.ScheduleService;
 
-@RestController
-public class Init {
-    private MemberRepository memberRepository;
-    private ScheduleService scheduleService;
-    private SchedulePlaceService schedulePlaceService;
-    private PlaceService placeService;
+import lombok.RequiredArgsConstructor;
 
-    public Init(MemberRepository memberRepository,
-        ScheduleService scheduleService,
-        SchedulePlaceService schedulePlaceService,
-        PlaceService placeService) {
-        this.memberRepository = memberRepository;
-        this.scheduleService = scheduleService;
-        this.schedulePlaceService = schedulePlaceService;
-        this.placeService = placeService;
-    }
+@RestController
+@RequiredArgsConstructor
+public class Init {
+    private final MemberRepository memberRepository;
+    private final PlaceRepository placeRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final ScheduleService scheduleService;
+    private final SchedulePlaceService schedulePlaceService;
+
 
     @PostConstruct
     public void init() {
@@ -62,7 +60,6 @@ public class Init {
         scheduleService.saveSchedule(schedule);
 
         String[] placeNames = {"감귤 농장", "초콜릿 박물관", "제주도 바닷가"};
-        List<Place> places = new ArrayList<>();
         List<SchedulePlace> schedulePlaces = new ArrayList<>();
 
         for (int i = 1; i <= 3; i++) {
@@ -72,7 +69,6 @@ public class Init {
             place.setAddress("제주도 무슨동 무슨길" + i);
             place.setLatitude(String.format("%d.%d", i * 205 + i * 17 + i * 8, i * 27));
             place.setLongitude(String.format("%d.%d", i * 121 + i * 23 + i * 3, i * 31));
-            places.add(place);
 
             /**
              * @author 지인
@@ -82,24 +78,21 @@ public class Init {
              * 데이터 무결성원칙때문에 자동으로 생성되는 id는 set해주면 안된다고 함.
              */
 
-            placeService.savePlaces(places);
+            placeRepository.save(place);
+
 
             Schedule newSchedule = new Schedule();
 
-            scheduleService.saveSchedule(newSchedule);
+            scheduleRepository.save(newSchedule);
 
-            //newSchedule.setScheduleId(1L);
-            // Place newPlace = new Place();
-            //newPlace.setPlaceId(Long.valueOf(i));
             SchedulePlace schedulePlace = new SchedulePlace();
-            schedulePlace.setSchedule(newSchedule);
-            //schedulePlace.setPlace(newPlace);
             schedulePlace.setPlace(place);
+            schedulePlace.setSchedule(newSchedule);
+
             schedulePlace.setDays(1);
             schedulePlace.setOrders(i);
             schedulePlaces.add(schedulePlace);
         }
-
 
         schedulePlaceService.saveSchedulePlaces(schedulePlaces);
 
