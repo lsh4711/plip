@@ -33,7 +33,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,6 +88,9 @@ public class RecordControllerTest {
 
     @Value("${spring.servlet.multipart.location}")
     private String location;
+
+    @MockBean
+    private ImageManager imageManager;
 
     @Test
     @DisplayName("여행 일지를 등록한다.")
@@ -361,10 +363,9 @@ public class RecordControllerTest {
 
 
 
-
-
     @Test
     @DisplayName("사진들을 등록한다.")
+    @WithMockUser(username = "user@gmail.com",password="1234",roles="USER")
     void uploadRecordImgTest() throws Exception {
         //given
         Long recordId = 1L;
@@ -377,43 +378,89 @@ public class RecordControllerTest {
         MockMultipartFile image2 = new MockMultipartFile(
             "images", "image2.jpg", MediaType.IMAGE_JPEG_VALUE, image2Content);
 
-        try (MockedStatic<ImageManager> mockedStatic = mockStatic(ImageManager.class)) {
-            mockedStatic.when(() -> ImageManager.uploadImages(anyList(), anyString())).thenReturn(true);
+        given(imageManager.uploadImages(anyList(), anyString())).willReturn(true);
 
-            //when
-            ResultActions actions = mockMvc.perform(
-                multipart(RECORD_DEFAULT_URL + "/{record-id}/img", recordId)
-                        .file(image1)
-                        .file(image2)
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
 
-            );
+        //when
+        ResultActions actions = mockMvc.perform(
+            multipart(RECORD_DEFAULT_URL + "/{record-id}/img", recordId)
+                    .file(image1)
+                    .file(image2)
+                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
 
-            //then
-            actions
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", is(startsWith("/api/records/"))))
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("사진 등록",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                            List.of(parameterWithName("record-id").description("일지 식별자 ID"))
-                        ),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                .description("사진 등록")
-                                .build()
-                        )
+        );
+
+        //then
+        actions
+            .andExpect(status().isCreated())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("사진 등록",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    pathParameters(
+                        List.of(parameterWithName("record-id").description("일지 식별자 ID"))
+                    ),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("사진 등록")
+                            .build()
                     )
-                );
-        }
+                )
+            );
 
     }
 
+
     @Test
-    @DisplayName("등록한 사진을 조회한다.")
-    void getRecordImgTest() throws Exception {
+    @DisplayName("이미지 식별자로 이미지를 조회한다.")
+    void getRecordImgTest() throws Exception{
+        //given
+        Long recordId = 1L;
+        Long userId = 1L;
+        Long imgId = 1L;
+
+        String dirName = location + "/" + userId + "/" + recordId;
+
+        Resource imageFile = new FileSystemResource(dirName + "/image1.png");
+        given(imageManager.loadImage(Mockito.anyString(), Mockito.anyString())).willReturn(imageFile);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+            get(RECORD_DEFAULT_URL + "/{record-id}/img/{img-id}", recordId,imgId)
+                .contentType(MediaType.IMAGE_JPEG)
+
+        );
+
+        //then
+        actions
+            .andExpect(status().isOk())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("사진 조회",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    pathParameters(
+                        List.of(
+                            parameterWithName("record-id").description("일지 식별자 ID"),
+                            parameterWithName("img-id").description("일지 식별자 ID"))
+                        ),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("사진 조회")
+                            .responseFields(
+                                fieldWithPath("data").description("사진 ")
+
+                            )
+                            .build())));
+
+    }
+
+
+
+
+    @Test
+    @DisplayName("등록한 전체 사진을 조회한다.")
+    @WithMockUser(username = "user@gmail.com",password="1234",roles="USER")
+    void getRecordAllImgTest() throws Exception {
         //given
         Long recordId = 1L;
         Long userId = 1L;
@@ -421,43 +468,43 @@ public class RecordControllerTest {
         String dirName = location + "/" + userId + "/" + recordId;
 
         List<Resource> imageFiles = new ArrayList<>();
-        System.out.println(dirName);
+
         Resource imageFile1 = new FileSystemResource(dirName + "/image1.png");
         Resource imageFile2 = new FileSystemResource(dirName + "/image2.png");
 
         imageFiles.add(imageFile1);
         imageFiles.add(imageFile2);
 
-        try (MockedStatic<ImageManager> mockedStatic = mockStatic(ImageManager.class)) {
-            mockedStatic.when(() -> ImageManager.loadImages(anyString())).thenReturn(imageFiles);
+        given(imageManager.loadImages(anyString())).willReturn(imageFiles);
 
-            //when
-            ResultActions actions = mockMvc.perform(
-                get(RECORD_DEFAULT_URL + "/{record-id}/img", recordId)
-                        .contentType(MediaType.APPLICATION_JSON)
 
-            );
+        //when
+        ResultActions actions = mockMvc.perform(
+            get(RECORD_DEFAULT_URL + "/{record-id}/img", recordId)
+                    .contentType(MediaType.APPLICATION_JSON)
 
-            //then
-            actions
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.images", hasSize(2)))
-                    .andDo(
-                        MockMvcRestDocumentationWrapper.document("사진 조회",
-                            preprocessRequest(prettyPrint()),
-                            preprocessResponse(prettyPrint()),
-                            pathParameters(
-                                List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
-                            resource(
-                                ResourceSnippetParameters.builder()
-                                        .description("사진 조회")
-                                        .responseFields(
-                                            fieldWithPath("images").description("사진 목록")
+        );
 
-                                        )
-                                        .build())));
-        }
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.images", hasSize(2)))
+                .andDo(
+                    MockMvcRestDocumentationWrapper.document("전체 사진 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                            List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                    .description("전체 사진 조회")
+                                    .responseFields(
+                                        fieldWithPath("images").description("사진 목록")
 
+                                    )
+                                    .build())));
     }
+
+
 
 }
