@@ -1,16 +1,22 @@
-import { HeadingParagraph, Input, Paragraph } from '@/components';
+import { Button, HeadingParagraph, Input, Paragraph } from '@/components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 import { z } from 'zod';
 
 interface FindPasswordProps {}
 
-const FindPassword = ({}: FindPasswordProps) => {
+const FindPasswordPage = ({}: FindPasswordProps) => {
   const findPasswordForm = useForm<FindPasswordType>({
     mode: 'all',
     resolver: zodResolver(findPasswordSchema),
   });
+
+  const onSubmit: SubmitHandler<FindPasswordType> = (data) => {
+    console.log(data);
+  };
+
   return (
     <main className=" mx-auto flex max-w-[1024px] flex-col">
       <div className=" mt-12 flex flex-col items-center justify-center">
@@ -21,19 +27,43 @@ const FindPassword = ({}: FindPasswordProps) => {
           <Paragraph>새로운 비밀번호를 입력해주세요</Paragraph>
         </div>
         <div className="">
-          <form action="" className=" flex w-[460px] flex-col gap-y-6">
+          <form
+            className=" flex w-[460px] flex-col gap-y-6"
+            onSubmit={findPasswordForm.handleSubmit(onSubmit)}
+          >
             <div className=" flex flex-col">
-              <Input />
+              <Input {...findPasswordForm.register('password')} type="password" />
+              <Paragraph variant={'red'} size={'xs'} className=" mt-1">
+                {findPasswordForm.formState.errors.password?.message}
+              </Paragraph>
             </div>
-            <Input />
+            <div className=" flex flex-col">
+              <Input {...findPasswordForm.register('checkpassword')} type="password" />
+              <Paragraph variant={'red'} size={'xs'} className=" mt-1">
+                {findPasswordForm.formState.errors.checkpassword?.message}
+              </Paragraph>
+            </div>
+            <Button variant={'primary'} size={'lg'} type="submit">
+              비밀번호 변경하기
+            </Button>
           </form>
+          <div className=" mt-6 flex w-[460px] flex-col">
+            <Button
+              className=" bg-zinc-400 text-white"
+              hoveropacity={'active'}
+              size={'lg'}
+              hovercolor={'default'}
+            >
+              <Link to={'/'}>메인페이지로 돌아가기</Link>
+            </Button>
+          </div>
         </div>
       </div>
     </main>
   );
 };
 
-export default FindPassword;
+export default FindPasswordPage;
 
 let passwordRegex = /(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}/;
 
