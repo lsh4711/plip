@@ -4,8 +4,6 @@ import lombok.Getter;
 
 public enum ExceptionCode {
     TEST_CODE("테스트", 200),
-    RECORD_NOT_FOUND("Record Not Found.", 404),
-    CANNOT_CHANGE_RECORD("No modify/delete permissions for this record", 403),
     REFRESH_TOKEN_NOT_FOUND("RefreshToken not found", 404),
     EXPIRED_TOKEN("Token has expired", 401),
     SIGNATURE_INVALID("Invalid jwt signature", 401),
@@ -17,6 +15,11 @@ public enum ExceptionCode {
     AUTH_MAIL_CODE_MISMATCH("Auth mail code is mismatch", 403),
     NICKNAME_EXISTS("Nickname exists", 409),
     MAIL_SEND_FAIL("Send mail fail", 500),
+
+    RECORD_NOT_FOUND("Record Not Found.", 404),
+    CANNOT_CHANGE_RECORD("No modify/delete permissions for this record", 403),
+
+    SCHEDULE_PLACE_NOT_FOUND("Schedule Place Not Found.",404),
     NOT_IMPLEMENTATION("Not Implementation", 501);
 
     @Getter

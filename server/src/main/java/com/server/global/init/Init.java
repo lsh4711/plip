@@ -74,19 +74,33 @@ public class Init {
             place.setLongitude(String.format("%d.%d", i * 121 + i * 23 + i * 3, i * 31));
             places.add(place);
 
+            /**
+             * @author 지인
+             * 테스트 돌리니
+             * TransientPropertyValueException에러가 나서, places와 newSchedule을 먼저 저장하고
+             * SchedulePlace에 set 되도록 변경함.
+             * 데이터 무결성원칙때문에 자동으로 생성되는 id는 set해주면 안된다고 함.
+             */
+
+            placeService.savePlaces(places);
+
             Schedule newSchedule = new Schedule();
-            newSchedule.setScheduleId(1L);
-            Place newPlace = new Place();
-            newPlace.setPlaceId(Long.valueOf(i));
+
+            scheduleService.saveSchedule(newSchedule);
+
+            //newSchedule.setScheduleId(1L);
+            // Place newPlace = new Place();
+            //newPlace.setPlaceId(Long.valueOf(i));
             SchedulePlace schedulePlace = new SchedulePlace();
             schedulePlace.setSchedule(newSchedule);
-            schedulePlace.setPlace(newPlace);
+            //schedulePlace.setPlace(newPlace);
+            schedulePlace.setPlace(place);
             schedulePlace.setDays(1);
             schedulePlace.setOrders(i);
             schedulePlaces.add(schedulePlace);
         }
 
-        placeService.savePlaces(places);
+
         schedulePlaceService.saveSchedulePlaces(schedulePlaces);
 
     }

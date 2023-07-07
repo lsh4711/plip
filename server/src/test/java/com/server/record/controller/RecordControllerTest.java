@@ -95,18 +95,19 @@ public class RecordControllerTest {
     void postRecordTest() throws Exception {
 
         //given
+        Long scheduleId = 1L;
         RecordDto.Post request = (RecordDto.Post)StubData.MockRecord.getRequestBody("recordPost");
         String jsonData = gson.toJson(request);
 
         given(mapper.recordPostToRecord(Mockito.any(RecordDto.Post.class))).willReturn(Record.builder().build());
-        given(service.createRecord(Mockito.any(Record.class))).willReturn(Record.builder().recordId(1L).build());
+        given(service.createRecord(Mockito.any(Record.class), Mockito.anyLong())).willReturn(Record.builder().recordId(1L).build());
 
         //when
         ResultActions actions = mockMvc.perform(
-            post(RECORD_DEFAULT_URL)
+            post(RECORD_DEFAULT_URL+"/{schedule-place-id}",scheduleId)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(jsonData));
-        System.out.println(RECORD_DEFAULT_URL);
+
         //then
         actions
             .andExpect(status().isCreated())

@@ -14,6 +14,8 @@ import com.server.domain.member.entity.Member;
 import com.server.domain.member.service.MemberService;
 import com.server.domain.record.entity.Record;
 import com.server.domain.record.repository.RecordRepository;
+import com.server.domain.schedule.entity.SchedulePlace;
+import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.global.exception.BusinessLogicException;
 import com.server.global.exception.ExceptionCode;
 import com.server.global.utils.CustomBeanUtils;
@@ -28,14 +30,21 @@ public class RecordService {
 
     private final MemberService memberService;
 
+    private final SchedulePlaceService schedulePlaceService;
+
     private final CustomBeanUtils<Record> beanUtils;
 
 
     //여행일지 등록
     @Transactional
-    public Record createRecord(Record record) {
+    public Record createRecord(Record record, Long schedulePlaceId) {
         Member member = authenticationMember();
         record.setMember(member);
+        // SchedulePlace schedulePlace = new SchedulePlace();
+        // schedulePlace.setSchedulePlaceId(schedulePlaceId);
+
+        record.setSchedulePlace(schedulePlaceService.findSchedulePlaceById(schedulePlaceId));
+        // record.setSchedulePlace(schedulePlace);
         return recordRepository.save(record);
     }
 
@@ -67,7 +76,6 @@ public class RecordService {
     public Page<Record> findAllRecords(int page, int size) {
         Member member = authenticationMember();
         Long memberId = member.getMemberId();
-        System.out.println(memberId);
         return recordRepository.findByMemberMemberId(PageRequest.of(page, size, Sort.Direction.DESC, "modifiedAt"),memberId);
     }
 

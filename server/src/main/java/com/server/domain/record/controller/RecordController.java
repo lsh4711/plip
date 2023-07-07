@@ -59,11 +59,11 @@ public class RecordController {
     }
 
     //여행일지 등록
-    @PostMapping
-    public ResponseEntity<?> postRecord(@Valid @RequestBody RecordDto.Post requestBody) {
+    @PostMapping("/{schedule-place-id}")
+    public ResponseEntity<?> postRecord(@PathVariable("schedule-place-id") @Positive Long schedulePlaceId, @Valid @RequestBody RecordDto.Post requestBody) {
         Record record = mapper.recordPostToRecord(requestBody);
 
-        Record createdRecord = recordService.createRecord(record);
+        Record createdRecord = recordService.createRecord(record, schedulePlaceId);
 
         URI location = UriCreator.createUri(RECORD_DEFAULT_URL, createdRecord.getRecordId());
 
@@ -108,19 +108,6 @@ public class RecordController {
         );
     }
 
-    //placeId로 여행일지 조회
-    // @GetMapping("/place/{place-id}")
-    // public ResponseEntity<?> getRecordsByPlaceId(@PathVariable Long placeId){
-    //     List<Record> records = new ArrayList<>();
-    //
-    //     Optional<Schedule_Place> schedulePlaceOptional = schedulePlaceRepository.findById(placeId);
-    //     if (schedulePlaceOptional.isPresent()) {
-    //         Schedule_Place schedulePlace = schedulePlaceOptional.get();
-    //         records = schedulePlace.getRecords();
-    //     }
-    //
-    //     return records;
-    // }
 
     //여행일지 삭제
     @DeleteMapping("/{record-id}")
