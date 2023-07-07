@@ -13,9 +13,12 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.server.domain.member.entity.Member;
-import com.server.domain.member.mapper.MemberMapper;
+import com.server.domain.member.repository.MemberRepository;
+import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.jwt.DelegateTokenUtil;
 import com.server.global.auth.userdetails.OAuthAttributes;
+import com.server.global.exception.CustomException;
+import com.server.global.exception.ExceptionCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,13 +27,17 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final DelegateTokenUtil delegateTokenUtil;
-    private final MemberMapper memberMapper;
+    private final RefreshTokenService refreshTokenService;
+    private final MemberRepository memberRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException {
-        Member oAuth2User = memberMapper.oauthAttributesToMember((OAuthAttributes)authentication.getPrincipal());
-        redirect(request, response, oAuth2User);
+        OAuthAttributes oAuth2User = (OAuthAttributes)authentication.getPrincipal();
+        Member findMember = memberRepository.findByEmail(oAuth2User.getEmail())
+            .orElseThrow(() -> new CustomException(
+                ExceptionCode.MEMBER_NOT_FOUND));
+        redirect(request, response, findMember);
     }
 
     private void redirect(HttpServletRequest request, HttpServletResponse response, Member member) throws
@@ -39,8 +46,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = delegateTokenUtil.delegateAccessToken(member);
         String refreshToken = delegateTokenUtil.delegateRefreshToken(member);
 
+        refreshTokenService.saveTokenInfo(member.getMemberId(), refreshToken, accessToken);
         String uri = createURI(accessToken, refreshToken).toString();
         log.info("## OAuth2 로그인 성공! 토큰을 발급합니다. 해당 주소로 보낼게용 " + uri);
+
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
 

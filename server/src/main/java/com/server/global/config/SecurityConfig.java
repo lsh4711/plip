@@ -1,11 +1,12 @@
 package com.server.global.config;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.config.Customizer.*;
 
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,7 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.server.domain.member.mapper.MemberMapper;
+import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.handler.MemberAuthenticationEntryPoint;
 import com.server.global.auth.handler.OAuth2SuccessHandler;
@@ -36,7 +37,7 @@ public class SecurityConfig {
     private final AccessTokenRenewalUtil accessTokenRenewalUtil;
     private final DelegateTokenUtil delegateTokenUtil;
     private final CustomOAuth2UserService oAuth2UserService;
-    private final MemberMapper memberMapper;
+    private final MemberRepository memberRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -54,13 +55,18 @@ public class SecurityConfig {
                 .userInfoEndpoint()
                 .userService(oAuth2UserService)
                 .and()
-                .successHandler(new OAuth2SuccessHandler(delegateTokenUtil, memberMapper))
+                .successHandler(new OAuth2SuccessHandler(delegateTokenUtil, refreshTokenService, memberRepository))
             )
             .apply(customFilterConfigurers())
             .and()
             .authorizeHttpRequests(authorize -> authorize
-                .antMatchers("/*/users").authenticated()
-                .anyRequest().permitAll()
+                .antMatchers("/*/users/**").permitAll()
+                .antMatchers("/*/mail/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/*/records").permitAll()
+                .antMatchers(HttpMethod.GET, "/*/records/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/*/schedules/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/*/places/**").permitAll()
+                .anyRequest().authenticated()
             );
 
         return http.build();
