@@ -18,8 +18,8 @@ import PlanMapPage from './pages/PlanMapPage';
 import PlanPage from './pages/PlanPage';
 import SignUpPage from './pages/SignUpPage';
 import Bookmark from './pages/Bookmark';
-import FindPassword from './pages/FindPassword';
 import FindPasswordPage from './pages/FindPasswordPage';
+import SignOutPage from './pages/SignOutPage';
 
 const router = createBrowserRouter([
   {
@@ -30,7 +30,8 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'signup', element: <SignUpPage /> },
-      { path: 'login/password', element: <FindPassword /> },
+      { path: 'signout', element: <SignOutPage /> },
+      { path: 'login/password', element: <FindPasswordPage /> },
       { path: 'plan', element: <PlanPage /> },
       { path: 'mypage', element: <MyPage /> },
       { path: 'mypage/mytrip', element: <MyTripPage /> },
