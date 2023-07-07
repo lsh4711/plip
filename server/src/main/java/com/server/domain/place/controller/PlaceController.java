@@ -34,26 +34,19 @@ public class PlaceController {
         this.recordMapper = recordMapper;
     }
 
-    @GetMapping
-    public ResponseEntity getPlaces(Authentication authentication) {
-        // 멤버 id 조회해야함
-
-        return null;
-    }
-
     //placeId로 여행일지 찾기
     @GetMapping("/{place-id}/records")
     public ResponseEntity<?> getRecords(@PathVariable("place-id") @Positive Long placeId,
-        @RequestParam @Positive int page, @RequestParam @Positive int size){
+            @RequestParam @Positive int page, @RequestParam @Positive int size) {
         List<Record> allRecords = placeService.findRecords(placeId);
         List<Record> records = paginateRecords(allRecords, page, size);
         return new ResponseEntity<>(
-            new MultiResponseDtoWithPage<>(recordMapper.recordsToRecordResponses(records), allRecords.size(),page, size),
-            HttpStatus.OK
-        );
+            new MultiResponseDtoWithPage<>(recordMapper.recordsToRecordResponses(records), allRecords.size(), page,
+                size),
+            HttpStatus.OK);
     }
 
-    private List<Record> paginateRecords(List<Record> allRecords, int page, int size){
+    private List<Record> paginateRecords(List<Record> allRecords, int page, int size) {
         int startIndex = (page - 1) * size;
         int endIndex = Math.min(startIndex + size, allRecords.size());
         return allRecords.subList(startIndex, endIndex);

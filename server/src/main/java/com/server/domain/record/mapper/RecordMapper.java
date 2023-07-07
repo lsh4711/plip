@@ -15,10 +15,10 @@ public interface RecordMapper {
 
     Record recordPatchToRecord(RecordDto.Patch requestBody);
 
-    @Mapping(target="memberId", source="record.member.memberId")
+    @Mapping(target = "memberId", source = "record.member.memberId")
     RecordDto.Response recordToRecordResponse(Record record);
 
-    @Mapping(target="memberId", source="record.member.memberId")
+    @Mapping(target = "memberId", source = "record.member.memberId")
     List<RecordDto.Response> recordsToRecordResponses(List<Record> records);
 
 }

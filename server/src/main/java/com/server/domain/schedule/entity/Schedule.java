@@ -1,6 +1,7 @@
 package com.server.domain.schedule.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.server.domain.member.entity.Member;
 import com.server.global.audit.BaseEntity;
@@ -37,4 +39,7 @@ public class Schedule extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "memberId")
     private Member member;
+
+    @OneToMany(mappedBy = "schedule")
+    private List<SchedulePlace> schedulePlaces;
 }

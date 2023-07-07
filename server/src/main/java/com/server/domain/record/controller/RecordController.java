@@ -90,8 +90,7 @@ public class RecordController {
         Record record = recordService.findRecord(recordId);
 
         return new ResponseEntity<>(
-            new SingleResponseDto<>(mapper.recordToRecordResponse(record)), HttpStatus.OK
-        );
+            new SingleResponseDto<>(mapper.recordToRecordResponse(record)), HttpStatus.OK);
     }
 
     //memberId로 여행일지 조회
@@ -121,7 +120,7 @@ public class RecordController {
     //이미지 업로드
     @PostMapping("/{record-id}/img")
     public ResponseEntity<?> uploadRecordImg(@PathVariable("record-id") String recordId,
-        @RequestParam("images") List<MultipartFile> images) {
+            @RequestParam("images") List<MultipartFile> images) {
         Long userId = 1L;
         String dirName = location + "/" + userId + "/" + recordId;
 
@@ -135,10 +134,9 @@ public class RecordController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error occurred while uploading images: " + e.getMessage());
+                    .body("Error occurred while uploading images: " + e.getMessage());
         }
     }
-
 
     //이미지 조회 - 바이트 코드를 리턴
     @GetMapping("/{record-id}/img")
@@ -158,7 +156,7 @@ public class RecordController {
                 System.out.println(imageFile.getURI());
                 if (imageResource.exists()) {
                     String imageBase64 = Base64.getEncoder()
-                        .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
+                            .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
                     imageBase64List.add(imageBase64);
                 }
             } catch (IOException e) {
@@ -175,6 +173,5 @@ public class RecordController {
 
         return ResponseEntity.ok(imageResponseDto);
     }
-
 
 }

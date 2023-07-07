@@ -14,19 +14,16 @@ import com.server.domain.record.entity.Record;
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.repository.SchedulePlaceRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class PlaceService {
-    private PlaceRepository placeRepository;
-    private PlaceMapper placeMapper;
+    private final PlaceRepository placeRepository;
+    private final PlaceMapper placeMapper;
 
+    // test
     private SchedulePlaceRepository schedulePlaceRepository;
-
-    public PlaceService(PlaceRepository placeRepository,
-            PlaceMapper placeMapper,SchedulePlaceRepository schedulePlaceRepository) {
-        this.placeRepository = placeRepository;
-        this.placeMapper = placeMapper;
-        this.schedulePlaceRepository = schedulePlaceRepository;
-    }
 
     public List<Place> getPlaces(long memberId) {
         // placeRepository.fin
@@ -45,20 +42,18 @@ public class PlaceService {
     }
 
     public List<Place> placeDtosToPlaces(List<PlaceDto.Post> placedtos) {
-        return placeMapper.placeDtosToPlaces(placedtos);
+        return placeMapper.postDtosToPlaces(placedtos);
     }
 
-
-    //placeId로 여행일지 찾기
     public List<Record> findRecords(Long placeId) {
         List<Record> records = new ArrayList<>();
-
         Optional<SchedulePlace> schedulePlaceOptional = schedulePlaceRepository.findByPlacePlaceId(placeId);
 
         if (schedulePlaceOptional.isPresent()) {
             SchedulePlace schedulePlace = schedulePlaceOptional.get();
             records = schedulePlace.getRecords();
         }
+
         return records;
     }
 }

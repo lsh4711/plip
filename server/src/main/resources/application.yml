@@ -1,9 +1,9 @@
 server:
     port: 8000
-#    ssl:
-#        key-store: classpath:aws.p12
-#        key-store-type: PKCS12
-#        key-store-password: ${KEY_STORE_PASSWORD}
+    ssl:
+        key-store: classpath:aws.p12
+        key-store-type: PKCS12
+        key-store-password: ${KEY_STORE_PASSWORD}
 spring:
   redis:
     host: localhost

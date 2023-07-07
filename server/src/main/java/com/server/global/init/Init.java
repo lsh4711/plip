@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.domain.member.entity.Member;
@@ -29,16 +27,16 @@ public class Init {
     private PlaceService placeService;
 
     public Init(MemberRepository memberRepository,
-        ScheduleService scheduleService,
-        SchedulePlaceService schedulePlaceService,
-        PlaceService placeService) {
+            ScheduleService scheduleService,
+            SchedulePlaceService schedulePlaceService,
+            PlaceService placeService) {
         this.memberRepository = memberRepository;
         this.scheduleService = scheduleService;
         this.schedulePlaceService = schedulePlaceService;
         this.placeService = placeService;
     }
 
-    @PostConstruct
+    // @PostConstruct
     public void init() throws ParseException {
         Member member = Member.builder()
             .email("test@naver.com")
@@ -53,8 +51,8 @@ public class Init {
         memberRepository.save(member);
 
         Member newMember = Member.builder()
-            .memberId(1L)
-            .build();
+                .memberId(1L)
+                .build();
         Schedule schedule = new Schedule();
         schedule.setCity("제주도");
         schedule.setTitle("즐거운 여행 제목");
@@ -104,7 +102,6 @@ public class Init {
             schedulePlace.setOrders(i);
             schedulePlaces.add(schedulePlace);
         }
-
 
         schedulePlaceService.saveSchedulePlaces(schedulePlaces);
 
