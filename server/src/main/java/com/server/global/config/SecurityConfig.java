@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -60,13 +59,7 @@ public class SecurityConfig {
                 .apply(customFilterConfigurers())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers("/*/users/**").permitAll()
-                        .antMatchers("/*/mail/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/*/records").permitAll()
-                        .antMatchers(HttpMethod.GET, "/*/records/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/*/schedules/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/*/places/**").permitAll()
-                        .anyRequest().authenticated());
+                        .anyRequest().permitAll());
 
         return http.build();
     }
