@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,10 +61,8 @@ public class RecordController {
 
     private final RecordService recordService;
 
-    private final MemberService memberService;
+    private final ImageManager imageManager;
 
-    @Value("${spring.servlet.multipart.location}")
-    private String location;
 
     //여행일지 등록
     @PostMapping("/{schedule-place-id}")
@@ -128,16 +128,10 @@ public class RecordController {
     @PostMapping("/{record-id}/img")
     public ResponseEntity<?> uploadRecordImg(@PathVariable("record-id") String recordId,
         @RequestParam("images") List<MultipartFile> images) {
-        Long userId = getAuthenticatedMemberId();
-        String dirName = location + "/" + userId + "/" + recordId;
-        System.out.println(dirName);
-
         try {
-            Boolean uploadResult = ImageManager.uploadImages(images, dirName);
+            Boolean uploadResult = imageManager.uploadImages(images, recordId);
             if (uploadResult) {
-                Long imageId=0L;
-                URI location = UriCreator.createUri(RECORD_DEFAULT_URL+"/"+recordId+"/img",imageId);
-                return ResponseEntity.created(location).build();
+                return new ResponseEntity<>(HttpStatus.CREATED);
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload images.");
             }
@@ -147,21 +141,22 @@ public class RecordController {
         }
     }
 
-    // 이미지 1개 조회
+    // 이미지 1개 조회 (대표 이미지)
     @GetMapping("/{record-id}/img/{img-id}")
     public ResponseEntity<?> getRecordImg(@PathVariable("record-id") String recordId, @PathVariable("img-id") String imgId){
-        Long userId = getAuthenticatedMemberId();
-        String dirName = location + "/" + userId + "/" + recordId;
-        Resource imageFile = ImageManager.loadImage(dirName, imgId);
+
+        Resource imageFile = imageManager.loadImage(recordId, imgId);
 
         try{
             Resource imageResource = new UrlResource(imageFile.getURI());
             byte[] imageBytes = Files.readAllBytes(imageResource.getFile().toPath());
+            String imageBase64 = Base64.getEncoder()
+                .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_JPEG);
 
-            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+            return new ResponseEntity<>(new SingleResponseDto<>(imageBase64), HttpStatus.OK);
 
         }catch (IOException e){
             log.error("이미지 파일 읽기 오류: " + e.getMessage(), e);
@@ -169,14 +164,11 @@ public class RecordController {
         }
     }
 
-
-    //이미지 조회 - 바이트 코드를 리턴
+    //이미지 조회 - base64 인코딩된 걸 리턴
     @GetMapping("/{record-id}/img")
-    public ResponseEntity<?> getRecordImg(@PathVariable("record-id") String recordId) {
-        Long userId = getAuthenticatedMemberId();
-        String dirName = location + "/" + userId + "/" + recordId;
+    public ResponseEntity<?> getRecordAllImg(@PathVariable("record-id") String recordId) {
 
-        List<Resource> imageFiles = ImageManager.loadImages(dirName);
+        List<Resource> imageFiles = imageManager.loadImages(recordId);
         if (imageFiles.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -203,16 +195,6 @@ public class RecordController {
         imageResponseDto.setImages(imageBase64List);
 
         return ResponseEntity.ok(imageResponseDto);
-    }
-
-    //로그인한 사용자 아이디 리턴
-    private Long getAuthenticatedMemberId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //현재 로그인한 사용자 이메일
-        String username = (String) authentication.getPrincipal();
-
-        // 로그인한 ID(이매일)로 Member를 찾아 id 반환
-        return memberService.findMemberByEmail(username).getMemberId();
     }
 
 }
