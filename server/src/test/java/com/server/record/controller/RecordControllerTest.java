@@ -1,35 +1,25 @@
 package com.server.record.controller;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static com.epages.restdocs.apispec.ResourceDocumentation.*;
 import static org.hamcrest.Matchers.startsWith;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,6 +54,7 @@ import com.server.domain.record.dto.RecordDto;
 import com.server.domain.record.entity.Record;
 import com.server.domain.record.mapper.RecordMapper;
 import com.server.domain.record.service.RecordService;
+import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.helper.StubData;
 
 @ActiveProfiles("test")
@@ -71,6 +62,7 @@ import com.server.helper.StubData;
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RecordControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -92,6 +84,16 @@ public class RecordControllerTest {
     @MockBean
     private ImageManager imageManager;
 
+    @Autowired
+    private JwtTokenizer jwtTokenizer;
+
+    private String accessTokenForUser;
+
+    @BeforeAll
+    public void init() {
+        accessTokenForUser = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey(), "USER");
+    }
+
     @Test
     @DisplayName("여행 일지를 등록한다.")
     void postRecordTest() throws Exception {
@@ -103,32 +105,33 @@ public class RecordControllerTest {
 
         given(mapper.recordPostToRecord(Mockito.any(RecordDto.Post.class))).willReturn(Record.builder().build());
         given(service.createRecord(Mockito.any(Record.class), Mockito.anyLong()))
-                .willReturn(Record.builder().recordId(1L).build());
+            .willReturn(Record.builder().recordId(1L).build());
 
         //when
         ResultActions actions = mockMvc.perform(
             post(RECORD_DEFAULT_URL + "/{schedule-place-id}", scheduleId)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonData));
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonData));
 
         //then
         actions
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", is(startsWith("/api/records/"))))
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("일지 등록",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .description("일지 등록")
-                                    .requestFields(
-                                        fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
-                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용"))
-                                    .responseHeaders(
-                                        headerWithName(HttpHeaders.LOCATION)
-                                                .description("Location header. 등록된 리소드의 URI"))
-                                    .build())));
+            .andExpect(status().isCreated())
+            .andExpect(header().string("Location", is(startsWith("/api/records/"))))
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("일지 등록",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("일지 등록")
+                            .requestFields(
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("내용"))
+                            .responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION)
+                                    .description("Location header. 등록된 리소드의 URI"))
+                            .build())));
 
     }
 
@@ -152,41 +155,42 @@ public class RecordControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
             patch(RECORD_DEFAULT_URL + "/{record-id}", response.getRecordId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonData));
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonData));
 
         //then
         actions
-                .andExpect(status().isOk())
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("일지 수정",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                            List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .description("일지 수정")
-                                    .requestFields(
-                                        fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
-                                        fieldWithPath("content").type(JsonFieldType.STRING).description("내용"))
-                                    .responseFields(
-                                        List.of(
-                                            fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터")
-                                                    .optional(),
-                                            fieldWithPath("data.recordId").type(JsonFieldType.NUMBER)
-                                                    .description("일지 식별자"),
-                                            fieldWithPath("data.title").type(JsonFieldType.STRING).description("제목"),
-                                            fieldWithPath("data.content").type(JsonFieldType.STRING).description("내용"),
-                                            fieldWithPath("data.memberId").type(JsonFieldType.NUMBER)
-                                                    .description("회원 식별자"),
-                                            fieldWithPath("data.createdAt").type(JsonFieldType.STRING)
-                                                    .description("작성 날짜"),
-                                            fieldWithPath("data.modifiedAt").type(JsonFieldType.STRING)
-                                                    .description("수정 날짜")))
-                                    .build()
+            .andExpect(status().isOk())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("일지 수정",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    pathParameters(
+                        List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("일지 수정")
+                            .requestFields(
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("내용"))
+                            .responseFields(
+                                List.of(
+                                    fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터")
+                                        .optional(),
+                                    fieldWithPath("data.recordId").type(JsonFieldType.NUMBER)
+                                        .description("일지 식별자"),
+                                    fieldWithPath("data.title").type(JsonFieldType.STRING).description("제목"),
+                                    fieldWithPath("data.content").type(JsonFieldType.STRING).description("내용"),
+                                    fieldWithPath("data.memberId").type(JsonFieldType.NUMBER)
+                                        .description("회원 식별자"),
+                                    fieldWithPath("data.createdAt").type(JsonFieldType.STRING)
+                                        .description("작성 날짜"),
+                                    fieldWithPath("data.modifiedAt").type(JsonFieldType.STRING)
+                                        .description("수정 날짜")))
+                            .build()
 
-                        )));
+                    )));
     }
 
     @Test
@@ -202,35 +206,35 @@ public class RecordControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
             get(RECORD_DEFAULT_URL + "/{record-id}", response.getRecordId())
-                    .contentType(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON));
 
         //then
         actions
-                .andExpect(status().isOk())
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("일지 조회",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                            List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .description("일지 조회")
-                                    .responseFields(
-                                        List.of(
-                                            fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터")
-                                                    .optional(),
-                                            fieldWithPath("data.recordId").type(JsonFieldType.NUMBER)
-                                                    .description("일지 식별자"),
-                                            fieldWithPath("data.title").type(JsonFieldType.STRING).description("제목"),
-                                            fieldWithPath("data.content").type(JsonFieldType.STRING).description("내용"),
-                                            fieldWithPath("data.memberId").type(JsonFieldType.NUMBER)
-                                                    .description("회원 식별자"),
-                                            fieldWithPath("data.createdAt").type(JsonFieldType.STRING)
-                                                    .description("작성 날짜"),
-                                            fieldWithPath("data.modifiedAt").type(JsonFieldType.STRING)
-                                                    .description("수정 날짜")))
-                                    .build())));
+            .andExpect(status().isOk())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("일지 조회",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    pathParameters(
+                        List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("일지 조회")
+                            .responseFields(
+                                List.of(
+                                    fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터")
+                                        .optional(),
+                                    fieldWithPath("data.recordId").type(JsonFieldType.NUMBER)
+                                        .description("일지 식별자"),
+                                    fieldWithPath("data.title").type(JsonFieldType.STRING).description("제목"),
+                                    fieldWithPath("data.content").type(JsonFieldType.STRING).description("내용"),
+                                    fieldWithPath("data.memberId").type(JsonFieldType.NUMBER)
+                                        .description("회원 식별자"),
+                                    fieldWithPath("data.createdAt").type(JsonFieldType.STRING)
+                                        .description("작성 날짜"),
+                                    fieldWithPath("data.modifiedAt").type(JsonFieldType.STRING)
+                                        .description("수정 날짜")))
+                            .build())));
 
     }
 
@@ -267,51 +271,51 @@ public class RecordControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
             get(RECORD_DEFAULT_URL)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .params(queryParams)
-                    .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .params(queryParams)
+                .accept(MediaType.APPLICATION_JSON)
 
         );
 
         //then
         actions
-                .andExpect(status().isOk())
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("전체 일지 조회",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestParameters(
-                            List.of(
-                                parameterWithName("page").description("Page 번호"),
-                                parameterWithName("size").description("Page Size"))),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .description("전체 일지 조회")
-                                    .responseFields(
-                                        List.of(
-                                            fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터")
-                                                    .optional(),
-                                            fieldWithPath("data[].recordId").type(JsonFieldType.NUMBER)
-                                                    .description("일지 식별자"),
-                                            fieldWithPath("data[].title").type(JsonFieldType.STRING).description("제목"),
-                                            fieldWithPath("data[].content").type(JsonFieldType.STRING)
-                                                    .description("내용"),
-                                            fieldWithPath("data[].memberId").type(JsonFieldType.NUMBER)
-                                                    .description("회원 식별자"),
-                                            fieldWithPath("data[].createdAt").type(JsonFieldType.STRING)
-                                                    .description("작성 날짜"),
-                                            fieldWithPath("data[].modifiedAt").type(JsonFieldType.STRING)
-                                                    .description("수정 날짜"),
-                                            fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
-                                            fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER)
-                                                    .description("페이지 번호"),
-                                            fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER)
-                                                    .description("페이지 사이즈"),
-                                            fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER)
-                                                    .description("전체 건 수"),
-                                            fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER)
-                                                    .description("전체 페이지 수")))
-                                    .build())));
+            .andExpect(status().isOk())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("전체 일지 조회",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    requestParameters(
+                        List.of(
+                            parameterWithName("page").description("Page 번호"),
+                            parameterWithName("size").description("Page Size"))),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("전체 일지 조회")
+                            .responseFields(
+                                List.of(
+                                    fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터")
+                                        .optional(),
+                                    fieldWithPath("data[].recordId").type(JsonFieldType.NUMBER)
+                                        .description("일지 식별자"),
+                                    fieldWithPath("data[].title").type(JsonFieldType.STRING).description("제목"),
+                                    fieldWithPath("data[].content").type(JsonFieldType.STRING)
+                                        .description("내용"),
+                                    fieldWithPath("data[].memberId").type(JsonFieldType.NUMBER)
+                                        .description("회원 식별자"),
+                                    fieldWithPath("data[].createdAt").type(JsonFieldType.STRING)
+                                        .description("작성 날짜"),
+                                    fieldWithPath("data[].modifiedAt").type(JsonFieldType.STRING)
+                                        .description("수정 날짜"),
+                                    fieldWithPath("pageInfo").type(JsonFieldType.OBJECT).description("페이지 정보"),
+                                    fieldWithPath("pageInfo.page").type(JsonFieldType.NUMBER)
+                                        .description("페이지 번호"),
+                                    fieldWithPath("pageInfo.size").type(JsonFieldType.NUMBER)
+                                        .description("페이지 사이즈"),
+                                    fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER)
+                                        .description("전체 건 수"),
+                                    fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER)
+                                        .description("전체 페이지 수")))
+                            .build())));
 
     }
 
@@ -326,28 +330,28 @@ public class RecordControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
             delete(RECORD_DEFAULT_URL + "/{record-id}", recordId)
-                    .contentType(MediaType.APPLICATION_JSON));
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
+                .contentType(MediaType.APPLICATION_JSON));
 
         //then
         actions.andExpect(status().isNoContent())
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("여행일지 삭제",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                            parameterWithName("record-id").description("일지 식별자 ID")),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .description("여행일지 삭제")
-                                    .build()))
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("여행일지 삭제",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    pathParameters(
+                        parameterWithName("record-id").description("일지 식별자 ID")),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("여행일지 삭제")
+                            .build()))
 
-                );
+            );
 
     }
 
     @Test
     @DisplayName("사진들을 등록한다.")
-    @WithMockUser(username = "user@gmail.com",password="1234",roles="USER")
     void uploadRecordImgTest() throws Exception {
         //given
         Long recordId = 1L;
@@ -362,13 +366,13 @@ public class RecordControllerTest {
 
         given(imageManager.uploadImages(anyList(), anyString())).willReturn(true);
 
-
         //when
         ResultActions actions = mockMvc.perform(
             multipart(RECORD_DEFAULT_URL + "/{record-id}/img", recordId)
-                    .file(image1)
-                    .file(image2)
-                    .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                .file(image1)
+                .file(image2)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
 
         );
 
@@ -392,10 +396,9 @@ public class RecordControllerTest {
 
     }
 
-
     @Test
     @DisplayName("이미지 식별자로 이미지를 조회한다.")
-    void getRecordImgTest() throws Exception{
+    void getRecordImgTest() throws Exception {
         //given
         Long recordId = 1L;
         Long userId = 1L;
@@ -408,7 +411,7 @@ public class RecordControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-            get(RECORD_DEFAULT_URL + "/{record-id}/img/{img-id}", recordId,imgId)
+            get(RECORD_DEFAULT_URL + "/{record-id}/img/{img-id}", recordId, imgId)
                 .contentType(MediaType.IMAGE_JPEG)
 
         );
@@ -424,7 +427,7 @@ public class RecordControllerTest {
                         List.of(
                             parameterWithName("record-id").description("일지 식별자 ID"),
                             parameterWithName("img-id").description("일지 식별자 ID"))
-                        ),
+                    ),
                     resource(
                         ResourceSnippetParameters.builder()
                             .description("사진 조회")
@@ -436,12 +439,9 @@ public class RecordControllerTest {
 
     }
 
-
-
-
     @Test
     @DisplayName("등록한 전체 사진을 조회한다.")
-    @WithMockUser(username = "user@gmail.com",password="1234",roles="USER")
+    @WithMockUser(username = "user@gmail.com", password = "1234", roles = "USER")
     void getRecordAllImgTest() throws Exception {
         //given
         Long recordId = 1L;
@@ -459,32 +459,31 @@ public class RecordControllerTest {
 
         given(imageManager.loadImages(anyString())).willReturn(imageFiles);
 
-
         //when
         ResultActions actions = mockMvc.perform(
             get(RECORD_DEFAULT_URL + "/{record-id}/img", recordId)
-                    .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
 
         );
 
         //then
         actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.images", hasSize(2)))
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("전체 사진 조회",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                            List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .description("전체 사진 조회")
-                                    .responseFields(
-                                        fieldWithPath("images").description("사진 목록")
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.images", hasSize(2)))
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("전체 사진 조회",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    pathParameters(
+                        List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("전체 사진 조회")
+                            .responseFields(
+                                fieldWithPath("images").description("사진 목록")
 
-                                    )
-                                    .build())));
+                            )
+                            .build())));
     }
 
 }
