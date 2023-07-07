@@ -1,7 +1,7 @@
 server:
   port: 8000
 spring:
-  config.activate.on-profile: default
+  config.activate.on-profile: test
   redis:
     host: localhost
     port: 6379
@@ -9,8 +9,6 @@ spring:
     console:
       enabled: true
       path: /h2
-      settings:
-        web-allow-others: true
   datasource:
     url: jdbc:h2:mem:test
   jpa:
@@ -28,12 +26,11 @@ spring:
     web:
       resources:
         static-locations: classpath:/
-
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${EMAIL_USERNAME}
-    password: ${EMAIL_PASSWORD}
+    username: dsdasdsa@naver.com
+    password: sdadsadsadsd
     properties:
       mail:
         smtp:
@@ -46,15 +43,15 @@ spring:
       client:
         registration:
           naver:
-            client-id: ${NAVER_CLIENT_ID}
-            client-secret: ${NAVER_CLIENT_SECRET}
+            client-id: ddddddddddddddddddddddddddd
+            client-secret: ddddddddddddddddddddddd
             redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
             scope: name,email,profile_image
             client-name: Naver
           kakao:
-            client-id: ${KAKAO_CLIENT_ID}
-            client-secret: ${KAKAO_CLIENT_SECRET}
+            client-id: ddddddddddddddddddddd
+            client-secret: dddddddddddddddd
             redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
             client-authentication-method: POST
@@ -76,9 +73,9 @@ spring:
 
 jwt:
   key:
-    secret: ${JWT_SECRET_KEY}
-  access-token-expiration-minutes: ${ACCESS_EXPIRATION_MINUTES} #1분
-  refresh-token-expiration-minutes: ${REFRESH_EXPIRATION_MINUTES} #3일
+    secret: testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest
+  access-token-expiration-minutes: 1
+  refresh-token-expiration-minutes: 1
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
