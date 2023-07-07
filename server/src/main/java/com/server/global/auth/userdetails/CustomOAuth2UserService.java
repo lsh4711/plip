@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.mapper.MemberMapper;
 import com.server.domain.member.repository.MemberRepository;
-import com.server.global.auth.utils.OAuthAttributes;
 
 import lombok.RequiredArgsConstructor;
 

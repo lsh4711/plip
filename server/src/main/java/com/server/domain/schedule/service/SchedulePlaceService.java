@@ -1,11 +1,14 @@
 package com.server.domain.schedule.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.repository.SchedulePlaceRepository;
+import com.server.global.exception.BusinessLogicException;
+import com.server.global.exception.ExceptionCode;
 
 @Service
 public class SchedulePlaceService {
@@ -16,12 +19,19 @@ public class SchedulePlaceService {
     }
 
     public void saveSchedulePlaces(List<SchedulePlace> schedulePlaces) {
-        // placeRepository.saveAll(schedulePlaces);
+        //placeRepository.saveAll(schedulePlaces);
 
-        // 디버깅용
+        //디버깅용
         for (SchedulePlace schedulePlace : schedulePlaces) {
             SchedulePlace savedSchedulePlace = schedulePlaceRepository.save(schedulePlace);
             System.out.println("CREATED");
         }
+    }
+
+    //추가
+    public SchedulePlace findSchedulePlaceById(Long schedulePlaceId){
+        return schedulePlaceRepository.findById(schedulePlaceId).orElseThrow(()-> new BusinessLogicException(
+            ExceptionCode.SCHEDULE_PLACE_NOT_FOUND));
+
     }
 }

@@ -13,10 +13,13 @@ import javax.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,17 +34,18 @@ import com.server.domain.record.dto.RecordDto;
 import com.server.domain.record.entity.Record;
 import com.server.domain.record.mapper.RecordMapper;
 import com.server.domain.record.service.RecordService;
+import com.server.global.dto.MultiResponseDto;
 import com.server.global.dto.SingleResponseDto;
 import com.server.global.utils.UriCreator;
 
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/records")
+@RequestMapping("/api/records")
 @Validated
 @Slf4j
 public class RecordController {
-    private final static String RECORD_DEFAULT_URL = "/records";
+    private final static String RECORD_DEFAULT_URL = "/api/records";
     private final RecordMapper mapper;
 
     private final RecordService recordService;
@@ -54,34 +58,69 @@ public class RecordController {
         this.recordService = recordService;
     }
 
-    @PostMapping
-    public ResponseEntity<?> postRecord(@Valid @RequestBody RecordDto.Post requestBody) {
+    //여행일지 등록
+    @PostMapping("/{schedule-place-id}")
+    public ResponseEntity<?> postRecord(@PathVariable("schedule-place-id") @Positive Long schedulePlaceId, @Valid @RequestBody RecordDto.Post requestBody) {
         Record record = mapper.recordPostToRecord(requestBody);
 
-        Long userId = 1L;
-
-        record.setMemberId(userId);
-
-        Record createdRecord = recordService.createRecord(record);
+        Record createdRecord = recordService.createRecord(record, schedulePlaceId);
 
         URI location = UriCreator.createUri(RECORD_DEFAULT_URL, createdRecord.getRecordId());
 
         return ResponseEntity.created(location).build();
     }
 
+    //여행일지 수정
+    @PatchMapping("/{record-id}")
+    public ResponseEntity<?> patchRecord(@PathVariable("record-id") @Positive long recordId,
+        @Valid @RequestBody RecordDto.Patch requestBody){
+        requestBody.setRecordId(recordId);
+
+        Record record = mapper.recordPatchToRecord(requestBody);
+
+        Record updatedRecord = recordService.updateRecord(record);
+
+        return new ResponseEntity<>(new SingleResponseDto<>(mapper.recordToRecordResponse(updatedRecord)),
+            HttpStatus.OK);
+    }
+
+    //recordId로 여행일지 조회
     @GetMapping("/{record-id}")
     public ResponseEntity<?> getRecord(@PathVariable("record-id") @Positive long recordId) {
         Record record = recordService.findRecord(recordId);
 
         return new ResponseEntity<>(
-            new SingleResponseDto<>(mapper.recordToRecordResponse(record)), HttpStatus.OK
+            new SingleResponseDto<>(mapper.recordToRecordResponse(record)), HttpStatus.OK);
+    }
+
+    //memberId로 여행일지 조회
+    @GetMapping
+    public ResponseEntity<?> getRecordsByMemberId(@RequestParam @Positive int page, @RequestParam @Positive int size){
+        Page<Record> pageRecords = recordService.findAllRecords(page-1, size);
+        List<Record> records = pageRecords.getContent();
+
+        return new ResponseEntity<>(
+            new MultiResponseDto<>(
+                mapper.recordsToRecordResponses(records), pageRecords
+            ),
+            HttpStatus.OK
         );
     }
+
+
+    //여행일지 삭제
+    @DeleteMapping("/{record-id}")
+    public ResponseEntity deleteRecord(@PathVariable("record-id") @Positive long recordId){
+        recordService.deleteRecord(recordId);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
 
     //이미지 업로드
     @PostMapping("/{record-id}/img")
     public ResponseEntity<?> uploadRecordImg(@PathVariable("record-id") String recordId,
-        @RequestParam("images") List<MultipartFile> images) {
+            @RequestParam("images") List<MultipartFile> images) {
         Long userId = 1L;
         String dirName = location + "/" + userId + "/" + recordId;
 
@@ -95,10 +134,9 @@ public class RecordController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error occurred while uploading images: " + e.getMessage());
+                    .body("Error occurred while uploading images: " + e.getMessage());
         }
     }
-
 
     //이미지 조회 - 바이트 코드를 리턴
     @GetMapping("/{record-id}/img")
@@ -118,7 +156,7 @@ public class RecordController {
                 System.out.println(imageFile.getURI());
                 if (imageResource.exists()) {
                     String imageBase64 = Base64.getEncoder()
-                        .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
+                            .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
                     imageBase64List.add(imageBase64);
                 }
             } catch (IOException e) {
@@ -135,6 +173,5 @@ public class RecordController {
 
         return ResponseEntity.ok(imageResponseDto);
     }
-
 
 }

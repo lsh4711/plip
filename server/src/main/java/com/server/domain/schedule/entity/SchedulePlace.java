@@ -1,13 +1,17 @@
 package com.server.domain.schedule.entity;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.server.domain.place.entity.Place;
+import com.server.domain.record.entity.Record;
 import com.server.global.audit.BaseEntity;
 
 import lombok.AllArgsConstructor;
@@ -27,6 +31,7 @@ public class SchedulePlace extends BaseEntity {
 
     private Integer days;
     private Integer orders;
+    private Boolean bookmark;
     // private LocalDateTime startDate; // 현재 불필요
     // private LocalDateTime endDate; // 현재 불필요
 
@@ -37,4 +42,7 @@ public class SchedulePlace extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "placeId")
     private Place place;
+
+    @OneToMany(mappedBy = "schedulePlace")
+    private List<Record> records;
 }

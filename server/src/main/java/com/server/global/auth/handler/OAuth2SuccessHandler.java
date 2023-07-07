@@ -15,7 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.mapper.MemberMapper;
 import com.server.global.auth.jwt.DelegateTokenUtil;
-import com.server.global.auth.utils.OAuthAttributes;
+import com.server.global.auth.userdetails.OAuthAttributes;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

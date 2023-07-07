@@ -50,6 +50,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     runtimeOnly 'com.h2database:h2'
+    testImplementation 'com.h2database:h2' // 추가됨
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -57,18 +58,19 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:' + restdocsApiSpecVersion
-    testImplementation 'org.mockito:mockito-inline'
+    testImplementation 'org.mockito:mockito-inline' //static Mock 매핑을 위한
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-
     testImplementation 'org.mockito:mockito-inline'
 
+    // springfox.documentation.staticdocs 의존성 추가
+    testImplementation 'io.springfox:springfox-staticdocs:2.0.1'
 
 }
 
 tasks.named('test') {
-    //outputs.dir snippetsDir
+    outputs.dir snippetsDir
     useJUnitPlatform()
 }
 
@@ -77,7 +79,7 @@ tasks.withType(GenerateSwaggerUI) {
 
     delete file('src/main/resources/static/docs/')
     copy {
-        from "build/resources/main"
+        from "build/resources/main/static/docs"
         into "src/main/resources/static/docs/"
 
     }
@@ -85,14 +87,17 @@ tasks.withType(GenerateSwaggerUI) {
 
 bootJar {
     dependsOn(':openapi3')
+    archivesBaseName = 'teamdev'
+    archiveFileName = 'teamdev.jar'
+    archiveVersion = "0.0.0"
 }
 
 openapi3 {
-    server = "http://localhost:8080"
+    server = "https://teamdev.shop:8000"
     title = "코벤져스 API 문서"
     description = "Spring REST Docs with SwaggerUI."
     version = "0.0.1"
     outputFileNamePrefix = 'open-api-3.0.1'
     format = 'json'
-    outputDirectory = 'build/resources/main'
+    outputDirectory = 'build/resources/main/static/docs'
 }

@@ -1,10 +1,9 @@
 package com.server.global.init;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.PostConstruct;
 
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +16,9 @@ import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.domain.schedule.service.ScheduleService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 public class Init {
     private MemberRepository memberRepository;
@@ -25,22 +27,23 @@ public class Init {
     private PlaceService placeService;
 
     public Init(MemberRepository memberRepository,
-        ScheduleService scheduleService,
-        SchedulePlaceService schedulePlaceService,
-        PlaceService placeService) {
+            ScheduleService scheduleService,
+            SchedulePlaceService schedulePlaceService,
+            PlaceService placeService) {
         this.memberRepository = memberRepository;
         this.scheduleService = scheduleService;
         this.schedulePlaceService = schedulePlaceService;
         this.placeService = placeService;
     }
 
-    @PostConstruct
-    public void init() {
+    // @PostConstruct
+    public void init() throws ParseException {
         Member member = Member.builder()
-            .email("lsh@naver.com")
-            .password("lshlshlshlsh1234!@")
-            .nickname("음악")
+            .email("test@naver.com")
+            .password("12345678a!")
+            .nickname("테스트계정")
             .build();
+        //log.info("테스트용 토큰을 발급했습니다: " + delegateTokenUtil.delegateTestAccessToken(member));
         /**
          * @author 다영
          * 테스트 코드 오류로 service -> repository로 수정
@@ -48,8 +51,8 @@ public class Init {
         memberRepository.save(member);
 
         Member newMember = Member.builder()
-            .memberId(1L)
-            .build();
+                .memberId(1L)
+                .build();
         Schedule schedule = new Schedule();
         schedule.setCity("제주도");
         schedule.setTitle("즐거운 여행 제목");
@@ -69,24 +72,37 @@ public class Init {
             Place place = new Place();
             place.setApiId(i * 10 + i);
             place.setName(placeNames[i - 1]);
-            place.setAddress("제주도 무슨동 무슨길" + 1);
+            place.setAddress("제주도 무슨동 무슨길" + i);
             place.setLatitude(String.format("%d.%d", i * 205 + i * 17 + i * 8, i * 27));
             place.setLongitude(String.format("%d.%d", i * 121 + i * 23 + i * 3, i * 31));
             places.add(place);
 
+            /**
+             * @author 지인
+             * 테스트 돌리니
+             * TransientPropertyValueException에러가 나서, places와 newSchedule을 먼저 저장하고
+             * SchedulePlace에 set 되도록 변경함.
+             * 데이터 무결성원칙때문에 자동으로 생성되는 id는 set해주면 안된다고 함.
+             */
+
+            placeService.savePlaces(places);
+
             Schedule newSchedule = new Schedule();
-            newSchedule.setScheduleId(1L);
-            Place newPlace = new Place();
-            newPlace.setPlaceId(Long.valueOf(i));
+
+            scheduleService.saveSchedule(newSchedule);
+
+            //newSchedule.setScheduleId(1L);
+            // Place newPlace = new Place();
+            //newPlace.setPlaceId(Long.valueOf(i));
             SchedulePlace schedulePlace = new SchedulePlace();
             schedulePlace.setSchedule(newSchedule);
-            schedulePlace.setPlace(newPlace);
+            //schedulePlace.setPlace(newPlace);
+            schedulePlace.setPlace(place);
             schedulePlace.setDays(1);
             schedulePlace.setOrders(i);
             schedulePlaces.add(schedulePlace);
         }
 
-        placeService.savePlaces(places);
         schedulePlaceService.saveSchedulePlaces(schedulePlaces);
 
     }

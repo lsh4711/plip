@@ -1,5 +1,7 @@
 package com.server.domain.member.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -7,7 +9,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
+import com.server.domain.record.entity.Record;
 import com.server.global.audit.BaseEntity;
 
 import lombok.AccessLevel;
@@ -35,6 +39,10 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     @Column(length = 32, columnDefinition = "varchar(32) default 'ROLE_USER'")
     private Role role = Role.USER;
+
+    //여행일지와 연관관계 설정
+    @OneToMany(mappedBy="member")
+    private List<Record> records;
 
     @Builder
     public Member(Long memberId, String email, String password, String nickname) {

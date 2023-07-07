@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpMethod;
@@ -46,8 +47,8 @@ public class StubData {
                 .build();
 
             LoginDto loginDto = LoginDto.builder()
-                .username("test123@naver.com")
-                .password("q12345678@")
+                .username("test@naver.com")
+                .password("12345678a!")
                 .build();
 
             MemberDto.Patch memberPatch = MemberDto.Patch.builder()
@@ -72,15 +73,24 @@ public class StubData {
     }
 
     public static class MockRecord {
-        private static Map<HttpMethod, Object> stubRequestBody;
+        private static Map<String, Object> stubRequestBody;
+        private static Map<String, List<RecordDto.Response>> stubDatas;
 
         static {
             stubRequestBody = new HashMap<>();
+            stubDatas = new HashMap<>();
+
             RecordDto.Post post = RecordDto.Post.builder()
                 .title("서울 롯데월드")
                 .content("롯데월드에서는..")
                 .build();
-            stubRequestBody.put(HttpMethod.POST, post);
+            stubRequestBody.put("recordPost", post);
+
+            RecordDto.Patch patch=RecordDto.Patch.builder()
+                .title("서울 남산")
+                .content("남산에서는..")
+                .build();
+            stubRequestBody.put("recordPatch", patch);
 
             RecordDto.Response response = RecordDto.Response.builder()
                 .recordId(1L)
@@ -90,11 +100,46 @@ public class StubData {
                 .createdAt(LocalDateTime.now().withNano(0))
                 .modifiedAt(LocalDateTime.now().withNano(0))
                 .build();
-            stubRequestBody.put(HttpMethod.GET, response);
+            stubRequestBody.put("recordResponse", response);
+
+            RecordDto.Response patchResponse = RecordDto.Response.builder()
+                .recordId(1L)
+                .title("서울 남산")
+                .content("남산에서는..")
+                .memberId(1L)
+                .createdAt(LocalDateTime.now().withNano(0))
+                .modifiedAt(LocalDateTime.now().withNano(0))
+                .build();
+            stubRequestBody.put("recordPatchResponse", patchResponse);
+
+            List<RecordDto.Response> responses= List.of(
+                RecordDto.Response.builder()
+                    .recordId(1L)
+                    .title("서울 롯데월드")
+                    .content("롯데월드에서는..")
+                    .memberId(1L)
+                    .createdAt(LocalDateTime.now().withNano(0))
+                    .modifiedAt(LocalDateTime.now().withNano(0))
+                    .build(),
+
+                RecordDto.Response.builder()
+                    .recordId(2L)
+                    .title("서울 남산")
+                    .content("남산에서는..")
+                    .memberId(1L)
+                    .createdAt(LocalDateTime.now().withNano(0))
+                    .modifiedAt(LocalDateTime.now().withNano(0))
+                    .build()
+            );
+
+            stubDatas.put("recordResponses", responses);
         }
 
-        public static Object getRequestBody(HttpMethod method) {
-            return stubRequestBody.get(method);
+        public static Object getRequestBody(String valueName) {
+            return stubRequestBody.get(valueName);
         }
+
+        public static List<RecordDto.Response> getRequestDatas(String valueName) {return stubDatas.get(valueName);}
+
     }
 }

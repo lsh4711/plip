@@ -1,4 +1,4 @@
-package com.server.global.auth.utils;
+package com.server.global.auth.userdetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
