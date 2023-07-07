@@ -2,7 +2,6 @@ package com.server.domain.schedule.entity;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,6 +31,7 @@ public class SchedulePlace extends BaseEntity {
 
     private Integer days;
     private Integer orders;
+    private Boolean bookmark;
     // private LocalDateTime startDate; // 현재 불필요
     // private LocalDateTime endDate; // 현재 불필요
 
@@ -43,6 +43,6 @@ public class SchedulePlace extends BaseEntity {
     @JoinColumn(name = "placeId")
     private Place place;
 
-    @OneToMany(mappedBy="schedulePlace")
+    @OneToMany(mappedBy = "schedulePlace")
     private List<Record> records;
 }

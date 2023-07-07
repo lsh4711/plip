@@ -1,11 +1,9 @@
 package com.server.global.init;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
 
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,7 +11,6 @@ import com.server.domain.member.entity.Member;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.repository.PlaceRepository;
-import com.server.domain.place.service.PlaceService;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.repository.ScheduleRepository;
@@ -31,14 +28,14 @@ public class Init {
     private final ScheduleService scheduleService;
     private final SchedulePlaceService schedulePlaceService;
 
-
-    @PostConstruct
-    public void init() {
+    // @PostConstruct
+    public void init() throws ParseException {
         Member member = Member.builder()
-            .email("lsh@naver.com")
-            .password("lshlshlshlsh1234!@")
-            .nickname("음악")
+            .email("test@naver.com")
+            .password("12345678a!")
+            .nickname("테스트계정")
             .build();
+        //log.info("테스트용 토큰을 발급했습니다: " + delegateTokenUtil.delegateTestAccessToken(member));
         /**
          * @author 다영
          * 테스트 코드 오류로 service -> repository로 수정
@@ -46,8 +43,8 @@ public class Init {
         memberRepository.save(member);
 
         Member newMember = Member.builder()
-            .memberId(1L)
-            .build();
+                .memberId(1L)
+                .build();
         Schedule schedule = new Schedule();
         schedule.setCity("제주도");
         schedule.setTitle("즐거운 여행 제목");

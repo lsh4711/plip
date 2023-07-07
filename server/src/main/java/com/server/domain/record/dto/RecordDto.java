@@ -8,9 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 public class RecordDto {
-
     @Getter
     @Builder
     @NoArgsConstructor
@@ -21,12 +19,11 @@ public class RecordDto {
 
     }
 
-
     @Getter
     @Setter
     @Builder
-    @AllArgsConstructor
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class Patch {
         private Long recordId;
         private String title;
@@ -38,7 +35,6 @@ public class RecordDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-
     public static class Response {
         private Long recordId;
         private String title;
