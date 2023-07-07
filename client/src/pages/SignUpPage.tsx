@@ -1,5 +1,4 @@
-import { Button, HeadingParagraph, Input, Paragraph } from '@/components';
-import OauthUI from '@/components/helper/OauthUI';
+import { Button, HeadingParagraph, Input, OauthUI, Paragraph } from '@/components';
 
 import useThrottle from '@/hooks/useThrottle';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -60,7 +59,7 @@ const SignUpPage = () => {
   }, 2000);
 
   return (
-    <main className="mx-auto flex  max-w-[1024px] flex-col items-center justify-center ">
+    <main className="mx-auto mt-24  flex max-w-[1024px] flex-col items-center justify-center ">
       <div className=" mb-10">
         <HeadingParagraph variant={'darkgray'} size="lg" className=" text-center">
           PliP에 가입하여
