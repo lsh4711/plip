@@ -10,7 +10,7 @@ import { z } from 'zod';
 const SignUpPage = () => {
   const [isEmailValid, setIsEmailValid] = React.useState(true);
   const [isNicknameValid, setIsNicknameValid] = React.useState(true);
-
+  const [isAuthNumberDisabled, setIsAuthNumberDisabled] = React.useState(true);
   const signupForm = useForm<SingupType>({
     mode: 'all',
     resolver: zodResolver(signupSchema),
@@ -24,8 +24,6 @@ const SignUpPage = () => {
   };
 
   const emailCredentialRequest = useThrottle(() => {
-    const authNumberInput = document.querySelector('input[name="authnumber"]') as HTMLInputElement;
-    if (authNumberInput === null) return;
     if (signupForm.formState.errors.email?.message !== undefined) return;
     if (signupForm.getValues('email') === '') return;
     /*
@@ -35,12 +33,10 @@ const SignUpPage = () => {
         응답받은 상태코드에 따라 분기처리
       }
     */
-
-    authNumberInput.disabled = false;
+    setIsAuthNumberDisabled(false);
   }, 2000);
 
   const sendVerificationCodeEmail = useThrottle(() => {
-    const authNumberInput = document.querySelector('input[name="authnumber"]') as HTMLInputElement;
     /* 향후 인증하기 API가 구현되었을 때를 대비한 의사코드입니다.
     const emailVerificationMutate = useEmailVerificationMutation() 실제로는 훅이라 최상위에 선언해야함
     const postVerificationCode = async () => {
@@ -55,7 +51,7 @@ const SignUpPage = () => {
     */
     setTimeout(() => {
       setIsEmailValid(false);
-      authNumberInput.disabled = true;
+      setIsAuthNumberDisabled(true);
     }, 2000);
   }, 2000);
 
@@ -102,7 +98,7 @@ const SignUpPage = () => {
                 <Input
                   placeholder="인증번호를 입력해 주세요."
                   className=" flex-grow"
-                  disabled
+                  disabled={isAuthNumberDisabled}
                   {...signupForm.register('authnumber')}
                 />
 
