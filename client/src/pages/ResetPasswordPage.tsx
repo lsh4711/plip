@@ -5,15 +5,15 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { z } from 'zod';
 
-interface FindPasswordProps {}
+interface ResetPasswordProps {}
 
-const FindPasswordPage = ({}: FindPasswordProps) => {
-  const findPasswordForm = useForm<FindPasswordType>({
+const ResetPasswordPage = ({}: ResetPasswordProps) => {
+  const resetPasswordForm = useForm<ResetPasswordType>({
     mode: 'all',
-    resolver: zodResolver(findPasswordSchema),
+    resolver: zodResolver(resetPasswordSchema),
   });
 
-  const onSubmit: SubmitHandler<FindPasswordType> = (data) => {
+  const onSubmit: SubmitHandler<ResetPasswordType> = (data) => {
     console.log(data);
   };
 
@@ -29,18 +29,18 @@ const FindPasswordPage = ({}: FindPasswordProps) => {
         <div className="">
           <form
             className=" flex w-[460px] flex-col gap-y-6"
-            onSubmit={findPasswordForm.handleSubmit(onSubmit)}
+            onSubmit={resetPasswordForm.handleSubmit(onSubmit)}
           >
             <div className=" flex flex-col">
-              <Input {...findPasswordForm.register('password')} type="password" />
+              <Input {...resetPasswordForm.register('password')} type="password" />
               <Paragraph variant={'red'} size={'xs'} className=" mt-1">
-                {findPasswordForm.formState.errors.password?.message}
+                {resetPasswordForm.formState.errors.password?.message}
               </Paragraph>
             </div>
             <div className=" flex flex-col">
-              <Input {...findPasswordForm.register('checkpassword')} type="password" />
+              <Input {...resetPasswordForm.register('checkpassword')} type="password" />
               <Paragraph variant={'red'} size={'xs'} className=" mt-1">
-                {findPasswordForm.formState.errors.checkpassword?.message}
+                {resetPasswordForm.formState.errors.checkpassword?.message}
               </Paragraph>
             </div>
             <Button variant={'primary'} size={'lg'} type="submit">
@@ -63,11 +63,11 @@ const FindPasswordPage = ({}: FindPasswordProps) => {
   );
 };
 
-export default FindPasswordPage;
+export default ResetPasswordPage;
 
 let passwordRegex = /(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}/;
 
-const findPasswordSchema = z
+const resetPasswordSchema = z
   .object({
     password: z.string().nonempty({ message: '비밀번호는 필수 입력입니다.' }).regex(passwordRegex, {
       message: '비밀번호는 영문,숫자,특수문자를 모두 포함한 8자 이상이어야 합니다.',
@@ -84,4 +84,4 @@ const findPasswordSchema = z
     }
   });
 
-type FindPasswordType = z.infer<typeof findPasswordSchema>;
+type ResetPasswordType = z.infer<typeof resetPasswordSchema>;
