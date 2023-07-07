@@ -23,20 +23,18 @@ import lombok.extern.slf4j.Slf4j;
 public class OAuthAttributes implements OAuth2User {
 
     private Map<String, Object> attributes;
-    private String nameAttributeKey;
     private String email;
     private String nickname;
     private Member.Role role;
 
-    public static OAuthAttributes of(String registrationId, String userNameAttributeName,
-        Map<String, Object> attributes) {
+    public static OAuthAttributes of(String registrationId, Map<String, Object> attributes) {
         if (registrationId.equals("naver")) {
-            return ofNaver(userNameAttributeName, attributes);
+            return ofNaver(attributes);
         }
-        return ofKakao(userNameAttributeName, attributes);
+        return ofKakao(attributes);
     }
 
-    private static OAuthAttributes ofNaver(String userNameAttributeName, Map<String, Object> attributes) {
+    private static OAuthAttributes ofNaver(Map<String, Object> attributes) {
         Map<String, Object> response = (Map<String, Object>)attributes.get("response");
 
         log.info("naver response : " + response);
@@ -45,18 +43,18 @@ public class OAuthAttributes implements OAuth2User {
             .email((String)response.get("email"))
             .nickname((String)response.get("nickname"))
             .attributes(attributes)
-            .nameAttributeKey(userNameAttributeName)
             .build();
     }
 
-    private static OAuthAttributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
-        Map<String, Object> response = (Map<String, Object>)attributes.get("response");
-
+    private static OAuthAttributes ofKakao(Map<String, Object> attributes) {
+        Map<String, Object> response = (Map<String, Object>)attributes.get("kakao_account");
+        Map<String, Object> profile = (Map<String, Object>)response.get("profile");
         log.info("kakao response : " + response);
-        /**
-         * TODO: 카카오 추가 구현
-         * */
-        return null;
+        return OAuthAttributes.builder()
+            .email((String)response.get("email"))
+            .nickname((String)profile.get("nickname"))
+            .attributes(attributes)
+            .build();
     }
 
     @Override
