@@ -32,16 +32,14 @@ public class Record extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-
     //연관관계 매핑 Record:Member -> N:1
     @ManyToOne
-    @JoinColumn(name="memberId")
+    @JoinColumn(name = "memberId")
     private Member member;
-
 
     //연관관계 매핑 Record:SchedulePlace -> N:1
     @ManyToOne
-    @JoinColumn(name="schedulePlaceId")
+    @JoinColumn(name = "schedulePlaceId")
     private SchedulePlace schedulePlace;
 
     @Builder

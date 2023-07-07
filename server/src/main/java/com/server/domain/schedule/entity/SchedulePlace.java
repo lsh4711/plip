@@ -2,7 +2,6 @@ package com.server.domain.schedule.entity;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -40,11 +39,10 @@ public class SchedulePlace extends BaseEntity {
     @JoinColumn(name = "scheduleId")
     private Schedule schedule;
 
-    // @ManyToOne
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "placeId")
     private Place place;
 
-    @OneToMany(mappedBy="schedulePlace")
+    @OneToMany(mappedBy = "schedulePlace")
     private List<Record> records;
 }
