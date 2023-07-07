@@ -10,16 +10,18 @@ import com.server.domain.place.dto.PlaceDto;
 import com.server.global.validator.DateValid;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class ScheduleDto {
     @Getter
+    @Setter
     public static class Post {
         private String title; // optional, default: "{city} 여행 레츠고!"
         private String content; // optional, default: "즐거운 여행~!"
         private Integer memberCount; // optional, default: 1
 
         @NotBlank
-        private String city;
+        private String region;
 
         @DateValid
         private LocalDate startDate;

@@ -1,6 +1,7 @@
 package com.server.domain.schedule.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.server.domain.member.entity.Member;
@@ -13,12 +14,14 @@ import lombok.Setter;
 @Setter
 public class ScheduleResponse {
     private Long scheduleId;
-    private String city;
+    private String region;
     private String title;
     private String content;
     private Integer memberCount;
     private LocalDate startDate;
     private LocalDate endDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
     private Member member;
 
