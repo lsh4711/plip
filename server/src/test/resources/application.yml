@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    include: oauth
   redis:
     host: localhost
     port: 6379
