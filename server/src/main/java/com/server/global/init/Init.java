@@ -1,14 +1,16 @@
 package com.server.global.init;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.domain.member.entity.Member;
-import com.server.domain.member.repository.MemberRepository;
+import com.server.domain.member.service.MemberService;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.service.PlaceService;
 import com.server.domain.schedule.entity.Schedule;
@@ -16,45 +18,34 @@ import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.domain.schedule.service.ScheduleService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Profile("default")
 @RestController
+@RequiredArgsConstructor
 public class Init {
-    private MemberRepository memberRepository;
-    private ScheduleService scheduleService;
-    private SchedulePlaceService schedulePlaceService;
-    private PlaceService placeService;
+    private final MemberService memberService;
+    private final ScheduleService scheduleService;
+    private final SchedulePlaceService schedulePlaceService;
+    private final PlaceService placeService;
 
-    public Init(MemberRepository memberRepository,
-            ScheduleService scheduleService,
-            SchedulePlaceService schedulePlaceService,
-            PlaceService placeService) {
-        this.memberRepository = memberRepository;
-        this.scheduleService = scheduleService;
-        this.schedulePlaceService = schedulePlaceService;
-        this.placeService = placeService;
-    }
-
-    // @PostConstruct
-    public void init() throws ParseException {
+    @PostConstruct
+    public void init() {
         Member member = Member.builder()
-            .email("test@naver.com")
-            .password("12345678a!")
-            .nickname("테스트계정")
-            .build();
-        //log.info("테스트용 토큰을 발급했습니다: " + delegateTokenUtil.delegateTestAccessToken(member));
-        /**
-         * @author 다영
-         * 테스트 코드 오류로 service -> repository로 수정
-         * */
-        memberRepository.save(member);
+                .email("lsh@naver.com")
+                .password("lshlshlshlsh1234!@")
+                .nickname("음악")
+                .build();
+
+        memberService.createMember(member);
 
         Member newMember = Member.builder()
                 .memberId(1L)
                 .build();
         Schedule schedule = new Schedule();
-        schedule.setCity("제주도");
+        schedule.setRegion("제주도");
         schedule.setTitle("즐거운 여행 제목");
         schedule.setContent("여행 내용");
         schedule.setMemberCount(5);
@@ -77,33 +68,19 @@ public class Init {
             place.setLongitude(String.format("%d.%d", i * 121 + i * 23 + i * 3, i * 31));
             places.add(place);
 
-            /**
-             * @author 지인
-             * 테스트 돌리니
-             * TransientPropertyValueException에러가 나서, places와 newSchedule을 먼저 저장하고
-             * SchedulePlace에 set 되도록 변경함.
-             * 데이터 무결성원칙때문에 자동으로 생성되는 id는 set해주면 안된다고 함.
-             */
-
-            placeService.savePlaces(places);
-
             Schedule newSchedule = new Schedule();
-
-            scheduleService.saveSchedule(newSchedule);
-
-            //newSchedule.setScheduleId(1L);
-            // Place newPlace = new Place();
-            //newPlace.setPlaceId(Long.valueOf(i));
+            newSchedule.setScheduleId(1L);
+            Place newPlace = new Place();
+            newPlace.setPlaceId(Long.valueOf(i));
             SchedulePlace schedulePlace = new SchedulePlace();
             schedulePlace.setSchedule(newSchedule);
-            //schedulePlace.setPlace(newPlace);
-            schedulePlace.setPlace(place);
+            schedulePlace.setPlace(newPlace);
             schedulePlace.setDays(1);
             schedulePlace.setOrders(i);
             schedulePlaces.add(schedulePlace);
         }
 
+        placeService.savePlaces(places);
         schedulePlaceService.saveSchedulePlaces(schedulePlaces);
-
     }
 }
