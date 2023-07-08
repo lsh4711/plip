@@ -5,7 +5,7 @@ import SideToggleButton from './SideToggleButton';
 
 export const SidePanelVariants = cva(
   `
-  opening fixed h-screen w-96 bg-white drop-shadow-2xl    
+  opening flex flex-col fixed h-screen w-96 bg-white drop-shadow-2xl
   `,
   {
     variants: {
