@@ -3,9 +3,11 @@ package com.server.domain.place.dto;
 import javax.validation.constraints.NotBlank;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class PlaceDto {
     @Getter
+    @Setter
     public static class Post {
         @NotBlank
         private long apiId;

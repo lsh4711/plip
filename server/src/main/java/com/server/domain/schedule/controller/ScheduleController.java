@@ -75,7 +75,7 @@ public class ScheduleController {
 
         schedulePlaceService.saveSchedulePlaces(schedulePlaces);
 
-        URI location = UriCreator.createUri("schedules", savedSchedule.getScheduleId());
+        URI location = UriCreator.createUri("/api/schedules", savedSchedule.getScheduleId());
 
         // if (true) throw new CustomException(ExceptionCode.TEST_CODE);
         return ResponseEntity.created(location).build();
