@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Link, useMatch } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
 import { ReactComponent as MypageIcon } from '../../assets/icons/mypage.svg';
 import { ReactComponent as NotifyIcon } from '../../assets/icons/notification.svg';
@@ -9,13 +9,13 @@ import { ReactComponent as LogoIcon } from '../../assets/logo.svg';
 import Button from '../atom/Button';
 import DropDownMenus from './DropDownMenus';
 import { useCloseDropdown } from '@/hooks/useCloseDropdown';
+import Avatar from './Avatar';
 
 interface HeaderProps {
   isHome?: boolean;
 }
 
 const BeforeLogin = ({ isHome }: HeaderProps) => {
-  console.log(isHome);
   return (
     <>
       <Button className={isHome ? 'text-white' : ''}>
@@ -43,7 +43,7 @@ const AfterLogin = ({ isHome }: HeaderProps) => {
         <NotifyIcon />
       </Link>
       <Link to="/mypage">
-        <ProfileIcon />
+        <Avatar />
       </Link>
       <div
         className={`flex cursor-pointer select-none items-center text-sm ${isHome && 'text-white'}`}
