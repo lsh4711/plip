@@ -55,3 +55,35 @@
 .opening {
   transition: transform 0.3s ease;
 }
+
+.AccordionContent {
+  overflow: hidden;
+}
+.AccordionContent[data-state='open'] {
+  animation: slideDown 300ms ease-out;
+}
+.AccordionContent[data-state='closed'] {
+  animation: slideUp 300ms ease-out;
+}
+.AccordionChevron {
+  transition: transform 300ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+.AccordionTrigger[data-state='open'] > .AccordionChevron {
+  transform: rotate(180deg);
+}
+@keyframes slideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+@keyframes slideUp {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
