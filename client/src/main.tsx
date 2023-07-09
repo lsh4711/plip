@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
 import Providers from './components/common/Providers';
+import ModalProvider from '@/contexts/modal/ModalProvider';
 
 import '@/styles/animation.css';
 import '@/styles/global.css';
@@ -44,6 +45,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <Providers>
-    <RouterProvider router={router} />
+    <ModalProvider>
+      <RouterProvider router={router} />
+    </ModalProvider>
   </Providers>
 );
