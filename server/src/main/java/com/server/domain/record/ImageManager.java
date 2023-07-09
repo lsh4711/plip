@@ -124,6 +124,34 @@ public class ImageManager {
         return "";
     }
 
+    public void deleteImg(String recordId, String imgId) {
+        Long userId = getAuthenticatedMemberId();
+        String dirName = location + "/" + userId + "/" + recordId;
+
+        try{
+            File folder = new File(dirName);
+            if (folder.exists() && folder.isDirectory()) {
+                File[] files = folder.listFiles();
+                if (files != null) {
+                    for(File file:files){
+                        String fileName = file.getName();
+                        String fileId = fileName.substring(0, fileName.lastIndexOf('.'));
+                        if(fileId.equals(imgId)){
+                            boolean isDeleted = file.delete();
+                            if(isDeleted){
+                                log.info("이미지 삭제 성공!");
+                            }else{
+                                log.error("이미지 삭제 실패!");
+                            }
+                        }
+                    }
+                }
+            }
+        }catch (Exception e) {
+            log.error("이미지 불러오기 에러: " + e.getMessage());
+        }
+    }
+
     //로그인한 사용자 아이디 리턴
     private  Long getAuthenticatedMemberId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

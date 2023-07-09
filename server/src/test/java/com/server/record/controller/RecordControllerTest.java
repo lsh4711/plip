@@ -131,12 +131,12 @@ public class RecordControllerTest {
             .andExpect(status().isCreated())
             .andExpect(header().string("Location", is(startsWith("/api/records/"))))
             .andDo(
-                MockMvcRestDocumentationWrapper.document("일지 등록",
+                MockMvcRestDocumentationWrapper.document("여행 일지 등록",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     resource(
                         ResourceSnippetParameters.builder()
-                            .description("일지 등록")
+                            .description("여행 일지 등록")
                             .requestFields(
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("내용"))
@@ -148,7 +148,7 @@ public class RecordControllerTest {
     }
 
     @Test
-    @DisplayName("여행일지를 수정한다.")
+    @DisplayName("여행 일지를 수정한다.")
     void RecordControllerTest() throws Exception {
         //given
 
@@ -175,14 +175,14 @@ public class RecordControllerTest {
         actions
             .andExpect(status().isOk())
             .andDo(
-                MockMvcRestDocumentationWrapper.document("일지 수정",
+                MockMvcRestDocumentationWrapper.document("여행 일지 수정",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     pathParameters(
                         List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
                     resource(
                         ResourceSnippetParameters.builder()
-                            .description("일지 수정")
+                            .description("여행 일지 수정")
                             .requestFields(
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("내용"))
@@ -224,14 +224,14 @@ public class RecordControllerTest {
         actions
             .andExpect(status().isOk())
             .andDo(
-                MockMvcRestDocumentationWrapper.document("일지 조회",
+                MockMvcRestDocumentationWrapper.document("여행 일지 조회",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     pathParameters(
                         List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
                     resource(
                         ResourceSnippetParameters.builder()
-                            .description("일지 조회")
+                            .description("여행 일지 조회")
                             .responseFields(
                                 List.of(
                                     fieldWithPath("data").type(JsonFieldType.OBJECT).description("결과 데이터")
@@ -251,7 +251,7 @@ public class RecordControllerTest {
     }
 
     @Test
-    @DisplayName("전체 여행 일지를 조회한다.")
+    @DisplayName("여행 일지 전체를 조회한다.")
     @WithMockUser(username = "user@gmail.com", password = "1234", roles = "USER")
     void getRecordsByMemberId() throws Exception {
         //given
@@ -293,7 +293,7 @@ public class RecordControllerTest {
         actions
             .andExpect(status().isOk())
             .andDo(
-                MockMvcRestDocumentationWrapper.document("전체 일지 조회",
+                MockMvcRestDocumentationWrapper.document("여행 일지 전체 조회",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     requestParameters(
@@ -302,7 +302,7 @@ public class RecordControllerTest {
                             parameterWithName("size").description("Page Size"))),
                     resource(
                         ResourceSnippetParameters.builder()
-                            .description("전체 일지 조회")
+                            .description("여행 일지 전체 조회")
                             .responseFields(
                                 List.of(
                                     fieldWithPath("data").type(JsonFieldType.ARRAY).description("결과 데이터")
@@ -348,14 +348,14 @@ public class RecordControllerTest {
         //then
         actions.andExpect(status().isNoContent())
             .andDo(
-                MockMvcRestDocumentationWrapper.document("여행일지 삭제",
+                MockMvcRestDocumentationWrapper.document("여행 일지 삭제",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     pathParameters(
                         parameterWithName("record-id").description("일지 식별자 ID")),
                     resource(
                         ResourceSnippetParameters.builder()
-                            .description("여행일지 삭제")
+                            .description("여행 일지 삭제")
                             .build()))
 
             );
@@ -438,13 +438,13 @@ public class RecordControllerTest {
                     pathParameters(
                         List.of(
                             parameterWithName("record-id").description("일지 식별자 ID"),
-                            parameterWithName("img-id").description("일지 식별자 ID"))
+                            parameterWithName("img-id").description("이미지 식별자 ID"))
                     ),
                     resource(
                         ResourceSnippetParameters.builder()
                             .description("사진 조회")
                             .responseFields(
-                                fieldWithPath("data").description("사진 ")
+                                fieldWithPath("data").description("사진")
 
                             )
                             .build())));
@@ -452,7 +452,7 @@ public class RecordControllerTest {
     }
 
     @Test
-    @DisplayName("등록한 전체 사진을 조회한다.")
+    @DisplayName("등록한 사진 전체를 조회한다.")
     @WithMockUser(username = "user@gmail.com", password = "1234", roles = "USER")
     void getRecordAllImgTest() throws Exception {
         //given
@@ -483,14 +483,14 @@ public class RecordControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.images", hasSize(2)))
             .andDo(
-                MockMvcRestDocumentationWrapper.document("전체 사진 조회",
+                MockMvcRestDocumentationWrapper.document("사진 전체 조회",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     pathParameters(
                         List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
                     resource(
                         ResourceSnippetParameters.builder()
-                            .description("전체 사진 조회")
+                            .description("사진 전체 조회")
                             .responseFields(
                                 fieldWithPath("images").description("사진 목록")
 
@@ -498,4 +498,36 @@ public class RecordControllerTest {
                             .build())));
     }
 
+    @Test
+    @DisplayName("사진을 삭제한다.")
+    void deleteRecordImgTest() throws Exception {
+        //given
+        String recordId = "1";
+        String imgId = "1";
+
+        doNothing().when(imageManager).deleteImg(recordId,imgId);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+            delete(RECORD_DEFAULT_URL + "/{record-id}/img/{img-id}", recordId,imgId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        actions.andExpect(status().isNoContent())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("사진 삭제",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    pathParameters(
+                        parameterWithName("record-id").description("일지 식별자 ID"),
+                        parameterWithName("img-id").description("이미지 식별자 ID")),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("사진 삭제")
+                            .build()))
+
+            );
+
+    }
 }

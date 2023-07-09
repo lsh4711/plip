@@ -41,11 +41,11 @@ public class RecordService {
     public Record createRecord(Record record, Long schedulePlaceId) {
         Member member = authenticationMember();
         record.setMember(member);
-        // SchedulePlace schedulePlace = new SchedulePlace();
-        // schedulePlace.setSchedulePlaceId(schedulePlaceId);
+        SchedulePlace schedulePlace = new SchedulePlace();
+        schedulePlace.setSchedulePlaceId(schedulePlaceId);
 
-        record.setSchedulePlace(schedulePlaceService.findSchedulePlaceById(schedulePlaceId));
-        // record.setSchedulePlace(schedulePlace);
+        record.setSchedulePlace(schedulePlace);
+
         return recordRepository.save(record);
     }
 

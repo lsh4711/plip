@@ -10,7 +10,6 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
@@ -18,9 +17,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,12 +26,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.server.domain.member.entity.Member;
-import com.server.domain.member.service.MemberService;
 import com.server.domain.record.ImageManager;
 import com.server.domain.record.dto.ImageResponseDto;
 import com.server.domain.record.dto.RecordDto;
@@ -44,6 +38,7 @@ import com.server.domain.record.mapper.RecordMapper;
 import com.server.domain.record.service.RecordService;
 import com.server.global.dto.MultiResponseDto;
 import com.server.global.dto.SingleResponseDto;
+import com.server.global.exception.ExceptionCode;
 import com.server.global.utils.UriCreator;
 
 import lombok.RequiredArgsConstructor;
@@ -126,7 +121,7 @@ public class RecordController {
     //이미지 업로드
     @PostMapping("/{record-id}/img")
     public ResponseEntity<?> uploadRecordImg(@PathVariable("record-id") String recordId,
-        @RequestParam("images") List<MultipartFile> images) {
+        @RequestPart("images") List<MultipartFile> images) {
 
         try {
             Boolean uploadResult = imageManager.uploadImages(images, recordId);
@@ -161,7 +156,8 @@ public class RecordController {
 
         }catch (IOException e){
             log.error("이미지 파일 읽기 오류: " + e.getMessage(), e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ExceptionCode.INTERNAL_SERVER_ERROR.getMessage());
         }
     }
 
@@ -197,5 +193,18 @@ public class RecordController {
 
         return ResponseEntity.ok(imageResponseDto);
     }
+
+    //이미지 삭제
+    @DeleteMapping("/{record-id}/img/{img-id}")
+    public ResponseEntity<?> deleteRecordImg(@PathVariable("record-id") String recordId, @PathVariable("img-id") String imgId){
+        try{
+            imageManager.deleteImg(recordId, imgId);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ExceptionCode.INTERNAL_SERVER_ERROR.getMessage());
+        }
+    }
+
 
 }

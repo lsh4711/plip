@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.server.domain.place.dto.PlaceDto;
+
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.mapper.PlaceMapper;
 import com.server.domain.place.repository.PlaceRepository;
@@ -48,6 +49,7 @@ public class PlaceService {
 
     public List<Record> findRecords(Long placeId) {
         List<Record> records = new ArrayList<>();
+
         Optional<SchedulePlace> schedulePlaceOptional = schedulePlaceRepository.findByPlacePlaceId(placeId);
 
         if (schedulePlaceOptional.isPresent()) {

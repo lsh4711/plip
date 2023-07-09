@@ -4,6 +4,7 @@ import lombok.Getter;
 
 public enum ExceptionCode {
     TEST_CODE("테스트", 200),
+    INTERNAL_SERVER_ERROR("Internal Server Error", 500),
     NOT_IMPLEMENTATION("Not Implementation", 501),
 
     // 인증
