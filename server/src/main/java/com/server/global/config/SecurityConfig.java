@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -41,25 +42,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .headers().frameOptions().sameOrigin()
+            .headers().frameOptions().sameOrigin()
+            .and()
+            .csrf().disable()
+            .cors(withDefaults())
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+            .and()
+            .oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint()
+                .userService(oAuth2UserService)
                 .and()
-                .csrf().disable()
-                .cors(withDefaults())
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
-                .and()
-                .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint()
-                        .userService(oAuth2UserService)
-                        .and()
-                        .successHandler(
-                            new OAuth2SuccessHandler(delegateTokenUtil, refreshTokenService, memberRepository)))
-                .apply(customFilterConfigurers())
-                .and()
-                .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll());
+                .successHandler(
+                    new OAuth2SuccessHandler(delegateTokenUtil, refreshTokenService, memberRepository)))
+            .apply(customFilterConfigurers())
+            .and()
+            .authorizeHttpRequests(authorize -> authorize
+                .antMatchers("/*/user/**").authenticated()
+                .antMatchers(HttpMethod.PATCH, "/*/records/**").authenticated()
+                .anyRequest().permitAll());
 
         return http.build();
     }

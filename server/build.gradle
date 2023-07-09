@@ -47,6 +47,7 @@ dependencies {
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    testImplementation 'org.projectlombok:lombok:1.18.22'
     compileOnly 'org.projectlombok:lombok'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     runtimeOnly 'com.h2database:h2'
@@ -93,7 +94,7 @@ bootJar {
 }
 
 openapi3 {
-    server = "https://teamdev.shop:8000"
+    server = "https://localhost:8080"
     title = "코벤져스 API 문서"
     description = "Spring REST Docs with SwaggerUI."
     version = "0.0.1"

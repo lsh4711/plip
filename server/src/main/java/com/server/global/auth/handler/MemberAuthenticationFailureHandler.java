@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
@@ -22,17 +24,28 @@ public class MemberAuthenticationFailureHandler implements AuthenticationFailure
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
         AuthenticationException exception) throws IOException, ServletException {
         log.error("### Authentication failed: {}", exception.getMessage());
-        sendErrorResponse(response);
+        log.error("### Authentication failed: {}", exception.getClass().getName());
+        sendErrorResponse(response, exception);
     }
-
     /**
      * TODO: 중복 코드 발생
      *       세세한 에러 핸들링 예정
      * */
-    private void sendErrorResponse(HttpServletResponse response) throws IOException {
+    private void sendErrorResponse(HttpServletResponse response, AuthenticationException exception) throws IOException {
         Gson gson = new Gson();
+        response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.getWriter().write(gson.toJson(ExceptionCode.UNAUTHORIZED.getMessage()));
+        response.getWriter().write(gson.toJson(getErrorMessage(exception)));
+    }
+
+    private String getErrorMessage(AuthenticationException exception){
+        if(exception.getClass().equals(InternalAuthenticationServiceException.class)){
+            return "존재하지 않은 이메일입니다.";
+        }else if(exception.getClass().equals(BadCredentialsException.class)){
+            return "비밀번호가 맞지 않습니다.";
+        }else{
+            return "사용할 수 없는 사용자입니다.";
+        }
     }
 }

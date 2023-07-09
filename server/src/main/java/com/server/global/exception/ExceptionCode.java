@@ -15,6 +15,7 @@ public enum ExceptionCode {
     AUTH_MAIL_CODE_NOT_FOUND("Auth mail code not found", 404),
     REFRESH_TOKEN_NOT_FOUND("RefreshToken not found", 404),
     MAIL_SEND_FAIL("Send mail fail", 500),
+    NON_REGISTERED_USER("The email address is not registered.",400),
 
     // 회원
     MEMBER_NOT_FOUND("Member not found", 404),
