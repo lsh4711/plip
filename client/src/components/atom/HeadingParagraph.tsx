@@ -20,6 +20,7 @@ const HeadingVariants = cva(
         blue: 'text-[#4568DC]',
         gray: ' text-[#505050]',
         darkgray: 'text-[#343539]',
+        red: 'text-[#F05E54]',
       },
     },
     defaultVariants: {
