@@ -76,7 +76,7 @@ const MyPage = ({}: MyPageProps) => {
                 <div className="flex">
                   <Input
                     value={userNickname}
-                    placeholder="변경할 닉네임을 작성해주세요."
+                    placeholder="닉네임을 작성해주세요."
                     className="h-[52px]"
                     disabled={!isEditNickName}
                     {...editForm.register('nickname', { onChange: onChangeNickNameHandler })}
@@ -119,59 +119,68 @@ const MyPage = ({}: MyPageProps) => {
             </div>
 
             {/* edit email */}
-            <div className="flex gap-4">
-              <Input
-                value={userEmail}
-                placeholder="이메일을 입력해 주세요."
-                className="w-[300px]"
-                disabled={!isEditEmail}
-                {...editForm.register('email', {
-                  onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-                    const nowdata = editForm.getValues('email');
-                    console.log(nowdata);
-                  },
-                })}
-              />
-              {!isEditEmail ? (
-                <Button
-                  type="button"
-                  variant={'primary'}
-                  onClick={() => onEditHandler(isEditEmail, setIsEditEmail)}
-                >
-                  변경
-                </Button>
-              ) : (
-                <>
+            <div>
+              <div className="flex gap-4">
+                <Input
+                  value={userEmail}
+                  placeholder="이메일을 입력해 주세요."
+                  className="w-[300px]"
+                  disabled={!isEditEmail}
+                  {...editForm.register('email', {
+                    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+                      const nowdata = editForm.getValues('email');
+                      setUserEmail(nowdata);
+                      console.log(nowdata);
+                    },
+                  })}
+                />
+                {!isEditEmail ? (
                   <Button
                     type="button"
-                    variant={'ring'}
-                    hovercolor={'default'}
-                    onClick={() => {
-                      onEditHandler(isEditEmail, setIsEditEmail);
-                      if (isEditEmail && isRequestedEmailAuthentication) {
+                    variant={'primary'}
+                    onClick={() => onEditHandler(isEditEmail, setIsEditEmail)}
+                  >
+                    변경
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      type="button"
+                      variant={'ring'}
+                      hovercolor={'default'}
+                      onClick={() => {
+                        onEditHandler(isEditEmail, setIsEditEmail);
+                        if (isEditEmail && isRequestedEmailAuthentication) {
+                          onEditHandler(
+                            isRequestedEmailAuthentication,
+                            setIsRequestedEmailAuthentication
+                          );
+                        }
+                      }}
+                    >
+                      취소
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={'primary'}
+                      onClick={() => {
                         onEditHandler(
                           isRequestedEmailAuthentication,
                           setIsRequestedEmailAuthentication
                         );
-                      }
-                    }}
-                  >
-                    취소
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={'primary'}
-                    onClick={() =>
-                      onEditHandler(
-                        isRequestedEmailAuthentication,
-                        setIsRequestedEmailAuthentication
-                      )
-                    }
-                  >
-                    요청하기
-                  </Button>
-                </>
-              )}
+                      }}
+                      // disabled={
+                      //   editForm.formState.errors.email?.message ||
+                      //   editForm.getValues('email') !== ''
+                      //     ? true
+                      //     : false
+                      // }
+                    >
+                      요청하기
+                    </Button>
+                  </>
+                )}
+              </div>
               <Paragraph variant={'red'} size="xs" className=" mt-1">
                 {editForm.formState.errors.email?.message && editForm.getValues('email') !== ''
                   ? editForm.formState.errors.email.message
@@ -195,10 +204,11 @@ const MyPage = ({}: MyPageProps) => {
                   type={'password'}
                   placeholder="비밀번호를 입력해 주세요. (영문, 숫자, 특수문자 포함 8자 이상)."
                   className=" flex-grow"
+                  {...editForm.register('password')}
                 />
               </div>
               <Paragraph variant={'red'} size="xs" className=" mt-1">
-                <p></p>
+                <p>{editForm.formState.errors.password?.message}</p>
               </Paragraph>
             </div>
 
@@ -208,10 +218,11 @@ const MyPage = ({}: MyPageProps) => {
                   type={'password'}
                   placeholder="다시 한번 비밀번호를 입력해 주세요"
                   className=" flex-grow"
+                  {...editForm.register('checkpassword')}
                 />
               </div>
               <Paragraph variant={'red'} size="xs" className=" mt-1">
-                <p></p>
+                <p>{editForm.formState.errors.checkpassword?.message}</p>
               </Paragraph>
             </div>
             <div className="flex justify-center gap-4">
