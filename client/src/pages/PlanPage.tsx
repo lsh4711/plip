@@ -1,11 +1,15 @@
+import dayjs from 'dayjs';
 import { useState } from 'react';
 
 import { Button, HeadingParagraph } from '@/components';
+import Confirm from '@/components/common/Confirm';
 import DatePicker from '@/components/common/DatePicker';
 import RegionCard from '@/components/common/RegionCard';
 import { regionInfos, regions } from '@/datas/regions';
+import useModal from '@/hooks/useModal';
+import getFormatDateString from '@/utils/getFormatDateString';
 import getTripPeriod from '@/utils/getTripPeriod';
-import dayjs from 'dayjs';
+import getTripTitleWithRegion from '@/utils/getTripTitleWithRegion';
 
 interface PlanPageProps {}
 
@@ -13,6 +17,44 @@ const PlanPage = ({}: PlanPageProps) => {
   const [startDate, setStartDate] = useState<Date | null>();
   const [endDate, setEndDate] = useState<Date | null>();
   const [selectedRegion, setSelectedRegion] = useState<(typeof regions)[number] | null>(null);
+
+  const [openModal] = useModal();
+
+  const openConfirm = () => {
+    if (startDate && endDate && selectedRegion) {
+      openModal(({ isOpen, close }) => (
+        <Confirm
+          type={'default'}
+          title={'다음 일정으로 계획을 생성할까요?'}
+          content={`${getTripTitleWithRegion(selectedRegion)} (${getFormatDateString(
+            startDate,
+            true,
+            'dot'
+          )} ~ ${getFormatDateString(endDate, true, 'dot')}, ${getTripPeriod(startDate, endDate)})`}
+          primaryLabel={'확인'}
+          secondaryLabel="취소"
+          onClickPrimaryButton={createPlan}
+          isOpen={isOpen}
+          onClose={close}
+        />
+      ));
+    } else {
+      openModal(({ isOpen, close }) => (
+        <Confirm
+          type={'warning'}
+          title={'알림'}
+          content={'여행 날짜와 여행지를 선택했는지 확인해 주세요.'}
+          primaryLabel={'확인'}
+          isOpen={isOpen}
+          onClose={close}
+        />
+      ));
+    }
+  };
+
+  const createPlan = () => {
+    // TODO request
+  };
 
   return (
     <main className="smooth relative flex h-full w-full max-w-7xl flex-col px-12 transition-all duration-300 ">
@@ -25,7 +67,12 @@ const PlanPage = ({}: PlanPageProps) => {
           계획 중이신 여행에 대해 알려주세요.
         </HeadingParagraph>
         <div className="fixed bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-white from-60% to-white/0 px-12 pb-6 pt-3 md:static md:w-auto md:p-0">
-          <Button variant={'primary'} activecolor={'active'} className="w-full">
+          <Button
+            variant={'primary'}
+            activecolor={'active'}
+            className="w-full"
+            onClick={openConfirm}
+          >
             계획 작성하기
           </Button>
         </div>
