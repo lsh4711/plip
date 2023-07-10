@@ -19,7 +19,7 @@ import PlanMapPage from './pages/PlanMapPage';
 import PlanPage from './pages/PlanPage';
 import SignUpPage from './pages/SignUpPage';
 import Bookmark from './pages/Bookmark';
-import FindPasswordPage from './pages/FindPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import SignOutPage from './pages/SignOutPage';
 
 const router = createBrowserRouter([
@@ -32,7 +32,7 @@ const router = createBrowserRouter([
       { path: 'login', element: <LoginPage /> },
       { path: 'signup', element: <SignUpPage /> },
       { path: 'signout', element: <SignOutPage /> },
-      { path: 'login/password', element: <FindPasswordPage /> },
+      { path: 'login/password', element: <ResetPasswordPage /> },
       { path: 'plan', element: <PlanPage /> },
       { path: 'mypage', element: <MyPage /> },
       { path: 'mypage/mytrip', element: <MyTripPage /> },
