@@ -24,13 +24,15 @@ const LoginPage = ({}: LoginPageProps) => {
   const loginMutation = useLoginMutation();
   const loginForm = useForm<LoginType>({ resolver: zodResolver(loginSchema) });
   const onSubmit: SubmitHandler<LoginType> = (data) => {
-    const onSubmitLogin = async () => {
-      const response = await loginMutation.mutateAsync(data);
-      console.log(response);
-    };
-    onSubmitLogin();
+    loginMutation
+      .mutateAsync(data)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log('에러확인하세여');
+      });
   };
-  console.log(loginMutation.status);
   return (
     <main className="mx-auto mt-24 flex max-w-[1024px] flex-col items-center justify-center">
       <div className=" mb-10">
@@ -54,9 +56,9 @@ const LoginPage = ({}: LoginPageProps) => {
             type={'password'}
             {...loginForm.register('password')}
           />
-          <Button variant={'primary'} className=" flex gap-4" size="lg">
+          <Button variant={'primary'} className=" flex gap-4" type="submit" size="lg">
             {loginMutation.status === 'loading' ? <LoadingSpinner /> : null}
-            <span>Sign up</span>
+            <span>login</span>
           </Button>
         </form>
         <OauthUI />

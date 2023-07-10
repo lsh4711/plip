@@ -1,7 +1,5 @@
 import { Button, HeadingParagraph, Input, Paragraph } from '@/components';
 import OauthUI from '@/components/helper/OauthUI';
-
-import useThrottle from '@/hooks/useThrottle';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -10,6 +8,8 @@ import { passwordRegex, nicknameRegex } from '@/datas/constants';
 import useEmailRequestMutation from '@/queries/useEmailRequestMutation';
 import useEmailValidationMutation from '@/queries/useEmailValidationMutation';
 import { useSignupMutation } from '@/queries';
+import LoadingSpinner from '@/components/atom/LoadingSpinner';
+import useDebounce from '@/hooks/useDebounce';
 
 const SignUpPage = () => {
   const [isEmailValid, setIsEmailValid] = React.useState(true);
@@ -17,19 +17,19 @@ const SignUpPage = () => {
   const [isAuthNumberDisabled, setIsAuthNumberDisabled] = React.useState(true);
   const emailRequestMutation = useEmailRequestMutation();
   const emailValidationMutation = useEmailValidationMutation();
-  const onSubmitMutation = useSignupMutation();
-  const signupForm = useForm<SingupType>({
+  const signupMutation = useSignupMutation();
+  const signupForm = useForm<SignupType>({
     mode: 'all',
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit: SubmitHandler<SingupType> = (data) => {
+  const onSubmit: SubmitHandler<SignupType> = (data) => {
     if (!isEmailValid) return;
 
     const onSubmitFn = async () => {
-      const response = await onSubmitMutation.mutateAsync(data);
+      const response = await signupMutation.mutateAsync(data);
       console.log(response);
-      if (!response.ok) {
+      if (response.status === 201) {
         setIsNicknameValid(false);
       } else {
         alert('이게되네');
@@ -38,20 +38,20 @@ const SignUpPage = () => {
     onSubmitFn();
   };
 
-  const emailCredentialRequest = useThrottle(() => {
+  const emailCredentialRequest = useDebounce(() => {
     if (signupForm.formState.errors.email?.message !== undefined) return;
     if (signupForm.getValues('email') === '') return;
 
     const postCredentialRequestFn = async () => {
       const response = await emailRequestMutation.mutateAsync(signupForm.getValues('email'));
-      if (response.ok) {
+      if (response.status === 200) {
         setIsAuthNumberDisabled(false);
       }
     };
     postCredentialRequestFn();
-  }, 2000);
+  }, 500);
 
-  const sendVerificationCodeEmail = useThrottle(() => {
+  const sendVerificationCodeEmail = useDebounce(() => {
     const postVerificationCode = async () => {
       if (signupForm.getValues('authnumber') === '') return;
       if (signupForm.getValues('authnumber') === undefined) return;
@@ -60,7 +60,7 @@ const SignUpPage = () => {
         authcode: signupForm.getValues('authnumber') as string,
         email: signupForm.getValues('email'),
       });
-      if (response.ok) {
+      if (response.status === 200) {
         setIsEmailValid(true);
         setIsAuthNumberDisabled(true);
       } else {
@@ -69,7 +69,8 @@ const SignUpPage = () => {
       }
     };
     postVerificationCode();
-  }, 2000);
+  }, 500);
+  console.log(emailRequestMutation.status);
 
   return (
     <main className="mx-auto flex max-w-[1024px] flex-col  ">
@@ -91,15 +92,17 @@ const SignUpPage = () => {
                 <Input
                   placeholder="이메일을 입력해 주세요."
                   className=" flex-grow"
-                  {...signupForm.register('email', {
-                    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-                      const nowdata = signupForm.getValues('email');
-                      console.log(nowdata);
-                    },
-                  })}
+                  {...signupForm.register('email')}
                 />
-                <Button variant={'primary'} type="button" onClick={() => emailCredentialRequest()}>
-                  인증 요청
+                <Button
+                  variant={'primary'}
+                  className=" flex gap-2"
+                  size="lg"
+                  type="button"
+                  onClick={() => emailCredentialRequest()}
+                >
+                  {emailRequestMutation.status === 'loading' ? <LoadingSpinner /> : null}
+                  <span>인증 요청</span>
                 </Button>
               </div>
               <Paragraph variant={'red'} size="xs" className=" mt-1">
@@ -122,8 +125,10 @@ const SignUpPage = () => {
                   variant={'primary'}
                   type="button"
                   onClick={() => sendVerificationCodeEmail()}
+                  className=" flex gap-2"
                 >
-                  인증 하기
+                  {emailValidationMutation.status === 'loading' ? <LoadingSpinner /> : null}
+                  <span>인증 하기</span>
                 </Button>
               </div>
               <Paragraph variant={'red'} size="xs" className=" mt-1">
@@ -172,8 +177,9 @@ const SignUpPage = () => {
                 <p> {signupForm.formState.errors.checkpassword?.message}</p>
               </Paragraph>
             </div>
-            <Button variant={'primary'} size="lg" type="submit">
-              Sign up
+            <Button variant={'primary'} className=" flex gap-4" size="lg">
+              {signupMutation.status === 'loading' ? <LoadingSpinner /> : null}
+              <span>Sign up</span>
             </Button>
           </form>
           <OauthUI />
@@ -208,6 +214,6 @@ const signupSchema = z
     }
   });
 
-export type SingupType = z.infer<typeof signupSchema>;
+export type SignupType = z.infer<typeof signupSchema>;
 
 export default SignUpPage;

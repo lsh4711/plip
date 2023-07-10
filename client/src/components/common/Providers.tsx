@@ -1,4 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import store from '@/redux/store';
+import { Provider } from 'react-redux';
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -13,7 +15,11 @@ const Providers = ({ children }: ProvidersProps) => {
     },
   });
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return (
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </Provider>
+  );
 };
 
 export default Providers;
