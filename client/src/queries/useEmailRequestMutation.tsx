@@ -10,13 +10,7 @@ const postEmailRequest = async (email: string) => {
       'Content-Type': 'application/json;charset=utf-8',
     },
   });
-  const result = await response.json();
-  const ok = response.ok;
-  return {
-    result,
-    ok,
-    response,
-  };
+  return response;
 };
 
 const useEmailRequestMutation = () => {

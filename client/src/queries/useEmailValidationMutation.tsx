@@ -10,15 +10,11 @@ const postEmailValidation = async ({ email, authcode }: EmailValidationType) => 
   const response = await fetch(`${BASE_URL}/api/mail/auth`, {
     method: 'POST',
     body: JSON.stringify({ email, authcode }),
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    },
   });
-  const result = await response.json();
-  const ok = response.ok;
-
-  return {
-    result,
-    ok,
-    response,
-  };
+  return response;
 };
 
 const useEmailValidationMutation = () => {

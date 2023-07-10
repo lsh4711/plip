@@ -35,7 +35,6 @@ const SignUpPage = () => {
 
     const postCredentialRequestFn = async () => {
       const response = await emailRequestMutation.mutateAsync(signupForm.getValues('email'));
-      console.log(response.result);
       if (response.ok) {
         setIsAuthNumberDisabled(false);
       }
@@ -53,7 +52,6 @@ const SignUpPage = () => {
         email: signupForm.getValues('email'),
       });
 
-      console.log(response.result);
       if (response.ok) {
         setIsEmailValid(true);
         setIsAuthNumberDisabled(true);

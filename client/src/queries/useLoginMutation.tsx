@@ -15,13 +15,11 @@ const postLogin = async (loginData: LoginType) => {
   const ACCESS_TOKEN = response.headers.get('Authorization');
   const REFRESH_TOKEN = response.headers.get('Refresh');
   const status = isSuccessStatus(response);
-  const result = await response.json();
   return {
     accesstoken: ACCESS_TOKEN,
     refreshtoken: REFRESH_TOKEN,
-    memberId: result.memberId,
-    body: result,
     status: status,
+    response,
   };
 };
 
