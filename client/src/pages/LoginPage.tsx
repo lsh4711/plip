@@ -23,7 +23,7 @@ const LoginPage = ({}: LoginPageProps) => {
   const loginMutation = useLoginMutation();
   const loginForm = useForm<LoginType>({ resolver: zodResolver(loginSchema) });
   const onSubmit: SubmitHandler<LoginType> = (data) => {
-    console.log(data);
+    loginMutation.mutateAsync(data).then((datas) => console.log(datas));
   };
   return (
     <main className="mx-auto mt-24 flex max-w-[1024px] flex-col items-center justify-center">
