@@ -7,7 +7,7 @@ interface EmailValidationType {
 }
 
 const postEmailValidation = async ({ email, authcode }: EmailValidationType) => {
-  const response = await fetch(`${BASE_URL}/email/auth`, {
+  const response = await fetch(`${BASE_URL}/api/email/auth`, {
     method: 'POST',
     body: JSON.stringify({ email, authcode }),
   });

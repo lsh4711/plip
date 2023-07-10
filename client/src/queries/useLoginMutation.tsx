@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import BASE_URL from './BASE_URL';
 
 const postLogin = async (loginData: LoginType) => {
-  const response = await fetch(`${BASE_URL}/users/login`, {
+  const response = await fetch(`${BASE_URL}/api/users/login`, {
     method: 'POST',
     body: JSON.stringify(loginData),
     credentials: 'include',

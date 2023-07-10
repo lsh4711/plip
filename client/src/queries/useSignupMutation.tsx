@@ -2,7 +2,7 @@ import { SingupType } from '@/pages/SignUpPage';
 import BASE_URL from './BASE_URL';
 
 export const postSignup = async (signupData: SingupType) => {
-  const response = await fetch(`${BASE_URL}/users/signup`, {
+  const response = await fetch(`${BASE_URL}/api/users/signup`, {
     method: 'POST',
     body: JSON.stringify(signupData),
     // credentials: 'include',

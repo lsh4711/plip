@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import BASE_URL from './BASE_URL';
 
 const postEmailRequest = async (email: string) => {
-  const response = await fetch(`${BASE_URL}/email/signup`, {
+  const response = await fetch(`${BASE_URL}/api/email/signup`, {
     method: 'POST',
     body: JSON.stringify(email),
   });
