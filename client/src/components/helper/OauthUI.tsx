@@ -20,7 +20,7 @@ const OauthUI = ({}: OauthUIProps) => {
       <div className=" mt-6 flex flex-col items-center justify-center gap-y-6">
         <Paragraph>
           이미 회원이신가요?{' '}
-          <a href="/" className=" text-blue-500">
+          <a href="/login" className=" text-blue-500">
             로그인하기
           </a>
         </Paragraph>

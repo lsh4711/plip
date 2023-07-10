@@ -10,7 +10,7 @@ interface LoginPageProps {}
 let passwordRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
 
 const loginSchema = z.object({
-  email: z
+  username: z
     .string()
     .min(1, { message: '이메일을 입력해주세요' })
     .email({ message: '유효하지 않은 이메일 양식입니다.' }),
@@ -23,7 +23,11 @@ const LoginPage = ({}: LoginPageProps) => {
   const loginMutation = useLoginMutation();
   const loginForm = useForm<LoginType>({ resolver: zodResolver(loginSchema) });
   const onSubmit: SubmitHandler<LoginType> = (data) => {
-    loginMutation.mutateAsync(data).then((datas) => console.log(datas));
+    const onSubmitLogin = async () => {
+      const response = await loginMutation.mutateAsync(data);
+      console.log(response);
+    };
+    onSubmitLogin();
   };
   return (
     <main className="mx-auto mt-24 flex max-w-[1024px] flex-col items-center justify-center">
@@ -41,7 +45,7 @@ const LoginPage = ({}: LoginPageProps) => {
           className=" flex w-[460px] flex-col gap-y-7"
           onSubmit={loginForm.handleSubmit(onSubmit)}
         >
-          <Input placeholder="이메일을 입력해 주세요." {...loginForm.register('email')} />
+          <Input placeholder="이메일을 입력해 주세요." {...loginForm.register('username')} />
           <Input
             placeholder="비밀번호를 입력해 주세요."
             type={'password'}
