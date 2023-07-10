@@ -93,8 +93,8 @@ bootJar {
 }
 
 openapi3 {
-//    server = "https://teamdev.shop:8000"
-    server = "http://localhost:8080"
+    server = "https://teamdev.shop:8000"
+//    server = "http://localhost:8080"
     title = "코벤져스 API 문서"
     description = "Spring REST Docs with SwaggerUI."
     version = "0.0.1"
