@@ -283,6 +283,7 @@ public class RecordControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
             get(RECORD_DEFAULT_URL)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
                 .contentType(MediaType.APPLICATION_JSON)
                 .params(queryParams)
                 .accept(MediaType.APPLICATION_JSON)
@@ -409,7 +410,7 @@ public class RecordControllerTest {
     }
 
     @Test
-    @DisplayName("이미지 식별자로 이미지를 조회한다.")
+    @DisplayName("이미지 식별자로 사진을 조회한다.")
     void getRecordImgTest() throws Exception {
         //given
         Long recordId = 1L;
@@ -424,6 +425,7 @@ public class RecordControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
             get(RECORD_DEFAULT_URL + "/{record-id}/img/{img-id}", recordId, imgId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
                 .contentType(MediaType.IMAGE_JPEG)
 
         );
@@ -474,6 +476,7 @@ public class RecordControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
             get(RECORD_DEFAULT_URL + "/{record-id}/img", recordId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
                 .contentType(MediaType.APPLICATION_JSON)
 
         );

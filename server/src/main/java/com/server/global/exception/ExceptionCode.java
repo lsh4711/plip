@@ -26,9 +26,10 @@ public enum ExceptionCode {
     SCHEDULE_NOT_FOUND("Schedule Not Found.", 404),
 
     // 일지
+
+    CANNOT_ACCESS_RECORD("Unauthorized to access the record", 403),
     CANNOT_CHANGE_RECORD("No modify/delete permissions for this record", 403),
     RECORD_NOT_FOUND("Record Not Found.", 404),
-    RECORD_EXISTS("Record already exists.", 409),
 
 
     // 이미지
