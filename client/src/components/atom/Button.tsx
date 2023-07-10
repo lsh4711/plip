@@ -16,6 +16,7 @@ export const ButtonVariants = cva(
         ring: ' ring-1 ring-[#343539] text-[#343539]',
         primary: 'bg-[#4568DC] text-white dark:text-white',
         optional: ' text-[#bbbbbb] bg-[#F6F8FC]',
+        warn: 'bg-[#F05E54] text-white dark:text-white',
       },
       size: {
         default: 'py-[0.625rem] px-4 ',

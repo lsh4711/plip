@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
 import Providers from './components/common/Providers';
+import ModalProvider from '@/contexts/modal/ModalProvider';
 
 import '@/styles/animation.css';
 import '@/styles/global.css';
@@ -18,7 +19,8 @@ import PlanMapPage from './pages/PlanMapPage';
 import PlanPage from './pages/PlanPage';
 import SignUpPage from './pages/SignUpPage';
 import Bookmark from './pages/Bookmark';
-import FindPassword from './pages/FindPassword';
+import FindPasswordPage from './pages/FindPasswordPage';
+import SignOutPage from './pages/SignOutPage';
 
 const router = createBrowserRouter([
   {
@@ -29,10 +31,10 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'signup', element: <SignUpPage /> },
-      { path: 'login/password', element: <FindPassword /> },
+      { path: 'signout', element: <SignOutPage /> },
+      { path: 'login/password', element: <FindPasswordPage /> },
       { path: 'plan', element: <PlanPage /> },
       { path: 'mypage', element: <MyPage /> },
-      { path: 'bookmark', element: <Bookmark /> },
       { path: 'mypage/mytrip', element: <MyTripPage /> },
       { path: 'mypage/myrecord', element: <MyRecordPage /> },
       { path: 'mypage/footprint', element: <FootPrintPage /> },
@@ -44,6 +46,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <Providers>
-    <RouterProvider router={router} />
+    <ModalProvider>
+      <RouterProvider router={router} />
+    </ModalProvider>
   </Providers>
 );
