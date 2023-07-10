@@ -4,6 +4,7 @@ import lombok.Getter;
 
 public enum ExceptionCode {
     TEST_CODE("테스트", 200),
+    INTERNAL_SERVER_ERROR("Internal Server Error", 500),
     NOT_IMPLEMENTATION("Not Implementation", 501),
     // 인증
     SIGNATURE_INVALID("잘못된 JWT 서명입니다.", 401),
@@ -25,9 +26,14 @@ public enum ExceptionCode {
     SCHEDULE_NOT_FOUND("Schedule Not Found.", 404),
 
     // 일지
+
+    CANNOT_ACCESS_RECORD("Unauthorized to access the record", 403),
     CANNOT_CHANGE_RECORD("No modify/delete permissions for this record", 403),
     RECORD_NOT_FOUND("Record Not Found.", 404),
-    RECORD_EXISTS("Record already exists.", 409),
+
+
+    // 이미지
+    IMAGE_NOT_FOUND("Image Not Found.", 404),
 
     // 일정_장소
     SCHEDULE_PLACE_NOT_FOUND("Schedule Place Not Found.", 404),

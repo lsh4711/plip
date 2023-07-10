@@ -1,0 +1,115 @@
+package com.server.schedule.controller;
+
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.server.domain.place.dto.PlaceDto;
+import com.server.domain.place.entity.Place;
+import com.server.domain.place.mapper.PlaceMapper;
+import com.server.domain.place.service.PlaceService;
+import com.server.domain.schedule.dto.ScheduleDto;
+import com.server.domain.schedule.entity.Schedule;
+import com.server.domain.schedule.service.SchedulePlaceService;
+import com.server.domain.schedule.service.ScheduleService;
+import com.server.helper.LocalDateAdapter;
+import com.server.helper.StubData.MockPlace;
+import com.server.helper.StubData.MockSchedule;
+
+@ActiveProfiles("test")
+@SpringBootTest
+@AutoConfigureMockMvc
+@AutoConfigureRestDocs
+public class ScheduleControllerTest {
+    private static final String BASE_URL = "/api/schedules";
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private PlaceMapper placeMapper;
+
+    // @Autowired
+    private Gson gson = new GsonBuilder()
+            // .setPrettyPrinting()
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .create();
+
+    @MockBean
+    private ScheduleService scheduleService;
+
+    @MockBean
+    private PlaceService placeService;
+
+    @MockBean
+    private SchedulePlaceService schedulePlaceService;
+
+    @Test
+    @DisplayName("일정 등록")
+    void postScheduleTest() throws Exception {
+        //given
+        ScheduleDto.Post postDto = MockSchedule.postDto;
+        List<PlaceDto.Post> placePostDtos = MockPlace.postDtos;
+        postDto.setPlaceDtos(placePostDtos);
+        String requestBody = gson.toJson(postDto);
+
+        List<Place> places = placeMapper.postDtosToPlaces(placePostDtos);
+        Schedule schedule = new Schedule();
+        schedule.setScheduleId(1L);
+
+        given(scheduleService.saveSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
+        given(placeService.savePlaces(Mockito.<Place>anyList())).willReturn(places);
+        // given(schedulePlaceService.saveSchedulePlaces(Mockito.<SchedulePlace>anyList())).willReturn(null);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+            post(BASE_URL + "/write")
+                    .content(requestBody)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location",
+                    is(startsWith("/api/schedules"))))
+                .andDo(
+                    document("일정 등록",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                    .description("일정 등록")
+                                    .requestFields(List.of())
+                                    .responseFields(List.of())
+                                    .build())));
+    }
+
+}

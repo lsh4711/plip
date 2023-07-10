@@ -1,5 +1,9 @@
 server:
   port: 8080
+#  ssl:
+#    key-store: classpath:aws.p12
+#    key-store-type: PKCS12
+#    key-store-password: ${KEY_STORE_PASSWORD}
 spring:
   config.activate.on-profile: default
   redis:
