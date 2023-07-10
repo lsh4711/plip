@@ -30,6 +30,10 @@ public enum ExceptionCode {
     RECORD_NOT_FOUND("Record Not Found.", 404),
     RECORD_EXISTS("Record already exists.", 409),
 
+
+    // 이미지
+    IMAGE_NOT_FOUND("Image Not Found.", 404),
+
     // 일정_장소
     SCHEDULE_PLACE_NOT_FOUND("Schedule Place Not Found.", 404),
 

@@ -29,6 +29,7 @@ public class ImageManager {
 
     private final MemberService memberService;
 
+    //이미지 업로드
     public  Boolean uploadImages(List<MultipartFile> images, String recordId) throws Exception {
         Long userId = getAuthenticatedMemberId();
         String dirName = location + "/" + userId + "/" + recordId;
@@ -37,17 +38,56 @@ public class ImageManager {
 
         try {
             File folder = new File(dirName);
-            if (!folder.exists()) {
+            if (!folder.exists()||folder.listFiles().length==0) { //처음 사진을 저장하거나 저장된 사진이 없는 경우
                 folder.mkdirs();
+
+                for (int i = 0; i < images.size(); i++) {
+                    MultipartFile image = images.get(i);
+                    String fileExtension = getFileExtension(image);
+                    String fileName = String.valueOf(i) + fileExtension;
+                    File destination = new File(dirName + File.separator + fileName);
+                    image.transferTo(destination);
+                    result++;
+                }
+            }else{ //이미 저장된 사진이 있는 경우
+                File[] existingFiles = folder.listFiles();
+                int lastIndex = -1;
+
+                if (existingFiles.length > 0) {
+                    // 기존 파일들을 검사하여 가장 높은 인덱스 찾기
+                    for (File file : existingFiles) {
+                        String fileName = file.getName();
+                        int dotIndex = fileName.lastIndexOf(".");
+                        if (dotIndex > 0) {
+                            String indexStr = fileName.substring(0, dotIndex);
+                            try {
+                                int index = Integer.parseInt(indexStr);
+                                if (index > lastIndex) {
+                                    lastIndex = index;
+                                }
+                            } catch (NumberFormatException e) {
+                                // 파일 이름이 숫자로 시작하지 않는 경우 무시
+                            }
+                        }
+                    }
+                    lastIndex++; // 다음 인덱스 계산
+                } else {
+                    lastIndex = 0; // 기존 파일이 없는 경우 0으로 시작
+                }
+
+
+                for(int i=0;i<images.size();i++){
+                    MultipartFile image = images.get(i);
+                    String fileExtension = getFileExtension(image);
+                    String fileName = (lastIndex + i) + fileExtension;
+                    File destination = new File(dirName + File.separator + fileName);
+                    image.transferTo(destination);
+                    result++;
+                }
+
+                existingFiles = folder.listFiles();
             }
-            for (int i = 0; i < images.size(); i++) {
-                MultipartFile image = images.get(i);
-                String fileExtension = getFileExtension(image);
-                String fileName = String.valueOf(i) + fileExtension;
-                File destination = new File(dirName + File.separator + fileName);
-                image.transferTo(destination);
-                result++;
-            }
+
         } catch (Exception e) {
             log.error("사진 저장 에러 :" + e.getMessage());
             return Boolean.FALSE;
@@ -62,6 +102,7 @@ public class ImageManager {
         }
     }
 
+    //이미지 조회 - 대표 이미지
     public  Resource loadImage(String recordId, String imgId){
         Long userId = getAuthenticatedMemberId();
         String dirName = location + "/" + userId + "/" + recordId;
@@ -86,7 +127,7 @@ public class ImageManager {
         return null;
     }
 
-
+    //전체 이미지 조회
     public  List<Resource> loadImages(String recordId) {
         Long userId = getAuthenticatedMemberId();
         String dirName = location + "/" + userId + "/" + recordId;
@@ -124,6 +165,7 @@ public class ImageManager {
         return "";
     }
 
+    //이미지 삭제
     public void deleteImg(String recordId, String imgId) {
         Long userId = getAuthenticatedMemberId();
         String dirName = location + "/" + userId + "/" + recordId;

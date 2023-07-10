@@ -143,22 +143,30 @@ public class RecordController {
 
         Resource imageFile = imageManager.loadImage(recordId, imgId);
 
-        try{
-            Resource imageResource = new UrlResource(imageFile.getURI());
-            byte[] imageBytes = Files.readAllBytes(imageResource.getFile().toPath());
-            String imageBase64 = Base64.getEncoder()
-                .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
+        if(imageFile.exists()){
+            try{
+                Resource imageResource = new UrlResource(imageFile.getURI());
+                byte[] imageBytes = Files.readAllBytes(imageResource.getFile().toPath());
+                String imageBase64 = Base64.getEncoder()
+                    .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_JPEG);
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.IMAGE_JPEG);
 
-            return new ResponseEntity<>(new SingleResponseDto<>(imageBase64), HttpStatus.OK);
+                return new ResponseEntity<>(new SingleResponseDto<>(imageBase64), HttpStatus.OK);
 
-        }catch (IOException e){
-            log.error("이미지 파일 읽기 오류: " + e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ExceptionCode.INTERNAL_SERVER_ERROR.getMessage());
+            }catch (IOException e){
+                log.error("이미지 파일 읽기 오류: " + e.getMessage(), e);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ExceptionCode.INTERNAL_SERVER_ERROR.getMessage());
+            }
         }
+        else{
+            log.error("이미지 파일이 존재하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ExceptionCode.IMAGE_NOT_FOUND.getMessage());
+        }
+
     }
 
     //이미지 조회 - base64 인코딩된 걸 리턴
@@ -167,7 +175,8 @@ public class RecordController {
 
         List<Resource> imageFiles = imageManager.loadImages(recordId);
         if (imageFiles.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ExceptionCode.IMAGE_NOT_FOUND.getMessage());
         }
 
         List<String> imageBase64List = new ArrayList<>();
