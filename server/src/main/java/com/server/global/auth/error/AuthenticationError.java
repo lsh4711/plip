@@ -21,18 +21,17 @@ public class AuthenticationError {
         Gson gson = new Gson();
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(getErrorStatus(exception).value());
         response.getWriter().write(gson.toJson(getErrorMessage(exception)));
     }
-
+    public static HttpStatus getErrorStatus(Exception exception){
+        if(exception.getClass().equals(CustomException.class))
+            return ((CustomException)exception).getStatus();
+        else
+            return HttpStatus.UNAUTHORIZED;
+    }
     public static String getErrorMessage(Exception exception){
-        if(exception.getClass().equals(InternalAuthenticationServiceException.class)){
-            return "회원가입되지 않은 이메일입니다.";
-        }else if(exception.getClass().equals(BadCredentialsException.class)){
-            return "비밀번호가 맞지 않습니다.";
-        }else if(exception.getClass().equals(ExpiredJwtException.class)){
-            return "토큰이 만료되어 재발급됐습니다.";
-        }else if(exception.getClass().equals(CustomException.class)){
+        if(exception.getClass().equals(CustomException.class)){
             return exception.getMessage();
         }
         else{

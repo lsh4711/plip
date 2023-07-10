@@ -30,6 +30,7 @@ import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,7 +49,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             setAuthenticationToContext(claims);
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException eje) {
-            try{
+            try {
                 log.error("### 토큰이 만료됐습니다.");
                 Token token = accessTokenRenewalUtil.renewAccessToken(jws);
 
@@ -58,13 +59,16 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
                 Map<String, Object> claims = verifyJws(token.getAccessToken());
                 setAuthenticationToContext(claims);
                 filterChain.doFilter(request, response);
-            }catch (CustomException ce){
+            } catch (CustomException ce) {
                 log.error("### 리프레쉬 토큰을 찾을 수 없음");
                 AuthenticationError.sendErrorResponse(response, ce);
             }
+        } catch (MalformedJwtException mje) {
+            log.error("### 올바르지 않은 토큰 형식입니다.");
+            AuthenticationError.sendErrorResponse(response, new CustomException(ExceptionCode.AUTH_MAIL_CODE_NOT_FOUND));
         } catch (Exception e) {
             log.error("### 토큰 검증 오류 : " + e);
-            request.setAttribute("exception", e);
+            AuthenticationError.sendErrorResponse(response, e);
         }
     }
 

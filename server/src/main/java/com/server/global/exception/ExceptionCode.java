@@ -5,17 +5,15 @@ import lombok.Getter;
 public enum ExceptionCode {
     TEST_CODE("테스트", 200),
     NOT_IMPLEMENTATION("Not Implementation", 501),
-
     // 인증
     SIGNATURE_INVALID("Invalid jwt signature", 401),
-    ACCESS_DENIED("This account is inaccessible", 401),
-    UNAUTHORIZED("invalid token Data", 401),
-    EXPIRED_TOKEN("Token has expired", 401),
     AUTH_MAIL_CODE_MISMATCH("Auth mail code is mismatch", 403),
     AUTH_MAIL_CODE_NOT_FOUND("Auth mail code not found", 404),
     REFRESH_TOKEN_NOT_FOUND("토큰이 만료됐습니다.", 404),
     MAIL_SEND_FAIL("Send mail fail", 500),
-    NON_REGISTERED_USER("The email address is not registered.",400),
+    NON_REGISTERED_USER("회원가입하지 않은 이메일입니다.",400),
+    PASSWORD_INVALID("비밀번호가 맞지 않습니다.", 400),
+    UNKNOWN_USER("알 수 없는 사용자입니다.", 400),
 
     // 회원
     MEMBER_NOT_FOUND("Member not found", 404),
