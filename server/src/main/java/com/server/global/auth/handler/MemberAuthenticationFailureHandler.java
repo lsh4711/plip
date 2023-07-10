@@ -14,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import com.google.gson.Gson;
+import com.server.global.auth.error.AuthenticationError;
 import com.server.global.exception.ExceptionCode;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,27 +26,6 @@ public class MemberAuthenticationFailureHandler implements AuthenticationFailure
         AuthenticationException exception) throws IOException, ServletException {
         log.error("### Authentication failed: {}", exception.getMessage());
         log.error("### Authentication failed: {}", exception.getClass().getName());
-        sendErrorResponse(response, exception);
-    }
-    /**
-     * TODO: 중복 코드 발생
-     *       세세한 에러 핸들링 예정
-     * */
-    private void sendErrorResponse(HttpServletResponse response, AuthenticationException exception) throws IOException {
-        Gson gson = new Gson();
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.getWriter().write(gson.toJson(getErrorMessage(exception)));
-    }
-
-    private String getErrorMessage(AuthenticationException exception){
-        if(exception.getClass().equals(InternalAuthenticationServiceException.class)){
-            return "존재하지 않은 이메일입니다.";
-        }else if(exception.getClass().equals(BadCredentialsException.class)){
-            return "비밀번호가 맞지 않습니다.";
-        }else{
-            return "사용할 수 없는 사용자입니다.";
-        }
+        AuthenticationError.sendErrorResponse(response, exception);
     }
 }

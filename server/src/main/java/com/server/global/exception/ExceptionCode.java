@@ -13,7 +13,7 @@ public enum ExceptionCode {
     EXPIRED_TOKEN("Token has expired", 401),
     AUTH_MAIL_CODE_MISMATCH("Auth mail code is mismatch", 403),
     AUTH_MAIL_CODE_NOT_FOUND("Auth mail code not found", 404),
-    REFRESH_TOKEN_NOT_FOUND("RefreshToken not found", 404),
+    REFRESH_TOKEN_NOT_FOUND("토큰이 만료됐습니다.", 404),
     MAIL_SEND_FAIL("Send mail fail", 500),
     NON_REGISTERED_USER("The email address is not registered.",400),
 
