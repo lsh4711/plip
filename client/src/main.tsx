@@ -40,7 +40,7 @@ const router = createBrowserRouter([
       { path: 'mypage/footprint', element: <FootPrintPage /> },
     ],
   },
-  { path: 'plan/map', element: <PlanMapPage /> },
+  { path: 'plan/map/:region', element: <PlanMapPage /> },
   { path: 'plan/detail', element: <PlanDetailPage /> },
 ]);
 

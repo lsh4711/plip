@@ -57,7 +57,7 @@ const PlanPage = ({}: PlanPageProps) => {
   };
 
   const createPlan = () => {
-    navigate('/plan/map');
+    navigate(`/plan/map/${selectedRegion}`);
     // TODO request
   };
 
