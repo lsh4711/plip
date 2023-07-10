@@ -1,4 +1,5 @@
-import { Button, HeadingParagraph, Input, OauthUI, Paragraph } from '@/components';
+import { Button, HeadingParagraph, Input, Paragraph } from '@/components';
+import OauthUI from '@/components/helper/OauthUI';
 
 import useThrottle from '@/hooks/useThrottle';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,7 +10,7 @@ import { z } from 'zod';
 const SignUpPage = () => {
   const [isEmailValid, setIsEmailValid] = React.useState(true);
   const [isNicknameValid, setIsNicknameValid] = React.useState(true);
-
+  const [isAuthNumberDisabled, setIsAuthNumberDisabled] = React.useState(true);
   const signupForm = useForm<SingupType>({
     mode: 'all',
     resolver: zodResolver(signupSchema),
@@ -23,8 +24,6 @@ const SignUpPage = () => {
   };
 
   const emailCredentialRequest = useThrottle(() => {
-    const authNumberInput = document.querySelector('input[name="authnumber"]') as HTMLInputElement;
-    if (authNumberInput === null) return;
     if (signupForm.formState.errors.email?.message !== undefined) return;
     if (signupForm.getValues('email') === '') return;
     /*
@@ -34,12 +33,10 @@ const SignUpPage = () => {
         응답받은 상태코드에 따라 분기처리
       }
     */
-
-    authNumberInput.disabled = false;
+    setIsAuthNumberDisabled(false);
   }, 2000);
 
   const sendVerificationCodeEmail = useThrottle(() => {
-    const authNumberInput = document.querySelector('input[name="authnumber"]') as HTMLInputElement;
     /* 향후 인증하기 API가 구현되었을 때를 대비한 의사코드입니다.
     const emailVerificationMutate = useEmailVerificationMutation() 실제로는 훅이라 최상위에 선언해야함
     const postVerificationCode = async () => {
@@ -54,111 +51,117 @@ const SignUpPage = () => {
     */
     setTimeout(() => {
       setIsEmailValid(false);
-      authNumberInput.disabled = true;
+      setIsAuthNumberDisabled(true);
     }, 2000);
   }, 2000);
 
   return (
-    <main className="mx-auto mt-24  flex max-w-[1024px] flex-col items-center justify-center ">
-      <div className=" mb-10">
-        <HeadingParagraph variant={'darkgray'} size="lg" className=" text-center">
-          PliP에 가입하여
-          <br />
-          나만의 멋진 여행 계획을 만들어 보세요!
-        </HeadingParagraph>
-      </div>
-      <div className="">
-        <form
-          className=" flex w-[460px] flex-col gap-y-6"
-          onSubmit={signupForm.handleSubmit(onSubmit)}
-        >
-          <div className="">
-            <div className="flex justify-between gap-6">
-              <Input
-                placeholder="이메일을 입력해 주세요."
-                className=" flex-grow"
-                {...signupForm.register('email', {
-                  onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-                    const nowdata = signupForm.getValues('email');
-                    console.log(nowdata);
-                  },
-                })}
-              />
-              <Button variant={'primary'} type="button" onClick={() => emailCredentialRequest()}>
-                인증 요청
-              </Button>
+    <main className="mx-auto flex max-w-[1024px] flex-col  ">
+      <div className=" mt-12 flex flex-col items-center justify-center">
+        <div className="mb-10">
+          <HeadingParagraph variant={'darkgray'} size="lg" className=" text-center">
+            PliP에 가입하여
+            <br />
+            나만의 멋진 여행 계획을 만들어 보세요!
+          </HeadingParagraph>
+        </div>
+        <div className="">
+          <form
+            className=" flex w-[460px] flex-col gap-y-6"
+            onSubmit={signupForm.handleSubmit(onSubmit)}
+          >
+            <div className="">
+              <div className="flex justify-between gap-6">
+                <Input
+                  placeholder="이메일을 입력해 주세요."
+                  className=" flex-grow"
+                  {...signupForm.register('email', {
+                    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+                      const nowdata = signupForm.getValues('email');
+                      console.log(nowdata);
+                    },
+                  })}
+                />
+                <Button variant={'primary'} type="button" onClick={() => emailCredentialRequest()}>
+                  인증 요청
+                </Button>
+              </div>
+              <Paragraph variant={'red'} size="xs" className=" mt-1">
+                {signupForm.formState.errors.email?.message && signupForm.getValues('email') !== ''
+                  ? signupForm.formState.errors.email.message
+                  : null}
+              </Paragraph>
             </div>
-            <Paragraph variant={'red'} size="xs" className=" mt-1">
-              {signupForm.formState.errors.email?.message && signupForm.getValues('email') !== ''
-                ? signupForm.formState.errors.email.message
-                : null}
-            </Paragraph>
-          </div>
 
-          <div className="">
-            <div className="flex justify-between gap-6">
-              <Input
-                placeholder="인증번호를 입력해 주세요."
-                className=" flex-grow"
-                disabled
-                {...signupForm.register('authnumber')}
-              />
+            <div className="">
+              <div className="flex justify-between gap-6">
+                <Input
+                  placeholder="인증번호를 입력해 주세요."
+                  className=" flex-grow"
+                  disabled={isAuthNumberDisabled}
+                  {...signupForm.register('authnumber')}
+                />
 
-              <Button variant={'primary'} type="button" onClick={() => sendVerificationCodeEmail()}>
-                인증 하기
-              </Button>
+                <Button
+                  variant={'primary'}
+                  type="button"
+                  onClick={() => sendVerificationCodeEmail()}
+                >
+                  인증 하기
+                </Button>
+              </div>
+              <Paragraph variant={'red'} size="xs" className=" mt-1">
+                {isEmailValid ? null : '인증번호가 맞지 않습니다.'}
+              </Paragraph>
             </div>
-            <Paragraph variant={'red'} size="xs" className=" mt-1">
-              {isEmailValid ? null : '인증번호가 맞지 않습니다.'}
-            </Paragraph>
-          </div>
 
-          <div className="">
-            <div className=" flex">
-              <Input
-                placeholder="사용하실 닉네임을 입력해 주세요."
-                className=" flex-grow"
-                {...signupForm.register('nickname')}
-              />
+            <div className="">
+              <div className=" flex">
+                <Input
+                  placeholder="사용하실 닉네임을 입력해 주세요."
+                  className=" flex-grow"
+                  {...signupForm.register('nickname')}
+                />
+              </div>
+              <Paragraph variant={'red'} size="xs" className=" mt-1">
+                <p> {isNicknameValid ? null : '중복된 닉네임입니다.'}</p>
+                <p> {signupForm.formState.errors.nickname?.message}</p>
+              </Paragraph>
             </div>
-            <Paragraph variant={'red'} size="xs" className=" mt-1">
-              <p> {isNicknameValid ? null : '중복된 닉네임입니다.'}</p>
-              <p> {signupForm.formState.errors.nickname?.message}</p>
-            </Paragraph>
-          </div>
 
-          <div className="">
-            <div className=" flex">
-              <Input
-                type={'password'}
-                placeholder="비밀번호를 입력해 주세요. (영문, 숫자, 특수문자 포함 8자 이상)."
-                className=" flex-grow"
-                {...signupForm.register('password')}
-              />
+            <div className="">
+              <div className=" flex">
+                <Input
+                  type={'password'}
+                  placeholder="비밀번호를 입력해 주세요. (영문, 숫자, 특수문자 포함 8자 이상)."
+                  className=" flex-grow"
+                  {...signupForm.register('password')}
+                />
+              </div>
+              <Paragraph variant={'red'} size="xs" className=" mt-1">
+                <p> {signupForm.formState.errors.password?.message}</p>
+              </Paragraph>
             </div>
-            <Paragraph variant={'red'} size="xs" className=" mt-1">
-              <p> {signupForm.formState.errors.password?.message}</p>
-            </Paragraph>
-          </div>
 
-          <div className="">
-            <div className=" flex">
-              <Input
-                type={'password'}
-                placeholder="다시 한번 비밀번호를 입력해 주세요"
-                className=" flex-grow"
-                {...signupForm.register('checkpassword')}
-              />
+            <div className="">
+              <div className=" flex">
+                <Input
+                  type={'password'}
+                  placeholder="다시 한번 비밀번호를 입력해 주세요"
+                  className=" flex-grow"
+                  {...signupForm.register('checkpassword')}
+                />
+              </div>
+              <Paragraph variant={'red'} size="xs" className=" mt-1">
+                <p> {signupForm.formState.errors.checkpassword?.message}</p>
+              </Paragraph>
             </div>
-            <Paragraph variant={'red'} size="xs" className=" mt-1">
-              <p> {signupForm.formState.errors.checkpassword?.message}</p>
-            </Paragraph>
-          </div>
-          <Button variant={'primary'} size="lg" type="submit">
-            Sign up
-          </Button>
-        </form>
-        <OauthUI />
+            <Button variant={'primary'} size="lg" type="submit">
+              Sign up
+            </Button>
+          </form>
+          <OauthUI />
+        </div>
       </div>
     </main>
   );

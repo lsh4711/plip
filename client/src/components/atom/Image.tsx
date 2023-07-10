@@ -1,3 +1,4 @@
+import { cn } from '@/utils';
 import { cva, VariantProps } from 'class-variance-authority';
 import { ComponentPropsWithoutRef } from 'react';
 
@@ -39,10 +40,15 @@ const Image = ({
   hoveropacity,
   rounded,
   size,
+  className,
   ...attributes
 }: ImageProps) => {
   return (
-    <img src={src} className={ImageVariants({ hoveropacity, rounded, size })} {...attributes} />
+    <img
+      src={src}
+      className={cn(ImageVariants({ hoveropacity, rounded, size }), className)}
+      {...attributes}
+    />
   );
 };
 
