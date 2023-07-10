@@ -5,7 +5,7 @@ export const postSignup = async (signupData: SingupType) => {
   const response = await fetch(`${BASE_URL}/users/signup`, {
     method: 'POST',
     body: JSON.stringify(signupData),
-    credentials: 'include',
+    // credentials: 'include',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
     },

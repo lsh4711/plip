@@ -12,19 +12,12 @@ const postEmailValidation = async ({ email, authcode }: EmailValidationType) => 
     body: JSON.stringify({ email, authcode }),
   });
   const result = await response.json();
-  const status = response.status.toString();
-  let validationResult = false;
-  if (status === '403') {
-    validationResult = false;
-  }
-  if (status === '200') {
-    validationResult = true;
-  }
+  const ok = response.ok;
 
   return {
     result,
-    status,
-    validationResult,
+    ok,
+    response,
   };
 };
 

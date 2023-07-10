@@ -7,10 +7,11 @@ const postEmailRequest = async (email: string) => {
     body: JSON.stringify(email),
   });
   const result = await response.json();
-  const status = response.status.toString();
+  const ok = response.ok;
   return {
     result,
-    status,
+    ok,
+    response,
   };
 };
 
