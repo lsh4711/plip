@@ -1,5 +1,6 @@
 import { Button, HeadingParagraph, Input } from '@/components';
 import { OauthUI } from '@/components';
+import LoadingSpinner from '@/components/atom/LoadingSpinner';
 import { useLoginMutation } from '@/queries';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -29,6 +30,7 @@ const LoginPage = ({}: LoginPageProps) => {
     };
     onSubmitLogin();
   };
+  console.log(loginMutation.status);
   return (
     <main className="mx-auto mt-24 flex max-w-[1024px] flex-col items-center justify-center">
       <div className=" mb-10">
@@ -40,6 +42,7 @@ const LoginPage = ({}: LoginPageProps) => {
           로그인
         </HeadingParagraph>
       </div>
+
       <div className="">
         <form
           className=" flex w-[460px] flex-col gap-y-7"
@@ -51,8 +54,9 @@ const LoginPage = ({}: LoginPageProps) => {
             type={'password'}
             {...loginForm.register('password')}
           />
-          <Button variant={'primary'} size="lg">
-            Sign up
+          <Button variant={'primary'} className=" flex gap-4" size="lg">
+            {loginMutation.status === 'loading' ? <LoadingSpinner /> : null}
+            <span>Sign up</span>
           </Button>
         </form>
         <OauthUI />
