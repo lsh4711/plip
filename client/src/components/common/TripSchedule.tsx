@@ -16,6 +16,7 @@ function TripSchedule({ startDate, places }: Pick<ResponseData, 'startDate' | 'p
           hovercolor={'default'}
           hoveropacity={'active'}
           onClick={() => setIsEditMode(!isEditMode)}
+          className="text-xs font-medium"
         >
           편집 완료하기
         </Button>
@@ -26,6 +27,7 @@ function TripSchedule({ startDate, places }: Pick<ResponseData, 'startDate' | 'p
           hovercolor={'default'}
           hoveropacity={'active'}
           onClick={() => setIsEditMode(!isEditMode)}
+          className="text-xs font-medium"
         >
           일정 편집하기
         </Button>

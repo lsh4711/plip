@@ -16,22 +16,19 @@ function TripInfo({ title, region, startDate, endDate }: Omit<ResponseData, 'pla
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
         }}
-        className="flex h-52 flex-col gap-2 p-6 text-white"
+        className="flex flex-col gap-3 px-6 py-9 text-white"
       >
-        <HeadingParagraph size={'lg'} variant={'default'}>
+        <HeadingParagraph size={'md'} variant={'default'} className="2xl:text-3xl">
           {title ? title : getTripTitleWithRegion(region)}
         </HeadingParagraph>
-        <Paragraph size={'default'} variant={'white'} weight={'bold'}>
+        <Paragraph size={'xs'} variant={'white'} weight={'bold'} className="text-xs 2xl:text-sm">
           {`${getFormatDateString(startDate, true, 'dot')} ~ ${getFormatDateString(
             endDate,
             true,
             'dot'
-          )}`}
+          )} (${getTripPeriod(startDate, endDate)} 여행)`}
         </Paragraph>
-        <Paragraph size={'xs'} variant={'white'}>
-          {`(${getTripPeriod(startDate, endDate)} 여행)`}
-        </Paragraph>
-        <ProfileIcon className="rounded-full bg-white" />
+        <ProfileIcon className="h-6 w-6 rounded-full bg-white 2xl:h-8 2xl:w-8" />
       </div>
     </>
   );
