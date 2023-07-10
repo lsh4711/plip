@@ -13,7 +13,7 @@ export const ButtonVariants = cva(
     variants: {
       variant: {
         default: ' text-[#343539]',
-        ring: ' ring-1 ring-[#343539] text-[#343539]',
+        ring: ' ring-1 ring-[#bdbdbd] text-[#bdbdbd]',
         primary: 'bg-[#4568DC] text-white dark:text-white',
         optional: ' text-[#bbbbbb] bg-[#F6F8FC]',
         warn: 'bg-[#F05E54] text-white dark:text-white',

@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { passwordRegex, nicknameRegex } from '@/datas/constants';
 
 const SignUpPage = () => {
   const [isEmailValid, setIsEmailValid] = React.useState(true);
@@ -167,8 +168,6 @@ const SignUpPage = () => {
   );
 };
 
-let passwordRegex = /(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{8,16}/;
-let nicknameRegex = /^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$/;
 const signupSchema = z
   .object({
     email: z.string().nonempty().email({ message: '유효하지 않은 이메일 양식입니다.' }),
