@@ -44,7 +44,6 @@ public class MailService {
             authMailCodeService.saveAuthCode(authCode, email);
         } catch (MessagingException e) {
             log.info("##" + email + " 메일 보내기 실패!! 에러 메시지: " + e);
-            throw new CustomException(ExceptionCode.MAIL_SEND_FAIL);
         }
     }
 
