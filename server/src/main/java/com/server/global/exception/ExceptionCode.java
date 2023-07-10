@@ -6,7 +6,8 @@ public enum ExceptionCode {
     TEST_CODE("테스트", 200),
     NOT_IMPLEMENTATION("Not Implementation", 501),
     // 인증
-    SIGNATURE_INVALID("Invalid jwt signature", 401),
+    SIGNATURE_INVALID("잘못된 JWT 서명입니다.", 401),
+    TOKEN_FORMAT_INVALID("올바르지 않는 토큰입니다.",401),
     AUTH_MAIL_CODE_MISMATCH("Auth mail code is mismatch", 403),
     AUTH_MAIL_CODE_NOT_FOUND("Auth mail code not found", 404),
     REFRESH_TOKEN_NOT_FOUND("토큰이 만료됐습니다.", 404),

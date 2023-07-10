@@ -31,6 +31,7 @@ import com.server.global.exception.ExceptionCode;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,8 +66,12 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             }
         } catch (MalformedJwtException mje) {
             log.error("### 올바르지 않은 토큰 형식입니다.");
-            AuthenticationError.sendErrorResponse(response, new CustomException(ExceptionCode.AUTH_MAIL_CODE_NOT_FOUND));
-        } catch (Exception e) {
+            AuthenticationError.sendErrorResponse(response, new CustomException(ExceptionCode.TOKEN_FORMAT_INVALID));
+        } catch (SignatureException se){
+            log.error("### 토큰의 서명이 잘못 됐습니다. 변조 데이터일 가능성이 있습니다.");
+            AuthenticationError.sendErrorResponse(response, new CustomException(ExceptionCode.SIGNATURE_INVALID));
+        }
+        catch (Exception e) {
             log.error("### 토큰 검증 오류 : " + e);
             AuthenticationError.sendErrorResponse(response, e);
         }
