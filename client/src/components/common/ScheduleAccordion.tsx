@@ -15,11 +15,13 @@ function ScheduleAccordion({ title, date, contents, isEditMode }: Props) {
   return (
     <Accordion.Root type="single" defaultValue="schedule" collapsible>
       <Accordion.Item className="overflow-hidden rounded-lg bg-[#F6F8FC]" value="schedule">
-        <Accordion.Header className="flex h-14 items-center justify-center px-4">
+        <Accordion.Header className="flex max-h-11 items-center justify-center px-4 py-3">
           <Accordion.Trigger className="AccordionTrigger flex grow items-center justify-between">
             <div className="flex items-center gap-3">
-              <span className="text-xl font-bold text-[#343539]">{title}</span>
-              <span className="text-[#343539]">{getFormatDateString(date, true, 'dot')}</span>
+              <span className="text-base font-bold text-[#343539] 2xl:text-base">{title}</span>
+              <span className="text-xs text-[#343539]">
+                {getFormatDateString(date, true, 'dot')}
+              </span>
             </div>
             <FiChevronDown className="AccordionChevron" color="#bbb" />
           </Accordion.Trigger>
@@ -28,9 +30,9 @@ function ScheduleAccordion({ title, date, contents, isEditMode }: Props) {
           <Accordion.Content
             // TODO : key 변경
             key={idx}
-            className="AccordionContent h-14 overflow-hidden border-t-[1px]"
+            className="AccordionContent overflow-hidden border-t-[1px]"
           >
-            <div className="relative flex items-center justify-between p-4">
+            <div className="relative flex items-center justify-between px-4 py-3">
               {isEditMode ? (
                 <button className="absolute -translate-x-1">
                   <MdRemoveCircleOutline color="#FF3535" />
@@ -41,8 +43,8 @@ function ScheduleAccordion({ title, date, contents, isEditMode }: Props) {
                   <div className="absolute top-1/2 h-[6px] w-[6px] -translate-x-[2.5px] -translate-y-1/2 rounded-full bg-red-400"></div>
                 </>
               )}
-              <div className="mx-4 flex">{placeName}</div>
-              {isEditMode && <VscMenu color="#bbb" />}
+              <div className="mx-4 flex text-xs 2xl:text-sm">{placeName}</div>
+              {isEditMode && <VscMenu color="#bbb" className="w-3 2xl:w-4" />}
             </div>
           </Accordion.Content>
         ))}

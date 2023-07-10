@@ -7,7 +7,7 @@ import { cn } from '@/utils';
 
 export const SideToggleButtonVariants = cva(
   `
-  flex h-20 w-6 items-center justify-center 
+  flex h-16 w-5 items-center justify-center 2xl:h-20 2xl:w-6
   absolute top-1/2 -translate-y-1/2
   border-solid border-[#bbb] bg-white
   `,
@@ -34,9 +34,9 @@ function SideToggleButton({ isOpen, position, className, ...attributes }: SideTo
   return (
     <button className={cn(SideToggleButtonVariants({ position }), className)} {...attributes}>
       {(position === 'right' && isOpen) || (position === 'left' && !isOpen) ? (
-        <BsChevronDoubleRight color="#4568DC" />
+        <BsChevronDoubleRight color="#4568DC" size={16} />
       ) : (
-        <BsChevronDoubleLeft color="#4568DC" />
+        <BsChevronDoubleLeft color="#4568DC" size={16} />
       )}
     </button>
   );
