@@ -10,6 +10,7 @@ import useEmailValidationMutation from '@/queries/useEmailValidationMutation';
 import { useSignupMutation } from '@/queries';
 import LoadingSpinner from '@/components/atom/LoadingSpinner';
 import useDebounce from '@/hooks/useDebounce';
+import useToast from '@/hooks/useToast';
 
 const SignUpPage = () => {
   const [isEmailValid, setIsEmailValid] = React.useState(true);

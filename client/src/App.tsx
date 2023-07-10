@@ -3,6 +3,7 @@ import { Outlet, useMatch } from 'react-router-dom';
 import Header from './components/common/Header';
 import useInstance from './hooks/useInstance';
 import { useEffect } from 'react';
+import ToastContainer from './components/ui/toast/ToastContainer';
 
 export default function App() {
   const url = useMatch('/');
@@ -11,6 +12,7 @@ export default function App() {
   return (
     <>
       <Header isHome={isHome} />
+      <ToastContainer />
       {isHome ? (
         <Outlet />
       ) : (
