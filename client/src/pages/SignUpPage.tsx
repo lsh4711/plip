@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { passwordRegex, nicknameRegex } from '@/datas/constants';
 import useEmailRequestMutation from '@/queries/useEmailRequestMutation';
 import useEmailValidationMutation from '@/queries/useEmailValidationMutation';
+import { useSignupMutation } from '@/queries';
 
 const SignUpPage = () => {
   const [isEmailValid, setIsEmailValid] = React.useState(true);
@@ -16,6 +17,7 @@ const SignUpPage = () => {
   const [isAuthNumberDisabled, setIsAuthNumberDisabled] = React.useState(true);
   const emailRequestMutation = useEmailRequestMutation();
   const emailValidationMutation = useEmailValidationMutation();
+  const onSubmitMutation = useSignupMutation();
   const signupForm = useForm<SingupType>({
     mode: 'all',
     resolver: zodResolver(signupSchema),
@@ -24,9 +26,16 @@ const SignUpPage = () => {
   const onSubmit: SubmitHandler<SingupType> = (data) => {
     if (!isEmailValid) return;
 
-    setTimeout(() => {
-      setIsNicknameValid(false);
-    }, 2000);
+    const onSubmitFn = async () => {
+      const response = await onSubmitMutation.mutateAsync(data);
+      console.log(response);
+      if (!response.ok) {
+        setIsNicknameValid(false);
+      } else {
+        alert('이게되네');
+      }
+    };
+    onSubmitFn();
   };
 
   const emailCredentialRequest = useThrottle(() => {
@@ -51,7 +60,6 @@ const SignUpPage = () => {
         authcode: signupForm.getValues('authnumber') as string,
         email: signupForm.getValues('email'),
       });
-
       if (response.ok) {
         setIsEmailValid(true);
         setIsAuthNumberDisabled(true);

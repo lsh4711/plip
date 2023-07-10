@@ -15,6 +15,8 @@ const postLogin = async (loginData: LoginType) => {
   const ACCESS_TOKEN = response.headers.get('Authorization');
   const REFRESH_TOKEN = response.headers.get('Refresh');
   const status = isSuccessStatus(response);
+  console.log('액세스토큰', ACCESS_TOKEN);
+  console.log('리프레쉬토큰', REFRESH_TOKEN);
   return {
     accesstoken: ACCESS_TOKEN,
     refreshtoken: REFRESH_TOKEN,
