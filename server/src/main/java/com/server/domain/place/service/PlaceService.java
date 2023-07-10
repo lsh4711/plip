@@ -23,8 +23,8 @@ public class PlaceService {
     private final PlaceRepository placeRepository;
     private final PlaceMapper placeMapper;
 
-    // test
-    private SchedulePlaceRepository schedulePlaceRepository;
+    //final이 빠지면 RequiredArgsConstructor로 생성이 안됨!
+    private final SchedulePlaceRepository schedulePlaceRepository;
 
     public List<Place> getPlaces(long memberId) {
         // placeRepository.fin
@@ -50,13 +50,15 @@ public class PlaceService {
     public List<Record> findRecords(Long placeId) {
         List<Record> records = new ArrayList<>();
 
-        Optional<SchedulePlace> schedulePlaceOptional = schedulePlaceRepository.findByPlacePlaceId(placeId);
+        List<SchedulePlace> schedulePlaceList = schedulePlaceRepository.findByPlacePlaceId(placeId);
 
-        if (schedulePlaceOptional.isPresent()) {
-            SchedulePlace schedulePlace = schedulePlaceOptional.get();
-            records = schedulePlace.getRecords();
+        if (schedulePlaceList.size()>0) {
+            for(SchedulePlace schedulePlace:schedulePlaceList){
+                for(Record record:schedulePlace.getRecords()){
+                    records.add(record);
+                }
+            }
         }
-
         return records;
     }
 }
