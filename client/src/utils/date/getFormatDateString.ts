@@ -1,5 +1,5 @@
+import { getDayOfWeek } from '@/utils/date';
 import dayjs from 'dayjs';
-import getDayOfWeek from './getDayOfWeek';
 
 const getFormatDateString = (
   date: Date,

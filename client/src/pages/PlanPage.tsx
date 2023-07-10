@@ -7,9 +7,7 @@ import DatePicker from '@/components/common/DatePicker';
 import RegionCard from '@/components/common/RegionCard';
 import { regionInfos, regions } from '@/datas/regions';
 import useModal from '@/hooks/useModal';
-import getFormatDateString from '@/utils/getFormatDateString';
-import getTripPeriod from '@/utils/getTripPeriod';
-import getTripTitleWithRegion from '@/utils/getTripTitleWithRegion';
+import { getFormatDateString, getTripPeriod, getTripTitleWithRegion } from '@/utils/date';
 
 interface PlanPageProps {}
 

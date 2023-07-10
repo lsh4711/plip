@@ -3,9 +3,7 @@ import HeadingParagraph from '@/components/atom/HeadingParagraph';
 import Paragraph from '@/components/atom/Paragraph';
 import { regionInfos } from '@/datas/regions';
 import { ResponseData } from '@/pages/PlanMapPage';
-import getFormatDateString from '@/utils/getFormatDateString';
-import getTripPeriod from '@/utils/getTripPeriod';
-import getTripTitleWithRegion from '@/utils/getTripTitleWithRegion';
+import { getFormatDateString, getTripPeriod, getTripTitleWithRegion } from '@/utils/date';
 
 function TripInfo({ title, region, startDate, endDate }: Omit<ResponseData, 'places'>) {
   return (
