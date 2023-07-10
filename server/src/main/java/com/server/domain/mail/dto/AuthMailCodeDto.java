@@ -14,8 +14,9 @@ public class AuthMailCodeDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Post {
+        @NotBlank(message = "인증코드는 필수 입력 값입니다.")
         private String authCode;
-        @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")
+        @Pattern(regexp = "[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]$", message = "이메일 형식이 올바르지 않습니다.")
         @NotBlank(message = "이메일은 필수 입력 값입니다.")
         private String email;
     }
