@@ -4,8 +4,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -77,12 +75,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource(HttpServletRequest request) {
-        String header = request.getHeader("Origin");
+    CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        // configuration.setAllowedOrigins(List.of("http://127.0.0.1:5173", "http://localhost:5173", header));
-        configuration.setAllowedOrigins(List.of(header));
+        configuration.setAllowedOrigins(List.of("http://127.0.0.1:5173", "http://localhost:5173"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("*"));
