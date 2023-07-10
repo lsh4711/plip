@@ -1,4 +1,4 @@
-import getFormatDateString from '@/utils/getFormatDateString';
+import { getFormatDateString } from '@/utils/date';
 import * as Accordion from '@radix-ui/react-accordion';
 import { FiChevronDown } from '@react-icons/all-files/fi/FiChevronDown';
 import { MdRemoveCircleOutline } from '@react-icons/all-files/md/MdRemoveCircleOutline';

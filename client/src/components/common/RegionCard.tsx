@@ -58,7 +58,7 @@ function RegionCard({ label, onClick, isSelected, imgUrl, labelPosition, type }:
       }
       onClick={onClick}
     >
-      <Image src={imgUrl} className={type ? 'opacity-100' : 'opacity-90'} />
+      <Image src={imgUrl} className={`h-full w-full ${type ? 'opacity-100' : 'opacity-90'}`} />
       {label && <span className={cn(LabelVariants({ labelPosition }))}>{label}</span>}
     </div>
   );

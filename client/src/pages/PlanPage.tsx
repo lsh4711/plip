@@ -7,9 +7,8 @@ import DatePicker from '@/components/common/DatePicker';
 import RegionCard from '@/components/common/RegionCard';
 import { regionInfos, regions } from '@/datas/regions';
 import useModal from '@/hooks/useModal';
-import getFormatDateString from '@/utils/getFormatDateString';
-import getTripPeriod from '@/utils/getTripPeriod';
-import getTripTitleWithRegion from '@/utils/getTripTitleWithRegion';
+import { getFormatDateString, getTripPeriod, getTripTitleWithRegion } from '@/utils/date';
+import { useNavigate } from 'react-router-dom';
 
 interface PlanPageProps {}
 
@@ -19,6 +18,8 @@ const PlanPage = ({}: PlanPageProps) => {
   const [selectedRegion, setSelectedRegion] = useState<(typeof regions)[number] | null>(null);
 
   const [openModal] = useModal();
+
+  const navigate = useNavigate();
 
   const openConfirm = () => {
     if (startDate && endDate && selectedRegion) {
@@ -33,7 +34,10 @@ const PlanPage = ({}: PlanPageProps) => {
           )} ~ ${getFormatDateString(endDate, true, 'dot')}, ${getTripPeriod(startDate, endDate)})`}
           primaryLabel={'확인'}
           secondaryLabel="취소"
-          onClickPrimaryButton={createPlan}
+          onClickPrimaryButton={() => {
+            close();
+            createPlan();
+          }}
           isOpen={isOpen}
           onClose={close}
         />
@@ -53,6 +57,7 @@ const PlanPage = ({}: PlanPageProps) => {
   };
 
   const createPlan = () => {
+    navigate('/plan/map');
     // TODO request
   };
 

@@ -46,7 +46,7 @@ function Confirm({
         </Button>
         {secondaryLabel && (
           <Button
-            variant={'ring'}
+            variant={'optional'}
             hovercolor={'default'}
             hoveropacity={'active'}
             onClick={() => {
