@@ -25,6 +25,7 @@ public class MailController {
 
     @PostMapping()
     public ResponseEntity<?> postSignupSendEmail(@RequestParam("type")String type, @Valid @RequestBody MailDto.Post request) {
+        mailService.verificationEmail(request.getEmail(),type);
         mailService.sendMail(request.getEmail(),type);
         return ResponseEntity.ok().build();
     }
