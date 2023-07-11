@@ -23,7 +23,14 @@ const PlanMapPage = () => {
 
   const [mapLevel, setMapLevel] = useState(8);
   const [isMarkerVisble, setIsMarkerVisible] = useState(true);
-  const [selectedRegion, setSelectedRegion] = useState(regionInfos['seoul']); // 타입 해결해주세요 길종늼
+  const [selectedRegion, setSelectedRegion] = useState(regionInfos[region]); // 타입 해결해주세요 길종늼
+  const [isOpenSidePanel, setIsOpenSidePanel] = useState(false);
+
+  const onSidePanelHandler = () => {
+    console.log(`current state value : ${isOpenSidePanel}`);
+    setIsOpenSidePanel(!isOpenSidePanel);
+    console.log(`after state value : ${!isOpenSidePanel}`);
+  };
 
   const responseData: ResponseData = {
     title: null,
@@ -115,10 +122,14 @@ const PlanMapPage = () => {
           </MarkerClusterer>
         </Map>
       )}
-      <Button variant={'primary'} className="absolute right-10 top-5 z-50">
+
+      <Button
+        variant={'primary'}
+        className={`absolute ${isOpenSidePanel ? 'right-[19rem]' : 'right-10'} top-10 z-[9999]`}
+      >
         저장하기
       </Button>
-      <SidePanel position={'right'}>
+      <SidePanel position={'right'} isOpen={isOpenSidePanel} setOpen={onSidePanelHandler}>
         <TripInfo
           title={responseData.title}
           region={responseData.region}
