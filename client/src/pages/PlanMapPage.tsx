@@ -23,7 +23,7 @@ const PlanMapPage = () => {
 
   const [mapLevel, setMapLevel] = useState(8);
   const [isMarkerVisble, setIsMarkerVisible] = useState(true);
-  const [selectedRegion, setSelectedRegion] = useState(regionInfos[region]); // 타입 해결해주세요 길종늼
+  const [selectedRegion, setSelectedRegion] = useState(regionInfos['seoul']); // 타입 해결해주세요 길종늼
   const [isOpenSidePanel, setIsOpenSidePanel] = useState(false);
 
   const onSidePanelHandler = () => {
