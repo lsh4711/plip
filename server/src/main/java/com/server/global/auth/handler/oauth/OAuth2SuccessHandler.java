@@ -1,4 +1,4 @@
-package com.server.global.auth.handler;
+package com.server.global.auth.handler.oauth;
 
 import java.io.IOException;
 import java.net.URI;

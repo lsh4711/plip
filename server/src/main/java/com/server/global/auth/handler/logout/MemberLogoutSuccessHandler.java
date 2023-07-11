@@ -1,4 +1,4 @@
-package com.server.global.auth.handler;
+package com.server.global.auth.handler.logout;
 
 import java.io.IOException;
 

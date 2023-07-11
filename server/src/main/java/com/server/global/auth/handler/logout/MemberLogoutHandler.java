@@ -1,4 +1,4 @@
-package com.server.global.auth.handler;
+package com.server.global.auth.handler.logout;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

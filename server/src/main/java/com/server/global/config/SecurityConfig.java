@@ -2,7 +2,6 @@ package com.server.global.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -16,14 +15,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.token.service.RefreshTokenService;
-import com.server.global.auth.handler.MemberAuthenticationEntryPoint;
-import com.server.global.auth.handler.MemberLogoutHandler;
-import com.server.global.auth.handler.MemberLogoutSuccessHandler;
-import com.server.global.auth.handler.OAuth2SuccessHandler;
+import com.server.global.auth.handler.login.MemberAuthenticationEntryPoint;
+import com.server.global.auth.handler.logout.MemberLogoutHandler;
+import com.server.global.auth.handler.logout.MemberLogoutSuccessHandler;
+import com.server.global.auth.handler.oauth.OAuth2SuccessHandler;
 import com.server.global.auth.jwt.DelegateTokenUtil;
 import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.auth.userdetails.CustomOAuth2UserService;
