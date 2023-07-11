@@ -80,8 +80,8 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             AuthenticationError.sendErrorResponse(response, new CustomException(ExceptionCode.SIGNATURE_INVALID));
         }
         catch (Exception e) {
-            log.error("### 토큰 검증 오류 : " + e);
-            AuthenticationError.sendErrorResponse(response, e);
+            log.error("### 토큰 검증 외의 오류 : " + e);
+            AuthenticationError.sendErrorResponse(response,  new CustomException(ExceptionCode.INTERNAL_SERVER_ERROR));
         }
     }
 
