@@ -1,3 +1,10 @@
+import { Button } from '@/components';
+import { useEffect, useState } from 'react';
+import { Map, MapMarker, MarkerClusterer, Polyline } from 'react-kakao-maps-sdk';
+import { PositionType } from '@/datas/regions';
+import { regionInfos } from '@/datas/regions';
+import { useParams } from 'react-router-dom';
+
 import SidePanel from '@/components/common/SidePanel';
 import TripInfo from '@/components/common/TripInfo';
 import TripSchedule from '@/components/common/TripSchedule';
@@ -12,6 +19,19 @@ export type ResponseData = {
 };
 
 const PlanMapPage = () => {
+  const { region } = useParams();
+
+  const [mapLevel, setMapLevel] = useState(8);
+  const [isMarkerVisble, setIsMarkerVisible] = useState(true);
+  const [selectedRegion, setSelectedRegion] = useState(regionInfos['seoul']); // 타입 해결해주세요 길종늼
+  const [isOpenSidePanel, setIsOpenSidePanel] = useState(false);
+
+  const onSidePanelHandler = () => {
+    console.log(`current state value : ${isOpenSidePanel}`);
+    setIsOpenSidePanel(!isOpenSidePanel);
+    console.log(`after state value : ${!isOpenSidePanel}`);
+  };
+
   const responseData: ResponseData = {
     title: null,
     region: 'seoul',
@@ -23,9 +43,93 @@ const PlanMapPage = () => {
     ],
   };
 
+  // console.log(regionInfos[region]);
+
+  const [currentPosition, setCurrentPosition] = useState<PositionType>({
+    isLoad: false,
+    lat: 0,
+    lng: 0,
+  });
+
+  const [markers, setMarkers] = useState<PositionType[]>([]);
+
+  const onDeleteClicedkMarker = (index: number) => {
+    const filtered = markers.filter((marker, markersIndex) => markersIndex !== index);
+
+    setMarkers(filtered);
+  };
+
+  useEffect(() => {
+    const { lat, lng } = selectedRegion.coords;
+
+    setCurrentPosition({
+      isLoad: true,
+      lat: lat,
+      lng: lng,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (mapLevel >= 10) setIsMarkerVisible(false);
+    else setIsMarkerVisible(true);
+  }, [mapLevel]);
+
   return (
-    <div>
-      <SidePanel position={'right'}>
+    <div className="relative h-full w-full">
+      {currentPosition.isLoad && (
+        <Map
+          center={currentPosition}
+          className="h-full w-full"
+          level={mapLevel}
+          onClick={(_t, mouseEvent) =>
+            setMarkers([
+              ...markers,
+              {
+                lat: mouseEvent.latLng.getLat(),
+                lng: mouseEvent.latLng.getLng(),
+              },
+            ])
+          }
+          onZoomChanged={(map) => setMapLevel(map.getLevel())}
+        >
+          {isMarkerVisble && markers.map((marker) => <MapMarker position={marker}></MapMarker>)}
+
+          <Polyline
+            path={[[...markers]]}
+            strokeWeight={5} // 선의 두께 입니다
+            strokeColor={'#FFAE00'} // 선의 색깔입니다
+            strokeOpacity={0.7} // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+            strokeStyle={'solid'} // 선의 스타일입니다
+          />
+
+          <MarkerClusterer
+            averageCenter={true} // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+            minLevel={10} // 클러스터 할 최소 지도 레벨
+          >
+            {markers.map((pos, index) => {
+              console.log(pos.lat, pos.lng);
+              return (
+                <MapMarker
+                  key={`${pos.lat}-${pos.lng}`}
+                  position={{
+                    lat: pos.lat,
+                    lng: pos.lng,
+                  }}
+                  onClick={() => onDeleteClicedkMarker(index)}
+                />
+              );
+            })}
+          </MarkerClusterer>
+        </Map>
+      )}
+
+      <Button
+        variant={'primary'}
+        className={`absolute ${isOpenSidePanel ? 'right-[19rem]' : 'right-10'} top-10 z-[9999]`}
+      >
+        저장하기
+      </Button>
+      <SidePanel position={'right'} isOpen={isOpenSidePanel} setOpen={onSidePanelHandler}>
         <TripInfo
           title={responseData.title}
           region={responseData.region}
