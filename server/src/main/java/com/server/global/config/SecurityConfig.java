@@ -34,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity(debug = false)
 public class SecurityConfig {
     private final JwtTokenizer jwtTokenizer;
+    private final RefreshTokenService refreshTokenService;
     private final AccessTokenRenewalUtil accessTokenRenewalUtil;
     private final DelegateTokenUtil delegateTokenUtil;
     private final CustomOAuth2UserService oAuth2UserService;

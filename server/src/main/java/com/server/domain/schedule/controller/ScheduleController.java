@@ -1,14 +1,12 @@
 package com.server.domain.schedule.controller;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +28,7 @@ import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.mapper.ScheduleMapper;
 import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.domain.schedule.service.ScheduleService;
+import com.server.global.utils.CustomUtil;
 import com.server.global.utils.UriCreator;
 
 import lombok.RequiredArgsConstructor;
@@ -47,9 +46,8 @@ public class ScheduleController {
 
     @Transactional
     @PostMapping("/write")
-    public ResponseEntity postSchedule(Authentication authentication,
-            @Valid @RequestBody ScheduleDto.Post postDto) {
-        long memberId = Long.parseLong(authentication.getCredentials().toString());
+    public ResponseEntity postSchedule(@Valid @RequestBody ScheduleDto.Post postDto) {
+        long memberId = CustomUtil.getAuthId();
         Member member = Member.builder()
                 .memberId(memberId)
                 .build();
@@ -57,26 +55,14 @@ public class ScheduleController {
         schedule.setMember(member);
 
         Schedule savedSchedule = scheduleService.saveSchedule(schedule);
-        List<PlaceDto.Post> placeDtos = postDto.getPlaceDtos();
-        List<Place> places = placeMapper.postDtosToPlaces(placeDtos);
-        List<Place> savedPlaces = placeService.savePlaces(places);
-        List<SchedulePlace> schedulePlaces = new ArrayList<>();
-        for (int i = 0; i < places.size(); i++) {
-            Place place = savedPlaces.get(i);
-            PlaceDto.Post placeDto = placeDtos.get(i);
-            SchedulePlace schedulePlace = new SchedulePlace();
-            schedulePlace.setSchedule(savedSchedule);
-            schedulePlace.setPlace(place);
-            schedulePlace.setDays(placeDto.getDays());
-            schedulePlace.setOrders(placeDto.getOrders());
-            schedulePlaces.add(schedulePlace);
-        }
+        List<List<PlaceDto.Post>> placeDtoLists = postDto.getPlaces();
+        List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
 
-        schedulePlaceService.saveSchedulePlaces(schedulePlaces);
+        placeService.savePlaceLists(savedSchedule, placeLists);
 
-        URI location = UriCreator.createUri("/api/schedules", savedSchedule.getScheduleId());
+        URI location = UriCreator.createUri("/api/schedules",
+            savedSchedule.getScheduleId());
 
-        // if (true) throw new CustomException(ExceptionCode.TEST_CODE);
         return ResponseEntity.created(location).build();
     }
 

@@ -5,6 +5,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -90,21 +91,21 @@ public class ScheduleControllerTest {
     @Test
     @DisplayName("일정 등록")
     void postScheduleTest() throws Exception {
-        //given
+        // given
         ScheduleDto.Post postDto = MockSchedule.postDto;
-        List<PlaceDto.Post> placePostDtos = MockPlace.postDtos;
-        postDto.setPlaceDtos(placePostDtos);
+        List<List<PlaceDto.Post>> placeDtoLists = MockPlace.postDtoLists;
+        postDto.setPlaces(placeDtoLists);
         String requestBody = gson.toJson(postDto);
 
-        List<Place> places = placeMapper.postDtosToPlaces(placePostDtos);
+        List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
         Schedule schedule = new Schedule();
         schedule.setScheduleId(1L);
 
         given(scheduleService.saveSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
-        given(placeService.savePlaces(Mockito.<Place>anyList())).willReturn(places);
-        // given(schedulePlaceService.saveSchedulePlaces(Mockito.<SchedulePlace>anyList())).willReturn(null);
+        doNothing().when(placeService).savePlaceLists(Mockito.any(Schedule.class), Mockito.<List<Place>>anyList());
+        // given(schedulePlaceSedrvice.saveSchedulePlaces(Mockito.<SchedulePlace>anyList())).willReturn(null);
 
-        //when
+        // when
         ResultActions actions = mockMvc.perform(
             post(BASE_URL + "/write")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
@@ -112,7 +113,7 @@ public class ScheduleControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON));
 
-        //then
+        // then
         actions
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location",
