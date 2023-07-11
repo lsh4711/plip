@@ -81,7 +81,6 @@ tasks.withType(GenerateSwaggerUI) {
     copy {
         from "build/resources/main/static/docs"
         into "src/main/resources/static/docs/"
-
     }
 }
 

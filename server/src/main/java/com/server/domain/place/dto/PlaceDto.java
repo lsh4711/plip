@@ -23,13 +23,6 @@ public class PlaceDto {
 
         @NotBlank
         private String longitude;
-
-        // SchedulePlace
-        @NotBlank
-        private int days;
-
-        @NotBlank
-        private int orders;
     }
 
     @Getter

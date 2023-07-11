@@ -4,17 +4,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.server.domain.member.service.MemberService;
+import com.server.global.exception.CustomException;
+import com.server.global.exception.ExceptionCode;
+import com.server.global.utils.CustomUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +32,7 @@ public class ImageManager {
     private final MemberService memberService;
 
     //이미지 업로드
-    public  Boolean uploadImages(List<MultipartFile> images, String recordId) throws Exception {
+    public Boolean uploadImages(List<MultipartFile> images, long recordId) throws Exception {
         Long userId = getAuthenticatedMemberId();
         String dirName = location + "/" + userId + "/" + recordId;
 
@@ -38,7 +40,7 @@ public class ImageManager {
 
         try {
             File folder = new File(dirName);
-            if (!folder.exists()||folder.listFiles().length==0) { //처음 사진을 저장하거나 저장된 사진이 없는 경우
+            if (!folder.exists() || folder.listFiles().length == 0) { //처음 사진을 저장하거나 저장된 사진이 없는 경우
                 folder.mkdirs();
 
                 for (int i = 0; i < images.size(); i++) {
@@ -49,7 +51,7 @@ public class ImageManager {
                     image.transferTo(destination);
                     result++;
                 }
-            }else{ //이미 저장된 사진이 있는 경우
+            } else { //이미 저장된 사진이 있는 경우
                 File[] existingFiles = folder.listFiles();
                 int lastIndex = -1;
 
@@ -75,8 +77,7 @@ public class ImageManager {
                     lastIndex = 0; // 기존 파일이 없는 경우 0으로 시작
                 }
 
-
-                for(int i=0;i<images.size();i++){
+                for (int i = 0; i < images.size(); i++) {
                     MultipartFile image = images.get(i);
                     String fileExtension = getFileExtension(image);
                     String fileName = (lastIndex + i) + fileExtension;
@@ -103,32 +104,32 @@ public class ImageManager {
     }
 
     //이미지 조회 - 대표 이미지
-    public  Resource loadImage(String recordId, String imgId){
+    public Resource loadImage(long recordId, long imgId) {
         Long userId = getAuthenticatedMemberId();
         String dirName = location + "/" + userId + "/" + recordId;
 
-        try{
+        try {
             File folder = new File(dirName);
             if (folder.exists() && folder.isDirectory()) {
                 File[] files = folder.listFiles();
                 if (files != null) {
-                    for(File file:files){
-                        String fileName = file.getName();
-                        String fileId = fileName.substring(0, fileName.lastIndexOf('.'));
-                        if(fileId.equals(imgId)){
+                    for (File file : files) {
+                        String fileName = file.getName().replaceAll("(?<=\\d)\\..*", "");
+                        long fileId = Long.parseLong(fileName);
+                        if (fileId == imgId) {
                             return new UrlResource(file.toURI());
                         }
                     }
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("이미지 불러오기 에러: " + e.getMessage());
         }
         return null;
     }
 
     //전체 이미지 조회
-    public  List<Resource> loadImages(String recordId) {
+    public List<Resource> loadImages(long recordId) {
         Long userId = getAuthenticatedMemberId();
         String dirName = location + "/" + userId + "/" + recordId;
 
@@ -154,7 +155,6 @@ public class ImageManager {
         return images;
     }
 
-
     //이미지 파일 확장자 리턴하는 메서드
     private static String getFileExtension(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
@@ -166,43 +166,63 @@ public class ImageManager {
     }
 
     //이미지 삭제
-    public void deleteImg(String recordId, String imgId) {
-        Long userId = getAuthenticatedMemberId();
-        String dirName = location + "/" + userId + "/" + recordId;
+    public void deleteImg(long recordId, long imgId) {
+        long userId = CustomUtil.getAuthId();
+        String dirName = location + '/' + userId + '/' + recordId;
 
-        try{
+        try {
             File folder = new File(dirName);
-            if (folder.exists() && folder.isDirectory()) {
-                File[] files = folder.listFiles();
-                if (files != null) {
-                    for(File file:files){
-                        String fileName = file.getName();
-                        String fileId = fileName.substring(0, fileName.lastIndexOf('.'));
-                        if(fileId.equals(imgId)){
-                            boolean isDeleted = file.delete();
-                            if(isDeleted){
-                                log.info("이미지 삭제 성공!");
-                            }else{
-                                log.error("이미지 삭제 실패!");
-                            }
-                        }
+            File[] files = folder.listFiles();
+            if (!folder.exists() || !folder.isDirectory() || files == null) {
+                return;
+            }
+            for (File file : files) {
+                String fileName = file.getName().replaceAll("(?<=\\d)\\..*", "");
+                long fileId = Long.parseLong(fileName);
+                if (fileId == imgId) {
+                    boolean isDeleted = file.delete();
+                    if (isDeleted) {
+                        log.info("이미지 삭제 성공!");
+                    } else {
+                        log.error("이미지 삭제 실패!");
                     }
                 }
             }
-        }catch (Exception e) {
+
+        } catch (Exception e) {
             log.error("이미지 불러오기 에러: " + e.getMessage());
+            throw new CustomException(ExceptionCode.INTERNAL_SERVER_ERROR); // 이곳에 넣으면 의도대로 동작
+        }
+    }
+
+    // 일지의 모든 이미지 삭제
+    public void deleteImgs(long recordId) {
+        Long userId = CustomUtil.getAuthId();
+        String dirName = String.format("%s/%d/%d",
+            location,
+            userId,
+            recordId);
+
+        try {
+            File folder = new File(dirName);
+            if (!folder.exists() || !folder.isDirectory()) {
+                return;
+            }
+            FileUtils.deleteDirectory(folder);
+        } catch (Exception e) {
+            log.error("삭제 실패: " + e.getMessage());
+            throw new CustomException(ExceptionCode.INTERNAL_SERVER_ERROR);
         }
     }
 
     //로그인한 사용자 아이디 리턴
-    private  Long getAuthenticatedMemberId() {
+    private Long getAuthenticatedMemberId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //현재 로그인한 사용자 이메일
-        String username = (String) authentication.getPrincipal();
+        String username = (String)authentication.getPrincipal();
 
         // 로그인한 ID(이매일)로 Member를 찾아서 반환
         return memberService.findMemberByEmail(username).getMemberId();
     }
-
 
 }

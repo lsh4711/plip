@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.server.domain.place.dto.PlaceDto;
 import com.server.global.validator.DateValid;
@@ -16,9 +17,9 @@ public class ScheduleDto {
     @Getter
     @Setter
     public static class Post {
-        private String title; // optional, default: "{city} 여행 레츠고!"
-        private String content; // optional, default: "즐거운 여행~!"
-        private Integer memberCount; // optional, default: 1
+        private String title = "여행 레츠고!"; // optional, default: "{city} 여행 레츠고!"
+        private String content = "즐거운 여행~!"; // optional, default: "즐거운 여행~!"
+        private Integer memberCount = 1; // optional, default: 1
 
         @NotBlank
         private String region;
@@ -30,7 +31,8 @@ public class ScheduleDto {
         private LocalDate endDate;
 
         @NotNull
-        private List<PlaceDto.Post> placeDtos;
+        @Size(min = 1)
+        private List<List<PlaceDto.Post>> places;
     }
 
     @Getter

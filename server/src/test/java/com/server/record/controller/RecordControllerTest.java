@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -377,7 +377,7 @@ public class RecordControllerTest {
         MockMultipartFile image2 = new MockMultipartFile(
             "images", "image2.jpg", MediaType.IMAGE_JPEG_VALUE, image2Content);
 
-        given(imageManager.uploadImages(anyList(), anyString())).willReturn(true);
+        given(imageManager.uploadImages(anyList(), anyLong())).willReturn(true);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -420,7 +420,7 @@ public class RecordControllerTest {
         String dirName = location + "/" + userId + "/" + recordId;
 
         Resource imageFile = new FileSystemResource(dirName + "/0.png");
-        given(imageManager.loadImage(Mockito.anyString(), Mockito.anyString())).willReturn(imageFile);
+        given(imageManager.loadImage(Mockito.anyLong(), Mockito.anyLong())).willReturn(imageFile);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -471,7 +471,7 @@ public class RecordControllerTest {
         imageFiles.add(imageFile1);
         imageFiles.add(imageFile2);
 
-        given(imageManager.loadImages(anyString())).willReturn(imageFiles);
+        given(imageManager.loadImages(anyLong())).willReturn(imageFiles);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -505,14 +505,14 @@ public class RecordControllerTest {
     @DisplayName("사진을 삭제한다.")
     void deleteRecordImgTest() throws Exception {
         //given
-        String recordId = "1";
-        String imgId = "1";
+        long recordId = 1;
+        long imgId = 1;
 
         doNothing().when(imageManager).deleteImg(recordId,imgId);
 
         //when
         ResultActions actions = mockMvc.perform(
-            delete(RECORD_DEFAULT_URL + "/{record-id}/img/{img-id}", recordId,imgId)
+            delete(RECORD_DEFAULT_URL + "/{record-id}/img/{img-id}", recordId, imgId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -529,7 +529,6 @@ public class RecordControllerTest {
                         ResourceSnippetParameters.builder()
                             .description("사진 삭제")
                             .build()))
-
             );
 
     }
