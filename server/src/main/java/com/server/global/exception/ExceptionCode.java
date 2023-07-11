@@ -17,6 +17,7 @@ public enum ExceptionCode {
     NON_REGISTERED_USER("회원가입하지 않은 이메일입니다.", 400),
     PASSWORD_INVALID("비밀번호가 맞지 않습니다.", 400),
     UNKNOWN_USER("알 수 없는 사용자입니다.", 400),
+    LOGOUT_USER("로그아웃된 유저입니다.", 401),
 
     // 회원
     MEMBER_NOT_FOUND("해당 회원을 찾을 수 없습니다.", 404),
