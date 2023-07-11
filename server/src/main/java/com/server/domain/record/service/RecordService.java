@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +15,7 @@ import com.server.domain.member.service.MemberService;
 import com.server.domain.record.entity.Record;
 import com.server.domain.record.repository.RecordRepository;
 import com.server.domain.schedule.entity.SchedulePlace;
-import com.server.domain.schedule.service.SchedulePlaceService;
-import com.server.global.exception.BusinessLogicException;
+import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 import com.server.global.utils.CustomBeanUtils;
 
@@ -31,10 +29,7 @@ public class RecordService {
 
     private final MemberService memberService;
 
-    private final SchedulePlaceService schedulePlaceService;
-
     private final CustomBeanUtils<Record> beanUtils;
-
 
     //여행일지 등록
     @Transactional
@@ -54,8 +49,8 @@ public class RecordService {
     public Record updateRecord(Record record) {
         Record foundRecord = findRecord(record.getRecordId());
 
-        if(authenticationMember().getMemberId()!=foundRecord.getMember().getMemberId()){
-            throw new BusinessLogicException(ExceptionCode.CANNOT_CHANGE_RECORD);
+        if (authenticationMember().getMemberId() != foundRecord.getMember().getMemberId()) {
+            throw new CustomException(ExceptionCode.CANNOT_CHANGE_RECORD);
         }
 
         Record updatedRecord = beanUtils.copyNonNullProperties(record, foundRecord);
@@ -63,12 +58,11 @@ public class RecordService {
         return recordRepository.save(updatedRecord);
     }
 
-
     //여행일지 아이디로 여행일지 하나 조회(상세 페이지)
     public Record findRecord(long recordId) {
         Optional<Record> optionalReecord = recordRepository.findById(recordId);
         Record findRecord = optionalReecord.orElseThrow(
-            () -> new BusinessLogicException(ExceptionCode.RECORD_NOT_FOUND));
+            () -> new CustomException(ExceptionCode.RECORD_NOT_FOUND));
 
         return findRecord;
     }
@@ -77,16 +71,16 @@ public class RecordService {
     public Page<Record> findAllRecords(int page, int size) {
         Member member = authenticationMember();
         Long memberId = member.getMemberId();
-        return recordRepository.findByMemberMemberId(PageRequest.of(page, size, Sort.Direction.DESC, "modifiedAt"),memberId);
+        return recordRepository.findByMemberMemberId(PageRequest.of(page, size, Sort.Direction.DESC, "modifiedAt"),
+            memberId);
     }
-
 
     //여행일지 삭제
     public void deleteRecord(long recordId) {
         Record foundRecord = findRecord(recordId);
 
-        if(authenticationMember().getMemberId()!=foundRecord.getMember().getMemberId()){
-            throw new BusinessLogicException(ExceptionCode.CANNOT_CHANGE_RECORD);
+        if (authenticationMember().getMemberId() != foundRecord.getMember().getMemberId()) {
+            throw new CustomException(ExceptionCode.CANNOT_CHANGE_RECORD);
         }
 
         recordRepository.delete(foundRecord);
@@ -96,9 +90,17 @@ public class RecordService {
     private Member authenticationMember() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //현재 로그인한 사용자 이메일
-        String username = (String) authentication.getPrincipal();
+        String username = (String)authentication.getPrincipal();
 
         // 로그인한 ID(이매일)로 Member를 찾아서 반환
         return memberService.findMemberByEmail(username);
+    }
+
+    public void verfify(long recordId, long memberId) {
+        boolean exists = recordRepository
+                .existsByRecordIdAndMember_MemberId(memberId, recordId);
+        if (!exists) {
+            throw new CustomException(ExceptionCode.RECORD_NOT_FOUND);
+        }
     }
 }

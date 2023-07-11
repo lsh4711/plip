@@ -13,6 +13,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
+import com.server.global.auth.error.AuthenticationError;
 import com.server.global.exception.ExceptionCode;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,22 +26,11 @@ public class MemberAuthenticationEntryPoint implements AuthenticationEntryPoint 
         AuthenticationException authException) throws IOException, ServletException {
         Exception exception = (Exception)request.getAttribute("exception");
         logExceptionMessage(authException, exception);
-        sendErrorResponse(response);
+        AuthenticationError.sendErrorResponse(response, exception);
     }
 
     private void logExceptionMessage(AuthenticationException authException, Exception exception) {
         String message = exception != null ? exception.getMessage() : authException.getMessage();
         log.warn("Unauthorized error happened: {}", message);
-    }
-
-    /**
-     * TODO: 중복 코드 발생
-     *      세세한 에러 핸들링 예정
-     * */
-    private void sendErrorResponse(HttpServletResponse response) throws IOException {
-        Gson gson = new Gson();
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.getWriter().write(gson.toJson(ExceptionCode.UNAUTHORIZED.getMessage()));
     }
 }

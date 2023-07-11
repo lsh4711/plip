@@ -16,6 +16,7 @@ import com.server.domain.member.entity.Member;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.jwt.DelegateTokenUtil;
+import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.auth.userdetails.OAuthAttributes;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
@@ -60,8 +61,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         return UriComponentsBuilder
             .newInstance()
             .scheme("http")
-            .host("localhost") // 리다이렉트 시킬 클라이언트 주소
-            .port(8080)
+            .host("127.0.0.1") // 리다이렉트 시킬 클라이언트 주소
+            .port(5173)
             .path("/oauth")
             .queryParams(queryParams)
             .build()

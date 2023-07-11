@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.domain.member.entity.Member;
+import com.server.domain.member.entity.Member.Role;
 import com.server.domain.member.service.MemberService;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.service.PlaceService;
@@ -33,15 +34,25 @@ public class Init {
 
     @PostConstruct
     public void init() {
-        Member member = Member.builder()
-                .email("test@naver.com")
-                .password("12345678a!")
+        Role admin = Role.ADMIN;
+        List<Member> members = new ArrayList<>();
+        members.add(Member.builder()
+                .email("admin")
+                .password("admin")
+                .nickname("관리자")
+                .build());
+        members.add(Member.builder()
+                .email("lsh@naver.com")
+                .password("lsh")
                 .nickname("음악")
-                .build();
+                .build());
 
-        memberService.createMember(member);
+        for (Member member : members) {
+            member.setRole(admin);
+            memberService.createMember(member);
+        }
 
-        Member newMember = Member.builder()
+        Member member = Member.builder()
                 .memberId(1L)
                 .build();
         Schedule schedule = new Schedule();
@@ -51,7 +62,7 @@ public class Init {
         schedule.setMemberCount(5);
         schedule.setStartDate(LocalDate.now());
         schedule.setEndDate(LocalDate.now().plusDays(3));
-        schedule.setMember(newMember);
+        schedule.setMember(member);
 
         scheduleService.saveSchedule(schedule);
 

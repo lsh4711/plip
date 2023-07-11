@@ -18,11 +18,12 @@ import com.server.global.auth.jwt.JwtTokenizer;
 
 public class StubData {
     public static class MockSecurity {
-        public static String getValidAccessToken(String secretKey, String role) {
+        public static String getValidAccessToken(String secretKey) {
             JwtTokenizer jwtTokenizer = new JwtTokenizer();
             Map<String, Object> claims = new HashMap<>();
             claims.put("email", "test@test.com");
-            claims.put("role", role);
+            claims.put("memberId", 1);
+            claims.put("roles", List.of("USER"));
 
             String subject = "test access token";
             Calendar calendar = Calendar.getInstance();
@@ -49,8 +50,8 @@ public class StubData {
                     .build();
 
             LoginDto loginDto = LoginDto.builder()
-                    .username("test@naver.com")
-                    .password("12345678a!")
+                    .username("admin")
+                    .password("admin")
                     .build();
 
             MemberDto.Patch memberPatch = MemberDto.Patch.builder()
@@ -153,29 +154,30 @@ public class StubData {
             postDto.setTitle("제목");
             postDto.setContent("일정에 대한 메모");
             postDto.setMemberCount(1);
-            postDto.setRegion("서울");
+            postDto.setRegion("제주도");
             postDto.setStartDate(LocalDate.now());
             postDto.setEndDate(LocalDate.now().plusDays(5));
         }
     }
 
     public static class MockPlace {
-        public static List<PlaceDto.Post> postDtos = new ArrayList<>();
+        public static List<List<PlaceDto.Post>> postDtoLists = new ArrayList<>();
 
         static {
             String[] placeNames = {"감귤 농장", "초콜릿 박물관", "제주도 바닷가"};
 
-            for (int i = 1; i <= 3; i++) {
-                PlaceDto.Post postDto = new PlaceDto.Post();
-                postDto.setApiId(i * 10 + i);
-                postDto.setName(placeNames[i - 1]);
-                postDto.setAddress("제주도 무슨동 무슨길" + i);
-                postDto.setLatitude(String.format("%d.%d", i * 205 + i * 17 + i * 8, i * 27));
-                postDto.setLongitude(String.format("%d.%d", i * 121 + i * 23 + i * 3, i * 31));
-                // SchedulePlace
-                postDto.setDays(i);
-                postDto.setOrders(i);
-                postDtos.add(postDto);
+            for (int i = 1; i <= 2; i++) {
+                List<PlaceDto.Post> postDtos = new ArrayList<>();
+                for (int j = 1; j <= 3; j++) {
+                    PlaceDto.Post postDto = new PlaceDto.Post();
+                    postDto.setApiId(j * 10 + j);
+                    postDto.setName(placeNames[j - 1]);
+                    postDto.setAddress("제주도 무슨동 무슨길" + j);
+                    postDto.setLatitude(String.format("%d.%d", j * 205 + j * 17 + j * 8, j * 27));
+                    postDto.setLongitude(String.format("%d.%d", j * 121 + j * 23 + j * 3, j * 31));
+                    postDtos.add(postDto);
+                }
+                postDtoLists.add(postDtos);
             }
 
         }
