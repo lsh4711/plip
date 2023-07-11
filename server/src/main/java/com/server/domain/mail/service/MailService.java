@@ -31,7 +31,7 @@ public class MailService {
      * TODO: 메일이 있는지 검사를 해야할까?? 추후에 생각해보고 리팩토링
      * */
     @Async
-    public void sendMail(String email) {
+    public void sendMail(String email, String type) {
         String authCode = createCode();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
@@ -39,7 +39,7 @@ public class MailService {
 
             mimeMessageHelper.setTo(email);
             mimeMessageHelper.setSubject("[PLIP] 이메일 인증을 위한 인증코드를 발송했습니다.");
-            mimeMessageHelper.setText(setContext(authCode), true);
+            mimeMessageHelper.setText(setContext(authCode, type), true);
             javaMailSender.send(mimeMessage);
             authMailCodeService.saveAuthCode(authCode, email);
         } catch (MessagingException e) {
@@ -47,10 +47,13 @@ public class MailService {
         }
     }
 
-    public String setContext(String code) {
+    public String setContext(String code, String type) {
         Context context = new Context();
         context.setVariable("code", code);
-        return templateEngine.process("email", context);
+        if(type.equals("signup")){
+            return templateEngine.process("signup", context);
+        }
+        return templateEngine.process("pw", context);
     }
 
     private String createCode() {

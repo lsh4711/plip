@@ -230,4 +230,26 @@ public class MemberControllerTest {
                                     .build())));
     }
 
+    @Test
+    @DisplayName("로그아웃을 한다.")
+    void postLogoutMember() throws Exception {
+        //when
+        ResultActions actions = mockMvc.perform(
+                get(MEMBER_DEFULT_URI + "/logout")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser))
+            //then
+            .andExpect(status().isOk())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("회원 로그아웃 예제",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("회원 로그아웃")
+                            .requestHeaders(
+                                headerWithName("Authorization").description("발급받은 인증 토큰")
+                            )
+                            .build())));
+    }
+
 }

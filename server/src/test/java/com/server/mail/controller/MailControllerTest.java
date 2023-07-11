@@ -8,6 +8,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.DisplayName;
@@ -58,11 +59,12 @@ public class MailControllerTest {
             .build();
         String jsonData = gson.toJson(request);
 
-        doNothing().when(service).sendMail(Mockito.anyString());
+        doNothing().when(service).sendMail(Mockito.anyString(),Mockito.anyString());
         //when
         ResultActions actions =
             mockMvc.perform(
-                    post(MAIL_DEFULT_URI + "/signup")
+                    post(MAIL_DEFULT_URI)
+                        .param("type","pw")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(jsonData)
@@ -76,6 +78,9 @@ public class MailControllerTest {
                         resource(
                             ResourceSnippetParameters.builder()
                                 .description("이메일 전송")
+                                .requestParameters(
+                                    parameterWithName("type").description("비밀번호 재설정(pw)/ 회원가입(signup) 구분 식별자")
+                                )
                                 .requestFields(
                                     fieldWithPath("email").type(JsonFieldType.STRING).description("이메일")
                                 )
