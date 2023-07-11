@@ -18,8 +18,8 @@ public class DelegateTokenUtil {
     public String delegateAccessToken(Member member) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", member.getEmail());
-        claims.put("role", member.getRole());
-
+        claims.put("memberId", member.getMemberId());
+        claims.put("roles", member.getRole().getRoles());
         String subject = member.getEmail();
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
 

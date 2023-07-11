@@ -19,7 +19,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Builder
 @AllArgsConstructor
@@ -53,11 +52,16 @@ public class Member extends BaseEntity {
     }
 
     @Getter
-    @RequiredArgsConstructor
     public enum Role {
+        ADMIN("ROLE_ADMIN", "ROLE_USER"),
         USER("ROLE_USER"),
         SOCIAL("ROLE_SOCIAL");
-        private final String value;
+
+        private final String[] roles;
+
+        Role(String... roles) {
+            this.roles = roles;
+        }
     }
 
     public void setPassword(String password) {
@@ -66,5 +70,9 @@ public class Member extends BaseEntity {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

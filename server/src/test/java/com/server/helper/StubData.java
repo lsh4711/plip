@@ -18,11 +18,12 @@ import com.server.global.auth.jwt.JwtTokenizer;
 
 public class StubData {
     public static class MockSecurity {
-        public static String getValidAccessToken(String secretKey, String role) {
+        public static String getValidAccessToken(String secretKey) {
             JwtTokenizer jwtTokenizer = new JwtTokenizer();
             Map<String, Object> claims = new HashMap<>();
             claims.put("email", "test@test.com");
-            claims.put("role", role);
+            claims.put("memberId", 1);
+            claims.put("roles", List.of("USER"));
 
             String subject = "test access token";
             Calendar calendar = Calendar.getInstance();
@@ -49,8 +50,8 @@ public class StubData {
                     .build();
 
             LoginDto loginDto = LoginDto.builder()
-                    .username("test@naver.com")
-                    .password("12345678a!")
+                    .username("admin")
+                    .password("admin")
                     .build();
 
             MemberDto.Patch memberPatch = MemberDto.Patch.builder()

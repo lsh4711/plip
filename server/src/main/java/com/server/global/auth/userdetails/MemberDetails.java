@@ -1,9 +1,9 @@
 package com.server.global.auth.userdetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.server.domain.member.entity.Member;
@@ -14,14 +14,14 @@ import lombok.Getter;
 public final class MemberDetails extends Member implements UserDetails {
     public MemberDetails(Member member) {
         super(member.getMemberId(), member.getEmail(), member.getPassword(), member.getPassword());
+        super.setRole(member.getRole());
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collectors = new ArrayList<>();
-        collectors.add(() -> "ROLE_" + getRole());
+        String[] roles = getRole().getRoles();
 
-        return collectors;
+        return AuthorityUtils.createAuthorityList(roles);
     }
 
     @Override

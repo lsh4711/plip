@@ -15,14 +15,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDate;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,7 +42,9 @@ import com.server.domain.schedule.dto.ScheduleDto;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.domain.schedule.service.ScheduleService;
+import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.helper.LocalDateAdapter;
+import com.server.helper.StubData;
 import com.server.helper.StubData.MockPlace;
 import com.server.helper.StubData.MockSchedule;
 
@@ -47,6 +52,7 @@ import com.server.helper.StubData.MockSchedule;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ScheduleControllerTest {
     private static final String BASE_URL = "/api/schedules";
 
@@ -55,6 +61,9 @@ public class ScheduleControllerTest {
 
     @Autowired
     private PlaceMapper placeMapper;
+
+    @Autowired
+    private JwtTokenizer jwtTokenizer;
 
     // @Autowired
     private Gson gson = new GsonBuilder()
@@ -70,6 +79,13 @@ public class ScheduleControllerTest {
 
     @MockBean
     private SchedulePlaceService schedulePlaceService;
+
+    private String token;
+
+    @BeforeAll
+    public void init() {
+        token = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
+    }
 
     @Test
     @DisplayName("일정 등록")
@@ -91,6 +107,7 @@ public class ScheduleControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
             post(BASE_URL + "/write")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .content(requestBody)
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON));

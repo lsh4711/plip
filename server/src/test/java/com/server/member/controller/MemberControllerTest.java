@@ -72,7 +72,7 @@ public class MemberControllerTest {
 
     @BeforeAll
     public void init() {
-        accessTokenForUser = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey(), "USER");
+        accessTokenForUser = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
     }
 
     @Test
@@ -120,8 +120,8 @@ public class MemberControllerTest {
         String jsonData = gson.toJson(request);
 
         repository.save(
-            Member.builder().memberId(1L).email("test@naver.com").password(passwordEncoder.encode("12345678a!"))
-                .nickname("test").build());
+            Member.builder().memberId(1L).email("admin").password(passwordEncoder.encode("admin"))
+                .nickname("관리자").build());
         //when
         ResultActions actions =
             mockMvc.perform(
