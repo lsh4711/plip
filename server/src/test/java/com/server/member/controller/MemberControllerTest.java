@@ -38,7 +38,6 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.google.gson.Gson;
 import com.server.domain.member.dto.MemberDto;
 import com.server.domain.member.entity.Member;
-import com.server.domain.member.entity.Member.Role;
 import com.server.domain.member.mapper.MemberMapper;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.member.service.MemberService;
@@ -73,6 +72,7 @@ public class MemberControllerTest {
 
     @BeforeAll
     public void init() {
+        accessTokenForUser = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
         accessTokenForUser = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
     }
 
@@ -114,15 +114,9 @@ public class MemberControllerTest {
         LoginDto request = (LoginDto)StubData.MockMember.getRequestBody("loginDto");
         String jsonData = gson.toJson(request);
 
-        Member member = Member.builder()
-                .memberId(1L)
-                .email("admin")
-                .password(passwordEncoder.encode("admin"))
-                .nickname("관리자")
-                .role(Role.USER)
-                .build();
-
-        repository.save(member);
+        repository.save(
+            Member.builder().memberId(1L).email("test@naver.com").password(passwordEncoder.encode("12345678a!"))
+                .nickname("test").build());
         //when
         ResultActions actions = mockMvc.perform(
             post(MEMBER_DEFULT_URI + "/login")
