@@ -43,25 +43,26 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .headers().frameOptions().sameOrigin()
+            .headers().frameOptions().sameOrigin()
+            .and()
+            .csrf().disable()
+            .cors(withDefaults())
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+            .and()
+            .oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint()
+                .userService(oAuth2UserService)
                 .and()
-                .csrf().disable()
-                .cors(withDefaults())
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
-                .and()
-                .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint()
-                        .userService(oAuth2UserService)
-                        .and()
-                        .successHandler(
-                            new OAuth2SuccessHandler(delegateTokenUtil, refreshTokenService, memberRepository)))
-                .apply(customFilterConfigurers())
-                .and()
-                .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll());
+                .successHandler(
+                    new OAuth2SuccessHandler(delegateTokenUtil, refreshTokenService, memberRepository)))
+            .apply(customFilterConfigurers())
+            .and()
+            .authorizeHttpRequests(authorize -> authorize
+                .antMatchers("/*/users").authenticated()
+                .anyRequest().permitAll());
 
         return http.build();
     }
@@ -80,7 +81,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(List.of("http://127.0.0.1:5173", "http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("http://127.0.0.1:5173", "http://localhost:5173","https://plip.netlify.app"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("*"));

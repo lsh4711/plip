@@ -30,7 +30,7 @@ public class CustomFilterConfig extends AbstractHttpConfigurer<CustomFilterConfi
         AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager,
-            refreshTokenService, delegateTokenUtil);
+            refreshTokenService, delegateTokenUtil, jwtTokenizer);
         jwtAuthenticationFilter.setFilterProcessesUrl("/api/users/login");
         jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
         jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());

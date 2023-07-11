@@ -19,6 +19,7 @@ import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.dto.LoginDto;
 import com.server.global.auth.jwt.DelegateTokenUtil;
+import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
@@ -30,6 +31,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
     private final DelegateTokenUtil delegateTokenUtil;
+    private final JwtTokenizer jwtTokenizer;
 
     @SneakyThrows
     @Override
@@ -52,8 +54,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String accessToken = delegateTokenUtil.delegateAccessToken(member);
         String refreshToken = delegateTokenUtil.delegateRefreshToken(member);
 
-        response.setHeader("Authorization", "Bearer " + accessToken);
-        response.setHeader("Refresh", refreshToken);
+        jwtTokenizer.setHeaderAccessToken(response, accessToken);
+        jwtTokenizer.setHeaderRefreshToken(response, refreshToken);
         refreshTokenService.saveTokenInfo(member.getMemberId(), refreshToken, accessToken);
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
     }
