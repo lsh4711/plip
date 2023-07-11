@@ -21,6 +21,8 @@ import org.springframework.web.filter.CorsFilter;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.handler.MemberAuthenticationEntryPoint;
+import com.server.global.auth.handler.MemberLogoutHandler;
+import com.server.global.auth.handler.MemberLogoutSuccessHandler;
 import com.server.global.auth.handler.OAuth2SuccessHandler;
 import com.server.global.auth.jwt.DelegateTokenUtil;
 import com.server.global.auth.jwt.JwtTokenizer;
@@ -48,6 +50,12 @@ public class SecurityConfig {
             .csrf().disable()
             .cors(withDefaults())
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .logout()
+            .logoutUrl("/api/users/logout")
+            .deleteCookies("Refresh")
+            .addLogoutHandler(new MemberLogoutHandler(refreshTokenService, jwtTokenizer))
+            .logoutSuccessHandler(new MemberLogoutSuccessHandler())
             .and()
             .exceptionHandling()
             .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
