@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
-import com.server.domain.member.entity.Member;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
