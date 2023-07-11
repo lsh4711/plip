@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,6 +70,10 @@ public class ScheduleController {
     // 일단은 장소 정보까지 넣어놈
     @GetMapping("/{scheduleId}")
     public ResponseEntity getSchedule(@PathVariable("scheduleId") long scheduleId) {
+        long memberId = CustomUtil.getAuthId();
+
+        scheduleService.verfify(memberId, scheduleId);
+
         Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
         List<PlaceResponse> placeResponses = placeMapper
@@ -82,11 +87,25 @@ public class ScheduleController {
 
     @GetMapping("/{scheduleId}/places")
     public ResponseEntity getPlacesByScheduleId(@PathVariable("scheduleId") long scheduleId) {
+        long memberId = CustomUtil.getAuthId();
+
+        scheduleService.verfify(memberId, scheduleId);
+
         Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
         List<PlaceResponse> placeResponses = placeMapper
                 .schedulePlacesToPlaceResponses(schedulePlaces);
 
         return new ResponseEntity<>(placeResponses, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{scheduleId}")
+    public ResponseEntity deleteSchedule(@PathVariable("scheduleId") long scheduleId) {
+        long memberId = CustomUtil.getAuthId();
+
+        scheduleService.verfify(memberId, scheduleId);
+        scheduleService.deleteSchedule(scheduleId);
+
+        return ResponseEntity.noContent().build();
     }
 }

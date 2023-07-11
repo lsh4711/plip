@@ -9,8 +9,8 @@ public class PlaceDto {
     @Getter
     @Setter
     public static class Post {
-        @NotBlank
-        private long apiId;
+        @NotBlank // optional
+        private long apiId = 0;
 
         @NotBlank
         private String name;
@@ -23,6 +23,9 @@ public class PlaceDto {
 
         @NotBlank
         private String longitude;
+
+        @NotBlank
+        private String category;
     }
 
     @Getter

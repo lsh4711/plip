@@ -60,9 +60,9 @@ public class StubData {
                     .build();
 
             MemberDto.PasswordPatch memberPwPatch = MemberDto.PasswordPatch.builder()
-                .email("test123@naver.com")
-                .password("12345678a!")
-                .build();
+                    .email("test123@naver.com")
+                    .password("12345678a!")
+                    .build();
 
             stubRequestBody.put("memberPost", memberPost);
             stubRequestBody.put("loginDto", loginDto);
@@ -171,6 +171,7 @@ public class StubData {
 
         static {
             String[] placeNames = {"감귤 농장", "초콜릿 박물관", "제주도 바닷가"};
+            String[] categoryCodes = {"MT1", "CS2", "PS3"};
 
             for (int i = 1; i <= 2; i++) {
                 List<PlaceDto.Post> postDtos = new ArrayList<>();
@@ -181,6 +182,7 @@ public class StubData {
                     postDto.setAddress("제주도 무슨동 무슨길" + j);
                     postDto.setLatitude(String.format("%d.%d", j * 205 + j * 17 + j * 8, j * 27));
                     postDto.setLongitude(String.format("%d.%d", j * 121 + j * 23 + j * 3, j * 31));
+                    postDto.setCategory(categoryCodes[j - 1]);
                     postDtos.add(postDto);
                 }
                 postDtoLists.add(postDtos);

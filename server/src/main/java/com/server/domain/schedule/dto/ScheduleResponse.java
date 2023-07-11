@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.server.domain.member.entity.Member;
 import com.server.domain.place.dto.PlaceResponse;
 
 import lombok.Getter;
@@ -23,7 +22,8 @@ public class ScheduleResponse {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    private Member member;
+    private Long memberId;
+    private String nickname;
 
     private List<PlaceResponse> places;
 }
