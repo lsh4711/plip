@@ -9,8 +9,14 @@ import Paragraph from '../atom/Paragraph';
 import Button from '../atom/Button';
 import LoadingSpinner from '../atom/LoadingSpinner';
 import Input from '../atom/Input';
+import useToast from '@/hooks/useToast';
 
 const SignupForm = () => {
+  const emailRequestMutation = useEmailRequestMutation('signup');
+  const emailValidationMutation = useEmailValidationMutation();
+  const signupMutation = useSignupMutation();
+  const toast = useToast();
+
   const [isNicknameValid, setIsNicknameValid] = React.useState({
     isSuccess: true,
     message: '',
@@ -18,9 +24,6 @@ const SignupForm = () => {
   const { emailRequestState, setEmailRequestState, authCodeState, setAuthCodeState } =
     useEmailValidation();
 
-  const emailRequestMutation = useEmailRequestMutation('signup');
-  const emailValidationMutation = useEmailValidationMutation();
-  const signupMutation = useSignupMutation();
   const signupForm = useForm<SignupType>({
     mode: 'all',
     resolver: zodResolver(signupSchema),
@@ -30,51 +33,54 @@ const SignupForm = () => {
     if (!emailRequestState.isSuccess) return;
     if (!authCodeState.disabled) return;
 
-    const onSubmitFn = async () => {
-      const response = await signupMutation.mutateAsync(data);
-      console.log(response);
-      if (response.status === 201) {
+    signupMutation
+      .mutateAsync(data)
+      .then((res) => {
         setIsNicknameValid({ isSuccess: true, message: '' });
-      } else {
+        toast({ content: '회원가입이 성공적으로 이루어졌습니다.', type: 'success' });
+      })
+      .catch(() => {
         setIsNicknameValid({ isSuccess: false, message: '닉네임이 중복되었습니다.' });
-      }
-    };
-    onSubmitFn();
+        toast({ content: '닉네임이 중복되었습니다.', type: 'warning' });
+      });
   };
 
   const emailCredentialRequest = useDebounce(() => {
     if (signupForm.formState.errors.email?.message !== undefined) return;
     if (signupForm.getValues('email') === '') return;
 
-    const postCredentialRequestFn = async () => {
-      const response = await emailRequestMutation.mutateAsync(signupForm.getValues('email'));
-      if (response.status === 200) {
+    emailRequestMutation
+      .mutateAsync(signupForm.getValues('email'))
+      .then((res) => {
+        toast({ content: '이메일 요청이 전송되었습니다.', type: 'success' });
         setAuthCodeState({ disabled: false, message: '' });
-      }
-    };
-    postCredentialRequestFn();
+      })
+      .catch(() => {
+        toast({ content: '이메일 요청 전송이 실패했습니다.', type: 'warning' });
+        setAuthCodeState({ disabled: true, message: '잠시 후 다시 시도해주세요' });
+      });
   }, 500);
 
   const sendVerificationCodeEmail = useDebounce(() => {
-    const postVerificationCode = async () => {
-      if (signupForm.getValues('authnumber') === '') return;
-      if (signupForm.getValues('authnumber') === undefined) return;
+    if (signupForm.getValues('authnumber') === '') return;
+    if (signupForm.getValues('authnumber') === undefined) return;
 
-      const response = await emailValidationMutation.mutateAsync({
+    emailValidationMutation
+      .mutateAsync({
         authcode: signupForm.getValues('authnumber') as string,
         email: signupForm.getValues('email'),
-      });
-      if (response.status === 200) {
+      })
+      .then((res) => {
         setEmailRequestState({ isSuccess: true, message: '' });
         setAuthCodeState({ disabled: true, message: '' });
-      } else {
+        toast({ content: '인증에 성공했습니다.', type: 'success' });
+      })
+      .catch(() => {
         setEmailRequestState({ isSuccess: false, message: '인증번호가 맞지 않습니다.' });
         setAuthCodeState({ disabled: false, message: '다시 인증을 시도하세요' });
-      }
-    };
-    postVerificationCode();
+        toast({ content: '인증에 실패했습니다.', type: 'warning' });
+      });
   }, 500);
-  console.log(emailRequestMutation.status);
 
   return (
     <form className=" flex w-[460px] flex-col gap-y-6" onSubmit={signupForm.handleSubmit(onSubmit)}>

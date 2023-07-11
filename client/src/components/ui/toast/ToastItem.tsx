@@ -7,10 +7,10 @@ export type ToastProp = 'warning' | 'default' | 'success';
 
 interface ToastItemProps {
   children: React.ReactNode;
-  type: ToastProp;
+  type?: ToastProp;
 }
 
-const ToastItem = ({ type, children }: ToastItemProps) => {
+const ToastItem = ({ type = 'default', children }: ToastItemProps) => {
   // return <li className={cn(toastVariants({ type }))}>{children}</li>;
   return (
     <div

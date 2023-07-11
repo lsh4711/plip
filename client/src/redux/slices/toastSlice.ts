@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ToastProp } from '@/components/ui/toast/ToastItem';
 
-export interface ToastInterface extends ToastProp {
+export interface ToastInterface {
   id?: number;
   content: string;
   visible?: boolean;
-  [prop: string]: any;
+  type?: ToastProp;
 }
 
 const initialState: ToastInterface[] = [];
