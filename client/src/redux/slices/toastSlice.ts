@@ -6,6 +6,7 @@ export interface ToastInterface {
   content: string;
   visible?: boolean;
   type?: ToastProp;
+  [key: string]: unknown;
 }
 
 const initialState: ToastInterface[] = [];
