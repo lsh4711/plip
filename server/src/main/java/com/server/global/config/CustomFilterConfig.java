@@ -5,6 +5,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
+import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.filter.JwtAuthenticationFilter;
 import com.server.global.auth.filter.JwtVerificationFilter;
