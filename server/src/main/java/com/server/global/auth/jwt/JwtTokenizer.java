@@ -2,17 +2,23 @@ package com.server.global.auth.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import com.server.global.auth.userdetails.MemberDetailsService;
+import com.server.global.exception.CustomException;
+import com.server.global.exception.ExceptionCode;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -91,12 +97,41 @@ public class JwtTokenizer {
         return key;
     }
 
-    public void setHeaderAccessToken(HttpServletResponse response, String accessToken){
+    public String getHeaderAccessToken(HttpServletRequest request) {
+        return request.getHeader("Authorization").replace("Bearer ", "");
+    }
+
+    public String getHeaderRefreshToken(HttpServletRequest request) {
+        return Arrays.stream(request.getCookies())
+            .filter(cookie -> cookie.getName().equals("Refresh"))
+            .findFirst()
+            .orElseThrow(() -> new CustomException(
+                ExceptionCode.REFRESH_TOKEN_NOT_FOUND))
+            .getValue();
+    }
+
+    public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
         response.setHeader("Authorization", "Bearer " + accessToken);
     }
 
-    public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken){
-        response.setHeader("Refresh", refreshToken);
+    public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
+        ResponseCookie cookie = ResponseCookie.from("Refresh", refreshToken)
+            .maxAge(60 * 60 * 24 * 3)
+            // TODO: 배포 환경에서 추가
+            //.domain("https://plip.netlify.app/")
+            //.secure(true)
+            .path("/")
+            .httpOnly(true)
+            .build();
+        response.setHeader("Set-Cookie", cookie.toString());
+        //response.setHeader("Refresh", refreshToken);
+    }
+
+    public void removeRefreshToken(HttpServletResponse response){
+        ResponseCookie cookie = ResponseCookie.from("Refresh", null)
+            .maxAge(0)
+            .build();
+        response.setHeader("Set-Cookie", cookie.toString());
     }
 
 }

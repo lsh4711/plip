@@ -1,5 +1,6 @@
 package com.server.domain.mail.service;
 
+import java.util.Optional;
 import java.util.Random;
 
 import javax.mail.MessagingException;
@@ -13,6 +14,9 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import com.server.domain.mail.entity.AuthMailCode;
+import com.server.domain.member.entity.Member;
+import com.server.domain.member.repository.MemberRepository;
+import com.server.domain.member.service.MemberService;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
@@ -26,12 +30,10 @@ public class MailService {
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
     private final AuthMailCodeService authMailCodeService;
+    private final MemberRepository memberRepository;
 
-    /**
-     * TODO: 메일이 있는지 검사를 해야할까?? 추후에 생각해보고 리팩토링
-     * */
     @Async
-    public void sendMail(String email) {
+    public void sendMail(String email, String type) {
         String authCode = createCode();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
@@ -39,7 +41,7 @@ public class MailService {
 
             mimeMessageHelper.setTo(email);
             mimeMessageHelper.setSubject("[PLIP] 이메일 인증을 위한 인증코드를 발송했습니다.");
-            mimeMessageHelper.setText(setContext(authCode), true);
+            mimeMessageHelper.setText(setContext(authCode, type), true);
             javaMailSender.send(mimeMessage);
             authMailCodeService.saveAuthCode(authCode, email);
         } catch (MessagingException e) {
@@ -47,10 +49,21 @@ public class MailService {
         }
     }
 
-    public String setContext(String code) {
+    public void verificationEmail(String email, String type) {
+        Optional<Member> findMember = memberRepository.findByEmail(email);
+        if(type.equals("pw") && findMember.isEmpty())
+            throw new CustomException(ExceptionCode.MEMBER_NOT_FOUND);
+        else if(type.equals("signup") && findMember.isPresent())
+            throw new CustomException(ExceptionCode.EMAIL_EXISTS);
+    }
+
+    public String setContext(String code, String type) {
         Context context = new Context();
         context.setVariable("code", code);
-        return templateEngine.process("email", context);
+        if(type.equals("signup")){
+            return templateEngine.process("signup", context);
+        }
+        return templateEngine.process("pw", context);
     }
 
     private String createCode() {
@@ -79,5 +92,6 @@ public class MailService {
             log.error("### 사용자의 인증 코드와 실제 인증 코드가 일치하지 않습니다.");
             throw new CustomException(ExceptionCode.AUTH_MAIL_CODE_MISMATCH);
         }
+        authMailCodeService.removeAuthCode(findAuthCode.getEmail());
     }
 }

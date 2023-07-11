@@ -44,15 +44,15 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
-        String jws = request.getHeader("Authorization").replace("Bearer ", "");
         try {
+            String jws = request.getHeader("Authorization").replace("Bearer ", "");
             Map<String, Object> claims = verifyJws(jws);
             setAuthenticationToContext(claims);
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException eje) {
             try {
                 log.error("### 토큰이 만료됐습니다.");
-                Token token = accessTokenRenewalUtil.renewAccessToken(jws);
+                Token token = accessTokenRenewalUtil.renewAccessToken(request);
 
                 jwtTokenizer.setHeaderAccessToken(response, token.getAccessToken());
                 jwtTokenizer.setHeaderRefreshToken(response, token.getRefreshToken());

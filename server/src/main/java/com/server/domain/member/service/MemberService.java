@@ -2,12 +2,15 @@ package com.server.domain.member.service;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.repository.MemberRepository;
+import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
@@ -26,6 +29,7 @@ public class MemberService {
 
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);
+        member.setRole(Member.Role.USER);
         return memberRepository.save(member);
     }
 
@@ -56,14 +60,18 @@ public class MemberService {
 
     public Member updateMember(String name, Member patchMember) {
         Member member = findMemberByEmail(name);
+
         Optional.ofNullable(patchMember.getPassword())
-            .ifPresent(member::setPassword);
+            .ifPresent(password -> member.setPassword(passwordEncoder.encode(password)));
         Optional.ofNullable(patchMember.getNickname())
             .ifPresent(member::setNickname);
         return member;
     }
 
-    public Member findMember(long memberId) {
-        return memberRepository.findById(memberId).get();
+    public Member updatePassword(Member updateMember) {
+        Member member = findMemberByEmail(updateMember.getEmail());
+        Optional.ofNullable(updateMember.getPassword())
+            .ifPresent(password -> member.setPassword(passwordEncoder.encode(password)));
+        return member;
     }
 }

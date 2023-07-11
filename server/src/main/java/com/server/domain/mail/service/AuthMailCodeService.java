@@ -25,4 +25,9 @@ public class AuthMailCodeService {
             .orElseThrow(() -> new CustomException(ExceptionCode.AUTH_MAIL_CODE_NOT_FOUND));
         return authMailCode;
     }
+
+    public void removeAuthCode(String email) {
+        authMailCodeRepository.findByEmail(email)
+            .ifPresent(authMailCodeRepository::delete);
+    }
 }

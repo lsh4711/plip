@@ -59,9 +59,15 @@ public class StubData {
                     .password("12345678!a")
                     .build();
 
+            MemberDto.PasswordPatch memberPwPatch = MemberDto.PasswordPatch.builder()
+                .email("test123@naver.com")
+                .password("12345678a!")
+                .build();
+
             stubRequestBody.put("memberPost", memberPost);
             stubRequestBody.put("loginDto", loginDto);
             stubRequestBody.put("memberPatch", memberPatch);
+            stubRequestBody.put("memberPwPatch", memberPwPatch);
         }
 
         public static Object getRequestBody(String valueName) {

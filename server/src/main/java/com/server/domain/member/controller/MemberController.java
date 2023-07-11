@@ -59,5 +59,12 @@ public class MemberController {
         memberService.deleteMember(principal.getName());
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/password")
+    public ResponseEntity<?> patchPasswordMember(@RequestBody @Valid MemberDto.PasswordPatch request) {
+        memberService.updatePassword(memberMapper.memberDtoPasswordPatchToMember(request));
+        return ResponseEntity.ok().build();
+    }
+
 }
 

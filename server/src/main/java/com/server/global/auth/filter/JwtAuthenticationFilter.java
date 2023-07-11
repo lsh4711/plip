@@ -19,6 +19,7 @@ import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.dto.LoginDto;
 import com.server.global.auth.jwt.DelegateTokenUtil;
+import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
@@ -28,8 +29,8 @@ import lombok.SneakyThrows;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
-    private final RefreshTokenService refreshTokenService;
     private final DelegateTokenUtil delegateTokenUtil;
+    private final JwtTokenizer jwtTokenizer;
 
     @SneakyThrows
     @Override
@@ -52,9 +53,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String accessToken = delegateTokenUtil.delegateAccessToken(member);
         String refreshToken = delegateTokenUtil.delegateRefreshToken(member);
 
-        response.setHeader("Authorization", "Bearer " + accessToken);
-        response.setHeader("Refresh", refreshToken);
-        refreshTokenService.saveTokenInfo(member.getMemberId(), refreshToken, accessToken);
+        jwtTokenizer.setHeaderAccessToken(response, accessToken);
+        jwtTokenizer.setHeaderRefreshToken(response, refreshToken);
+        // TODO: 우선 레디스에 저장 안함. 검증할 때 사용할지 추후에 생각...
+        //refreshTokenService.saveTokenInfo(member.getMemberId(), refreshToken, accessToken);
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
     }
 }
