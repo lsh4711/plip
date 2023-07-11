@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
 import { ReactComponent as MypageIcon } from '../../assets/icons/mypage.svg';
 import { ReactComponent as NotifyIcon } from '../../assets/icons/notification.svg';
-import { ReactComponent as ProfileIcon } from '../../assets/icons/profile.svg';
 import { ReactComponent as LogoIcon } from '../../assets/logo.svg';
 
 import Button from '../atom/Button';
@@ -59,7 +58,7 @@ const AfterLogin = ({ isHome }: HeaderProps) => {
 };
 
 const Header = ({ isHome }: HeaderProps) => {
-  const isLogin = true; // 로그인 상태 구현전 임시 변수입니다.
+  const isLogin = false; // 로그인 상태 구현전 임시 변수입니다.
 
   return (
     <header

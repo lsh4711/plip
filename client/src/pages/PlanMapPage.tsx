@@ -45,7 +45,13 @@ const PlanMapPage = () => {
   });
 
   const [markers, setMarkers] = useState<PositionType[]>([]);
-  console.log(currentPosition.isLoad);
+
+  const onDeleteClicedkMarker = (index: number) => {
+    const filtered = markers.filter((marker, markersIndex) => markersIndex !== index);
+
+    setMarkers(filtered);
+  };
+
   useEffect(() => {
     const { lat, lng } = selectedRegion.coords;
 
@@ -55,11 +61,6 @@ const PlanMapPage = () => {
       lng: lng,
     });
   }, []);
-
-  useEffect(() => {
-    if (mapLevel >= 10) setIsMarkerVisible(false);
-    else setIsMarkerVisible(true);
-  }, [mapLevel]);
 
   useEffect(() => {
     if (mapLevel >= 10) setIsMarkerVisible(false);
@@ -98,7 +99,7 @@ const PlanMapPage = () => {
             averageCenter={true} // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
             minLevel={10} // 클러스터 할 최소 지도 레벨
           >
-            {markers.map((pos) => {
+            {markers.map((pos, index) => {
               console.log(pos.lat, pos.lng);
               return (
                 <MapMarker
@@ -107,6 +108,7 @@ const PlanMapPage = () => {
                     lat: pos.lat,
                     lng: pos.lng,
                   }}
+                  onClick={() => onDeleteClicedkMarker(index)}
                 />
               );
             })}
