@@ -1,8 +1,8 @@
-import { LoginType } from '@/pages/LoginPage';
 import { isSuccessStatus } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 import BASE_URL from './BASE_URL';
 import instance from './axiosinstance';
+import { LoginType } from '@/schema/loginSchema';
 
 // const postLogin = async (loginData: LoginType) => {
 //   const response = await fetch(`${BASE_URL}/api/users/login`, {
