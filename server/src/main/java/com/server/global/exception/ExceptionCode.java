@@ -24,9 +24,10 @@ public enum ExceptionCode {
     NICKNAME_EXISTS("이미 존재하는 닉네임입니다.", 409),
 
     // 일정
-    SCHEDULE_NOT_FOUND("Schedule Not Found.", 404),
+    SCHEDULE_NOT_FOUND("일정이 존재하지 않거나 권한이 없습니다.", 404),
 
     // 장소
+    NO_VISITOR("방문객이 없습니다.", 404),
     EMPTY_PLACES("입력된 여행지가 없습니다.", 400),
 
     // 일지
@@ -38,7 +39,7 @@ public enum ExceptionCode {
     IMAGE_NOT_FOUND("Image Not Found.", 404),
 
     // 일정_장소
-    SCHEDULE_PLACE_NOT_FOUND("Schedule Place Not Found.", 404),
+    SCHEDULE_PLACE_NOT_FOUND("여행지가 존재하지 않거나 권한이 없습니다.", 404),
 
     END("마무리", 200);
 

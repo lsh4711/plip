@@ -3,6 +3,7 @@ package com.server.domain.schedule.entity;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -40,6 +41,6 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "memberId")
     private Member member;
 
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
     private List<SchedulePlace> schedulePlaces;
 }

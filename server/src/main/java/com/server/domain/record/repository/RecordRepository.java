@@ -9,5 +9,5 @@ import com.server.domain.record.entity.Record;
 public interface RecordRepository extends JpaRepository<Record, Long> {
     Page<Record> findByMemberMemberId(Pageable pageable, Long memberId);
 
-    boolean existsByRecordIdAndMember_MemberId(long memberId, long recordId);
+    boolean existsByRecordIdAndMember_MemberId(long recordId, long memberId);
 }

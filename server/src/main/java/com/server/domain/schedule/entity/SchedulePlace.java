@@ -2,6 +2,7 @@ package com.server.domain.schedule.entity;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -43,6 +44,7 @@ public class SchedulePlace extends BaseEntity {
     @JoinColumn(name = "placeId")
     private Place place;
 
-    @OneToMany(mappedBy = "schedulePlace")
+    // 나중에 이미지도 같이 지우는 법을 찾아야함
+    @OneToMany(mappedBy = "schedulePlace", cascade = CascadeType.REMOVE)
     private List<Record> records;
 }

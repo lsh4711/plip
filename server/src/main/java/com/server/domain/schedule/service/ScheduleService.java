@@ -27,4 +27,16 @@ public class ScheduleService {
         return optionalSchedule.orElseThrow(() -> new CustomException(
             ExceptionCode.SCHEDULE_NOT_FOUND));
     }
+
+    public void deleteSchedule(long scheduleId) {
+        scheduleRepository.deleteById(scheduleId);
+    }
+
+    public void verfify(long memberId, long scheduleId) {
+        boolean exists = scheduleRepository
+                .existsByScheduleIdAndMember_MemberId(scheduleId, memberId);
+        if (!exists) {
+            throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
+        }
+    }
 }

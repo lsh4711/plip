@@ -19,4 +19,6 @@ public class PlaceResponse {
     private int days;
     private int orders;
     private boolean bookmark; // 구현전까진 기본값으로 false
+
+    private String category;
 }

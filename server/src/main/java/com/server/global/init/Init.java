@@ -9,6 +9,8 @@ import javax.annotation.PostConstruct;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.server.domain.category.entity.Category;
+import com.server.domain.category.service.CategoryService;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.entity.Member.Role;
 import com.server.domain.member.service.MemberService;
@@ -27,13 +29,37 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 public class Init {
+    // Member
     private final MemberService memberService;
+
+    // Schedule
     private final ScheduleService scheduleService;
-    private final SchedulePlaceService schedulePlaceService;
+
+    // Place
     private final PlaceService placeService;
+
+    // SchedulePlace
+    private final SchedulePlaceService schedulePlaceService;
+
+    // Category
+    private final CategoryService categoryService;
 
     @PostConstruct
     public void init() {
+        ArrayHashMap map = new ArrayHashMap();
+        List<Category> categories = new ArrayList<>();
+
+        for (String[] entry : map) {
+            String code = entry[0];
+            String name = entry[1];
+            Category category = new Category();
+            category.setCode(code);
+            category.setName(name);
+            categories.add(category);
+        }
+
+        categoryService.saveCategorys(categories);
+
         Role admin = Role.ADMIN;
         List<Member> members = new ArrayList<>();
         members.add(Member.builder()
@@ -71,12 +97,15 @@ public class Init {
         List<SchedulePlace> schedulePlaces = new ArrayList<>();
 
         for (int i = 1; i <= 3; i++) {
+            Category category = new Category();
+            category.setCategoryId((long)i);
             Place place = new Place();
             place.setApiId(i * 10 + i);
             place.setName(placeNames[i - 1]);
             place.setAddress("제주도 무슨동 무슨길" + i);
             place.setLatitude(String.format("%d.%d", i * 205 + i * 17 + i * 8, i * 27));
             place.setLongitude(String.format("%d.%d", i * 121 + i * 23 + i * 3, i * 31));
+            place.setCategory(category);
             places.add(place);
 
             Schedule newSchedule = new Schedule();

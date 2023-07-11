@@ -98,7 +98,7 @@ public class RecordService {
 
     public void verfify(long recordId, long memberId) {
         boolean exists = recordRepository
-                .existsByRecordIdAndMember_MemberId(memberId, recordId);
+                .existsByRecordIdAndMember_MemberId(recordId, memberId);
         if (!exists) {
             throw new CustomException(ExceptionCode.RECORD_NOT_FOUND);
         }

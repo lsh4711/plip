@@ -12,6 +12,9 @@ import com.server.domain.schedule.entity.SchedulePlace;
 
 @Mapper(componentModel = "spring")
 public interface PlaceMapper {
+    @Mapping(source = "category", target = "category.code")
+    Place postDtoToPlace(PlaceDto.Post postDto);
+
     List<Place> postDtosToPlaces(List<PlaceDto.Post> postDtos);
 
     List<List<Place>> postDtoListsToPlaceLists(List<List<PlaceDto.Post>> postDtos);
@@ -26,6 +29,8 @@ public interface PlaceMapper {
     @Mapping(source = "place.address", target = "address")
     @Mapping(source = "place.latitude", target = "latitude")
     @Mapping(source = "place.longitude", target = "longitude")
+
+    @Mapping(source = "place.category.name", target = "category")
     PlaceResponse schedulePlaceToPlaceResponse(SchedulePlace schedulePlace);
 
     List<PlaceResponse> schedulePlacesToPlaceResponses(List<SchedulePlace> schedulePlaces);
