@@ -103,7 +103,7 @@ public class RecordControllerTest {
 
     @BeforeAll
     public void init() {
-        accessTokenForUser = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey(), "USER");
+        accessTokenForUser = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
     }
 
     @Test

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.server.domain.member.service.MemberService;
+import com.server.domain.member.entity.Member;
 import com.server.domain.place.dto.PlaceDto;
 import com.server.domain.place.dto.PlaceResponse;
 import com.server.domain.place.entity.Place;
@@ -41,7 +41,6 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
     private final ScheduleMapper scheduleMapper;
 
-    private final MemberService memberService;
     private final PlaceService placeService;
     private final PlaceMapper placeMapper;
     private final SchedulePlaceService schedulePlaceService;
@@ -50,12 +49,12 @@ public class ScheduleController {
     @PostMapping("/write")
     public ResponseEntity postSchedule(Authentication authentication,
             @Valid @RequestBody ScheduleDto.Post postDto) {
-        // 요청 보낸 회원 정보 조회
-        // id를 조회하기 위해 데이터베이스에 접근해야 하는 경우이므로 가져온 객체를 그대로 사용함
-        // authentication.get
-        // Member foundMember = memberService.find
+        long memberId = Long.parseLong(authentication.getCredentials().toString());
+        Member member = Member.builder()
+                .memberId(memberId)
+                .build();
         Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
-        // schedule.setMember(foundMember);
+        schedule.setMember(member);
 
         Schedule savedSchedule = scheduleService.saveSchedule(schedule);
         List<PlaceDto.Post> placeDtos = postDto.getPlaceDtos();
