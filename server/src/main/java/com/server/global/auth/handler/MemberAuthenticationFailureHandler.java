@@ -8,31 +8,36 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import com.google.gson.Gson;
+import com.server.global.auth.error.AuthenticationError;
+import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MemberAuthenticationFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-        AuthenticationException exception) throws IOException, ServletException {
+        AuthenticationException exception) throws IOException {
         log.error("### Authentication failed: {}", exception.getMessage());
-        sendErrorResponse(response);
+        log.error("### Authentication failed: {}", exception.getClass().getName());
+        AuthenticationError.sendErrorResponse(response, getCustomException(exception));
     }
 
-    /**
-     * TODO: 중복 코드 발생
-     *       세세한 에러 핸들링 예정
-     * */
-    private void sendErrorResponse(HttpServletResponse response) throws IOException {
-        Gson gson = new Gson();
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.getWriter().write(gson.toJson(ExceptionCode.UNAUTHORIZED.getMessage()));
+    private CustomException getCustomException(AuthenticationException exception){
+        if(exception.getClass().equals(InternalAuthenticationServiceException.class))
+            return new CustomException(ExceptionCode.NON_REGISTERED_USER);
+        else if(exception.getClass().equals(BadCredentialsException.class))
+            return new CustomException(ExceptionCode.PASSWORD_INVALID);
+        else
+            return new CustomException(ExceptionCode.UNKNOWN_USER);
+
     }
 }

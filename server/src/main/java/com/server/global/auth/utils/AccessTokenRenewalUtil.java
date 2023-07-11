@@ -20,17 +20,22 @@ public class AccessTokenRenewalUtil {
     private final DelegateTokenUtil delegateTokenUtil;
 
     public Token renewAccessToken(String accessToken) {
-        RefreshToken findRefreshToken = refreshTokenService.getTokenByAccessToken(accessToken);
-        String refreshToken = findRefreshToken.getRefreshToken();
-        long memberId = Long.parseLong(findRefreshToken.getId());
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
-        String newAccessToken = delegateTokenUtil.delegateAccessToken(member);
+        try{
+            RefreshToken findRefreshToken = refreshTokenService.getTokenByAccessToken(accessToken);
+            String refreshToken = findRefreshToken.getRefreshToken();
+            long memberId = Long.parseLong(findRefreshToken.getId());
+            Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
+            String newAccessToken = delegateTokenUtil.delegateAccessToken(member);
 
-        refreshTokenService.saveTokenInfo(memberId, refreshToken, newAccessToken);
-        return Token.builder()
-            .accessToken(newAccessToken)
-            .refreshToken(refreshToken)
-            .build();
+            refreshTokenService.saveTokenInfo(memberId, refreshToken, newAccessToken);
+            return Token.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(refreshToken)
+                .build();
+        }catch (CustomException ce){
+            throw ce;
+        }
+
     }
 }

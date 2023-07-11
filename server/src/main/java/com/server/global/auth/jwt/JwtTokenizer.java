@@ -6,8 +6,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+
+import com.server.global.auth.userdetails.MemberDetailsService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -85,4 +90,13 @@ public class JwtTokenizer {
 
         return key;
     }
+
+    public void setHeaderAccessToken(HttpServletResponse response, String accessToken){
+        response.setHeader("Authorization", "Bearer " + accessToken);
+    }
+
+    public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken){
+        response.setHeader("Refresh", refreshToken);
+    }
+
 }
