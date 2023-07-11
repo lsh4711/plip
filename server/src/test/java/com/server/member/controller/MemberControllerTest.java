@@ -37,6 +37,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.google.gson.Gson;
 import com.server.domain.member.dto.MemberDto;
 import com.server.domain.member.entity.Member;
+import com.server.domain.member.entity.Member.Role;
 import com.server.domain.member.mapper.MemberMapper;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.member.service.MemberService;
@@ -71,7 +72,7 @@ public class MemberControllerTest {
 
     @BeforeAll
     public void init() {
-        accessTokenForUser = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey(), "USER");
+        accessTokenForUser = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
     }
 
     @Test
@@ -84,12 +85,10 @@ public class MemberControllerTest {
         given(mapper.memberDtoPostToMember(Mockito.any(MemberDto.Post.class))).willReturn(Member.builder().build());
         given(service.createMember(Mockito.any(Member.class))).willReturn(Member.builder().memberId(1L).build());
         //when
-        ResultActions actions =
-            mockMvc.perform(
-                    post(MEMBER_DEFULT_URI + "/signup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonData)
-                )
+        ResultActions actions = mockMvc.perform(
+            post(MEMBER_DEFULT_URI + "/signup")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonData))
                 //then
                 .andExpect(status().isCreated())
                 .andDo(
@@ -98,17 +97,13 @@ public class MemberControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
-                                .description("회원 등록")
-                                .requestFields(
-                                    fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
-                                    fieldWithPath("password").type(JsonFieldType.STRING).description("비밀 번호"),
-                                    fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임")
-                                )
-                                .responseFields()
-                                .build()
-                        )
-                    )
-                );
+                                    .description("회원 등록")
+                                    .requestFields(
+                                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                                        fieldWithPath("password").type(JsonFieldType.STRING).description("비밀 번호"),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"))
+                                    .responseFields()
+                                    .build())));
     }
 
     @Test
@@ -118,16 +113,20 @@ public class MemberControllerTest {
         LoginDto request = (LoginDto)StubData.MockMember.getRequestBody("loginDto");
         String jsonData = gson.toJson(request);
 
-        repository.save(
-            Member.builder().memberId(1L).email("test@naver.com").password(passwordEncoder.encode("12345678a!"))
-                .nickname("test").build());
+        Member member = Member.builder()
+                .memberId(1L)
+                .email("admin")
+                .password(passwordEncoder.encode("admin"))
+                .nickname("관리자")
+                .role(Role.USER)
+                .build();
+
+        repository.save(member);
         //when
-        ResultActions actions =
-            mockMvc.perform(
-                    post(MEMBER_DEFULT_URI + "/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonData)
-                )
+        ResultActions actions = mockMvc.perform(
+            post(MEMBER_DEFULT_URI + "/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonData))
                 //then
                 .andExpect(status().isOk())
                 .andDo(
@@ -136,16 +135,12 @@ public class MemberControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
-                                .description("회원 로그인")
-                                .responseHeaders(
-                                    headerWithName("Authorization").description("발급받은 인증 토큰"),
-                                    headerWithName("Refresh").description("발급받은 리프레쉬 토큰")
-                                )
-                                .responseFields()
-                                .build()
-                        )
-                    )
-                );
+                                    .description("회원 로그인")
+                                    .responseHeaders(
+                                        headerWithName("Authorization").description("발급받은 인증 토큰"),
+                                        headerWithName("Refresh").description("발급받은 리프레쉬 토큰"))
+                                    .responseFields()
+                                    .build())));
     }
 
     @Test
@@ -160,13 +155,11 @@ public class MemberControllerTest {
             Member.builder().memberId(1L).build());
 
         //when
-        ResultActions actions =
-            mockMvc.perform(
-                    patch(MEMBER_DEFULT_URI)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
-                        .content(jsonData)
-                )
+        ResultActions actions = mockMvc.perform(
+            patch(MEMBER_DEFULT_URI)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
+                    .content(jsonData))
                 //then
                 .andExpect(status().isCreated())
                 .andDo(
@@ -175,14 +168,10 @@ public class MemberControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
-                                .description("회원 수정")
-                                .requestHeaders(
-                                    headerWithName("Authorization").description("발급받은 인증 토큰")
-                                )
-                                .build()
-                        )
-                    )
-                );
+                                    .description("회원 수정")
+                                    .requestHeaders(
+                                        headerWithName("Authorization").description("발급받은 인증 토큰"))
+                                    .build())));
     }
 
     @Test
@@ -195,12 +184,10 @@ public class MemberControllerTest {
         given(mapper.memberToMemberDtoResponse(Mockito.any(Member.class))).willReturn(response);
 
         //when
-        ResultActions actions =
-            mockMvc.perform(
-                    get(MEMBER_DEFULT_URI)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
-                )
+        ResultActions actions = mockMvc.perform(
+            get(MEMBER_DEFULT_URI)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser))
                 //then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.nickname").value(response.getNickname()))
@@ -210,17 +197,12 @@ public class MemberControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
-                                .description("회원 조회")
-                                .requestHeaders(
-                                    headerWithName("Authorization").description("발급받은 인증 토큰")
-                                )
-                                .responseFields(
-                                    fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("회원 닉네임")
-                                )
-                                .build()
-                        )
-                    )
-                );
+                                    .description("회원 조회")
+                                    .requestHeaders(
+                                        headerWithName("Authorization").description("발급받은 인증 토큰"))
+                                    .responseFields(
+                                        fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("회원 닉네임"))
+                                    .build())));
     }
 
     @Test
@@ -229,12 +211,10 @@ public class MemberControllerTest {
         //given
         doNothing().when(service).deleteMember(Mockito.anyString());
         //when
-        ResultActions actions =
-            mockMvc.perform(
-                    delete(MEMBER_DEFULT_URI)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
+        ResultActions actions = mockMvc.perform(
+            delete(MEMBER_DEFULT_URI)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
+                    .contentType(MediaType.APPLICATION_JSON))
                 //then
                 .andExpect(status().isNoContent())
                 .andDo(
@@ -243,15 +223,11 @@ public class MemberControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
-                                .description("회원 삭제")
-                                .requestHeaders(
-                                    headerWithName("Authorization").description("발급받은 인증 토큰")
-                                )
-                                .responseFields()
-                                .build()
-                        )
-                    )
-                );
+                                    .description("회원 삭제")
+                                    .requestHeaders(
+                                        headerWithName("Authorization").description("발급받은 인증 토큰"))
+                                    .responseFields()
+                                    .build())));
     }
 
 }

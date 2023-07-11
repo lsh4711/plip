@@ -94,9 +94,10 @@ bootJar {
 
 openapi3 {
     server = "https://teamdev.shop:8000"
-//    server = "http://localhost:8080"
+    // server = "http://localhost:8000"
     title = "코벤져스 API 문서"
-    description = "Spring REST Docs with SwaggerUI."
+    // description = "Spring REST Docs with SwaggerUI."
+    description = "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA"
     version = "0.0.1"
     outputFileNamePrefix = 'open-api-3.0.1'
     format = 'json'
