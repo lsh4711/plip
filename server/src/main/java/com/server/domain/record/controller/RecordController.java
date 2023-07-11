@@ -51,12 +51,11 @@ import lombok.extern.slf4j.Slf4j;
 @Validated
 @Slf4j
 public class RecordController {
-    private final static String RECORD_DEFAULT_URL = "/api/records";
+    private static final String RECORD_DEFAULT_URL = "/api/records";
 
     private final RecordMapper mapper;
 
-    private final RecordService 
-    recordService;
+    private final RecordService recordService;
 
     private final ImageManager imageManager;
 
@@ -214,15 +213,9 @@ public class RecordController {
     @DeleteMapping("/{record-id}/img/{img-id}")
     public ResponseEntity<?> deleteRecordImg(@PathVariable("record-id") long recordId,
             @PathVariable("img-id") long imgId) {
-        // try { // imageManager 내부에서 발생하는 에러를 이미 핸들링하고있으므로 동작하지 않음
         imageManager.deleteImg(recordId, imgId);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
-        // } catch (Exception e) {
-        // throw new CustomException(ExceptionCode.INTERNAL_SERVER_ERROR); // 아래와 같은 결과 + 재사용성 증가
-        // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        // .body(ExceptionCode.INTERNAL_SERVER_ERROR.getMessage());
-        // }
     }
 
 }
