@@ -5,16 +5,17 @@ type Props = {
   isOpen: boolean;
   className: string;
   children: React.ReactNode;
+  onClose?: () => void;
 };
 
-const DialogContainer = ({ isOpen, className, children }: Props) => {
+const DialogContainer = ({ isOpen, onClose, className, children }: Props) => {
   if (!isOpen) {
     return null;
   }
 
   return createPortal(
     <>
-      <Backdrop />
+      <Backdrop onClose={onClose} />
       <div
         className={`absolute left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2 ${className}`}
       >

@@ -132,13 +132,13 @@ const PlanMapPage = () => {
 
       <Button
         variant={'primary'}
-        className={`absolute ${isOpenSidePanel ? 'right-[19rem]' : 'right-10'} top-10 z-[9999]`}
+        className={`absolute ${isOpenSidePanel ? 'right-[19rem]' : 'right-10'} top-10 z-50`}
       >
         저장하기
       </Button>
       <Button
         variant={'primary'}
-        className={`absolute ${isOpenSidePanel ? 'right-[19rem]' : 'right-10'} top-24 z-[9999]`}
+        className={`absolute ${isOpenSidePanel ? 'right-[19rem]' : 'right-10'} top-24 z-50`}
         onClick={openWriteDiaryModal}
       >
         일지작성

@@ -1,6 +1,7 @@
 import { Button, HeadingParagraph, Paragraph } from '@/components';
 import { DialogButtonGroup, DialogContainer } from '@/components/common/Dialog';
 import { ReactComponent as PlusCircleIcon } from '@/assets/icons/plus-circle.svg';
+import useModal from '@/hooks/useModal';
 
 export type WriteModal = {
   type: 'default' | 'edit';
@@ -9,11 +10,26 @@ export type WriteModal = {
   onClose: () => void;
 };
 
+type CancelAlertProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  onCloseParent: () => void;
+};
+
 const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
+  const [openModal] = useModal();
+
+  const openCancelAlert = () => {
+    openModal(({ isOpen, close }) => (
+      <CancelAlert isOpen={isOpen} onClose={close} onCloseParent={onClose} />
+    ));
+  };
+
   return (
     <>
       <DialogContainer
         isOpen={isOpen}
+        onClose={openCancelAlert}
         className="z-50 flex  h-[600px] w-2/3 flex-col rounded-lg bg-white p-6 md:w-[960px]"
       >
         <div className=" mb-8 flex w-full">
@@ -32,7 +48,7 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
           <Button
             type={'button'}
             variant={'ring'}
-            onClick={onClose}
+            onClick={openCancelAlert}
             className="text-xs md:text-base"
             hovercolor={'default'}
           >
@@ -44,6 +60,41 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
         </DialogButtonGroup>
       </DialogContainer>
     </>
+  );
+};
+
+const CancelAlert = ({ isOpen, onClose, onCloseParent }: CancelAlertProps) => {
+  const onComfirmClose = () => {
+    onClose();
+    onCloseParent();
+  };
+  return (
+    <DialogContainer
+      isOpen={isOpen}
+      onClose={onClose}
+      className="z-50 flex w-2/3 flex-col rounded-lg bg-white p-6 md:w-[560px]"
+    >
+      정말로 일지 작성을 취소하시겠습니까?
+      <DialogButtonGroup>
+        <Button
+          type={'button'}
+          variant={'ring'}
+          onClick={onClose}
+          className="text-xs md:text-base"
+          hovercolor={'default'}
+        >
+          취소
+        </Button>
+        <Button
+          type={'submit'}
+          variant={'primary'}
+          className="text-xs md:text-base"
+          onClick={onComfirmClose}
+        >
+          완료
+        </Button>
+      </DialogButtonGroup>
+    </DialogContainer>
   );
 };
 
