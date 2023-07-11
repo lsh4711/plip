@@ -22,6 +22,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.google.gson.Gson;
+import com.server.domain.token.repository.RefreshTokenRepository;
+import com.server.domain.token.service.RedisUtils;
+import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.error.AuthenticationError;
 import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.auth.utils.AccessTokenRenewalUtil;
@@ -40,12 +43,17 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
     private final AccessTokenRenewalUtil accessTokenRenewalUtil;
+    private final RedisUtils redisUtils;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
         try {
             String jws = request.getHeader("Authorization").replace("Bearer ", "");
+
+            if(redisUtils.hasKeyBlackList(jws))
+                throw new CustomException(ExceptionCode.LOGOUT_USER);
+
             Map<String, Object> claims = verifyJws(jws);
             setAuthenticationToContext(claims);
             filterChain.doFilter(request, response);
