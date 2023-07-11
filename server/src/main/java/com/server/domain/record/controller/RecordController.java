@@ -51,12 +51,11 @@ import lombok.extern.slf4j.Slf4j;
 @Validated
 @Slf4j
 public class RecordController {
-    private final static String RECORD_DEFAULT_URL = "/api/records";
+    private static final String RECORD_DEFAULT_URL = "/api/records";
 
     private final RecordMapper mapper;
 
-    private final RecordService 
-    recordService;
+    private final RecordService recordService;
 
     private final ImageManager imageManager;
 
@@ -214,10 +213,9 @@ public class RecordController {
     @DeleteMapping("/{record-id}/img/{img-id}")
     public ResponseEntity<?> deleteRecordImg(@PathVariable("record-id") long recordId,
             @PathVariable("img-id") long imgId) {
-
         imageManager.deleteImg(recordId, imgId);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
 
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
 }

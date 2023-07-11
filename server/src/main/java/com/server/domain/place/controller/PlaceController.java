@@ -1,13 +1,11 @@
 package com.server.domain.place.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.Positive;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,40 +13,51 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.domain.place.service.PlaceService;
+import com.server.domain.record.dto.RecordDto.Response;
 import com.server.domain.record.entity.Record;
 import com.server.domain.record.mapper.RecordMapper;
-import com.server.global.dto.MultiResponseDto;
 import com.server.global.dto.MultiResponseDtoWithPage;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/places")
 public class PlaceController {
-    private PlaceService placeService;
+    private final PlaceService placeService;
 
-    private static RecordMapper recordMapper;
+    private final RecordMapper recordMapper;
 
-    private final static String PLACE_DEFAULT_URL = "/api/places";
+    // @GetMapping("/category")
+    // public ResponseEntity getPlacesByCategory(@RequestParam @Min(1) int size,
+    //         @RequestParam @Min(1) int page,
+    //         @RequestParam String category) {
+    //     Page<Place> pagePlaces = placeService.getPlacesByCategory(size, page - 1, category);
+    //     List<Place> places = pagePlaces.getContent();
 
-    public PlaceController(PlaceService placeService, RecordMapper recordMapper) {
-        this.placeService = placeService;
-        this.recordMapper = recordMapper;
-    }
+    //     return new ResponseEntity<>(null);
+    // }
 
-    //placeId로 여행일지 찾기
+    // 해당 장소를 방문한 모든 회원의 일지를 조회, 정렬 필요한지 확인해야함
     @GetMapping("/{place-id}/records")
     public ResponseEntity<?> getRecords(@PathVariable("place-id") @Positive Long placeId,
             @RequestParam @Positive int page, @RequestParam @Positive int size) {
         List<Record> allRecords = placeService.findRecords(placeId);
         List<Record> records = paginateRecords(allRecords, page, size);
-        return new ResponseEntity<>(
-            new MultiResponseDtoWithPage<>(recordMapper.recordsToRecordResponses(records), allRecords.size(), page,
-                size),
-            HttpStatus.OK);
+        List<Response> recordResponses = recordMapper.recordsToRecordResponses(records);
+        MultiResponseDtoWithPage pagingResponse = new MultiResponseDtoWithPage<>(
+            recordResponses,
+            allRecords.size(),
+            page,
+            size);
+
+        return new ResponseEntity<>(pagingResponse, HttpStatus.OK);
     }
 
     private List<Record> paginateRecords(List<Record> allRecords, int page, int size) {
         int startIndex = (page - 1) * size;
         int endIndex = Math.min(startIndex + size, allRecords.size());
+
         return allRecords.subList(startIndex, endIndex);
     }
 }
