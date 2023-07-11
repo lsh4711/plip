@@ -39,6 +39,7 @@ import com.server.domain.record.service.RecordService;
 import com.server.global.dto.MultiResponseDto;
 import com.server.global.dto.SingleResponseDto;
 import com.server.global.exception.ExceptionCode;
+import com.server.global.utils.CustomUtil;
 import com.server.global.utils.UriCreator;
 
 import lombok.RequiredArgsConstructor;
@@ -54,14 +55,15 @@ public class RecordController {
 
     private final RecordMapper mapper;
 
-    private final RecordService recordService;
+    private final RecordService 
+    recordService;
 
     private final ImageManager imageManager;
 
-
     //여행일지 등록
     @PostMapping("/{schedule-place-id}")
-    public ResponseEntity<?> postRecord(@PathVariable("schedule-place-id") @Positive Long schedulePlaceId, @Valid @RequestBody RecordDto.Post requestBody) {
+    public ResponseEntity<?> postRecord(@PathVariable("schedule-place-id") @Positive Long schedulePlaceId,
+            @Valid @RequestBody RecordDto.Post requestBody) {
         Record record = mapper.recordPostToRecord(requestBody);
 
         Record createdRecord = recordService.createRecord(record, schedulePlaceId);
@@ -74,7 +76,7 @@ public class RecordController {
     //여행일지 수정
     @PatchMapping("/{record-id}")
     public ResponseEntity<?> patchRecord(@PathVariable("record-id") @Positive long recordId,
-        @Valid @RequestBody RecordDto.Patch requestBody){
+            @Valid @RequestBody RecordDto.Patch requestBody) {
         requestBody.setRecordId(recordId);
 
         Record record = mapper.recordPatchToRecord(requestBody);
@@ -96,32 +98,32 @@ public class RecordController {
 
     //memberId로 여행일지 조회
     @GetMapping
-    public ResponseEntity<?> getRecordsByMemberId(@RequestParam @Positive int page, @RequestParam @Positive int size){
-        Page<Record> pageRecords = recordService.findAllRecords(page-1, size);
+    public ResponseEntity<?> getRecordsByMemberId(@RequestParam @Positive int page, @RequestParam @Positive int size) {
+        Page<Record> pageRecords = recordService.findAllRecords(page - 1, size);
         List<Record> records = pageRecords.getContent();
 
         return new ResponseEntity<>(
             new MultiResponseDto<>(
-                mapper.recordsToRecordResponses(records), pageRecords
-            ),
-            HttpStatus.OK
-        );
+                mapper.recordsToRecordResponses(records), pageRecords),
+            HttpStatus.OK);
     }
-
 
     //여행일지 삭제
     @DeleteMapping("/{record-id}")
-    public ResponseEntity deleteRecord(@PathVariable("record-id") @Positive long recordId){
+    public ResponseEntity deleteRecord(@PathVariable("record-id") @Positive long recordId) {
         recordService.deleteRecord(recordId);
+        imageManager.deleteImgs(recordId);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-
     //이미지 업로드
     @PostMapping("/{record-id}/img")
-    public ResponseEntity<?> uploadRecordImg(@PathVariable("record-id") String recordId,
-        @RequestPart("images") List<MultipartFile> images) {
+    public ResponseEntity<?> uploadRecordImg(@PathVariable("record-id") long recordId,
+            @RequestPart("images") List<MultipartFile> images) {
+        long userId = CustomUtil.getAuthId();
+
+        recordService.verfify(userId, recordId);
 
         try {
             Boolean uploadResult = imageManager.uploadImages(images, recordId);
@@ -136,47 +138,52 @@ public class RecordController {
         }
     }
 
-
     // 이미지 1개 조회 (대표 이미지)
     @GetMapping("/{record-id}/img/{img-id}")
-    public ResponseEntity<?> getRecordImg(@PathVariable("record-id") String recordId, @PathVariable("img-id") String imgId){
+    public ResponseEntity<?> getRecordImg(@PathVariable("record-id") long recordId,
+            @PathVariable("img-id") long imgId) {
+        long userId = CustomUtil.getAuthId();
+
+        recordService.verfify(userId, recordId);
 
         Resource imageFile = imageManager.loadImage(recordId, imgId);
 
-        if(imageFile.exists()){
-            try{
+        if (imageFile.exists()) {
+            try {
                 Resource imageResource = new UrlResource(imageFile.getURI());
                 byte[] imageBytes = Files.readAllBytes(imageResource.getFile().toPath());
                 String imageBase64 = Base64.getEncoder()
-                    .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
+                        .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
 
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.IMAGE_JPEG);
 
                 return new ResponseEntity<>(new SingleResponseDto<>(imageBase64), HttpStatus.OK);
 
-            }catch (IOException e){
+            } catch (IOException e) {
                 log.error("이미지 파일 읽기 오류: " + e.getMessage(), e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ExceptionCode.INTERNAL_SERVER_ERROR.getMessage());
+                        .body(ExceptionCode.INTERNAL_SERVER_ERROR.getMessage());
             }
-        }
-        else{
+        } else {
             log.error("이미지 파일이 존재하지 않습니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ExceptionCode.IMAGE_NOT_FOUND.getMessage());
+                    .body(ExceptionCode.IMAGE_NOT_FOUND.getMessage());
         }
 
     }
 
     //이미지 조회 - base64 인코딩된 걸 리턴
     @GetMapping("/{record-id}/img")
-    public ResponseEntity<?> getRecordAllImg(@PathVariable("record-id") String recordId) {
+    public ResponseEntity<?> getRecordAllImg(@PathVariable("record-id") long recordId) {
+        long userId = CustomUtil.getAuthId();
+
+        recordService.verfify(userId, recordId);
 
         List<Resource> imageFiles = imageManager.loadImages(recordId);
         if (imageFiles.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ExceptionCode.IMAGE_NOT_FOUND.getMessage());
+                    .body(ExceptionCode.IMAGE_NOT_FOUND.getMessage());
         }
 
         List<String> imageBase64List = new ArrayList<>();
@@ -205,15 +212,17 @@ public class RecordController {
 
     //이미지 삭제
     @DeleteMapping("/{record-id}/img/{img-id}")
-    public ResponseEntity<?> deleteRecordImg(@PathVariable("record-id") String recordId, @PathVariable("img-id") String imgId){
-        try{
-            imageManager.deleteImg(recordId, imgId);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ExceptionCode.INTERNAL_SERVER_ERROR.getMessage());
-        }
-    }
+    public ResponseEntity<?> deleteRecordImg(@PathVariable("record-id") long recordId,
+            @PathVariable("img-id") long imgId) {
+        // try { // imageManager 내부에서 발생하는 에러를 이미 핸들링하고있으므로 동작하지 않음
+        imageManager.deleteImg(recordId, imgId);
 
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        // } catch (Exception e) {
+        // throw new CustomException(ExceptionCode.INTERNAL_SERVER_ERROR); // 아래와 같은 결과 + 재사용성 증가
+        // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        // .body(ExceptionCode.INTERNAL_SERVER_ERROR.getMessage());
+        // }
+    }
 
 }

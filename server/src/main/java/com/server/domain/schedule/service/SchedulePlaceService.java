@@ -1,13 +1,12 @@
 package com.server.domain.schedule.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.repository.SchedulePlaceRepository;
-import com.server.global.exception.BusinessLogicException;
+import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
 @Service
@@ -30,7 +29,7 @@ public class SchedulePlaceService {
 
     //추가
     public SchedulePlace findSchedulePlaceById(Long schedulePlaceId){
-        return schedulePlaceRepository.findById(schedulePlaceId).orElseThrow(()-> new BusinessLogicException(
+        return schedulePlaceRepository.findById(schedulePlaceId).orElseThrow(()-> new CustomException(
             ExceptionCode.SCHEDULE_PLACE_NOT_FOUND));
 
     }

@@ -14,6 +14,8 @@ import com.server.domain.schedule.entity.SchedulePlace;
 public interface PlaceMapper {
     List<Place> postDtosToPlaces(List<PlaceDto.Post> postDtos);
 
+    List<List<Place>> postDtoListsToPlaceLists(List<List<PlaceDto.Post>> postDtos);
+
     // PlaceResponse placeToPlaceResponse(Place place);
 
     // 'SchedulePlace'가 아닌 'Place'의 Response로 구분
