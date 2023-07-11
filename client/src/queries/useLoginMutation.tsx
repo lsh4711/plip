@@ -27,31 +27,24 @@ import instance from './axiosinstance';
 // };
 
 const postLogin = async (loginData: LoginType) => {
-  try {
-    const response = await instance.post(
-      '/api/users/login',
-      {
-        username: loginData.username,
-        password: loginData.password,
-      },
-      {
-        withCredentials: true,
-      }
-    );
-
-    const ACCESS_TOKEN = response.headers['Authorization'];
-
-    return {
-      response,
-      ACCESS_TOKEN,
-    };
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error('알 수 없는 에러입니다.', error);
-    } else {
-      throw new Error(String(error));
+  console.log(loginData);
+  const response = await instance.post(
+    '/api/users/login',
+    {
+      username: loginData.username,
+      password: loginData.password,
+    },
+    {
+      withCredentials: true,
     }
-  }
+  );
+
+  const ACCESS_TOKEN = response.headers['Authorization'];
+
+  return {
+    response,
+    ACCESS_TOKEN,
+  };
 };
 
 const useLoginMutation = () => {

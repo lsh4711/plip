@@ -11,12 +11,17 @@ import { useSignupMutation } from '@/queries';
 import LoadingSpinner from '@/components/atom/LoadingSpinner';
 import useDebounce from '@/hooks/useDebounce';
 import useToast from '@/hooks/useToast';
+import useEmailValidation from '@/hooks/useEmailValidation';
 
 const SignUpPage = () => {
-  const [isEmailValid, setIsEmailValid] = React.useState(true);
-  const [isNicknameValid, setIsNicknameValid] = React.useState(true);
-  const [isAuthNumberDisabled, setIsAuthNumberDisabled] = React.useState(true);
-  const emailRequestMutation = useEmailRequestMutation();
+  const [isNicknameValid, setIsNicknameValid] = React.useState({
+    isSuccess: true,
+    message: '',
+  });
+  const { emailRequestState, setEmailRequestState, authCodeState, setAuthCodeState } =
+    useEmailValidation();
+
+  const emailRequestMutation = useEmailRequestMutation('signup');
   const emailValidationMutation = useEmailValidationMutation();
   const signupMutation = useSignupMutation();
   const signupForm = useForm<SignupType>({
@@ -25,15 +30,16 @@ const SignUpPage = () => {
   });
 
   const onSubmit: SubmitHandler<SignupType> = (data) => {
-    if (!isEmailValid) return;
+    if (!emailRequestState.isSuccess) return;
+    if (!authCodeState.disabled) return;
 
     const onSubmitFn = async () => {
       const response = await signupMutation.mutateAsync(data);
       console.log(response);
       if (response.status === 201) {
-        setIsNicknameValid(false);
+        setIsNicknameValid({ isSuccess: true, message: '' });
       } else {
-        alert('이게되네');
+        setIsNicknameValid({ isSuccess: false, message: '닉네임이 중복되었습니다.' });
       }
     };
     onSubmitFn();
@@ -46,7 +52,7 @@ const SignUpPage = () => {
     const postCredentialRequestFn = async () => {
       const response = await emailRequestMutation.mutateAsync(signupForm.getValues('email'));
       if (response.status === 200) {
-        setIsAuthNumberDisabled(false);
+        setAuthCodeState({ disabled: false, message: '' });
       }
     };
     postCredentialRequestFn();
@@ -62,11 +68,11 @@ const SignUpPage = () => {
         email: signupForm.getValues('email'),
       });
       if (response.status === 200) {
-        setIsEmailValid(true);
-        setIsAuthNumberDisabled(true);
+        setEmailRequestState({ isSuccess: true, message: '' });
+        setAuthCodeState({ disabled: true, message: '' });
       } else {
-        setIsEmailValid(false);
-        setIsAuthNumberDisabled(false);
+        setEmailRequestState({ isSuccess: false, message: '인증번호가 맞지 않습니다.' });
+        setAuthCodeState({ disabled: false, message: '다시 인증을 시도하세요' });
       }
     };
     postVerificationCode();
@@ -107,9 +113,13 @@ const SignUpPage = () => {
                 </Button>
               </div>
               <Paragraph variant={'red'} size="xs" className=" mt-1">
-                {signupForm.formState.errors.email?.message && signupForm.getValues('email') !== ''
-                  ? signupForm.formState.errors.email.message
-                  : null}
+                <p>
+                  {signupForm.formState.errors.email?.message &&
+                  signupForm.getValues('email') !== ''
+                    ? signupForm.formState.errors.email.message
+                    : null}
+                </p>
+                <p>{emailRequestState.message !== '' ? emailRequestState.message : null}</p>
               </Paragraph>
             </div>
 
@@ -118,7 +128,7 @@ const SignUpPage = () => {
                 <Input
                   placeholder="인증번호를 입력해 주세요."
                   className=" flex-grow"
-                  disabled={isAuthNumberDisabled}
+                  disabled={authCodeState.disabled}
                   {...signupForm.register('authnumber')}
                 />
 
@@ -133,7 +143,7 @@ const SignUpPage = () => {
                 </Button>
               </div>
               <Paragraph variant={'red'} size="xs" className=" mt-1">
-                {isEmailValid ? null : '인증번호가 맞지 않습니다.'}
+                {emailRequestState.isSuccess ? null : emailRequestState.message}
               </Paragraph>
             </div>
 
