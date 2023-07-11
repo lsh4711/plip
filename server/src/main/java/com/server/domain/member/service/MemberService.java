@@ -60,10 +60,18 @@ public class MemberService {
 
     public Member updateMember(String name, Member patchMember) {
         Member member = findMemberByEmail(name);
+
         Optional.ofNullable(patchMember.getPassword())
-            .ifPresent(member::setPassword);
+            .ifPresent(password -> member.setPassword(passwordEncoder.encode(password)));
         Optional.ofNullable(patchMember.getNickname())
             .ifPresent(member::setNickname);
+        return member;
+    }
+
+    public Member updatePassword(Member updateMember) {
+        Member member = findMemberByEmail(updateMember.getEmail());
+        Optional.ofNullable(updateMember.getPassword())
+            .ifPresent(password -> member.setPassword(passwordEncoder.encode(password)));
         return member;
     }
 }
