@@ -5,6 +5,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
+import com.server.domain.token.service.RedisUtils;
+import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.filter.JwtAuthenticationFilter;
 import com.server.global.auth.filter.JwtVerificationFilter;
 import com.server.global.auth.handler.login.MemberAuthenticationFailureHandler;
@@ -21,6 +23,7 @@ public class CustomFilterConfig extends AbstractHttpConfigurer<CustomFilterConfi
     private final JwtTokenizer jwtTokenizer;
     private final DelegateTokenUtil delegateTokenUtil;
     private final AccessTokenRenewalUtil accessTokenRenewalUtil;
+    private final RedisUtils redisUtils;
 
     @Override
     public void configure(HttpSecurity builder) {
@@ -31,7 +34,7 @@ public class CustomFilterConfig extends AbstractHttpConfigurer<CustomFilterConfi
         jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
         jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
 
-        JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, accessTokenRenewalUtil);
+        JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, accessTokenRenewalUtil, redisUtils);
 
         builder
             .addFilter(jwtAuthenticationFilter)

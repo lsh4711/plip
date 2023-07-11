@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.server.domain.member.repository.MemberRepository;
+import com.server.domain.token.service.RedisUtils;
 import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.handler.login.MemberAuthenticationEntryPoint;
 import com.server.global.auth.handler.logout.MemberLogoutHandler;
@@ -34,11 +35,11 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity(debug = false)
 public class SecurityConfig {
     private final JwtTokenizer jwtTokenizer;
-    private final RefreshTokenService refreshTokenService;
     private final AccessTokenRenewalUtil accessTokenRenewalUtil;
     private final DelegateTokenUtil delegateTokenUtil;
     private final CustomOAuth2UserService oAuth2UserService;
     private final MemberRepository memberRepository;
+    private final RedisUtils redisUtils;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -52,7 +53,7 @@ public class SecurityConfig {
             .logout()
             .logoutUrl("/api/users/logout")
             .deleteCookies("Refresh")
-            .addLogoutHandler(new MemberLogoutHandler())
+            .addLogoutHandler(new MemberLogoutHandler(redisUtils, jwtTokenizer))
             .logoutSuccessHandler(new MemberLogoutSuccessHandler())
             .and()
             .exceptionHandling()
@@ -75,7 +76,7 @@ public class SecurityConfig {
 
     @Bean
     public CustomFilterConfig customFilterConfigurers() {
-        return new CustomFilterConfig(jwtTokenizer, delegateTokenUtil, accessTokenRenewalUtil);
+        return new CustomFilterConfig(jwtTokenizer, delegateTokenUtil, accessTokenRenewalUtil,redisUtils);
     }
 
     @Bean
