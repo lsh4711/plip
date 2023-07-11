@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final DelegateTokenUtil delegateTokenUtil;
-    private final RefreshTokenService refreshTokenService;
     private final MemberRepository memberRepository;
 
     @Override
@@ -47,7 +46,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = delegateTokenUtil.delegateAccessToken(member);
         String refreshToken = delegateTokenUtil.delegateRefreshToken(member);
 
-        refreshTokenService.saveTokenInfo(member.getMemberId(), refreshToken, accessToken);
+        // TODO: 우선 레디스에 저장안함. 추후에 레디스로 검증할지 생각...
+        // refreshTokenService.saveTokenInfo(member.getMemberId(), refreshToken, accessToken);
         String uri = createURI(accessToken, refreshToken).toString();
         log.info("## OAuth2 로그인 성공! 토큰을 발급합니다. 해당 주소로 보낼게용 " + uri);
 

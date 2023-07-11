@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class AccessTokenRenewalUtil {
     private final MemberRepository memberRepository;
-    private final RefreshTokenService refreshTokenService;
     private final DelegateTokenUtil delegateTokenUtil;
     private final JwtTokenizer jwtTokenizer;
 

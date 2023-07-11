@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 public class CustomFilterConfig extends AbstractHttpConfigurer<CustomFilterConfig, HttpSecurity> {
     private final JwtTokenizer jwtTokenizer;
-    private final RefreshTokenService refreshTokenService;
     private final DelegateTokenUtil delegateTokenUtil;
     private final AccessTokenRenewalUtil accessTokenRenewalUtil;
 
@@ -28,8 +27,7 @@ public class CustomFilterConfig extends AbstractHttpConfigurer<CustomFilterConfi
     public void configure(HttpSecurity builder) {
         AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager,
-            refreshTokenService, delegateTokenUtil, jwtTokenizer);
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, delegateTokenUtil, jwtTokenizer);
         jwtAuthenticationFilter.setFilterProcessesUrl("/api/users/login");
         jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
         jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());

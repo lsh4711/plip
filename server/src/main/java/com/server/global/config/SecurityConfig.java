@@ -34,7 +34,6 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity(debug = false)
 public class SecurityConfig {
     private final JwtTokenizer jwtTokenizer;
-    private final RefreshTokenService refreshTokenService;
     private final AccessTokenRenewalUtil accessTokenRenewalUtil;
     private final DelegateTokenUtil delegateTokenUtil;
     private final CustomOAuth2UserService oAuth2UserService;
@@ -52,7 +51,7 @@ public class SecurityConfig {
             .logout()
             .logoutUrl("/api/users/logout")
             .deleteCookies("Refresh")
-            .addLogoutHandler(new MemberLogoutHandler(refreshTokenService, jwtTokenizer))
+            .addLogoutHandler(new MemberLogoutHandler())
             .logoutSuccessHandler(new MemberLogoutSuccessHandler())
             .and()
             .exceptionHandling()
@@ -63,7 +62,7 @@ public class SecurityConfig {
                 .userService(oAuth2UserService)
                 .and()
                 .successHandler(
-                    new OAuth2SuccessHandler(delegateTokenUtil, refreshTokenService, memberRepository)))
+                    new OAuth2SuccessHandler(delegateTokenUtil, memberRepository)))
             .apply(customFilterConfigurers())
             .and()
             .authorizeHttpRequests(authorize -> authorize
@@ -75,7 +74,7 @@ public class SecurityConfig {
 
     @Bean
     public CustomFilterConfig customFilterConfigurers() {
-        return new CustomFilterConfig(jwtTokenizer, refreshTokenService, delegateTokenUtil, accessTokenRenewalUtil);
+        return new CustomFilterConfig(jwtTokenizer, delegateTokenUtil, accessTokenRenewalUtil);
     }
 
     @Bean
