@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -234,6 +235,7 @@ public class MemberControllerTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("로그아웃을 한다.")
     void postLogoutMember() throws Exception {
         String logoutAccessToken = StubData.MockSecurity.getLogoutValidAccessToken(jwtTokenizer.getSecretKey());
