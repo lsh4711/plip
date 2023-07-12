@@ -28,8 +28,13 @@ import { AxiosError } from 'axios';
 //   };
 // };
 
+// {
+//   username: loginData.username,
+//   password: loginData.password,
+// }
 const postLogin = async (loginData: LoginType) => {
   console.log(loginData);
+
   const response = await instance.post(
     '/api/users/login',
     {
@@ -58,7 +63,6 @@ const useLoginMutation = () => {
       });
     },
     onError: (error: AxiosError) => {
-      console.log('온에러함수에서');
       switch (error.response?.status) {
         case 400:
           toast({

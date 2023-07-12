@@ -10,14 +10,16 @@ const useInstance = () => {
 
   useEffect(() => {
     instance.interceptors.request.use((config) => {
-      // if (accesstoken !== null && accesstoken !== '') {
-      //   config.headers['Authorization'] = accesstoken;
-      // }
+      if (accesstoken !== null && accesstoken !== '') {
+        config.headers['Authorization'] = accesstoken;
+        console.log(config.headers['Authorization']);
+      }
       return config;
     });
 
     instance.interceptors.response.use((response) => {
-      console.log(response);
+      const accesstoken = response.headers['authorization'];
+      dispatch(setAccessToken({ accesstoken: accesstoken }));
       return response;
     });
   }, [accesstoken]);
