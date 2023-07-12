@@ -1,30 +1,26 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import useTypeSelector from './useTypeSelector';
+import { useDispatch, useSelector } from 'react-redux';
 import instance from '@/queries/axiosinstance';
 import { setAccessToken } from '@/redux/slices/authSlice';
+import { RootState } from '@/redux/store';
 
 const useInstance = () => {
   const dispatch = useDispatch();
-  const selector = useTypeSelector();
+  const accesstoken = useSelector((state: RootState) => state.auth.accesstoken);
 
   useEffect(() => {
     instance.interceptors.request.use((config) => {
-      const accesstoken = selector.auth.accesstoken;
-      // if (accesstoken) {
+      // if (accesstoken !== null && accesstoken !== '') {
       //   config.headers['Authorization'] = accesstoken;
       // }
-      dispatch(setAccessToken({ accesstoken: '어엄준식' }));
-      console.log('인터셉팅하고있어염', accesstoken);
       return config;
     });
 
     instance.interceptors.response.use((response) => {
       console.log(response);
-      console.log('어엄응답도인터셉팅');
       return response;
     });
-  }, []);
+  }, [accesstoken]);
 
   return;
 };

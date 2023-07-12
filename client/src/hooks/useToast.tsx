@@ -7,7 +7,7 @@ const useToast = () => {
   const dispatch = useDispatch<AppDispatch>();
   const toastCreator = (toastcontent: ToastInterface) =>
     dispatch(createToastAsyncThunk(toastcontent));
-  return { toastCreator };
+  return toastCreator;
 };
 
 export default useToast;

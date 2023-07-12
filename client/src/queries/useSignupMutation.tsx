@@ -1,4 +1,4 @@
-import { SignupType } from '@/pages/SignUpPage';
+import { SignupType } from '@/schema/signupSchema';
 import BASE_URL from './BASE_URL';
 import { useMutation } from '@tanstack/react-query';
 import instance from './axiosinstance';
