@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import SidePanel from '@/components/common/SidePanel';
 import TripInfo from '@/components/common/TripInfo';
 import TripSchedule from '@/components/common/TripSchedule';
+import { Map, MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
 import { regions } from '@/datas/regions';
 import useModal from '@/hooks/useModal';
 import WriteModal from '@/components/common/WriteModal';
@@ -129,13 +130,8 @@ const PlanMapPage = () => {
           </MarkerClusterer>
         </Map>
       )}
-
-      <Button
-        variant={'primary'}
-        className={`absolute ${isOpenSidePanel ? 'right-[19rem]' : 'right-10'} top-10 z-50`}
-      >
-        저장하기
-      </Button>
+      <SearchTools />
+      <MenuButtons />
       <Button
         variant={'primary'}
         className={`absolute ${isOpenSidePanel ? 'right-[19rem]' : 'right-10'} top-24 z-50`}
@@ -143,7 +139,7 @@ const PlanMapPage = () => {
       >
         일지작성
       </Button>
-      <SidePanel position={'right'} isOpen={isOpenSidePanel} setOpen={onSidePanelHandler}>
+      <SidePanel position={'right'}>
         <TripInfo
           title={responseData.title}
           region={responseData.region}
@@ -151,6 +147,16 @@ const PlanMapPage = () => {
           endDate={responseData.endDate}
         />
         <TripSchedule startDate={responseData.startDate} places={responseData.places} />
+
+        {/* Side Panel 좌측 바깥 */}
+        <Button variant={'primary'} className="absolute -left-1/2 top-6">
+          일정 저장하기
+        </Button>
+        <ZoomButtons
+          onClickZoomIn={() => {}}
+          onClickZoomOut={() => {}}
+          className={'absolute -left-16 bottom-6 z-50'}
+        />
       </SidePanel>
     </div>
   );
