@@ -6,10 +6,10 @@ import { Button } from '@/components';
 import SidePanel from '@/components/common/SidePanel';
 import TripInfo from '@/components/common/TripInfo';
 import TripSchedule from '@/components/common/TripSchedule';
+import WriteModal from '@/components/common/WriteModal';
 import { MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
 import { PositionType, regionInfos, regions } from '@/datas/regions';
 import useModal from '@/hooks/useModal';
-import WriteModal from '@/components/common/WriteModal';
 
 export type ResponseData = {
   title: string | null;
@@ -36,6 +36,13 @@ const PlanMapPage = () => {
       [{ placeName: '인천 국제 공항' }, { placeName: '버스터미널' }],
       [{ placeName: '평창역' }, { placeName: '사근진 해변' }],
     ],
+  };
+
+  // TODO 일지 작성 페이지로 이동 필요
+  const openWriteDiaryModal = () => {
+    openModal(({ isOpen, close }) => (
+      <WriteModal type={'default'} isOpen={isOpen} onClose={close} />
+    ));
   };
 
   // console.log(regionInfos[region]);
@@ -119,13 +126,6 @@ const PlanMapPage = () => {
       )}
       <SearchTools />
       <MenuButtons />
-      <Button
-        variant={'primary'}
-        className={`absolute ${isOpenSidePanel ? 'right-[19rem]' : 'right-10'} top-24 z-50`}
-        onClick={openWriteDiaryModal}
-      >
-        일지작성
-      </Button>
       <SidePanel position={'right'}>
         <TripInfo
           title={responseData.title}
@@ -134,10 +134,17 @@ const PlanMapPage = () => {
           endDate={responseData.endDate}
         />
         <TripSchedule startDate={responseData.startDate} places={responseData.places} />
-
         {/* Side Panel 좌측 바깥 */}
         <Button variant={'primary'} className="absolute -left-1/2 top-6">
           일정 저장하기
+        </Button>
+        // TODO 일지 작성 페이지로 이동 필요
+        <Button
+          variant={'primary'}
+          className="absolute -left-1/2 top-20"
+          onClick={openWriteDiaryModal}
+        >
+          일지 작성하기
         </Button>
         <ZoomButtons
           onClickZoomIn={() => {}}
