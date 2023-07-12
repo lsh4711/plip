@@ -36,6 +36,25 @@ public class StubData {
 
             return accessToken;
         }
+
+        public static String getLogoutValidAccessToken(String secretKey) {
+            JwtTokenizer jwtTokenizer = new JwtTokenizer();
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("email", "test1234@test.com");
+            claims.put("memberId", 1);
+            claims.put("roles", List.of("USER"));
+
+            String subject = "test access token123";
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MINUTE, 1);
+            Date expiration = calendar.getTime();
+
+            String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(secretKey);
+
+            String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
+
+            return accessToken;
+        }
     }
 
     public static class MockMember {

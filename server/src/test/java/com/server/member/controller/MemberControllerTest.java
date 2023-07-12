@@ -16,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -51,6 +50,7 @@ import com.server.helper.StubData;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MemberControllerTest {
     private final String MEMBER_DEFULT_URI = "/api/users";
     @Autowired
@@ -71,7 +71,7 @@ public class MemberControllerTest {
 
     private String accessTokenForUser;
 
-    @BeforeEach
+    @BeforeAll
     public void init() {
         accessTokenForUser = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
     }
@@ -237,10 +237,11 @@ public class MemberControllerTest {
     @Test
     @DisplayName("로그아웃을 한다.")
     void postLogoutMember() throws Exception {
+        String logoutAccessToken = StubData.MockSecurity.getLogoutValidAccessToken(jwtTokenizer.getSecretKey());
         //when
         ResultActions actions = mockMvc.perform(
                 get(MEMBER_DEFULT_URI + "/logout")
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser))
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + logoutAccessToken))
             //then
             .andExpect(status().isOk())
             .andDo(
