@@ -237,10 +237,11 @@ public class MemberControllerTest {
     @Test
     @DisplayName("로그아웃을 한다.")
     void postLogoutMember() throws Exception {
+        String logoutAccessToken = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
         //when
         ResultActions actions = mockMvc.perform(
                 get(MEMBER_DEFULT_URI + "/logout")
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser))
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + logoutAccessToken))
             //then
             .andExpect(status().isOk())
             .andDo(
