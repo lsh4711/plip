@@ -6,32 +6,6 @@ import { LoginType } from '@/schema/loginSchema';
 import useToast from '@/hooks/useToast';
 import { AxiosError } from 'axios';
 
-// const postLogin = async (loginData: LoginType) => {
-//   const response = await fetch(`${BASE_URL}/api/users/login`, {
-//     method: 'POST',
-//     body: JSON.stringify(loginData),
-//     credentials: 'include',
-//     headers: {
-//       'Content-Type': 'application/json;charset=utf-8',
-//     },
-//   });
-//   const ACCESS_TOKEN = response.headers.get('Authorization');
-//   const REFRESH_TOKEN = response.headers.get('Refresh');
-//   const status = isSuccessStatus(response);
-//   console.log('액세스토큰', ACCESS_TOKEN);
-//   console.log('리프레쉬토큰', REFRESH_TOKEN);
-//   return {
-//     accesstoken: ACCESS_TOKEN,
-//     refreshtoken: REFRESH_TOKEN,
-//     status: status,
-//     response,
-//   };
-// };
-
-// {
-//   username: loginData.username,
-//   password: loginData.password,
-// }
 const postLogin = async (loginData: LoginType) => {
   console.log(loginData);
 

@@ -1,13 +1,14 @@
+import { MypageSideNav } from '@/components';
 import SideBar from '@/components/common/SideBar';
 
 interface MyTripPageProps {}
 
 const MyTripPage = ({}: MyTripPageProps) => {
   return (
-    <>
-      <SideBar />
-      <div>MyTripPage</div>
-    </>
+    <div className=" flex">
+      <MypageSideNav />
+      <button onClick={() => {}}>로그아웃버튼</button>
+    </div>
   );
 };
 

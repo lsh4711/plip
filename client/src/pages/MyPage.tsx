@@ -1,4 +1,4 @@
-import { Button, HeadingParagraph, Input, Paragraph } from '@/components';
+import { Button, HeadingParagraph, Input, MypageSideNav, Paragraph } from '@/components';
 import { ChangeEvent, useState } from 'react';
 import { ReactComponent as EditImage } from '@/assets/icons/camera.svg';
 import { ReactComponent as EditIcon } from '@/assets/icons/edit.svg';
@@ -47,9 +47,11 @@ const MyPage = ({}: MyPageProps) => {
     setState(!state);
   };
 
+  // 마이페이지 css 재구성 필요합니다. w-full 속성으로 인해 sidenav 공간이 잡아먹히고있어염..
+
   return (
-    <div className=" flex w-full">
-      <nav className=" sticky right-0 top-0 h-screen border-r border-zinc-400">하이욤</nav>
+    <div className=" flex">
+      <MypageSideNav />
       <article className="w-full p-[2.5rem]">
         <HeadingParagraph variant={'darkgray'} size={'md'} className="mb-32">
           프로필 수정

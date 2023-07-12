@@ -8,21 +8,13 @@ import useError from './hooks/useError';
 import ErrorFallback from './components/helper/ErrorFallback';
 
 export default function App() {
-  const url = useMatch('/');
-  const isHome = url?.pattern.end;
   useInstance();
   return (
     <>
-      <Header isHome={isHome} />
+      <Header />
       <ToastContainer />
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        {isHome ? (
-          <Outlet />
-        ) : (
-          <main className="flex flex-col items-center justify-center overflow-x-hidden py-24">
-            <Outlet />
-          </main>
-        )}
+        <Outlet />
       </ErrorBoundary>
     </>
   );

@@ -5,6 +5,7 @@ import Button from '../atom/Button';
 import Paragraph from '../atom/Paragraph';
 
 const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
+  console.log(error);
   return (
     <div>
       <Paragraph>{error.message}</Paragraph>
