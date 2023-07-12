@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
 import { ReactComponent as MypageIcon } from '../../assets/icons/mypage.svg';
 import { ReactComponent as NotifyIcon } from '../../assets/icons/notification.svg';
@@ -9,6 +9,8 @@ import Button from '../atom/Button';
 import DropDownMenus from './DropDownMenus';
 import { useCloseDropdown } from '@/hooks/useCloseDropdown';
 import Avatar from './Avatar';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 interface HeaderProps {
   isHome?: boolean;
@@ -29,7 +31,6 @@ const BeforeLogin = ({ isHome }: HeaderProps) => {
 
 const AfterLogin = ({ isHome }: HeaderProps) => {
   const username = '유보검'; // 임시 변수
-
   const ref = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useCloseDropdown(ref, false);
 
@@ -58,12 +59,13 @@ const AfterLogin = ({ isHome }: HeaderProps) => {
 };
 
 const Header = ({ isHome }: HeaderProps) => {
-  const isLogin = false; // 로그인 상태 구현전 임시 변수입니다.
-
+  const isHomes = useLocation().pathname === '/';
+  const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+  console.log(isHomes);
   return (
     <header
-      className={`fixed left-0 top-0 z-40 h-[80px] w-full px-12 ${
-        !isHome && 'border border-b-2 bg-white'
+      className={`left-0 top-0 z-40 h-[80px] w-full px-12 ${
+        isHome ? ' fixed' : 'stikcy border border-b-2 bg-white'
       }`}
     >
       <nav className="m-auto flex h-full items-center justify-between">
