@@ -6,7 +6,6 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import Input from '../atom/Input';
 import Button from '../atom/Button';
 import LoadingSpinner from '../atom/LoadingSpinner';
-import useToast from '@/hooks/useToast';
 
 const LoginForm = () => {
   const loginMutation = useLoginMutation();

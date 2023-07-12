@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import useError from '@/hooks/useError';
 
 interface ProvidersProps {
@@ -17,6 +17,9 @@ const Providers = ({ children }: ProvidersProps) => {
         onError: errorHandler,
       },
     },
+    queryCache: new QueryCache({
+      onError: () => errorHandler,
+    }),
   });
 
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;

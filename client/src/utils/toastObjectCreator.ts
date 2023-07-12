@@ -20,6 +20,5 @@ export const toastObjectCreator = (arg: string | ToastInterface) => {
     });
     toastObject['id'] = Number(new Date());
   }
-  console.log(toastObject);
   return toastObject;
 };

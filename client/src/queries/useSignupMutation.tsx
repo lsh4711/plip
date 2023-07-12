@@ -35,19 +35,19 @@ const useSignupMutation = () => {
       switch (error.response?.status) {
         case 400:
           toast({
-            content: '400에러 로그인에 실패했습니다.',
+            content: '400에러 회원가입에 실패했습니다.',
             type: 'warning',
           });
           break;
         case 500:
           toast({
-            content: '500에러 로그인에 실패했습니다.',
+            content: '500에러 회원가입에 실패했습니다.',
             type: 'warning',
           });
           break;
         default:
           toast({
-            content: '로그인에 실패했습니다.',
+            content: '회원가입에 실패했습니다.',
             type: 'warning',
           });
           break;

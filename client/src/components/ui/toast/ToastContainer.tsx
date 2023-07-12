@@ -10,11 +10,10 @@ interface ToastContainerProps {}
 const ToastContainer = ({}: ToastContainerProps) => {
   const toasts = useSelector((state: RootState) => state.toast);
   const toastElement = document.getElementById('toast') as HTMLElement;
-  console.log(toasts);
   return (
     <>
       {createPortal(
-        toasts.map((item, idx) => (
+        toasts.map((item) => (
           <ToastItem key={item.id} type={item.type}>
             {item.content}
           </ToastItem>
