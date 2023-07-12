@@ -42,10 +42,6 @@ public enum ExceptionCode {
     // 일정_장소
     SCHEDULE_PLACE_NOT_FOUND("여행지가 존재하지 않거나 권한이 없습니다.", 404),
 
-    // 알림
-    TASK_NOT_FOUND("예약된 작업이 없습니다.", 404),
-    TASK_EXISTS("해당 id로 예약된 작업이 있습니다.", 409),
-
     END("마무리", 200);
 
     @Getter
