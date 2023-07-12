@@ -150,7 +150,7 @@ public class RecordController {
         if (imageFile.exists()) {
             try {
                 Resource imageResource = new UrlResource(imageFile.getURI());
-                byte[] imageBytes = Files.readAllBytes(imageResource.getFile().toPath());
+
                 String imageBase64 = Base64.getEncoder()
                         .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
 
