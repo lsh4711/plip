@@ -2,25 +2,29 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
 import Providers from './components/common/Providers';
+import store from '@/redux/store';
 import ModalProvider from '@/contexts/modal/ModalProvider';
-
 import '@/styles/animation.css';
 import '@/styles/global.css';
 import '@/styles/index.css';
-import FootPrintPage from './pages/FootPrintPage';
-import Home from './pages/Home';
-import LoginPage from './pages/LoginPage';
-import MyPage from './pages/MyPage';
-import MyRecordPage from './pages/MyRecordPage';
-import MyTripPage from './pages/MyTripPage';
-import NotFound from './pages/NotFound';
-import PlanDetailPage from './pages/PlanDetailPage';
-import PlanMapPage from './pages/PlanMapPage';
-import PlanPage from './pages/PlanPage';
-import SignUpPage from './pages/SignUpPage';
 import Bookmark from './pages/Bookmark';
-import ResetPasswordPage from './pages/ResetPasswordPage';
-import SignOutPage from './pages/SignOutPage';
+import { lazy, Suspense } from 'react';
+import { Provider } from 'react-redux';
+import LoadingSpinner from './components/atom/LoadingSpinner';
+import NotFound from './pages/NotFound';
+
+const Home = lazy(() => import('./pages/Home'));
+const SignUpPage = lazy(() => import('./pages/SignUpPage'));
+const SignOutPage = lazy(() => import('./pages/SignOutPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
+const PlanPage = lazy(() => import('./pages/PlanPage'));
+const MyPage = lazy(() => import('./pages/MyPage'));
+const MyTripPage = lazy(() => import('./pages/MyTripPage'));
+const MyRecordPage = lazy(() => import('./pages/MyRecordPage'));
+const FootPrintPage = lazy(() => import('./pages/FootPrintPage'));
+const PlanMapPage = lazy(() => import('./pages/PlanMapPage'));
+const PlanDetailPage = lazy(() => import('./pages/PlanDetailPage'));
 
 const router = createBrowserRouter([
   {
@@ -45,9 +49,13 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <Providers>
-    <ModalProvider>
-      <RouterProvider router={router} />
-    </ModalProvider>
-  </Providers>
+  <Provider store={store}>
+    <Providers>
+      <ModalProvider>
+        <Suspense fallback={<LoadingSpinner />}>
+          <RouterProvider router={router} />
+        </Suspense>
+      </ModalProvider>
+    </Providers>
+  </Provider>
 );
