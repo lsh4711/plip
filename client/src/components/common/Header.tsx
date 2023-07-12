@@ -58,10 +58,9 @@ const AfterLogin = ({ isHome }: HeaderProps) => {
   );
 };
 
-const Header = ({ isHome }: HeaderProps) => {
-  const isHomes = useLocation().pathname === '/';
+const Header = () => {
+  const isHome = useLocation().pathname === '/';
   const isLogin = useSelector((state: RootState) => state.auth.isLogin);
-  console.log(isHomes);
   return (
     <header
       className={`left-0 top-0 z-40 h-[80px] w-full px-12 ${
