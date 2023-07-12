@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final DelegateTokenUtil delegateTokenUtil;
     private final MemberRepository memberRepository;
+    private final JwtTokenizer jwtTokenizer;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -50,7 +51,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // refreshTokenService.saveTokenInfo(member.getMemberId(), refreshToken, accessToken);
         String uri = createURI(accessToken, refreshToken).toString();
         log.info("## OAuth2 로그인 성공! 토큰을 발급합니다. 해당 주소로 보낼게용 " + uri);
-
+        // TODO: OAuth2 로그인 시 쿠키로 가는 지 확인해보기
+        jwtTokenizer.setHeaderRefreshToken(response, refreshToken);
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
 

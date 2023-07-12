@@ -64,7 +64,7 @@ public class SecurityConfig {
                 .userService(oAuth2UserService)
                 .and()
                 .successHandler(
-                    new OAuth2SuccessHandler(delegateTokenUtil, memberRepository)))
+                    new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer)))
             .apply(customFilterConfigurers())
             .and()
             .authorizeHttpRequests(authorize -> authorize

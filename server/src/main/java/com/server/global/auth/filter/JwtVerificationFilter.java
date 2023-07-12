@@ -44,13 +44,19 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
     private final AccessTokenRenewalUtil accessTokenRenewalUtil;
     private final RedisUtils redisUtils;
+    private String EMPTY_TOKEN = "empty";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
         try {
-            String jws = request.getHeader("Authorization").replace("Bearer ", "");
-
+            String jws = jwtTokenizer.getHeaderAccessToken(request);
+            if(jws.equals(EMPTY_TOKEN)){
+                log.warn("### 토큰이 없는 상태입니다. 리프레쉬 검증을 통해 재발급을 시도합니다.");
+                Token token = accessTokenRenewalUtil.renewAccessToken(request);
+                jwtTokenizer.setHeaderAccessToken(response, token.getAccessToken());
+                jws = token.getAccessToken();
+            }
             if(redisUtils.hasKeyBlackList(jws))
                 throw new CustomException(ExceptionCode.LOGOUT_USER);
 
