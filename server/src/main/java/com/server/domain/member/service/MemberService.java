@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.server.domain.member.entity.Member;
+import com.server.domain.member.entity.Member.Role;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
@@ -27,7 +28,7 @@ public class MemberService {
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);
         if (member.getRole() == null) {
-            member.setRole(Member.Role.USER);
+            member.setRole(Role.USER);
         }
 
         return memberRepository.save(member);

@@ -15,9 +15,10 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -49,6 +50,7 @@ import com.server.helper.StubData;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MemberControllerTest {
     private final String MEMBER_DEFULT_URI = "/api/users";
     @Autowired
@@ -69,7 +71,7 @@ public class MemberControllerTest {
 
     private String accessTokenForUser;
 
-    @BeforeEach
+    @BeforeAll
     public void init() {
         accessTokenForUser = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
     }
@@ -234,22 +236,24 @@ public class MemberControllerTest {
     @Test
     @DisplayName("로그아웃을 한다.")
     void postLogoutMember() throws Exception {
+        String logoutAccessToken = StubData.MockSecurity.getLogoutValidAccessToken(jwtTokenizer.getSecretKey());
         //when
         ResultActions actions = mockMvc.perform(
-            get(MEMBER_DEFULT_URI + "/logout")
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser))
-                //then
-                .andExpect(status().isOk())
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("회원 로그아웃 예제",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .description("회원 로그아웃")
-                                    .requestHeaders(
-                                        headerWithName("Authorization").description("발급받은 인증 토큰"))
-                                    .build())));
+                get(MEMBER_DEFULT_URI + "/logout")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + logoutAccessToken))
+            //then
+            .andExpect(status().isOk())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("회원 로그아웃 예제",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .description("회원 로그아웃")
+                            .requestHeaders(
+                                headerWithName("Authorization").description("발급받은 인증 토큰")
+                            )
+                            .build())));
     }
 
     @Test
