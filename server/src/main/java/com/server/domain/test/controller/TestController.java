@@ -113,7 +113,7 @@ public class TestController {
         List<Long> ids = tests.stream().mapToLong(t -> t.getTaskId()).boxed().collect(Collectors.toList());
 
         String body = String.format(
-            "메시지 예약 성공!\\n\\n요청하신 메시지 \"%s\" 가 %d초 뒤 카카오톡으로 전송됩니다.\\n \"나에게 보내기\" 기능 특성상 알림이 울리지 않습니다.\\n\\n현재 작업 id: %d\\n그 외 예약된 작업 id: %s",
+            "메시지 예약 성공!\\n\\n요청하신 메시지 \"%s\" 가 %d초 뒤 카카오톡으로 전송됩니다.\\n \"나에게 보내기\" 기능 특성상 알림이 울리지 않습니다.\\n\\n현재 작업 id: %d\\n예약된 작업 id: %s",
             message,
             second, taskId, ids);
 
