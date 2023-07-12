@@ -2,33 +2,57 @@ import { SignupType } from '@/schema/signupSchema';
 import BASE_URL from './BASE_URL';
 import { useMutation } from '@tanstack/react-query';
 import instance from './axiosinstance';
+import useToast from '@/hooks/useToast';
+import { AxiosError } from 'axios';
 
 const postSignup = async (signupData: SignupType) => {
-  try {
-    const response = await instance.post(
-      '/api/users/signup',
-      {
-        email: signupData.email,
-        password: signupData.password,
-        nickname: signupData.nickname,
-      },
-      {
-        withCredentials: true,
-      }
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error('알 수 없는 에러입니다.', error);
-    } else {
-      throw new Error(String(error));
+  const response = await instance.post(
+    '/api/users/signup',
+    {
+      email: signupData.email,
+      password: signupData.password,
+      nickname: signupData.nickname,
+    },
+    {
+      withCredentials: true,
     }
-  }
+  );
+  return response;
 };
 
 const useSignupMutation = () => {
+  const toast = useToast();
+
   const signupMutation = useMutation({
     mutationFn: (signup: SignupType) => postSignup(signup),
+    onSuccess(data, variables, context) {
+      toast({
+        content: '회원가입에 성공했습니다.',
+        type: 'success',
+      });
+    },
+    onError: (error: AxiosError) => {
+      switch (error.response?.status) {
+        case 400:
+          toast({
+            content: '400에러 로그인에 실패했습니다.',
+            type: 'warning',
+          });
+          break;
+        case 500:
+          toast({
+            content: '500에러 로그인에 실패했습니다.',
+            type: 'warning',
+          });
+          break;
+        default:
+          toast({
+            content: '로그인에 실패했습니다.',
+            type: 'warning',
+          });
+          break;
+      }
+    },
   });
   return signupMutation;
 };

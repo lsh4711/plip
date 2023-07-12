@@ -9,13 +9,11 @@ import Paragraph from '../atom/Paragraph';
 import Button from '../atom/Button';
 import LoadingSpinner from '../atom/LoadingSpinner';
 import Input from '../atom/Input';
-import useToast from '@/hooks/useToast';
 
 const SignupForm = () => {
   const emailRequestMutation = useEmailRequestMutation('signup');
   const emailValidationMutation = useEmailValidationMutation();
   const signupMutation = useSignupMutation();
-  const toast = useToast();
 
   const [isNicknameValid, setIsNicknameValid] = React.useState({
     isSuccess: true,
@@ -37,11 +35,9 @@ const SignupForm = () => {
       .mutateAsync(data)
       .then((res) => {
         setIsNicknameValid({ isSuccess: true, message: '' });
-        toast({ content: '회원가입이 성공적으로 이루어졌습니다.', type: 'success' });
       })
       .catch(() => {
         setIsNicknameValid({ isSuccess: false, message: '닉네임이 중복되었습니다.' });
-        toast({ content: '닉네임이 중복되었습니다.', type: 'warning' });
       });
   };
 
@@ -52,11 +48,9 @@ const SignupForm = () => {
     emailRequestMutation
       .mutateAsync(signupForm.getValues('email'))
       .then((res) => {
-        toast({ content: '이메일 요청이 전송되었습니다.', type: 'success' });
         setAuthCodeState({ disabled: false, message: '' });
       })
       .catch(() => {
-        toast({ content: '이메일 요청 전송이 실패했습니다.', type: 'warning' });
         setAuthCodeState({ disabled: true, message: '잠시 후 다시 시도해주세요' });
       });
   }, 500);
@@ -73,12 +67,10 @@ const SignupForm = () => {
       .then((res) => {
         setEmailRequestState({ isSuccess: true, message: '' });
         setAuthCodeState({ disabled: true, message: '' });
-        toast({ content: '인증에 성공했습니다.', type: 'success' });
       })
       .catch(() => {
         setEmailRequestState({ isSuccess: false, message: '인증번호가 맞지 않습니다.' });
         setAuthCodeState({ disabled: false, message: '다시 인증을 시도하세요' });
-        toast({ content: '인증에 실패했습니다.', type: 'warning' });
       });
   }, 500);
 
@@ -132,7 +124,7 @@ const SignupForm = () => {
           </Button>
         </div>
         <Paragraph variant={'red'} size="xs" className=" mt-1">
-          {emailRequestState.isSuccess ? null : emailRequestState.message}
+          {authCodeState.disabled ? null : authCodeState.message}
         </Paragraph>
       </div>
 

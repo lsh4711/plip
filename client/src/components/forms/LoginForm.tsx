@@ -6,19 +6,15 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import Input from '../atom/Input';
 import Button from '../atom/Button';
 import LoadingSpinner from '../atom/LoadingSpinner';
+import useToast from '@/hooks/useToast';
 
 const LoginForm = () => {
   const loginMutation = useLoginMutation();
   const loginForm = useForm<LoginType>({ resolver: zodResolver(loginSchema) });
   const onSubmit: SubmitHandler<LoginType> = (data) => {
-    loginMutation
-      .mutateAsync(data)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log('에러확인하세여');
-      });
+    loginMutation.mutateAsync(data).catch((error) => {
+      console.log('요건 온서브밋', error);
+    });
   };
 
   return (

@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import BASE_URL from './BASE_URL';
 import instance from './axiosinstance';
+import useToast from '@/hooks/useToast';
 
 interface EmailValidationType {
   email: string;
@@ -8,24 +9,30 @@ interface EmailValidationType {
 }
 
 const postEmailValidation = async ({ email, authcode }: EmailValidationType) => {
-  try {
-    const response = await instance.post('/api/mail/auth', {
-      email,
-      authCode: authcode,
-    });
-    return response;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error('it something wrong', error);
-    } else {
-      throw new Error(String(error));
-    }
-  }
+  const response = await instance.post('/api/mail/auth', {
+    email,
+    authCode: authcode,
+  });
+  return response;
 };
 
 const useEmailValidationMutation = () => {
+  const toast = useToast();
+
   const emailValidation = useMutation({
     mutationFn: (emailObj: EmailValidationType) => postEmailValidation(emailObj),
+    onSuccess(data, variables, context) {
+      toast({
+        content: '인증에 성공했습니다.',
+        type: 'success',
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        content: '인증에 실패했습니다.',
+        type: 'warning',
+      });
+    },
   });
   return emailValidation;
 };
