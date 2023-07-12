@@ -10,10 +10,10 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 @Documented
-@Constraint(validatedBy = DateValidator.class)
+@Constraint(validatedBy = OptionalDateValidator.class)
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DateValid {
+public @interface OptionalDateValid {
     String message() default "날짜 형식이 올바르지 않습니다.";
 
     Class<?>[] groups() default {};

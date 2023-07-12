@@ -11,6 +11,8 @@ import com.server.domain.schedule.entity.Schedule;
 public interface ScheduleMapper {
     Schedule postDtoToSchedule(ScheduleDto.Post postDto);
 
+    Schedule patchDtoToSchedule(ScheduleDto.Patch patchDto);
+
     @Mapping(source = "member.memberId", target = "memberId")
     @Mapping(source = "member.nickname", target = "nickname")
     ScheduleResponse scheduleToScheduleResponse(Schedule schedule);
