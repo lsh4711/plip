@@ -17,10 +17,6 @@ env:
   IMAGE_STORAGE_LOCATION: ${{ secrets.IMAGE_STORAGE_LOCATION }}
   JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
   REFRESH_EXPIRATION_MINUTES: ${{ secrets.REFRESH_EXPIRATION_MINUTES }}
-
-  REDIRECT_URL8000: ${{ secrets.REDIRECT_URL8000 }}
-  API_KEY: ${{ secrets.API_KEY }}
-  
 jobs:
   build:
 

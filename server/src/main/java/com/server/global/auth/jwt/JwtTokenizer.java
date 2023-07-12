@@ -7,13 +7,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import com.server.global.auth.userdetails.MemberDetailsService;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
