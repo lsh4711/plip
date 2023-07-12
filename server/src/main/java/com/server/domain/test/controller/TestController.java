@@ -61,7 +61,7 @@ public class TestController {
             return new ResponseEntity<>("로그인해주세요.", HttpStatus.OK);
         }
         if (memberId == null || message == null || second == null) {
-            return new ResponseEntity<>("이제 memberId, message, second를 담아서 요청을 보내주세요.", HttpStatus.OK);
+            return new ResponseEntity<>("이제 id, message, second를 담아서 요청을 보내주세요.", HttpStatus.OK);
         }
 
         tokens = kakaoService.getTokens(code, tokens);
