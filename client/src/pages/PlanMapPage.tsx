@@ -1,15 +1,13 @@
-import { Button } from '@/components';
 import { useEffect, useState } from 'react';
 import { Map, MapMarker, MarkerClusterer, Polyline } from 'react-kakao-maps-sdk';
-import { PositionType } from '@/datas/regions';
-import { regionInfos } from '@/datas/regions';
 import { useParams } from 'react-router-dom';
 
+import { Button } from '@/components';
 import SidePanel from '@/components/common/SidePanel';
 import TripInfo from '@/components/common/TripInfo';
 import TripSchedule from '@/components/common/TripSchedule';
-import { Map, MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
-import { regions } from '@/datas/regions';
+import { MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
+import { PositionType, regionInfos, regions } from '@/datas/regions';
 import useModal from '@/hooks/useModal';
 import WriteModal from '@/components/common/WriteModal';
 
@@ -28,17 +26,6 @@ const PlanMapPage = () => {
   const [mapLevel, setMapLevel] = useState(8);
   const [isMarkerVisble, setIsMarkerVisible] = useState(true);
   const [selectedRegion, setSelectedRegion] = useState(regionInfos['seoul']); // 타입 해결해주세요 길종늼
-  const [isOpenSidePanel, setIsOpenSidePanel] = useState(false);
-
-  const onSidePanelHandler = () => {
-    setIsOpenSidePanel(!isOpenSidePanel);
-  };
-
-  const openWriteDiaryModal = () => {
-    openModal(({ isOpen, close }) => (
-      <WriteModal type={'default'} isOpen={isOpen} onClose={close} />
-    ));
-  };
 
   const responseData: ResponseData = {
     title: null,
