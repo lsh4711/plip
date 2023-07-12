@@ -32,16 +32,3 @@ const useEmailRequestMutation = (type: 'pw' | 'signup') => {
 };
 
 export default useEmailRequestMutation;
-
-// 예전 fetch 코드
-// const postEmailRequest = async (email: string) => {
-//   console.log(JSON.stringify({ email: email }));
-//   const response = await fetch(`${BASE_URL}/api/mail/signup`, {
-//     method: 'POST',
-//     body: JSON.stringify({ email: email }),
-//     headers: {
-//       'Content-Type': 'application/json;charset=utf-8',
-//     },
-//   });
-//   return response;
-// };

@@ -38,15 +38,3 @@ const useEmailValidationMutation = () => {
 };
 
 export default useEmailValidationMutation;
-
-// 예전 fetch 코드
-// const postEmailValidation = async ({ email, authcode }: EmailValidationType) => {
-//   const response = await fetch(`${BASE_URL}/api/mail/auth`, {
-//     method: 'POST',
-//     body: JSON.stringify({ email, authCode: authcode }),
-//     headers: {
-//       'Content-Type': 'application/json;charset=utf-8',
-//     },
-//   });
-//   return response;
-// };

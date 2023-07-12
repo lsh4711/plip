@@ -7,7 +7,7 @@ const MyTripPage = ({}: MyTripPageProps) => {
   return (
     <div className=" flex">
       <MypageSideNav />
-      <div>MyTripPage</div>
+      <button onClick={() => {}}>로그아웃버튼</button>
     </div>
   );
 };
