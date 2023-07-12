@@ -127,6 +127,7 @@ public class Init {
             schedulePlace.setPlace(newPlace);
             schedulePlace.setDays(1);
             schedulePlace.setOrders(i);
+            // schedulePlace.setBookmark(false);
             schedulePlaces.add(schedulePlace);
         }
 
