@@ -38,17 +38,16 @@ export const SidePanelVariants = cva(
 
 interface SidePanelProps {
   position: 'left' | 'right';
-  isOpen: boolean;
-  setOpen: () => void;
+  className?: string;
   children: React.ReactNode;
 }
 
-function SidePanel({ position, isOpen, setOpen, children }: SidePanelProps) {
-  // const [isOpen, setIsOpen] = useState(true);
+function SidePanel({ position, className, children }: SidePanelProps) {
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className={cn(SidePanelVariants({ position, close: !isOpen }))}>
-      <SideToggleButton isOpen={isOpen} position={position} onClick={setOpen} />
+    <div className={cn([SidePanelVariants({ position, close: !isOpen }), className])}>
+      <SideToggleButton isOpen={isOpen} position={position} onClick={() => setIsOpen(!isOpen)} />
       {children}
     </div>
   );

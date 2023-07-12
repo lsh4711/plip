@@ -20,6 +20,7 @@ const ParagraphVariants = cva(
         white: ' text-white',
         blue: 'text-[#3E68FF] dark:text-[#3E68FF]',
         gray: ' text-[#BBBBBB]',
+        darkgray: ' text-[#343539]',
         black: ' text-black',
         red: 'text-red-500',
       },
