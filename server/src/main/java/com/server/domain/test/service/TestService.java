@@ -2,6 +2,7 @@ package com.server.domain.test.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.server.domain.test.entity.Test;
@@ -44,7 +45,8 @@ public class TestService {
     }
 
     public List<Test> findTestsOrderByTaskId() {
-        List<Test> tests = testRepository.findAllOrderByTaskId();
+        Sort sort = Sort.by("taskId");
+        List<Test> tests = testRepository.findAll(sort);
 
         return tests;
     }

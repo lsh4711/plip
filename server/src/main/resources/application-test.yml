@@ -85,4 +85,5 @@ springdoc:
     path: /docs/swagger
 
 kakao:
-    api-key: asdkfljasdklfsdjfsdl
+    redirect-url: asdfasdfasdf
+    api-key: asdfasdfasdfasdf

@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,20 +41,27 @@ public class TestController {
     private final TestService testService;
     private final TestMapper testMapper;
 
-    // @Value("${kakao.redirect-url}")
-    // private String redirecUrl;
+    private final KakaoService kakaoService;
 
+    @Value("${kakao.redirect-url}")
+    private String redirecUrl;
+
+    @Value("${kakao.api-key}")
+    private String apiKey;
+
+    private Token tokens;
     private String accessToken;
     private String refreshToken;
-    private Token tokens;
-    private final KakaoService kakaoService;
 
     @GetMapping
     public ResponseEntity getToken(HttpServletResponse response,
             @RequestParam(value = "code", required = false) String code) throws IOException {
         if (code == null) {
-            response.sendRedirect(
-                "https://kauth.kakao.com/oauth/authorize?client_id=0454767c5440ffe39451b5e9a84c732e&redirect_uri=https://teamdev.shop:8000/test&response_type=code&scope=talk_message");
+            String location = String.format(
+                "https://kauth.kakao.com/oauth/authorize?client_id=%s&redirect_uri=%s/test&response_type=code&scope=talk_message",
+                apiKey,
+                redirecUrl);
+            response.sendRedirect(location);
             return ResponseEntity.ok("로그인 해주세요.");
         }
         try {
@@ -61,16 +69,18 @@ public class TestController {
             accessToken = tokens.getAccess_token();
             refreshToken = tokens.getRefresh_token();
         } catch (Exception exception) {
-            return ResponseEntity.ok("토큰 발급에 실패했습니다. 오류 제보 부탁드립니다.");
+            return ResponseEntity.ok("카카오 토큰 발급에 실패했습니다. 오류 제보 부탁드립니다.");
         }
 
         List<Test> tests = testService.findTestsOrderByTaskId();
         List<Long> ids = tests.stream().mapToLong(test -> test.getTaskId()).boxed().toList();
+        String body = String.format(
+            "카카오 토큰 발급에 성공했습니다.\\n이제 메세지를 예약 전송 해보실 수 있습니다.\\n\\n%s/test/{message}?id=15&time=5\\n\\n와 같이 요청을 보내주세요.\\n\\ntime은 초 단위이고 id는 예약할 작업의 id를 지정해주시면 됩니다. id는 다른 작업과 중복될 수 없습니다.\\nid 또는 time을 입력하지않으면 메시지가 즉시 전송됩니다.\\n\\n예시: %s/test/코벤져스 폼 미쳤다. ㄷㄷ?id=1&time=5\\n\\n예약된 작업 id: %s",
+            redirecUrl,
+            redirecUrl,
+            ids);
 
-        String body = "카카오 토큰 발급에 성공했습니다.\\n이제 메세지를 예약 전송 해보실 수 있습니다.\\nhttps://teamdev.shop:8000/test/{message}?id=15&time=5\\n와 같이 요청을 보내주세요.\\ntime은 초 단위이고 id는 예약할 작업의 id를 지정해주시면 됩니다. id는 다른 작업과 중복될 수 없습니다.\\id 또는 time을 입력하지않으면 메시지가 즉시 전송됩니다.\\n예시 https://teamdev.shop:8000/test/코벤져스 폼 미쳤다. ㄷㄷ?id=1&time=5\\n예약된 작업 id: "
-                + ids;
         return ResponseEntity.ok(body.replace("\\n", "<br />"));
-
     }
 
     @GetMapping("/{message}")
@@ -79,13 +89,14 @@ public class TestController {
             @RequestParam(value = "id", required = false) Long taskId,
             @RequestParam(value = "time", required = false) Long second) throws IOException {
         if (tokens == null) {
-            response.sendRedirect("https://teamdev.shop:8000/test");
+            response.sendRedirect(redirecUrl + "/test");
             return ResponseEntity.ok("인증 필요.");
         }
         if (taskId == null || second == null) {
             kakaoService.sendMessage(accessToken, message);
-            String body = String.format("메시지 전송 성공!<br />message: %s", message);
-            return ResponseEntity.ok(body);
+            String body = String.format("메시지 즉시 전송 성공!\\n\\nmessage: \"%s\"\\n\"나에게 보내기\" 기능 특성상 알림이 울리지 않습니다.",
+                message);
+            return ResponseEntity.ok(body.replace("\\n", "<br />"));
         }
 
         Test test = new Test();
@@ -101,7 +112,7 @@ public class TestController {
         List<Long> ids = tests.stream().mapToLong(t -> t.getTaskId()).boxed().toList();
 
         String body = String.format(
-            "메시지 예약 성공!\\n요청하신 메시지 \"%s\"가 %d초 뒤 카카오톡으로 전송됩니다.\\n \"나에게 보내기\" 기능 특성상 알림이 울리지 않습니다.\\n현재 작업 id: %d\\n그 외 예약된 작업 id: %s",
+            "메시지 예약 성공!\\n\\n요청하신 메시지 \"%s\" 가 %d초 뒤 카카오톡으로 전송됩니다.\\n \"나에게 보내기\" 기능 특성상 알림이 울리지 않습니다.\\n\\n현재 작업 id: %d\\n그 외 예약된 작업 id: %s",
             message,
             second, taskId, ids);
 
