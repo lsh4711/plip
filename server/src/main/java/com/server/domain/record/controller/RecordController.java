@@ -122,7 +122,7 @@ public class RecordController {
             @RequestPart("images") List<MultipartFile> images) {
         long userId = CustomUtil.getAuthId();
 
-        recordService.verfify(userId, recordId);
+        recordService.verfify(recordId, userId);
 
         try {
             Boolean uploadResult = imageManager.uploadImages(images, recordId);
@@ -143,14 +143,14 @@ public class RecordController {
             @PathVariable("img-id") long imgId) {
         long userId = CustomUtil.getAuthId();
 
-        recordService.verfify(userId, recordId);
+        recordService.verfify(recordId, userId);
 
         Resource imageFile = imageManager.loadImage(recordId, imgId);
 
         if (imageFile.exists()) {
             try {
                 Resource imageResource = new UrlResource(imageFile.getURI());
-                byte[] imageBytes = Files.readAllBytes(imageResource.getFile().toPath());
+
                 String imageBase64 = Base64.getEncoder()
                         .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
 
@@ -177,7 +177,7 @@ public class RecordController {
     public ResponseEntity<?> getRecordAllImg(@PathVariable("record-id") long recordId) {
         long userId = CustomUtil.getAuthId();
 
-        recordService.verfify(userId, recordId);
+        recordService.verfify(recordId, userId);
 
         List<Resource> imageFiles = imageManager.loadImages(recordId);
         if (imageFiles.isEmpty()) {
