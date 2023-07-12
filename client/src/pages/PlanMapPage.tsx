@@ -9,6 +9,8 @@ import SidePanel from '@/components/common/SidePanel';
 import TripInfo from '@/components/common/TripInfo';
 import TripSchedule from '@/components/common/TripSchedule';
 import { regions } from '@/datas/regions';
+import useModal from '@/hooks/useModal';
+import WriteModal from '@/components/common/WriteModal';
 
 export type ResponseData = {
   title: string | null;
@@ -20,6 +22,7 @@ export type ResponseData = {
 
 const PlanMapPage = () => {
   const { region } = useParams();
+  const [openModal] = useModal();
 
   const [mapLevel, setMapLevel] = useState(8);
   const [isMarkerVisble, setIsMarkerVisible] = useState(true);
@@ -27,9 +30,13 @@ const PlanMapPage = () => {
   const [isOpenSidePanel, setIsOpenSidePanel] = useState(false);
 
   const onSidePanelHandler = () => {
-    console.log(`current state value : ${isOpenSidePanel}`);
     setIsOpenSidePanel(!isOpenSidePanel);
-    console.log(`after state value : ${!isOpenSidePanel}`);
+  };
+
+  const openWriteDiaryModal = () => {
+    openModal(({ isOpen, close }) => (
+      <WriteModal type={'default'} isOpen={isOpen} onClose={close} />
+    ));
   };
 
   const responseData: ResponseData = {
@@ -125,9 +132,16 @@ const PlanMapPage = () => {
 
       <Button
         variant={'primary'}
-        className={`absolute ${isOpenSidePanel ? 'right-[19rem]' : 'right-10'} top-10 z-[9999]`}
+        className={`absolute ${isOpenSidePanel ? 'right-[19rem]' : 'right-10'} top-10 z-50`}
       >
         저장하기
+      </Button>
+      <Button
+        variant={'primary'}
+        className={`absolute ${isOpenSidePanel ? 'right-[19rem]' : 'right-10'} top-24 z-50`}
+        onClick={openWriteDiaryModal}
+      >
+        일지작성
       </Button>
       <SidePanel position={'right'} isOpen={isOpenSidePanel} setOpen={onSidePanelHandler}>
         <TripInfo
