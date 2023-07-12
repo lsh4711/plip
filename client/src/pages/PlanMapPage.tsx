@@ -138,7 +138,7 @@ const PlanMapPage = () => {
         <Button variant={'primary'} className="absolute -left-1/2 top-6">
           일정 저장하기
         </Button>
-        // TODO 일지 작성 페이지로 이동 필요
+        {/* TODO 일지 작성 페이지로 이동 필요 */}
         <Button
           variant={'primary'}
           className="absolute -left-1/2 top-20"
