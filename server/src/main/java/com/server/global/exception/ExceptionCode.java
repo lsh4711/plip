@@ -42,6 +42,9 @@ public enum ExceptionCode {
     // 일정_장소
     SCHEDULE_PLACE_NOT_FOUND("여행지가 존재하지 않거나 권한이 없습니다.", 404),
 
+    // 알림
+    KAKAO_TOKEN_NOT_FOUND("카카오 토큰이 없어 메시지를 보낼 수 없습니다.", 404),
+
     END("마무리", 200);
 
     @Getter

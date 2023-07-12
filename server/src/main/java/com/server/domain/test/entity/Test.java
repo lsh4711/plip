@@ -3,7 +3,10 @@ package com.server.domain.test.entity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
+import com.server.domain.member.entity.Member;
 import com.server.global.audit.BaseEntity;
 
 import lombok.AllArgsConstructor;
@@ -21,5 +24,10 @@ public class Test extends BaseEntity {
     @GeneratedValue
     private long testId;
 
-    private String message;
+    private String accessToken;
+    private String refreshToken;
+
+    @ManyToOne
+    @JoinColumn(name = "memberId")
+    private Member member;
 }

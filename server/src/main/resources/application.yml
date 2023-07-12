@@ -90,4 +90,6 @@ springdoc:
   swagger-ui:
     url: /docs/open-api-3.0.1.json
     path: /docs/swagger
-
+  
+kakao:
+    api-key: ${API_KEY}

@@ -72,6 +72,16 @@ public class Init {
                 .password("lsh")
                 .nickname("음악")
                 .build());
+        members.add(Member.builder()
+                .email("dbsek21@naver.com")
+                .password("dbsek21")
+                .nickname("다영짱")
+                .build());
+        members.add(Member.builder()
+                .email("wldls@naver.com")
+                .password("wldls")
+                .nickname("지인짱")
+                .build());
 
         for (Member member : members) {
             member.setRole(admin);

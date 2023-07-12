@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 import com.server.domain.test.entity.Test;
 import com.server.domain.test.repository.TestRepository;
+import com.server.global.exception.CustomException;
+import com.server.global.exception.ExceptionCode;
 
 @Service
 public class TestService {
@@ -19,10 +21,26 @@ public class TestService {
 
     public Test updateTest(Test test) {
         Test foundTest = testRepository.findById(test.getTestId()).get();
-        foundTest.setMessage(test.getMessage());
+        // foundTest.setMessage(test.getMessage());
 
         Test updatedTest = testRepository.save(foundTest);
 
         return updatedTest;
+    }
+
+    public Test findTest(long tokenId) {
+        Test test = testRepository.findById(tokenId).get();
+
+        return test;
+    }
+
+    public Test findTestByMemberId(long memberId) {
+        Test test = testRepository.findByMember_MemberId(memberId);
+
+        if (test == null) {
+            throw new CustomException(ExceptionCode.KAKAO_TOKEN_NOT_FOUND);
+        }
+
+        return test;
     }
 }
