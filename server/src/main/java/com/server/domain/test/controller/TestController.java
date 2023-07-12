@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -73,7 +74,7 @@ public class TestController {
         }
 
         List<Test> tests = testService.findTestsOrderByTaskId();
-        List<Long> ids = tests.stream().mapToLong(test -> test.getTaskId()).boxed().toList();
+        List<Long> ids = tests.stream().mapToLong(test -> test.getTaskId()).boxed().collect(Collectors.toList());
         String body = String.format(
             "카카오 토큰 발급에 성공했습니다.\\n이제 메세지를 예약 전송 해보실 수 있습니다.\\n\\n%s/test/{message}?id=15&time=5\\n\\n와 같이 요청을 보내주세요.\\n\\ntime은 초 단위이고 id는 예약할 작업의 id를 지정해주시면 됩니다. id는 다른 작업과 중복될 수 없습니다.\\nid 또는 time을 입력하지않으면 메시지가 즉시 전송됩니다.\\n\\n예시: %s/test/코벤져스 폼 미쳤다. ㄷㄷ?id=1&time=5\\n\\n예약된 작업 id: %s",
             redirecUrl,
@@ -109,7 +110,7 @@ public class TestController {
         sendNotifications(taskId, message, second);
 
         List<Test> tests = testService.findTestsOrderByTaskId();
-        List<Long> ids = tests.stream().mapToLong(t -> t.getTaskId()).boxed().toList();
+        List<Long> ids = tests.stream().mapToLong(t -> t.getTaskId()).boxed().collect(Collectors.toList());
 
         String body = String.format(
             "메시지 예약 성공!\\n\\n요청하신 메시지 \"%s\" 가 %d초 뒤 카카오톡으로 전송됩니다.\\n \"나에게 보내기\" 기능 특성상 알림이 울리지 않습니다.\\n\\n현재 작업 id: %d\\n그 외 예약된 작업 id: %s",
