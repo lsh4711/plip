@@ -144,11 +144,6 @@ public class ScheduleController {
         LocalDateTime startDateTime = LocalDateTime.of(startDate, sendTime1);
         LocalDateTime endDateTime = LocalDateTime.of(endDate, sendTime2);
 
-        // System.out.println("currentTime:"+currentTime);
-        // System.out.println("startDateTime:"+startDateTime);
-        // System.out.println("endDateTime:"+endDateTime);
-
-
         if (startDateTime.isAfter(currentTime)) {
             Duration initialDelay = Duration.between(currentTime, startDateTime);
 
@@ -156,7 +151,8 @@ public class ScheduleController {
                 // 알림 전송 작업
                 SseEmitter emitter = emitterMap.get(memberId);
                 try {
-                    emitter.send(notification, MediaType.APPLICATION_JSON);
+                    // emitter.send(notification, MediaType.APPLICATION_JSON);
+                    emitter.send(SseEmitter.event().name("sse").data(notification));
                     System.out.println("StartDate Notification sent to memberId: " + memberId);
                 } catch (Exception e) {
                     emitter.completeWithError(e);
@@ -172,7 +168,8 @@ public class ScheduleController {
                 SseEmitter emitter = emitterMap.get(memberId);
                 System.out.println(emitter);
                 try {
-                    emitter.send(notification, MediaType.APPLICATION_JSON);
+                    // emitter.send(notification, MediaType.APPLICATION_JSON);
+                    emitter.send(SseEmitter.event().name("sse").data(notification));
                     System.out.println("EndDate Notification sent to memberId: " + memberId);
                 } catch (Exception e) {
                     e.printStackTrace();

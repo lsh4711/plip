@@ -1,7 +1,15 @@
 package com.server.domain.test.controller;
 
 import java.net.URI;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -11,7 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.server.domain.schedule.entity.Notification;
+import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.test.dto.TestDto;
 import com.server.domain.test.entity.Test;
 import com.server.domain.test.mapper.TestMapper;
@@ -53,6 +64,7 @@ public class TestController {
         return ResponseEntity.ok().body(updatedTest);
     }
 
+
     @GetMapping
     public ModelAndView getTest() {
         return new ModelAndView("test.html");
@@ -62,4 +74,5 @@ public class TestController {
     public void customExceptionTest() {
         throw new CustomException(ExceptionCode.TEST_CODE);
     }
+
 }
