@@ -11,6 +11,7 @@ const Providers = ({ children }: ProvidersProps) => {
     defaultOptions: {
       queries: {
         suspense: true,
+        retry: 0,
       },
     },
   });
