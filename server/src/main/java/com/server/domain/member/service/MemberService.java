@@ -26,7 +26,9 @@ public class MemberService {
 
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);
-        // member.setRole(Member.Role.USER); // 요거 지우면 안되는것인지..
+        if (member.getRole() == null) {
+            member.setRole(Member.Role.USER);
+        }
 
         return memberRepository.save(member);
     }
