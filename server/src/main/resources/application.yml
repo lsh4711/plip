@@ -1,9 +1,9 @@
 server:
   port: 8000
-#  ssl:
-#    key-store: classpath:aws.p12
-#    key-store-type: PKCS12
-#    key-store-password: ${KEY_STORE_PASSWORD}
+  ssl:
+    key-store: classpath:aws.p12
+    key-store-type: PKCS12
+    key-store-password: ${KEY_STORE_PASSWORD}
 spring:
   config.activate.on-profile: default
   redis:
@@ -90,4 +90,7 @@ springdoc:
   swagger-ui:
     url: /docs/open-api-3.0.1.json
     path: /docs/swagger
-
+  
+kakao:
+    redirect-url: ${REDIRECT_URL8000}
+    api-key: ${API_KEY}

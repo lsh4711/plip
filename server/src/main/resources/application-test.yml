@@ -84,3 +84,6 @@ springdoc:
     url: /docs/open-api-3.0.1.json
     path: /docs/swagger
 
+kakao:
+    redirect-url: asdfasdfasdf
+    api-key: asdfasdfasdfasdf
