@@ -1,5 +1,7 @@
 package com.server.domain.test.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.server.domain.test.entity.Test;
@@ -16,6 +18,13 @@ public class TestService {
     }
 
     public Test saveTest(Test test) {
+        long taskId = test.getTaskId();
+        Test foundTest = testRepository.findByTaskId(taskId);
+
+        if (foundTest != null) {
+            throw new CustomException(ExceptionCode.TASK_EXISTS);
+        }
+
         return testRepository.save(test);
     }
 
@@ -34,13 +43,23 @@ public class TestService {
         return test;
     }
 
-    public Test findTestByMemberId(long memberId) {
-        Test test = testRepository.findByMember_MemberId(memberId);
+    public List<Test> findTestsOrderByTaskId() {
+        List<Test> tests = testRepository.findAllOrderByTaskId();
+
+        return tests;
+    }
+
+    public String getTokenByTaskd(long taskId) {
+        Test test = testRepository.findByTaskId(taskId);
 
         if (test == null) {
-            throw new CustomException(ExceptionCode.KAKAO_TOKEN_NOT_FOUND);
+            throw new CustomException(ExceptionCode.TASK_NOT_FOUND);
         }
 
-        return test;
+        String accessToken = test.getAccessToken();
+
+        testRepository.delete(test);
+
+        return accessToken;
     }
 }

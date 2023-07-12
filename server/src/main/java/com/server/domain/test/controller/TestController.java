@@ -3,13 +3,13 @@ package com.server.domain.test.controller;
 import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.server.domain.member.entity.Member;
 import com.server.domain.test.auth.Token;
 import com.server.domain.test.dto.TestDto;
 import com.server.domain.test.entity.Test;
@@ -50,37 +49,63 @@ public class TestController {
     private final KakaoService kakaoService;
 
     @GetMapping
-    public ResponseEntity get(HttpServletResponse response,
-            @RequestParam(value = "code", required = false) String code,
-            @RequestParam(value = "id", required = false) Long memberId,
-            @RequestParam(value = "message", required = false) String message,
-            @RequestParam(value = "time", required = false) Long second) throws IOException {
+    public ResponseEntity getToken(HttpServletResponse response,
+            @RequestParam(value = "code", required = false) String code) throws IOException {
         if (code == null) {
             response.sendRedirect(
                 "https://kauth.kakao.com/oauth/authorize?client_id=0454767c5440ffe39451b5e9a84c732e&redirect_uri=https://teamdev.shop:8000/test&response_type=code&scope=talk_message");
-            return new ResponseEntity<>("로그인해주세요.", HttpStatus.OK);
+            return ResponseEntity.ok("로그인 해주세요.");
         }
-        if (memberId == null || message == null || second == null) {
-            return new ResponseEntity<>("이제 id, message, second를 담아서 요청을 보내주세요.", HttpStatus.OK);
+        try {
+            tokens = kakaoService.getTokens(code, tokens);
+            accessToken = tokens.getAccess_token();
+            refreshToken = tokens.getRefresh_token();
+        } catch (Exception exception) {
+            return ResponseEntity.ok("토큰 발급에 실패했습니다. 오류 제보 부탁드립니다.");
         }
 
-        tokens = kakaoService.getTokens(code, tokens);
-        accessToken = tokens.getAccess_token();
-        refreshToken = tokens.getRefresh_token();
+        List<Test> tests = testService.findTestsOrderByTaskId();
+        List<Long> ids = tests.stream().mapToLong(test -> test.getTaskId()).boxed().toList();
 
-        Member member = Member.builder()
-                .memberId(memberId)
-                .build();
+        String body = "카카오 토큰 발급에 성공했습니다.\\n이제 메세지를 예약 전송 해보실 수 있습니다.\\nhttps://teamdev.shop:8000/test/{message}?id=15&time=5\\n와 같이 요청을 보내주세요.\\ntime은 초 단위이고 id는 예약할 작업의 id를 지정해주시면 됩니다. id는 다른 작업과 중복될 수 없습니다.\\id 또는 time을 입력하지않으면 메시지가 즉시 전송됩니다.\\n예시 https://teamdev.shop:8000/test/코벤져스 폼 미쳤다. ㄷㄷ?id=1&time=5\\n예약된 작업 id: "
+                + ids;
+        return ResponseEntity.ok(body.replace("\\n", "<br />"));
+
+    }
+
+    @GetMapping("/{message}")
+    public ResponseEntity sendMessage(HttpServletResponse response,
+            @PathVariable("message") String message,
+            @RequestParam(value = "id", required = false) Long taskId,
+            @RequestParam(value = "time", required = false) Long second) throws IOException {
+        if (tokens == null) {
+            response.sendRedirect("https://teamdev.shop:8000/test");
+            return ResponseEntity.ok("인증 필요.");
+        }
+        if (taskId == null || second == null) {
+            kakaoService.sendMessage(accessToken, message);
+            String body = String.format("메시지 전송 성공!<br />message: %s", message);
+            return ResponseEntity.ok(body);
+        }
+
         Test test = new Test();
+        test.setTaskId(taskId);
         test.setAccessToken(accessToken);
         test.setRefreshToken(refreshToken);
-        test.setMember(member);
 
         testService.saveTest(test);
 
-        sendNotifications(memberId, message, second);
+        sendNotifications(taskId, message, second);
 
-        return new ResponseEntity<>("메시지 예약 성공", HttpStatus.OK);
+        List<Test> tests = testService.findTestsOrderByTaskId();
+        List<Long> ids = tests.stream().mapToLong(t -> t.getTaskId()).boxed().toList();
+
+        String body = String.format(
+            "메시지 예약 성공!\\n요청하신 메시지 \"%s\"가 %d초 뒤 카카오톡으로 전송됩니다.\\n \"나에게 보내기\" 기능 특성상 알림이 울리지 않습니다.\\n현재 작업 id: %d\\n그 외 예약된 작업 id: %s",
+            message,
+            second, taskId, ids);
+
+        return ResponseEntity.ok(body.replace("\\n", "<br />"));
     }
 
     @PostMapping
@@ -116,21 +141,20 @@ public class TestController {
 
     //알림 보내는 메서드
     @Async
-    private void sendNotifications(long memberId, String message, long second) {
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5);
-        Duration initialDelay = Duration.ofSeconds(second);
+    private void sendNotifications(long taskId, String message, long second) {
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
+        Duration delay = Duration.ofSeconds(second);
 
+        // 알림 전송 작업
         executorService.schedule(() -> {
-            // 알림 전송 작업
             try {
-                Test test = testService.findTestByMemberId(memberId);
-                String token = test.getAccessToken();
+                String accessToken = testService.getTokenByTaskd(taskId);
                 // 카카오 메시지 전송
-                kakaoService.sendMessage(token, message);
+                kakaoService.sendMessage(accessToken, message);
             } catch (Exception e) {
                 System.out.println("에러");
             }
-        }, initialDelay.toMillis(), TimeUnit.MILLISECONDS);
+        }, delay.toMillis(), TimeUnit.MILLISECONDS);
 
     }
 }
