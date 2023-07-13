@@ -2,6 +2,7 @@ package com.server.global.log;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,9 +31,14 @@ public class LogController {
             throw new CustomException(ExceptionCode.LOG_NOT_FOUND);
         }
 
-        String logs = FileUtils.readFileToString(file, "UTF-8");
-        logs.replace("\n", "<br />");
+        StringBuilder result = new StringBuilder();
+        // String logs = FileUtils.readFileToString(file, "UTF-8");
+        // logs.replace("\n", "<br />");
+        List<String> logs = FileUtils.readLines(file, "UTF-8");
+        for (String log : logs) {
+            result.append(log).append("<br />");
+        }
 
-        return ResponseEntity.ok(logs);
+        return ResponseEntity.ok(result);
     }
 }
