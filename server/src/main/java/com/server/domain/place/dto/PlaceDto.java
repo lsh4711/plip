@@ -10,7 +10,7 @@ public class PlaceDto {
     @Setter
     public static class Post {
         @NotBlank // optional
-        private long apiId = 0;
+        private long apiId;
 
         @NotBlank
         private String name;

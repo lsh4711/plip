@@ -21,5 +21,11 @@ public class Test extends BaseEntity {
     @GeneratedValue
     private long testId;
 
-    private String message;
+    private long taskId;
+    private String accessToken;
+    private String refreshToken;
+
+    // @ManyToOne
+    // @JoinColumn(name = "memberId")
+    // private Member member;
 }

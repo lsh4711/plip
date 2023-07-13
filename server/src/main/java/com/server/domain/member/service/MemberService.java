@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.server.domain.member.entity.Member;
+import com.server.domain.member.entity.Member.Role;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
@@ -26,7 +27,9 @@ public class MemberService {
 
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);
-        // member.setRole(Member.Role.USER); // 요거 지우면 안되는것인지..
+        if (member.getRole() == null) {
+            member.setRole(Role.USER);
+        }
 
         return memberRepository.save(member);
     }

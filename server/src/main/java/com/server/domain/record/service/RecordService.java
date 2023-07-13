@@ -29,8 +29,6 @@ public class RecordService {
 
     private final MemberService memberService;
 
-    private final CustomBeanUtils<Record> beanUtils;
-
     //여행일지 등록
     @Transactional
     public Record createRecord(Record record, Long schedulePlaceId) {
@@ -53,7 +51,8 @@ public class RecordService {
             throw new CustomException(ExceptionCode.CANNOT_CHANGE_RECORD);
         }
 
-        Record updatedRecord = beanUtils.copyNonNullProperties(record, foundRecord);
+        // static 메소드로 바꿨사와요
+        Record updatedRecord = CustomBeanUtils.copyNonNullProperties(record, foundRecord);
 
         return recordRepository.save(updatedRecord);
     }

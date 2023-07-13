@@ -5,7 +5,6 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -97,12 +96,13 @@ public class ScheduleControllerTest {
         postDto.setPlaces(placeDtoLists);
         String requestBody = gson.toJson(postDto);
 
-        List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
+        // List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
         Schedule schedule = new Schedule();
         schedule.setScheduleId(1L);
 
         given(scheduleService.saveSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
-        doNothing().when(placeService).savePlaceLists(Mockito.any(Schedule.class), Mockito.<List<Place>>anyList());
+        given(placeService.savePlaceLists(Mockito.any(Schedule.class), Mockito.<List<Place>>anyList()))
+                .willReturn(null);
         // given(schedulePlaceSedrvice.saveSchedulePlaces(Mockito.<SchedulePlace>anyList())).willReturn(null);
 
         // when
@@ -130,4 +130,23 @@ public class ScheduleControllerTest {
                                     .build())));
     }
 
+    @Test
+    @DisplayName("일정 수정")
+    void patchScheduleTest() throws Exception {
+    }
+
+    @Test
+    @DisplayName("일정 조회")
+    void getScheduleTest() throws Exception {
+    }
+
+    @Test
+    @DisplayName("일정의 여행지 조회")
+    void getPlacesByScheduleIdTest() throws Exception {
+    }
+
+    @Test
+    @DisplayName("일정 삭제")
+    void deleteScheduleTest() throws Exception {
+    }
 }

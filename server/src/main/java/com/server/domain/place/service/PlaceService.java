@@ -41,13 +41,15 @@ public class PlaceService {
         // }
     }
 
-    public void savePlaceLists(Schedule savedSchedule,
+    public List<SchedulePlace> savePlaceLists(Schedule savedSchedule,
             List<List<Place>> placeLists) {
+        List<SchedulePlace> schedulePlaces = new ArrayList<>();
+
         for (int i = 0; i < placeLists.size(); i++) {
             List<Place> places = placeLists.get(i);
-            if (places.size() == 0) {
-                throw new CustomException(ExceptionCode.EMPTY_PLACES);
-            }
+            // if (places.size() == 0) {
+            //     throw new CustomException(ExceptionCode.EMPTY_PLACES);
+            // }
             // 나중에 Map API 데이터에서 유니크 값들을 확인하고 중복 저장 방지 필요
             for (int j = 0; j < places.size(); j++) {
                 Place place = places.get(j);
@@ -62,10 +64,11 @@ public class PlaceService {
                 schedulePlace.setDays(i + 1);
                 schedulePlace.setOrders(j + 1);
                 schedulePlaceRepository.save(schedulePlace);
+                schedulePlaces.add(schedulePlace);
             }
         }
 
-        // return placeLists;
+        return schedulePlaces;
     }
 
     public Object getPlacesByCategory(int size, int page, String category) {

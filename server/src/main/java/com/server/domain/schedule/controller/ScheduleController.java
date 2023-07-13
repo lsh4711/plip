@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +28,6 @@ import com.server.domain.schedule.dto.ScheduleResponse;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.mapper.ScheduleMapper;
-import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.domain.schedule.service.ScheduleService;
 import com.server.global.utils.CustomUtil;
 import com.server.global.utils.UriCreator;
@@ -43,6 +43,7 @@ public class ScheduleController {
 
     private final PlaceService placeService;
     private final PlaceMapper placeMapper;
+
     private final SchedulePlaceService schedulePlaceService;
 
     @Transactional
@@ -67,43 +68,60 @@ public class ScheduleController {
         return ResponseEntity.created(location).build();
     }
 
+    @Transactional
+    @PatchMapping("/{scheduleId}/edit")
+    public ResponseEntity patchSchedule(@PathVariable long scheduleId,
+            @Valid @RequestBody ScheduleDto.Patch patchDto) {
+        Schedule schedule = scheduleMapper.patchDtoToSchedule(patchDto);
+        schedule.setScheduleId(scheduleId);
+
+        Schedule updatedSchedule = scheduleService.updateSchedule(schedule);
+        List<SchedulePlace> schedulePlaces = updatedSchedule.getSchedulePlaces();
+        List<List<PlaceDto.Post>> placeDtoLists = patchDto.getPlaces();
+        List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
+
+        if (placeLists != null) {
+            schedulePlaceService.deleteSchedulePlaces(schedulePlaces);
+            schedulePlaces = placeService
+                    .savePlaceLists(updatedSchedule, placeLists);
+        }
+
+        List<PlaceResponse> placeResponses = placeMapper
+                .schedulePlacesToPlaceResponses(schedulePlaces);
+        ScheduleResponse scheduleResponse = scheduleMapper
+                .scheduleToScheduleResponse(updatedSchedule);
+        scheduleResponse.setPlaces(placeResponses);
+
+        return ResponseEntity.ok(scheduleResponse);
+    }
+
     // 일단은 장소 정보까지 넣어놈
     @GetMapping("/{scheduleId}")
-    public ResponseEntity getSchedule(@PathVariable("scheduleId") long scheduleId) {
-        long memberId = CustomUtil.getAuthId();
-
-        scheduleService.verfify(memberId, scheduleId);
-
+    public ResponseEntity getSchedule(@PathVariable long scheduleId) {
         Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
         List<PlaceResponse> placeResponses = placeMapper
                 .schedulePlacesToPlaceResponses(schedulePlaces);
-        ScheduleResponse scheduleResponse = scheduleMapper.scheduleToScheduleResponse(foundSchedule);
+        ScheduleResponse scheduleResponse = scheduleMapper
+                .scheduleToScheduleResponse(foundSchedule);
         scheduleResponse.setPlaces(placeResponses);
 
         // 나중에 member의 모든 정보대신 공개해도 되는 정보만 포함해야함
-        return new ResponseEntity<>(scheduleResponse, HttpStatus.OK);
+        return ResponseEntity.ok(scheduleResponse);
     }
 
     @GetMapping("/{scheduleId}/places")
-    public ResponseEntity getPlacesByScheduleId(@PathVariable("scheduleId") long scheduleId) {
-        long memberId = CustomUtil.getAuthId();
-
-        scheduleService.verfify(memberId, scheduleId);
-
+    public ResponseEntity getPlacesByScheduleId(@PathVariable long scheduleId) {
         Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
         List<PlaceResponse> placeResponses = placeMapper
                 .schedulePlacesToPlaceResponses(schedulePlaces);
 
-        return new ResponseEntity<>(placeResponses, HttpStatus.OK);
+        return ResponseEntity.ok(placeResponses);
     }
 
     @DeleteMapping("/{scheduleId}")
-    public ResponseEntity deleteSchedule(@PathVariable("scheduleId") long scheduleId) {
-        long memberId = CustomUtil.getAuthId();
-
-        scheduleService.verfify(memberId, scheduleId);
+    public ResponseEntity deleteSchedule(@PathVariable long scheduleId) {
         scheduleService.deleteSchedule(scheduleId);
 
         return ResponseEntity.noContent().build();
