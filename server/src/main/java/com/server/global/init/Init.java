@@ -1,6 +1,6 @@
 package com.server.global.init;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,8 +96,8 @@ public class Init {
         schedule.setTitle("즐거운 여행 제목");
         schedule.setContent("여행 내용");
         schedule.setMemberCount(5);
-        schedule.setStartDate(LocalDate.now());
-        schedule.setEndDate(LocalDate.now().plusDays(3));
+        schedule.setStartDate(LocalDateTime.now());
+        schedule.setEndDate(LocalDateTime.now().plusDays(3));
         schedule.setMember(member);
 
         scheduleService.saveSchedule(schedule);

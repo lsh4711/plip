@@ -1,6 +1,5 @@
 package com.server.helper;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -196,8 +195,8 @@ public class StubData {
             postDto.setContent("일정에 대한 메모");
             postDto.setMemberCount(1);
             postDto.setRegion("제주도");
-            postDto.setStartDate(LocalDate.now());
-            postDto.setEndDate(LocalDate.now().plusDays(5));
+            postDto.setStartDate(LocalDateTime.now());
+            postDto.setEndDate(LocalDateTime.now().plusDays(5));
         }
     }
 
