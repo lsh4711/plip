@@ -4,11 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import com.server.domain.place.dto.PlaceDto;
 import com.server.global.validator.DateValid;
+import com.server.global.validator.OptionalDateValid;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,9 +16,9 @@ public class ScheduleDto {
     @Getter
     @Setter
     public static class Post {
-        private String title = "여행 레츠고!"; // optional, default: "{city} 여행 레츠고!"
-        private String content = "즐거운 여행~!"; // optional, default: "즐거운 여행~!"
-        private Integer memberCount = 1; // optional, default: 1
+        private String title; // optional, default: "{region} 여행 레츠고!"
+        private String content; // optional, default: "즐거운 {region} 여행~!"
+        private int memberCount = 1; // optional, default: 1
 
         @NotBlank
         private String region;
@@ -30,19 +29,25 @@ public class ScheduleDto {
         @DateValid
         private LocalDate endDate;
 
-        @NotNull
-        @Size(min = 1)
+        // @NotNull
+        // @Size(min = 1)
         private List<List<PlaceDto.Post>> places;
     }
 
     @Getter
+    @Setter
     public static class Patch {
         private String title;
         private String content;
-        private String city;
         private Integer memberCount;
+        private String region;
+
+        @OptionalDateValid
         private LocalDate startDate;
+
+        @OptionalDateValid
         private LocalDate endDate;
-        private List<PlaceDto.Post> places;
+
+        private List<List<PlaceDto.Post>> places;
     }
 }

@@ -12,6 +12,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ScheduleResponse {
+    private Long memberId;
+    private String nickname;
+
     private Long scheduleId;
     private String region;
     private String title;
@@ -21,9 +24,6 @@ public class ScheduleResponse {
     private LocalDate endDate;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-
-    private Long memberId;
-    private String nickname;
 
     private List<PlaceResponse> places;
 }
