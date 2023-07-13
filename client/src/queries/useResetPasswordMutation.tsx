@@ -1,4 +1,4 @@
-import { ResetPasswordType } from '@/schema/resetPasswordSchema';
+import { ResetPasswordType, resetPasswordSchema } from '@/schema/resetPasswordSchema';
 import instance from './axiosinstance';
 import { useMutation } from '@tanstack/react-query';
 import useToast from '@/hooks/useToast';

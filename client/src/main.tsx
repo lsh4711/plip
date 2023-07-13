@@ -7,7 +7,6 @@ import ModalProvider from '@/contexts/modal/ModalProvider';
 import '@/styles/animation.css';
 import '@/styles/global.css';
 import '@/styles/index.css';
-import Bookmark from './pages/Bookmark';
 import { lazy, Suspense } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Provider } from 'react-redux';
@@ -26,7 +25,7 @@ const MyRecordPage = lazy(() => import('./pages/MyRecordPage'));
 const FootPrintPage = lazy(() => import('./pages/FootPrintPage'));
 const PlanMapPage = lazy(() => import('./pages/PlanMapPage'));
 const PlanDetailPage = lazy(() => import('./pages/PlanDetailPage'));
-
+const Bookmark = lazy(() => import('./pages/Bookmark'));
 const router = createBrowserRouter([
   {
     path: '/',
@@ -43,6 +42,7 @@ const router = createBrowserRouter([
       { path: 'mypage/mytrip', element: <MyTripPage /> },
       { path: 'mypage/myrecord', element: <MyRecordPage /> },
       { path: 'mypage/footprint', element: <FootPrintPage /> },
+      { path: 'mypage/bookmark', element: <Bookmark /> },
     ],
   },
   { path: 'plan/map/:region', element: <PlanMapPage /> },
