@@ -5,6 +5,8 @@ import instance from './axiosinstance';
 import { LoginType } from '@/schema/loginSchema';
 import useToast from '@/hooks/useToast';
 import { AxiosError } from 'axios';
+import useInquireUsersQuery from './useInquireUsersQuery';
+import { useNavigate } from 'react-router-dom';
 
 const postLogin = async (loginData: LoginType) => {
   console.log(loginData);
@@ -28,35 +30,24 @@ const postLogin = async (loginData: LoginType) => {
 
 const useLoginMutation = () => {
   const toast = useToast();
+  const navigate = useNavigate();
+
   const loginMutation = useMutation({
     mutationFn: (loginData: LoginType) => postLogin(loginData),
     onSuccess(data, variables, context) {
+      navigate('/');
       toast({
         content: '로그인에 성공했습니다.',
         type: 'success',
       });
     },
     onError: (error: AxiosError) => {
-      switch (error.response?.status) {
-        case 400:
-          toast({
-            content: '400에러 로그인에 실패했습니다.',
-            type: 'warning',
-          });
-          break;
-        case 500:
-          toast({
-            content: '500에러 로그인에 실패했습니다.',
-            type: 'warning',
-          });
-          break;
-        default:
-          toast({
-            content: '로그인에 실패했습니다.',
-            type: 'warning',
-          });
-          break;
-      }
+      const message =
+        typeof error.response?.data === 'string' ? error.response.data : '로그인에 실패했습니다.';
+      toast({
+        content: message,
+        type: 'warning',
+      });
     },
   });
   return loginMutation;

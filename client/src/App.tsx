@@ -7,6 +7,7 @@ import ErrorFallback from './components/helper/ErrorFallback';
 
 export default function App() {
   useInstance();
+
   return (
     <>
       <Header />

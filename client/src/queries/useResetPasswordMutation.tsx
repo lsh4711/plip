@@ -19,10 +19,10 @@ const useResetPasswordMutation = () => {
   const resetPasswordMutation = useMutation({
     mutationFn: (formData: ResetPasswordType) => patchResetPassword(formData),
     onSuccess: () => {
-      toast({ content: '성공적으로 로그아웃했습니다.', type: 'success' });
+      toast({ content: '비밀번호를 재설정했습니다.', type: 'success' });
     },
     onError: () => {
-      toast({ content: '로그아웃에 실패했습니다.', type: 'warning' });
+      toast({ content: '비밀번호 재설정에 실패했습니다.', type: 'warning' });
     },
   });
 

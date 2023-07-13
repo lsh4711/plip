@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
 import { ReactComponent as MypageIcon } from '../../assets/icons/mypage.svg';
@@ -11,9 +11,15 @@ import { useCloseDropdown } from '@/hooks/useCloseDropdown';
 import Avatar from './Avatar';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import useInquireUsersQuery from '@/queries/useInquireUsersQuery';
+import { EMPTY_TOKEN } from '@/redux/slices/authSlice';
 
 interface HeaderProps {
   isHome?: boolean;
+}
+
+interface AfterHeaderProps extends HeaderProps {
+  username?: string;
 }
 
 const BeforeLogin = ({ isHome }: HeaderProps) => {
@@ -29,10 +35,16 @@ const BeforeLogin = ({ isHome }: HeaderProps) => {
   );
 };
 
-const AfterLogin = ({ isHome }: HeaderProps) => {
-  const username = '유보검'; // 임시 변수
+const AfterLogin = ({ isHome, username }: AfterHeaderProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useCloseDropdown(ref, false);
+  const accesstoken = useSelector((state: RootState) => state.auth.accesstoken);
+  const inquireQuery = useInquireUsersQuery();
+  useEffect(() => {
+    if (accesstoken !== EMPTY_TOKEN) {
+      inquireQuery.refetch();
+    }
+  }, [accesstoken]);
 
   return (
     <>
@@ -61,6 +73,14 @@ const AfterLogin = ({ isHome }: HeaderProps) => {
 const Header = () => {
   const isHome = useLocation().pathname === '/';
   const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+
+  const accesstoken = useSelector((state: RootState) => state.auth.accesstoken);
+  const inquireQuery = useInquireUsersQuery();
+  useEffect(() => {
+    if (accesstoken !== EMPTY_TOKEN) {
+      inquireQuery.refetch();
+    }
+  }, [accesstoken, inquireQuery.data?.data.data.nickname]);
   return (
     <header
       className={`left-0 top-0 z-40 h-[80px] w-full px-12 ${
@@ -75,7 +95,11 @@ const Header = () => {
           </div>
         </Link>
         <div className="relative flex items-center gap-4">
-          {isLogin ? <AfterLogin isHome={isHome} /> : <BeforeLogin isHome={isHome} />}
+          {isLogin ? (
+            <AfterLogin isHome={isHome} username={inquireQuery.data?.data.data.nickname} />
+          ) : (
+            <BeforeLogin isHome={isHome} />
+          )}
         </div>
       </nav>
     </header>

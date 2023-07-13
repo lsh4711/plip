@@ -9,6 +9,7 @@ import '@/styles/global.css';
 import '@/styles/index.css';
 import Bookmark from './pages/Bookmark';
 import { lazy, Suspense } from 'react';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Provider } from 'react-redux';
 import LoadingSpinner from './components/atom/LoadingSpinner';
 import NotFound from './pages/NotFound';
@@ -54,6 +55,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <ModalProvider>
         <Suspense fallback={<LoadingSpinner />}>
           <RouterProvider router={router} />
+          <ReactQueryDevtools />
         </Suspense>
       </ModalProvider>
     </Providers>

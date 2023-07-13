@@ -1,8 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import instance from './axiosinstance';
+import { EMPTY_TOKEN } from '@/redux/slices/authSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 interface User {
-  nickname: string;
+  data: { nickname: string };
 }
 
 const getUsers = async () => {
@@ -13,13 +16,14 @@ const getUsers = async () => {
 };
 
 const useInquireUsersQuery = () => {
+  const accesstoken = useSelector((state: RootState) => state.auth.accesstoken);
   const inquireUsers = useQuery({
-    queryKey: ['users'],
+    queryKey: ['users', accesstoken],
     queryFn: getUsers,
     suspense: true,
-    retry: 1,
-    staleTime: 2 * 60 * 1000,
-    cacheTime: 4 * 60 * 1000,
+    retry: 3,
+    enabled: false,
+    staleTime: 3 * 60 * 1000,
   });
   return inquireUsers;
 };

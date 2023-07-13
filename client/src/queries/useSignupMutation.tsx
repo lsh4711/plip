@@ -32,26 +32,12 @@ const useSignupMutation = () => {
       });
     },
     onError: (error: AxiosError) => {
-      switch (error.response?.status) {
-        case 400:
-          toast({
-            content: '400에러 회원가입에 실패했습니다.',
-            type: 'warning',
-          });
-          break;
-        case 500:
-          toast({
-            content: '500에러 회원가입에 실패했습니다.',
-            type: 'warning',
-          });
-          break;
-        default:
-          toast({
-            content: '회원가입에 실패했습니다.',
-            type: 'warning',
-          });
-          break;
-      }
+      const message =
+        typeof error.response?.data === 'string' ? error.response.data : '회원가입에 실패했습니다.';
+      toast({
+        content: message,
+        type: 'warning',
+      });
     },
   });
   return signupMutation;
