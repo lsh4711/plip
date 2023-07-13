@@ -31,6 +31,7 @@ public class LogController {
         }
 
         String logs = FileUtils.readFileToString(file, "UTF-8");
+        logs.replace("\n", "<br />");
 
         return ResponseEntity.ok(logs);
     }
