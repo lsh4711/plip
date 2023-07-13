@@ -1,6 +1,6 @@
 package com.server.domain.schedule.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -34,8 +34,8 @@ public class Schedule extends BaseEntity {
     private String title;
     private String content;
     private Integer memberCount;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
     @ManyToOne
     @JoinColumn(name = "memberId")
