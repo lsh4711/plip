@@ -44,12 +44,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Member findMember = memberRepository.findByEmail(oAuth2User.getEmail())
             .orElseThrow(() -> new CustomException(
                 ExceptionCode.MEMBER_NOT_FOUND));
-
         OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2TokenUtils.getOAuth2AuthorizedClient(authentication);
-        String accessTokenValue = oAuth2TokenUtils.getOAuthAccessToken(oAuth2AuthorizedClient);
-        String refreshTokenValue = oAuth2TokenUtils.getOAuthRefreshToken(oAuth2AuthorizedClient);
-        kakaoTokenOauthService.saveToken(accessTokenValue, refreshTokenValue, findMember);
-
+        if(oAuth2TokenUtils.getOAuthRegistration(oAuth2AuthorizedClient).equals("kakao")){
+            String accessTokenValue = oAuth2TokenUtils.getOAuthAccessToken(oAuth2AuthorizedClient);
+            String refreshTokenValue = oAuth2TokenUtils.getOAuthRefreshToken(oAuth2AuthorizedClient);
+            kakaoTokenOauthService.saveToken(accessTokenValue, refreshTokenValue, findMember);
+        }
         redirect(request, response, findMember);
     }
 

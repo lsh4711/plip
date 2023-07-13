@@ -31,4 +31,8 @@ public class OAuth2TokenUtils {
             return authorizedClient.getRefreshToken().getTokenValue();
         return null;
     }
+
+    public String getOAuthRegistration(OAuth2AuthorizedClient authorizedClient){
+            return authorizedClient.getClientRegistration().getRegistrationId();
+    }
 }
