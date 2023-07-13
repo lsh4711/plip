@@ -18,6 +18,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.server.domain.member.mapper.MemberMapper;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.oauth.service.KakaoTokenOauthService;
 import com.server.domain.token.service.RedisUtils;
@@ -45,6 +46,7 @@ public class SecurityConfig {
     private final RedisUtils redisUtils;
     private final OAuth2TokenUtils oAuth2TokenUtils;
     private final KakaoTokenOauthService kakaoTokenOauthService;
+    private final MemberMapper memberMapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -69,7 +71,7 @@ public class SecurityConfig {
                 .userService(oAuth2UserService)
                 .and()
                 .successHandler(
-                    new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer, oAuth2TokenUtils, kakaoTokenOauthService)))
+                    new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer, oAuth2TokenUtils, kakaoTokenOauthService,memberMapper)))
             .apply(customFilterConfigurers())
             .and()
             .authorizeHttpRequests(authorize -> authorize

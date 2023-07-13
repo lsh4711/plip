@@ -15,8 +15,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.server.domain.member.entity.Member;
+import com.server.domain.member.mapper.MemberMapper;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.oauth.service.KakaoTokenOauthService;
+import com.server.global.auth.error.AuthenticationError;
 import com.server.global.auth.jwt.DelegateTokenUtil;
 import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.auth.userdetails.OAuthAttributes;
@@ -35,22 +37,26 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final JwtTokenizer jwtTokenizer;
     private final OAuth2TokenUtils oAuth2TokenUtils;
     private final KakaoTokenOauthService kakaoTokenOauthService;
+    private final MemberMapper memberMapper;
 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException {
         OAuthAttributes oAuth2User = (OAuthAttributes)authentication.getPrincipal();
-        Member findMember = memberRepository.findByEmail(oAuth2User.getEmail())
-            .orElseThrow(() -> new CustomException(
-                ExceptionCode.MEMBER_NOT_FOUND));
+        if(memberRepository.existsByEmail(oAuth2User.getEmail())){
+            AuthenticationError.sendErrorResponse(response, new CustomException(ExceptionCode.EMAIL_EXISTS));
+            return;
+        }
+        Member member = memberRepository.save(memberMapper.oauthAttributesToMember(oAuth2User));
+
         OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2TokenUtils.getOAuth2AuthorizedClient(authentication);
         if(oAuth2TokenUtils.getOAuthRegistration(oAuth2AuthorizedClient).equals("kakao")){
             String accessTokenValue = oAuth2TokenUtils.getOAuthAccessToken(oAuth2AuthorizedClient);
             String refreshTokenValue = oAuth2TokenUtils.getOAuthRefreshToken(oAuth2AuthorizedClient);
-            kakaoTokenOauthService.saveToken(accessTokenValue, refreshTokenValue, findMember);
+            kakaoTokenOauthService.saveToken(accessTokenValue, refreshTokenValue, member);
         }
-        redirect(request, response, findMember);
+        redirect(request, response, member);
     }
 
     private void redirect(HttpServletRequest request, HttpServletResponse response, Member member) throws
