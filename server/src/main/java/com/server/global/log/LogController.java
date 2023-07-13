@@ -22,8 +22,8 @@ public class LogController {
 
     @GetMapping
     public ResponseEntity getLog() throws IOException {
-        location = location.substring(0, 29);
-        location += "/server/deploy.log";
+        location = location.substring(0, 15);
+        location += "/spring.log";
 
         File file = new File(location);
 
@@ -32,9 +32,8 @@ public class LogController {
         }
 
         StringBuilder result = new StringBuilder();
-        // String logs = FileUtils.readFileToString(file, "UTF-8");
-        // logs.replace("\n", "<br />");
         List<String> logs = FileUtils.readLines(file, "UTF-8");
+
         for (String log : logs) {
             result.append(log).append("<br />");
         }
