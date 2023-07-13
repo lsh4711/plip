@@ -495,6 +495,7 @@ public class RecordControllerTest {
                         ResourceSnippetParameters.builder()
                             .description("사진 전체 조회")
                             .responseFields(
+                                fieldWithPath("size"),
                                 fieldWithPath("images").description("사진 목록")
 
                             )
