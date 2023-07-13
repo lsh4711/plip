@@ -1,4 +1,4 @@
-import { Button, HeadingParagraph } from '@/components';
+import { HeadingParagraph } from '@/components';
 import OauthUI from '@/components/helper/OauthUI';
 import SignupForm from '@/components/forms/SignupForm';
 
