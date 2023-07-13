@@ -219,4 +219,11 @@ public class RecordController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+    @DeleteMapping("/{record-id}/imgs")
+    public ResponseEntity<?> deleteRecordImg(@PathVariable("record-id") long recordId) {
+        imageManager.deleteImgs(recordId);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
 }
