@@ -62,7 +62,7 @@ spring:
             redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
             client-authentication-method: POST
-            scope: profile_nickname, account_email
+            scope: profile_nickname, account_email, talk_message
             client-name: Kakao
 
         provider:
@@ -92,5 +92,9 @@ springdoc:
     path: /docs/swagger
   
 kakao:
-    redirect-url: ${REDIRECT_URL8000}
-    api-key: ${API_KEY}
+    redirect-url: dsadasdassd
+    api-key: dasdasdasdsaasdasdsa
+
+logging:
+  level:
+    org.springframework.web: DEBUG
