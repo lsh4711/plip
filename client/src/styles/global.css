@@ -56,3 +56,23 @@ input[type='text']:disabled {
   content: attr(placeholder);
   color: #d9d9d9;
 }
+
+/* 스크롤바 설정*/
+.plip-scrollbar::-webkit-scrollbar {
+  display: block;
+  height: 8px;
+}
+
+/* 스크롤바 막대 설정*/
+.plip-scrollbar::-webkit-scrollbar-thumb {
+  /* background: linear-gradient(to right, #4568dc, #b06ab3); */
+  background-color: #4568dc;
+  /* 스크롤바 둥글게 설정    */
+  border-radius: 10px;
+}
+
+/* 스크롤바 뒷 배경 설정*/
+.plip-scrollbar::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: #d9d9d9;
+}

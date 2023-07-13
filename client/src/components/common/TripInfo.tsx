@@ -2,7 +2,7 @@ import { ReactComponent as ProfileIcon } from '@/assets/icons/profile.svg';
 import HeadingParagraph from '@/components/atom/HeadingParagraph';
 import Paragraph from '@/components/atom/Paragraph';
 import { regionInfos } from '@/datas/regions';
-import { ResponseData } from '@/pages/PlanMapPage';
+import { ResponseData } from '@/pages/PlanMapPage/PlanMapPage';
 import { getFormatDateString, getTripPeriod, getTripTitleWithRegion } from '@/utils/date';
 
 function TripInfo({ title, region, startDate, endDate }: Omit<ResponseData, 'places'>) {
