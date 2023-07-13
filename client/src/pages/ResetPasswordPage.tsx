@@ -61,6 +61,7 @@ const ResetPasswordPage = ({}: ResetPasswordProps) => {
         setAuthCodeState({ disabled: false, message: '다시 인증을 시도하세요' });
       });
   }, 500);
+
   return (
     <main className=" mx-auto flex h-[80%] max-w-[1024px] flex-col  items-center justify-center">
       <HeadingParagraph variant={'darkgray'} size="lg" className=" mb-10 text-center">
@@ -68,7 +69,10 @@ const ResetPasswordPage = ({}: ResetPasswordProps) => {
         <br />
         정신차리세요
       </HeadingParagraph>
-      <form className=" flex w-[460px] flex-col gap-y-6 ">
+      <form
+        className=" flex w-[460px] flex-col gap-y-6 "
+        onSubmit={resetPasswordForm.handleSubmit(onSubmit)}
+      >
         <div className="">
           <div className="flex justify-between gap-6">
             <Input

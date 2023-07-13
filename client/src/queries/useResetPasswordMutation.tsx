@@ -2,6 +2,7 @@ import { ResetPasswordType, resetPasswordSchema } from '@/schema/resetPasswordSc
 import instance from './axiosinstance';
 import { useMutation } from '@tanstack/react-query';
 import useToast from '@/hooks/useToast';
+import { useNavigate } from 'react-router-dom';
 
 const patchResetPassword = async ({ email, password }: ResetPasswordType) => {
   const response = await instance.patch(
@@ -16,9 +17,11 @@ const patchResetPassword = async ({ email, password }: ResetPasswordType) => {
 
 const useResetPasswordMutation = () => {
   const toast = useToast();
+  const navigate = useNavigate();
   const resetPasswordMutation = useMutation({
     mutationFn: (formData: ResetPasswordType) => patchResetPassword(formData),
     onSuccess: () => {
+      navigate('/login');
       toast({ content: '비밀번호를 재설정했습니다.', type: 'success' });
     },
     onError: () => {
