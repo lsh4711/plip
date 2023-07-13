@@ -11,7 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
+import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.record.entity.Record;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.global.audit.BaseEntity;
@@ -44,6 +46,10 @@ public class Member extends BaseEntity {
     // 전이 용도
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Schedule> schedules;
+
+    // 전이 용도, 작동하는지 확인 필요
+    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private KakaoToken kakaoToken;
 
     // 여행일지와 연관관계 설정
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
