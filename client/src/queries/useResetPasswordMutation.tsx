@@ -3,11 +3,11 @@ import instance from './axiosinstance';
 import { useMutation } from '@tanstack/react-query';
 import useToast from '@/hooks/useToast';
 
-const patchResetPassword = async ({ username, password }: ResetPasswordType) => {
+const patchResetPassword = async ({ email, password }: ResetPasswordType) => {
   const response = await instance.patch(
     '/api/users/password',
     {
-      email: username,
+      email: email,
       password: password,
     },
     { withCredentials: true }

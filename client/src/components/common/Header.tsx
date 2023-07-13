@@ -35,17 +35,10 @@ const BeforeLogin = ({ isHome }: HeaderProps) => {
   );
 };
 
-const AfterLogin = ({ isHome, username }: AfterHeaderProps) => {
+const AfterLogin = ({ isHome }: AfterHeaderProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useCloseDropdown(ref, false);
-  const accesstoken = useSelector((state: RootState) => state.auth.accesstoken);
   const inquireQuery = useInquireUsersQuery();
-  useEffect(() => {
-    if (accesstoken !== EMPTY_TOKEN) {
-      inquireQuery.refetch();
-    }
-  }, [accesstoken]);
-
   return (
     <>
       <Link to="/mypage/mytrip">
@@ -62,7 +55,7 @@ const AfterLogin = ({ isHome, username }: AfterHeaderProps) => {
         ref={ref}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {username} 님
+        {inquireQuery.data?.data.data.nickname} 님
         <ArrowDownIcon width={18} height={18} transform={isOpen ? 'rotate(180)' : ''} />
         {isOpen && <DropDownMenus />}
       </div>
@@ -76,11 +69,6 @@ const Header = () => {
 
   const accesstoken = useSelector((state: RootState) => state.auth.accesstoken);
   const inquireQuery = useInquireUsersQuery();
-  useEffect(() => {
-    if (accesstoken !== EMPTY_TOKEN) {
-      inquireQuery.refetch();
-    }
-  }, [accesstoken, inquireQuery.data?.data.data.nickname]);
   return (
     <header
       className={`left-0 top-0 z-40 h-[80px] w-full px-12 ${
@@ -95,11 +83,7 @@ const Header = () => {
           </div>
         </Link>
         <div className="relative flex items-center gap-4">
-          {isLogin ? (
-            <AfterLogin isHome={isHome} username={inquireQuery.data?.data.data.nickname} />
-          ) : (
-            <BeforeLogin isHome={isHome} />
-          )}
+          {isLogin ? <AfterLogin isHome={isHome} /> : <BeforeLogin isHome={isHome} />}
         </div>
       </nav>
     </header>

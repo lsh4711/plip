@@ -7,19 +7,19 @@ import { RootState } from '@/redux/store';
 const useInstance = () => {
   const dispatch = useDispatch();
   const accesstoken = useSelector((state: RootState) => state.auth.accesstoken);
-  useEffect(() => {
-    instance.interceptors.request.use((config) => {
-      config.headers['test'] = 'testheader';
-      console.log(accesstoken);
-      if (accesstoken !== null && accesstoken !== EMPTY_TOKEN) {
-        config.headers['Authorization'] = accesstoken;
-      }
-      return config;
-    });
 
+  if (accesstoken !== null && accesstoken !== EMPTY_TOKEN) {
+    instance.defaults.headers.common['Authorization'] = accesstoken;
+  }
+
+  useEffect(() => {
     instance.interceptors.response.use((response) => {
-      const accesstoken = response.headers['authorization'];
-      dispatch(setAccessToken({ accesstoken: accesstoken }));
+      let newToken;
+      if (accesstoken) {
+        newToken = response.headers['authorization'];
+      }
+
+      dispatch(setAccessToken({ accesstoken: newToken }));
       return response;
     });
   }, [accesstoken]);
