@@ -1,6 +1,5 @@
 package com.server.domain.schedule.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,8 +19,8 @@ public class ScheduleResponse {
     private String title;
     private String content;
     private Integer memberCount;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 

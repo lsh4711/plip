@@ -1,6 +1,6 @@
 package com.server.domain.schedule.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
@@ -24,10 +24,10 @@ public class ScheduleDto {
         private String region;
 
         @DateValid
-        private LocalDate startDate;
+        private LocalDateTime startDate;
 
         @DateValid
-        private LocalDate endDate;
+        private LocalDateTime endDate;
 
         // @NotNull
         // @Size(min = 1)
@@ -43,10 +43,10 @@ public class ScheduleDto {
         private String region;
 
         @OptionalDateValid
-        private LocalDate startDate;
+        private LocalDateTime startDate;
 
         @OptionalDateValid
-        private LocalDate endDate;
+        private LocalDateTime endDate;
 
         private List<List<PlaceDto.Post>> places;
     }
