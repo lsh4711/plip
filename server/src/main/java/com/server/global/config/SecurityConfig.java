@@ -73,15 +73,13 @@ public class SecurityConfig {
             .apply(customFilterConfigurers())
             .and()
             .authorizeHttpRequests(authorize -> authorize
+                .antMatchers(HttpMethod.GET, "/*/places/*/records").permitAll()
+                .antMatchers(HttpMethod.GET,"/*/records/*").permitAll()
                 .antMatchers("/*/users").authenticated()
-
-                .antMatchers(HttpMethod.GET, "/*/records/*").permitAll()
                 .antMatchers("/*/records").authenticated()
                 .antMatchers("/*/records/**").authenticated()
-
                 .antMatchers("/*/places/**").authenticated()
                 .antMatchers("/*/schedules/**").authenticated()
-
                 .anyRequest().permitAll());
 
         return http.build();
