@@ -26,6 +26,7 @@ const authSlice = createSlice({
     setLogout: (state) => {
       state.accesstoken = EMPTY_TOKEN;
       state.isLogin = false;
+      console.log(state);
     },
   },
 });
