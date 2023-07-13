@@ -24,6 +24,7 @@ public class MemberAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
         AuthenticationException authException) throws IOException, ServletException {
+        log.error("### MemberAuthenticationEntryPoint Error!! : " + authException.getMessage());
         AuthenticationError.sendErrorResponse(response, authException);
     }
 }
