@@ -35,7 +35,7 @@ public class AuthenticationError {
             return exception.getMessage();
         }
         else{
-            return "사용할 수 없는 사용자입니다.";
+            return "권한이 없는 사용자입니다.";
         }
     }
 }
