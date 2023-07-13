@@ -1,6 +1,7 @@
 // https://developers.kakao.com/docs/latest/ko/local/dev-guide#search-by-keyword-response-body-document
 
 export type CategoryGroupCode =
+  | ''
   | 'MT1'
   | 'CS2'
   | 'PS3'
