@@ -8,21 +8,21 @@ const useInstance = () => {
   const dispatch = useDispatch();
   const accesstoken = useSelector((state: RootState) => state.auth.accesstoken);
 
-  if (accesstoken !== null && accesstoken !== EMPTY_TOKEN) {
-    instance.defaults.headers.common['Authorization'] = accesstoken;
-  }
+  // if (accesstoken !== null && accesstoken !== EMPTY_TOKEN) {
+  //   instance.defaults.headers.common['Authorization'] = accesstoken;
+  // }
 
-  useEffect(() => {
-    instance.interceptors.response.use((response) => {
-      let newToken;
-      if (accesstoken) {
-        newToken = response.headers['authorization'];
-      }
+  // useEffect(() => {
+  //   instance.interceptors.response.use((response) => {
+  //     let newToken;
+  //     if (accesstoken) {
+  //       newToken = response.headers['authorization'];
+  //     }
 
-      dispatch(setAccessToken({ accesstoken: newToken }));
-      return response;
-    });
-  }, [accesstoken]);
+  //     dispatch(setAccessToken({ accesstoken: newToken }));
+  //     return response;
+  //   });
+  // }, [accesstoken]);
 
   return;
 };
