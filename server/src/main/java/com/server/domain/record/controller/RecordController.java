@@ -205,6 +205,7 @@ public class RecordController {
 
         ImageResponseDto imageResponseDto = new ImageResponseDto();
         imageResponseDto.setImages(imageBase64List);
+        imageResponseDto.setSize(imageBase64List.size());
 
         return ResponseEntity.ok(imageResponseDto);
     }
