@@ -1,4 +1,5 @@
 import { Button, HeadingParagraph, Input, Paragraph } from '@/components';
+import { useSignoutMutation } from '@/queries';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -10,11 +11,12 @@ interface SignOutPageProps {}
 const SIGNOUT_VALIDATION_STRING = '성지현그녀는감히전설이라고할수있다';
 
 const SignOutPage = ({}: SignOutPageProps) => {
+  const signoutMutation = useSignoutMutation();
   const signoutForm = useForm<SignoutType>({
     resolver: zodResolver(signoutSchema),
   });
   const onSubmit: SubmitHandler<SignoutType> = (data) => {
-    console.log(data);
+    signoutMutation.mutate();
   };
   return (
     <main className=" mx-auto flex max-w-[1024px] flex-col">

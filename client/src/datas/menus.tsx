@@ -39,9 +39,4 @@ export const menus = [
     name: '나의 일지',
     route: '/mypage/myrecord',
   },
-  {
-    icon: <LogoutIcon />,
-    name: '로그아웃',
-    route: '/logout',
-  },
 ];

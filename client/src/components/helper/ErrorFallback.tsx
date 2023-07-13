@@ -7,7 +7,7 @@ import Paragraph from '../atom/Paragraph';
 const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
   console.log(error);
   return (
-    <div>
+    <div className=" flex items-center justify-center">
       <Paragraph>{error.message}</Paragraph>
       <Button onClick={() => resetErrorBoundary()}>reset</Button>
     </div>

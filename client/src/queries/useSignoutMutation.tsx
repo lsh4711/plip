@@ -1,25 +1,32 @@
 import React from 'react';
 import BASE_URL from './BASE_URL';
+import instance from './axiosinstance';
+import { useMutation } from '@tanstack/react-query';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { setLogout } from '@/redux/slices/authSlice';
+import useToast from '@/hooks/useToast';
 
-interface useSignoutMutationProps {}
-
-const deleteSignoutFetch = async () => {
-  const response = await fetch(`${BASE_URL}/api/users`, {
-    method: 'DELETE',
-    credentials: 'include',
+const deleteSignout = async () => {
+  const response = await instance.delete('api/users', {
+    withCredentials: true,
   });
-  const result = await response.json();
-  const ok = response.ok;
-
-  return {
-    result,
-    ok,
-    response,
-  };
+  return response;
 };
 
-const useSignoutMutation = ({}: useSignoutMutationProps) => {
-  return <div>useSignoutMutation</div>;
+const useSignoutMutation = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const toast = useToast();
+  const signoutMutation = useMutation({
+    mutationFn: deleteSignout,
+    onSuccess: () => {
+      dispatch(setLogout());
+      navigate('/');
+      toast({ content: '회원탈퇴에 성공하셨습니다.', type: 'success' });
+    },
+  });
+  return signoutMutation;
 };
 
 export default useSignoutMutation;
