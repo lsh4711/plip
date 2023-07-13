@@ -14,7 +14,7 @@ import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
 @RestController
-@RequestMapping("/log")
+@RequestMapping("/logs")
 public class LogController {
     @Value("${spring.servlet.multipart.location}")
     private String location;
