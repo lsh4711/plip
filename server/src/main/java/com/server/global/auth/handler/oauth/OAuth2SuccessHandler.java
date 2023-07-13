@@ -7,17 +7,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.repository.MemberRepository;
-import com.server.domain.token.service.RefreshTokenService;
+import com.server.domain.oauth.service.KakaoTokenOauthService;
 import com.server.global.auth.jwt.DelegateTokenUtil;
 import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.auth.userdetails.OAuthAttributes;
+import com.server.global.auth.utils.OAuth2TokenUtils;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
@@ -30,6 +33,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final DelegateTokenUtil delegateTokenUtil;
     private final MemberRepository memberRepository;
     private final JwtTokenizer jwtTokenizer;
+    private final OAuth2TokenUtils oAuth2TokenUtils;
+    private final KakaoTokenOauthService kakaoTokenOauthService;
+
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -38,6 +44,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Member findMember = memberRepository.findByEmail(oAuth2User.getEmail())
             .orElseThrow(() -> new CustomException(
                 ExceptionCode.MEMBER_NOT_FOUND));
+
+        OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2TokenUtils.getOAuth2AuthorizedClient(authentication);
+        String accessTokenValue = oAuth2TokenUtils.getOAuthAccessToken(oAuth2AuthorizedClient);
+        String refreshTokenValue = oAuth2TokenUtils.getOAuthRefreshToken(oAuth2AuthorizedClient);
+        kakaoTokenOauthService.saveToken(accessTokenValue, refreshTokenValue, findMember);
+
         redirect(request, response, findMember);
     }
 
