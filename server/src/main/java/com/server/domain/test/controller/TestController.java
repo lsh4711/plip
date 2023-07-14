@@ -147,10 +147,10 @@ public class TestController {
         return ResponseEntity.ok().body(updatedTest);
     }
 
-    @GetMapping
-    public ModelAndView getTest() {
-        return new ModelAndView("test.html");
-    }
+    // @GetMapping
+    // public ModelAndView getTest() {
+    //     return new ModelAndView("test.html");
+    // }
 
     @GetMapping("/error")
     public void customExceptionTest() {
