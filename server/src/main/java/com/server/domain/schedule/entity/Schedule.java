@@ -44,6 +44,6 @@ public class Schedule extends BaseEntity {
     private Member member;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
-    @OrderBy(value = "days asc, orders asc")
+    @OrderBy(value = "days, orders")
     private List<SchedulePlace> schedulePlaces;
 }

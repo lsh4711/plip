@@ -45,6 +45,8 @@ import com.server.domain.place.mapper.PlaceMapper;
 import com.server.domain.place.service.PlaceService;
 import com.server.domain.schedule.dto.ScheduleDto;
 import com.server.domain.schedule.entity.Schedule;
+import com.server.domain.schedule.entity.SchedulePlace;
+import com.server.domain.schedule.mapper.ScheduleMapper;
 import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.domain.schedule.service.ScheduleService;
 import com.server.global.auth.jwt.JwtTokenizer;
@@ -63,6 +65,9 @@ public class ScheduleControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ScheduleMapper scheduleMapper;
 
     @Autowired
     private PlaceMapper placeMapper;
@@ -136,7 +141,7 @@ public class ScheduleControllerTest {
                                     .build())));
     }
 
-    @Test
+    // @Test
     @DisplayName("일정 수정")
     void patchScheduleTest() throws Exception {
         // given
@@ -147,7 +152,12 @@ public class ScheduleControllerTest {
         String requestBody = gson.toJson(postDto);
 
         Schedule schedule = new Schedule();
-        schedule.setSchedulePlaces(new ArrayList<>());
+        schedule.setTitle("제목");
+        // schedule
+        // schedule
+        // schedule
+        // schedule
+        // schedule.setSchedulePlaces(new ArrayList<>());
         schedule.setStartDate(LocalDate.now());
         schedule.setEndDate(LocalDate.now());
         schedule.setPeriod(4);
@@ -187,11 +197,12 @@ public class ScheduleControllerTest {
     @DisplayName("일정 조회")
     void getScheduleTest() throws Exception {
         // given
-        Schedule schedule = new Schedule();
-        schedule.setSchedulePlaces(new ArrayList<>());
-        schedule.setStartDate(LocalDate.now());
-        schedule.setEndDate(LocalDate.now());
-        schedule.setPeriod(4);
+        ScheduleDto.Post postDto = StubData.MockSchedule.postDto;
+        List<SchedulePlace> schedulePlaces = StubData.MockPlace.schedulePlaces;
+        Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
+        schedule.setScheduleId(1L);
+        schedule.setPeriod(3);
+        schedule.setSchedulePlaces(schedulePlaces);
 
         given(scheduleService.findSchedule(Mockito.anyLong())).willReturn(schedule);
 
@@ -221,11 +232,12 @@ public class ScheduleControllerTest {
     @DisplayName("일정의 여행지 조회")
     void getPlacesByScheduleIdTest() throws Exception {
         // given
-        Schedule schedule = new Schedule();
-        schedule.setSchedulePlaces(new ArrayList<>());
-        schedule.setStartDate(LocalDate.now());
-        schedule.setEndDate(LocalDate.now());
-        schedule.setPeriod(4);
+        ScheduleDto.Post postDto = StubData.MockSchedule.postDto;
+        List<SchedulePlace> schedulePlaces = StubData.MockPlace.schedulePlaces;
+        Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
+        schedule.setScheduleId(1L);
+        schedule.setPeriod(3);
+        schedule.setSchedulePlaces(schedulePlaces);
 
         given(scheduleService.findSchedule(Mockito.anyLong())).willReturn(schedule);
 

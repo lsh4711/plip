@@ -62,11 +62,13 @@ public class PlaceService {
                 place.setCategory(category);
                 placeRepository.save(place);
 
+                Boolean bookmark = place.getBookmark();
                 SchedulePlace schedulePlace = new SchedulePlace();
                 schedulePlace.setSchedule(savedSchedule);
                 schedulePlace.setPlace(place);
                 schedulePlace.setDays(i + 1);
                 schedulePlace.setOrders(j + 1);
+                schedulePlace.setBookmark(bookmark); // 로직 변경되면 null 처리 해야함
                 schedulePlaceRepository.save(schedulePlace);
                 schedulePlaces.add(schedulePlace);
             }

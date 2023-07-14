@@ -37,10 +37,10 @@ public interface PlaceMapper {
 
     default List<List<PlaceResponse>> schedulePlacesToPlaceResponseLists(List<SchedulePlace> schedulePlaces,
             Schedule schedule) {
+        int period = schedule.getPeriod();
         List<List<PlaceResponse>> placeResponseLists = new ArrayList<>();
 
         if (schedulePlaces == null || schedulePlaces.size() == 0) {
-            int period = schedule.getPeriod();
             for (int i = 0; i < period; i++) {
                 placeResponseLists.add(new ArrayList<>());
             }
@@ -51,11 +51,13 @@ public interface PlaceMapper {
         for (SchedulePlace schedulePlace : schedulePlaces) {
             int days = schedulePlace.getDays();
             PlaceResponse placeResponse = schedulePlaceToPlaceResponse(schedulePlace);
-
             while (placeResponseLists.size() < days) {
                 placeResponseLists.add(new ArrayList<>());
             }
             placeResponseLists.get(days - 1).add(placeResponse);
+        }
+        while (placeResponseLists.size() < period) {
+            placeResponseLists.add(new ArrayList<>());
         }
 
         return placeResponseLists;
