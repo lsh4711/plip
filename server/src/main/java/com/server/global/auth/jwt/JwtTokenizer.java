@@ -5,6 +5,7 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.server.global.exception.CustomException;
@@ -124,11 +130,21 @@ public class JwtTokenizer {
         //response.setHeader("Refresh", refreshToken);
     }
 
-    public void removeRefreshToken(HttpServletResponse response){
-        ResponseCookie cookie = ResponseCookie.from("Refresh", null)
-            .maxAge(0)
-            .build();
-        response.setHeader("Set-Cookie", cookie.toString());
+
+    public Map<String, Object> verifyJws(String jws) {
+        String base64EncodedSecretKey = encodeBase64SecretKey(getSecretKey());
+        Map<String, Object> claims = getClaims(jws, base64EncodedSecretKey).getBody();
+
+        return claims;
     }
 
+    public void setAuthenticationToContext(Map<String, Object> claims) {
+        List<String> roles = (List)claims.get("roles");
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(roles.toArray(String[]::new));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+            claims.get("email"),
+            claims.get("memberId"),
+            authorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 }
