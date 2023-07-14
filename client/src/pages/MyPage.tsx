@@ -11,9 +11,13 @@ import { passwordRegex, nicknameRegex } from '@/datas/constants';
 import { Link } from 'react-router-dom';
 
 import Avatar from '@/components/common/Avatar';
+import useAuthRedirect from '@/hooks/useAuthRedirect';
 interface MyPageProps {}
 
 const MyPage = ({}: MyPageProps) => {
+  const auth = useAuthRedirect();
+  if (auth.isRedirect) return auth.naviComponent;
+
   const editForm = useForm<EditProfileTypes>({
     mode: 'all',
     resolver: zodResolver(profileSchema),

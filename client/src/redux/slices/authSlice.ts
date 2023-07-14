@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export const EMPTY_TOKEN = 'empty';
 
 interface AccessTokenType {
-  accesstoken: string;
+  accesstoken: string | typeof EMPTY_TOKEN;
 }
 
 interface InitialStataType extends AccessTokenType {
@@ -26,6 +26,7 @@ const authSlice = createSlice({
     setLogout: (state) => {
       state.accesstoken = EMPTY_TOKEN;
       state.isLogin = false;
+      console.log(state);
     },
   },
 });

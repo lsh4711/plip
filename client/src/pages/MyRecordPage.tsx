@@ -1,11 +1,15 @@
 import { Button, Image, MyrecordImg, Paragraph, SortingToolbar } from '@/components';
 import MypageSideNav from '@/components/helper/MypageSideNav';
+import useAuthRedirect from '@/hooks/useAuthRedirect';
 import { Record } from '@/types/api/records-types';
 import { Link } from 'react-router-dom';
 
 interface MyRecordPageProps {}
 
 const MyRecordPage = ({}: MyRecordPageProps) => {
+  const auth = useAuthRedirect();
+  if (auth.isRedirect) return auth.naviComponent;
+
   return (
     <main className=" flex">
       <MypageSideNav />

@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
 import { ReactComponent as MypageIcon } from '../../assets/icons/mypage.svg';
@@ -11,9 +11,15 @@ import { useCloseDropdown } from '@/hooks/useCloseDropdown';
 import Avatar from './Avatar';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import useInquireUsersQuery from '@/queries/useInquireUsersQuery';
+import { EMPTY_TOKEN } from '@/redux/slices/authSlice';
 
 interface HeaderProps {
   isHome?: boolean;
+}
+
+interface AfterHeaderProps extends HeaderProps {
+  username?: string;
 }
 
 const BeforeLogin = ({ isHome }: HeaderProps) => {
@@ -29,11 +35,10 @@ const BeforeLogin = ({ isHome }: HeaderProps) => {
   );
 };
 
-const AfterLogin = ({ isHome }: HeaderProps) => {
-  const username = '유보검'; // 임시 변수
+const AfterLogin = ({ isHome }: AfterHeaderProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useCloseDropdown(ref, false);
-
+  const inquireQuery = useInquireUsersQuery();
   return (
     <>
       <Link to="/mypage/mytrip">
@@ -50,7 +55,7 @@ const AfterLogin = ({ isHome }: HeaderProps) => {
         ref={ref}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {username} 님
+        {inquireQuery.data?.data.data.nickname} 님
         <ArrowDownIcon width={18} height={18} transform={isOpen ? 'rotate(180)' : ''} />
         {isOpen && <DropDownMenus />}
       </div>
@@ -61,6 +66,9 @@ const AfterLogin = ({ isHome }: HeaderProps) => {
 const Header = () => {
   const isHome = useLocation().pathname === '/';
   const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+
+  const accesstoken = useSelector((state: RootState) => state.auth.accesstoken);
+  const inquireQuery = useInquireUsersQuery();
   return (
     <header
       className={`left-0 top-0 z-40 h-[80px] w-full px-12 ${

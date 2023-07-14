@@ -1,11 +1,11 @@
-import React from 'react';
 import useToast from './useToast';
+import { AxiosError } from 'axios';
 
 const useError = () => {
   const toast = useToast();
   const ErrorToast = () => {
     toast({
-      content: '잠시 후 다시 시도해주세요',
+      content: '네트워크 요청에 실패했습니다.',
       type: 'warning',
     });
   };
