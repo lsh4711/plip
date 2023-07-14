@@ -28,6 +28,7 @@ import com.server.domain.schedule.dto.ScheduleResponse;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.mapper.ScheduleMapper;
+import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.domain.schedule.service.ScheduleService;
 import com.server.global.utils.CustomUtil;
 import com.server.global.utils.UriCreator;
@@ -128,7 +129,7 @@ public class ScheduleController {
     }
 
 
-    //알림 보내는 메서드
+    // 알림 보내는 메서드
     // @Async
     // private void sendNotifications(Schedule schedule, Long memberId, LocalDate startDate, LocalDate endDate) {
     //     Notification notification = createNotificationFromSchedule(schedule);

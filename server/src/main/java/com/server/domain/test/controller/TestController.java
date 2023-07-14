@@ -27,11 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import com.server.domain.schedule.entity.Notification;
-import com.server.domain.schedule.entity.Schedule;
-
 
 import com.server.domain.test.auth.Token;
 
@@ -156,11 +151,6 @@ public class TestController {
     public ModelAndView getTest() {
         return new ModelAndView("test.html");
     }
-
-    // @GetMapping
-    // public ModelAndView getTest() {
-    //     return new ModelAndView("test.html");
-    // }
 
     @GetMapping("/error")
     public void customExceptionTest() {
