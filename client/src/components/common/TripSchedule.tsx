@@ -1,10 +1,11 @@
-import Button from '@/components/atom/Button';
-import { ResponseData } from '@/pages/PlanMapPage';
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import ScheduleAccordion from './ScheduleAccordion';
 
-function TripSchedule({ startDate, places }: Pick<ResponseData, 'startDate' | 'places'>) {
+import Button from '@/components/atom/Button';
+import ScheduleAccordion from './ScheduleAccordion';
+import { GetScheduleResponse } from '@/types/api/schedules-types';
+
+function TripSchedule({ startDate, places }: Pick<GetScheduleResponse, 'startDate' | 'places'>) {
   const [isEditMode, setIsEditMode] = useState(false);
 
   return (
@@ -32,7 +33,7 @@ function TripSchedule({ startDate, places }: Pick<ResponseData, 'startDate' | 'p
           일정 편집하기
         </Button>
       )}
-      {places.map((place: Array<Record<string, string>>, idx: number) => (
+      {places.map((place, idx: number) => (
         <ScheduleAccordion
           key={idx}
           title={`Day ${idx + 1}`}
