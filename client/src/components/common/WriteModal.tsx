@@ -26,9 +26,20 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
 
   const inputImageRef = useRef<HTMLInputElement>(null);
 
-  const [sendImgs, setSendImgs] = useState([]);
-  const [imgSrcs, setImgSrcs] = useState([]);
+  const [uploadedImages, setUploadedImages] = useState([]);
+  const [preViewImgSrcs, setPreViewImgSrcs] = useState([]);
   const [text, setText] = useState('');
+
+  const onRemoveEntiresImages = () => {
+    axios
+      .delete('https://teamdev.shop:8000/api/records/1/imgs', {
+        headers: {
+          Authorization:
+            'Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA',
+        },
+      })
+      .then((res) => console.log(res));
+  };
 
   const onInputText = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = e.target.innerHTML;
@@ -52,57 +63,101 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
     inputImageRef.current?.click();
   };
 
-  let uploadedImages = undefined;
+  // let uploadedImages = undefined;
 
   const onUploadImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const formData = new FormData();
-    // formData.append('file', e.target.files[0]);
+    const formData = new FormData();
 
-    uploadedImages = e.target.files;
+    const imgFiles = e.target.files;
+    console.log(imgFiles);
 
-    let relativeImageUrls = [...imgSrcs];
+    const currentUploadedImages = preViewImgSrcs.length + imgFiles?.length;
 
-    for (let img of uploadedImages) {
-      if (relativeImageUrls.length >= maxImages) {
-        alert('사진은 최대 15장까지 추가할 수 있습니다.');
-        break;
-      }
-
-      const currentImageUrl = URL.createObjectURL(img);
-      relativeImageUrls.push(currentImageUrl);
-
-      let reader = new FileReader();
-
-      reader.onload = () => {
-        setSendImgs([...reader.result]);
-      };
-      reader.readAsDataURL(img);
+    if (currentUploadedImages > maxImages) {
+      alert('사진은 최대 15장까지 추가할 수 있습니다.');
+      return;
     }
 
-    setImgSrcs(relativeImageUrls);
+    // 이미 파일이 추가되어 있을 경우 추가적으로 파일에 formData를 합쳐줘야
+    if (uploadedImages) {
+      const files = Array.from([...uploadedImages, ...imgFiles]);
+      setUploadedImages(files);
+    } else {
+      setUploadedImages(imgFiles);
+    }
+
+    let relativeImageUrls = [...preViewImgSrcs]; // 상대 경로 이미지들을 저장
+
+    for (let img of imgFiles) {
+      formData.append('images', img);
+
+      const currentImageUrl = URL.createObjectURL(img); // 상대 경로
+      relativeImageUrls.push(currentImageUrl);
+    }
+
+    // for (let [key, value] of formData) {
+    //   console.log(key);
+    //   console.log(value);
+    // }
+
+    setPreViewImgSrcs(relativeImageUrls);
   };
 
   const onDeleteUploadedImage = (targetIndex: number) => {
-    const filtered = imgSrcs.filter((img, index) => index !== targetIndex);
+    const filtered = preViewImgSrcs.filter((img, index) => index !== targetIndex);
+    const filteredUploadedImages = uploadedImages.filter((img, index) => index !== targetIndex);
 
-    setImgSrcs(filtered);
+    setPreViewImgSrcs(filtered);
+    setUploadedImages(filteredUploadedImages);
   };
 
-  const onPostImages = () => {
-    const imgs = new FormData();
+  const onSubmitRecord = () => {
+    console.log(uploadedImages);
 
-    imgs.append('images', sendImgs);
+    const formData = new FormData();
+
+    for (let img of uploadedImages) {
+      formData.append('images', img);
+    }
 
     axios
-      .post('https://teamdev.shop:8000/api/records/1/img', {
-        images: imgs,
-        headers: {
-          Authorization:
-            'Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA',
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then((res) => console.log(res));
+      .post(
+        'https://teamdev.shop:8000/api/records/3',
+        { title: 'test', content: text },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization:
+              'Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA',
+          },
+          withCredentials: true,
+        }
+      )
+      .then((res) => res.headers.location)
+      .then((param) => {
+        console.log(param);
+
+        return axios
+          .post(`https://teamdev.shop:8000${param}/img`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization:
+                'Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA',
+            },
+            withCredentials: true,
+          })
+          .then((res) => console.log(res));
+      });
+
+    // axios
+    //   .post('https://teamdev.shop:8000/api/records/1/img', formData, {
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data',
+    //       Authorization:
+    //         'Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA',
+    //     },
+    //   })
+    //   .then((res) => console.log(res));
   };
 
   return (
@@ -121,7 +176,7 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
           onChange={onUploadImageHandler}
         />
         <div className="plip-scrollbar mb-8 flex h-[200px] w-full flex-nowrap gap-4 overflow-x-hidden px-4 pt-4 hover:overflow-x-scroll ">
-          {imgSrcs.map((image, id) => (
+          {preViewImgSrcs.map((image, id) => (
             <div
               key={`${image}-${id}`}
               className="relative h-[160px] w-[120px] shrink-0 grow-0 basis-auto"
@@ -143,7 +198,7 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
           >
             <PlusCircleIcon width={16} height={16} />
             사진 추가
-            <span>{`${imgSrcs.length} / ${maxImages}`}</span>
+            <span>{`${preViewImgSrcs.length} / ${maxImages}`}</span>
           </div>
         </div>
         <div
@@ -157,6 +212,15 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
           <Button
             type={'button'}
             variant={'ring'}
+            onClick={onRemoveEntiresImages}
+            className="text-xs md:text-base"
+            hovercolor={'default'}
+          >
+            테스트
+          </Button>
+          <Button
+            type={'button'}
+            variant={'ring'}
             onClick={openCancelAlert}
             className="text-xs md:text-base"
             hovercolor={'default'}
@@ -167,7 +231,7 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
             type={'submit'}
             variant={'primary'}
             className="text-xs md:text-base"
-            onClick={onPostImages}
+            onClick={onSubmitRecord}
           >
             완료
           </Button>
@@ -182,6 +246,7 @@ const CancelAlert = ({ isOpen, onClose, onCloseParent }: CancelAlertProps) => {
     onClose();
     onCloseParent();
   };
+
   return (
     <DialogContainer
       isOpen={isOpen}
