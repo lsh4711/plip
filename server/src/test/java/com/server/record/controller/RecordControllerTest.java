@@ -129,6 +129,7 @@ public class RecordControllerTest {
                     preprocessResponse(prettyPrint()),
                     resource(
                         ResourceSnippetParameters.builder()
+                            .tag("Record")
                             .description("여행 일지 등록")
                             .requestFields(
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("내용"))
@@ -174,6 +175,7 @@ public class RecordControllerTest {
                         List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
                     resource(
                         ResourceSnippetParameters.builder()
+                            .tag("Record")
                             .description("여행 일지 수정")
                             .requestFields(
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("내용"))
@@ -221,6 +223,7 @@ public class RecordControllerTest {
                         List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
                     resource(
                         ResourceSnippetParameters.builder()
+                            .tag("Record")
                             .description("여행 일지 조회")
                             .responseFields(
                                 List.of(
@@ -292,6 +295,7 @@ public class RecordControllerTest {
                             parameterWithName("size").description("Page Size"))),
                     resource(
                         ResourceSnippetParameters.builder()
+                            .tag("Record")
                             .description("여행 일지 전체 조회")
                             .responseFields(
                                 List.of(
@@ -345,6 +349,7 @@ public class RecordControllerTest {
                         parameterWithName("record-id").description("일지 식별자 ID")),
                     resource(
                         ResourceSnippetParameters.builder()
+                            .tag("Record")
                             .description("여행 일지 삭제")
                             .build()))
 
@@ -393,6 +398,7 @@ public class RecordControllerTest {
                     ),
                     resource(
                         ResourceSnippetParameters.builder()
+                            .tag("Record")
                             .description("사진 등록")
                             .responseFields(
                                 fieldWithPath("data").description("사진 인덱스")
@@ -437,6 +443,7 @@ public class RecordControllerTest {
                     ),
                     resource(
                         ResourceSnippetParameters.builder()
+                            .tag("Record")
                             .description("사진 조회")
                             .responseFields(
                                 fieldWithPath("data").description("사진 URL")
@@ -481,6 +488,7 @@ public class RecordControllerTest {
                         List.of(parameterWithName("record-id").description("일지 식별자 ID"))),
                     resource(
                         ResourceSnippetParameters.builder()
+                            .tag("Record")
                             .description("사진 전체 조회")
                             .responseFields(
                                 fieldWithPath("size").description("사진 개수"),
@@ -515,6 +523,7 @@ public class RecordControllerTest {
                         parameterWithName("img-id").description("이미지 식별자 ID")),
                     resource(
                         ResourceSnippetParameters.builder()
+                            .tag("Record")
                             .description("사진 삭제")
                             .build()))
             );

@@ -99,6 +99,7 @@ public class MemberControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("Member")
                                     .description("회원 등록")
                                     .requestFields(
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
@@ -137,6 +138,7 @@ public class MemberControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("Member")
                                     .description("회원 로그인")
                                     .responseHeaders(
                                         headerWithName("Authorization").description("발급받은 인증 토큰"))
@@ -169,6 +171,7 @@ public class MemberControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("Member")
                                     .description("회원 수정")
                                     .requestHeaders(
                                         headerWithName("Authorization").description("발급받은 인증 토큰"))
@@ -201,6 +204,7 @@ public class MemberControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("Member")
                                     .description("회원 조회")
                                     .requestHeaders(
                                         headerWithName("Authorization").description("발급받은 인증 토큰"))
@@ -227,6 +231,7 @@ public class MemberControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("Member")
                                     .description("회원 삭제")
                                     .requestHeaders(
                                         headerWithName("Authorization").description("발급받은 인증 토큰"))
@@ -241,21 +246,21 @@ public class MemberControllerTest {
         String logoutAccessToken = StubData.MockSecurity.getLogoutValidAccessToken(jwtTokenizer.getSecretKey());
         //when
         ResultActions actions = mockMvc.perform(
-                get(MEMBER_DEFULT_URI + "/logout")
+            get(MEMBER_DEFULT_URI + "/logout")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + logoutAccessToken))
-            //then
-            .andExpect(status().isOk())
-            .andDo(
-                MockMvcRestDocumentationWrapper.document("회원 로그아웃 예제",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    resource(
-                        ResourceSnippetParameters.builder()
-                            .description("회원 로그아웃")
-                            .requestHeaders(
-                                headerWithName("Authorization").description("발급받은 인증 토큰")
-                            )
-                            .build())));
+                //then
+                .andExpect(status().isOk())
+                .andDo(
+                    MockMvcRestDocumentationWrapper.document("회원 로그아웃 예제",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                    .tag("Member")
+                                    .description("회원 로그아웃")
+                                    .requestHeaders(
+                                        headerWithName("Authorization").description("발급받은 인증 토큰"))
+                                    .build())));
     }
 
     @Test
@@ -283,6 +288,7 @@ public class MemberControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("Member")
                                     .description("비밀번호 재설정")
                                     .requestFields(
                                         fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),

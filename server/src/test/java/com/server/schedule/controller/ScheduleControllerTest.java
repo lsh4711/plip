@@ -129,6 +129,7 @@ public class ScheduleControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("Schedule")
                                     .description("일정 등록")
                                     .requestFields(List.of())
                                     .responseFields(List.of())
@@ -174,6 +175,7 @@ public class ScheduleControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("Schedule")
                                     .description("일정 수정")
                                     .requestFields(List.of())
                                     .responseFields(List.of())
@@ -206,6 +208,7 @@ public class ScheduleControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("Schedule")
                                     .description("일정 조회")
                                     .requestFields(List.of())
                                     .responseFields(List.of())
@@ -238,6 +241,7 @@ public class ScheduleControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("Schedule")
                                     .description("일정의 여행지 조회")
                                     .requestFields(List.of())
                                     .responseFields(List.of())
@@ -264,6 +268,7 @@ public class ScheduleControllerTest {
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("Schedule")
                                     .description("일정 삭제")
                                     .requestFields(List.of())
                                     .responseFields(List.of())
