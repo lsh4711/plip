@@ -68,8 +68,10 @@ public interface ScheduleMapper {
         LocalDateTime endDate = schedule.getEndDate().atStartOfDay();
         ScheduleResponse scheduleResponse = new ScheduleResponse();
 
-        scheduleResponse.setMemberId(member.getMemberId());
-        scheduleResponse.setNickname(member.getNickname());
+        if (member != null) {
+            scheduleResponse.setMemberId(member.getMemberId());
+            scheduleResponse.setNickname(member.getNickname());
+        }
         scheduleResponse.setStartDate(startDate);
         scheduleResponse.setEndDate(endDate);
         scheduleResponse.setContent(schedule.getContent());

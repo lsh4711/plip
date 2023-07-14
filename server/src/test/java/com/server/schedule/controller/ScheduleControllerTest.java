@@ -150,6 +150,7 @@ public class ScheduleControllerTest {
         schedule.setSchedulePlaces(new ArrayList<>());
         schedule.setStartDate(LocalDate.now());
         schedule.setEndDate(LocalDate.now());
+        schedule.setPeriod(4);
 
         given(scheduleService.updateSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
 
@@ -190,6 +191,7 @@ public class ScheduleControllerTest {
         schedule.setSchedulePlaces(new ArrayList<>());
         schedule.setStartDate(LocalDate.now());
         schedule.setEndDate(LocalDate.now());
+        schedule.setPeriod(4);
 
         given(scheduleService.findSchedule(Mockito.anyLong())).willReturn(schedule);
 
@@ -223,6 +225,7 @@ public class ScheduleControllerTest {
         schedule.setSchedulePlaces(new ArrayList<>());
         schedule.setStartDate(LocalDate.now());
         schedule.setEndDate(LocalDate.now());
+        schedule.setPeriod(4);
 
         given(scheduleService.findSchedule(Mockito.anyLong())).willReturn(schedule);
 
