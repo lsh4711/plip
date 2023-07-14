@@ -82,6 +82,11 @@ public class Init {
                 .password("wldls")
                 .nickname("지인짱")
                 .build());
+        members.add(Member.builder()
+                .email("test@naver.com")
+                .password("test1234!")
+                .nickname("테스트")
+                .build());
 
         for (Member member : members) {
             member.setRole(admin);
