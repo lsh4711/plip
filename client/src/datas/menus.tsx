@@ -3,7 +3,6 @@ import { ReactComponent as MyPageIcon } from '@/assets/icons/octoface.svg';
 import { ReactComponent as MyTraceIcon } from '@/assets/icons/mytrace.svg';
 import { ReactComponent as BookmarkIcon } from '@/assets/icons/bookmark.svg';
 import { ReactComponent as MyRecordIcon } from '@/assets/icons/myrecord.svg';
-import { ReactComponent as LogoutIcon } from '@/assets/icons/logout.svg';
 
 export type MenuProps = {
   icon: SVGAElement;
@@ -32,7 +31,7 @@ export const menus = [
   {
     icon: <BookmarkIcon />,
     name: '북마크',
-    route: '/bookmark',
+    route: 'mypage/bookmark',
   },
   {
     icon: <MyRecordIcon />,

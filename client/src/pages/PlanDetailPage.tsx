@@ -1,7 +1,7 @@
 interface PlanDetailPageProps {}
 
 const PlanDetailPage = ({}: PlanDetailPageProps) => {
-  return <div>PlanDetailPage</div>;
+  return <div></div>;
 };
 
 export default PlanDetailPage;
