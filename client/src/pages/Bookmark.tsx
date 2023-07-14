@@ -1,4 +1,5 @@
 import { MypageSideNav } from '@/components';
+import Preparing from '@/components/common/Preparing';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import React from 'react';
 
@@ -11,7 +12,7 @@ const Bookmark = ({}: BookmarkProps) => {
   return (
     <div className=" flex">
       <MypageSideNav />
-      <div className="flex"></div>
+      <Preparing />
     </div>
   );
 };
