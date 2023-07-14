@@ -88,7 +88,8 @@ public class RecordController {
 
     //memberId로 여행일지 조회
     @GetMapping
-    public ResponseEntity<?> getRecordsByMemberId(@RequestParam @Positive int page, @RequestParam @Positive int size) {
+    public ResponseEntity<?> getRecordsByMemberId(@RequestParam @Positive int page,
+            @RequestParam @Positive int size) {
         Page<Record> pageRecords = recordService.findAllRecords(page - 1, size);
         List<Record> records = pageRecords.getContent();
 
@@ -102,8 +103,8 @@ public class RecordController {
     @DeleteMapping("/{record-id}")
     public ResponseEntity deleteRecord(@PathVariable("record-id") @Positive long recordId) {
         long userId = CustomUtil.getAuthId();
-        recordService.verify(recordId, userId);
 
+        recordService.verify(recordId, userId);
         recordService.deleteRecord(recordId);
 
         try {
@@ -131,6 +132,7 @@ public class RecordController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error occurred while uploading images: " + e.getMessage());
         }
+
     }
 
     // 이미지 1개 조회 (대표 이미지)
@@ -174,22 +176,21 @@ public class RecordController {
     @DeleteMapping("/{record-id}/img/{img-id}")
     public ResponseEntity<?> deleteRecordImg(@PathVariable("record-id") long recordId,
             @PathVariable("img-id") long imgId) {
-
         long userId = CustomUtil.getAuthId();
 
         recordService.verify(recordId, userId);
 
         try {
             storageService.deleteImg(recordId, userId, imgId);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error occurred while deleting image: " + e.getMessage());
         }
+
     }
 
-    // 일지의 모든 이미지 삭제, 테스트용
-    @DeleteMapping("/{record-id}/img")
+    @DeleteMapping("/{record-id}/img/")
     public ResponseEntity<?> deleteRecordImgs(@PathVariable("record-id") long recordId) {
         long userId = CustomUtil.getAuthId();
 
@@ -197,11 +198,11 @@ public class RecordController {
 
         try {
             storageService.deleteImgs(recordId, userId);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error occurred while deleting image: " + e.getMessage());
         }
 
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
