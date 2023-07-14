@@ -87,3 +87,17 @@ springdoc:
 kakao:
     redirect-url: asdfasdfasdf
     api-key: asdfasdfasdfasdf
+
+cloud:
+  aws:
+    credentials:
+      access-key: abcdefghijklmnop
+      secret-key: abcdefghijklmnop
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+application:
+  bucket:
+    name: abcd-bucket

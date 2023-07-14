@@ -1,9 +1,9 @@
 server:
   port: 8000
-  ssl:
-    key-store: classpath:aws.p12
-    key-store-type: PKCS12
-    key-store-password: ${KEY_STORE_PASSWORD}
+#  ssl:
+#    key-store: classpath:aws.p12
+#    key-store-type: PKCS12
+#    key-store-password: ${KEY_STORE_PASSWORD}
 spring:
   config.activate.on-profile: default
   redis:
@@ -96,6 +96,20 @@ kakao:
     api-key: ${API_KEY}
     #redirect-url: dsadasdassd
     #api-key: dasdasdasdsaasdasdsa
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_ACCESS_KEY}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+application:
+  bucket:
+    name: jeein-bucket
 
 logging:
   level:
