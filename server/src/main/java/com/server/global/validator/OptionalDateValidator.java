@@ -1,12 +1,12 @@
 package com.server.global.validator;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class OptionalDateValidator implements ConstraintValidator<OptionalDateValid, LocalDateTime> {
+public class OptionalDateValidator implements ConstraintValidator<OptionalDateValid, LocalDate> {
 
     @Override
     public void initialize(OptionalDateValid constraintAnnotation) {
@@ -14,12 +14,12 @@ public class OptionalDateValidator implements ConstraintValidator<OptionalDateVa
     }
 
     @Override
-    public boolean isValid(LocalDateTime value, ConstraintValidatorContext context) {
+    public boolean isValid(LocalDate value, ConstraintValidatorContext context) {
         if (value == null) {
             return true;
         }
         try {
-            LocalDateTime.from(value);
+            LocalDate.from(value);
         } catch (DateTimeParseException e) {
             e.printStackTrace();
             return false;

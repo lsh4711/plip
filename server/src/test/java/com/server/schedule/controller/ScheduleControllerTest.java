@@ -16,7 +16,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class ScheduleControllerTest {
     // @Autowired
     private Gson gson = new GsonBuilder()
             // .setPrettyPrinting()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
             .create();
 
     @MockBean
@@ -148,8 +148,8 @@ public class ScheduleControllerTest {
 
         Schedule schedule = new Schedule();
         schedule.setSchedulePlaces(new ArrayList<>());
-        schedule.setStartDate(LocalDateTime.now());
-        schedule.setEndDate(LocalDateTime.now());
+        schedule.setStartDate(LocalDate.now());
+        schedule.setEndDate(LocalDate.now());
 
         given(scheduleService.updateSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
 
@@ -188,8 +188,8 @@ public class ScheduleControllerTest {
         // given
         Schedule schedule = new Schedule();
         schedule.setSchedulePlaces(new ArrayList<>());
-        schedule.setStartDate(LocalDateTime.now());
-        schedule.setEndDate(LocalDateTime.now());
+        schedule.setStartDate(LocalDate.now());
+        schedule.setEndDate(LocalDate.now());
 
         given(scheduleService.findSchedule(Mockito.anyLong())).willReturn(schedule);
 
@@ -221,8 +221,8 @@ public class ScheduleControllerTest {
         // given
         Schedule schedule = new Schedule();
         schedule.setSchedulePlaces(new ArrayList<>());
-        schedule.setStartDate(LocalDateTime.now());
-        schedule.setEndDate(LocalDateTime.now());
+        schedule.setStartDate(LocalDate.now());
+        schedule.setEndDate(LocalDate.now());
 
         given(scheduleService.findSchedule(Mockito.anyLong())).willReturn(schedule);
 
