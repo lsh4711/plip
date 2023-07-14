@@ -12,6 +12,9 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Provider } from 'react-redux';
 import LoadingSpinner from './components/atom/LoadingSpinner';
 import NotFound from './pages/NotFound';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from './components/helper/ErrorFallback';
+import LoadingPage from './pages/LoadingPage';
 
 const Home = lazy(() => import('./pages/Home'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
@@ -43,6 +46,7 @@ const router = createBrowserRouter([
       { path: 'mypage/myrecord', element: <MyRecordPage /> },
       { path: 'mypage/footprint', element: <FootPrintPage /> },
       { path: 'mypage/bookmark', element: <Bookmark /> },
+      { path: 'loading', element: <LoadingPage /> },
     ],
   },
   { path: 'plan/map/:region', element: <PlanMapPage /> },
@@ -53,10 +57,12 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <Provider store={store}>
     <Providers>
       <ModalProvider>
-        <Suspense fallback={<LoadingSpinner />}>
-          <RouterProvider router={router} />
-          <ReactQueryDevtools />
-        </Suspense>
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+          <Suspense fallback={<LoadingPage />}>
+            <RouterProvider router={router} />
+            <ReactQueryDevtools />
+          </Suspense>
+        </ErrorBoundary>
       </ModalProvider>
     </Providers>
   </Provider>

@@ -9,9 +9,7 @@ export default function App() {
     <>
       <Header />
       <ToastContainer />
-      <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <Outlet />
-      </ErrorBoundary>
+      <Outlet />
     </>
   );
 }

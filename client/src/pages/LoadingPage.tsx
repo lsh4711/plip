@@ -1,13 +1,12 @@
 import { HeadingParagraph, Paragraph } from '@/components';
 import LoadingSpinner from '@/components/atom/LoadingSpinner';
+import React from 'react';
 
-interface NotFoundProps {}
-
-const NotFound = ({}: NotFoundProps) => {
+const LoadingPage = () => {
   return (
     <div className=" flex flex-col items-center justify-center px-3 pt-52">
       <HeadingParagraph variant={'darkgray'} size={'xl'} className="text-center">
-        <strong className=" text-sky-400">이런</strong>
+        <strong className=" text-sky-400">지현</strong>
         님께 화면을 그려달라고
         <br />
         부탁하고 있어요!
@@ -20,4 +19,4 @@ const NotFound = ({}: NotFoundProps) => {
   );
 };
 
-export default NotFound;
+export default LoadingPage;
