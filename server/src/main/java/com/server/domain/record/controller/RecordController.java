@@ -122,10 +122,10 @@ public class RecordController {
             @RequestPart("images") List<MultipartFile> images) {
         long userId = CustomUtil.getAuthId();
 
-        recordService.verfify(recordId, userId);
+        recordService.verify(recordId, userId);
 
         try {
-            Boolean uploadResult = imageManager.uploadImages(images, recordId);
+            Boolean uploadResult = imageManager.uploadImages(images, recordId, userId);
             if (uploadResult) {
                 return new ResponseEntity<>(HttpStatus.CREATED);
             } else {
@@ -143,9 +143,9 @@ public class RecordController {
             @PathVariable("img-id") long imgId) {
         long userId = CustomUtil.getAuthId();
 
-        recordService.verfify(recordId, userId);
+        recordService.verify(recordId, userId);
 
-        Resource imageFile = imageManager.loadImage(recordId, imgId);
+        Resource imageFile = imageManager.loadImage(recordId, userId, imgId);
 
         if (imageFile.exists()) {
             try {
@@ -177,9 +177,9 @@ public class RecordController {
     public ResponseEntity<?> getRecordAllImg(@PathVariable("record-id") long recordId) {
         long userId = CustomUtil.getAuthId();
 
-        recordService.verfify(recordId, userId);
+        recordService.verify(recordId, userId);
 
-        List<Resource> imageFiles = imageManager.loadImages(recordId);
+        List<Resource> imageFiles = imageManager.loadImages(recordId, userId);
         if (imageFiles.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ExceptionCode.IMAGE_NOT_FOUND.getMessage());
@@ -213,7 +213,12 @@ public class RecordController {
     @DeleteMapping("/{record-id}/img/{img-id}")
     public ResponseEntity<?> deleteRecordImg(@PathVariable("record-id") long recordId,
             @PathVariable("img-id") long imgId) {
-        imageManager.deleteImg(recordId, imgId);
+
+        long userId = CustomUtil.getAuthId();
+
+        recordService.verify(recordId, userId);
+
+        imageManager.deleteImg(recordId, userId, imgId);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
