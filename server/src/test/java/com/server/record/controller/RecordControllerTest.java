@@ -376,6 +376,10 @@ public class RecordControllerTest {
         MockMultipartFile image2 = new MockMultipartFile(
             "images", "image2.jpg", MediaType.IMAGE_JPEG_VALUE, image2Content);
 
+        List<String> indexs = List.of("0", "1", "2");
+        given(storageService.store(anyList(), anyLong(),anyLong())).willReturn(indexs);
+
+
         //when
         ResultActions actions = mockMvc.perform(
             multipart(RECORD_DEFAULT_URL + "/{record-id}/img", recordId)
@@ -488,6 +492,7 @@ public class RecordControllerTest {
                         ResourceSnippetParameters.builder()
                             .description("사진 전체 조회")
                             .responseFields(
+                                fieldWithPath("size").description("사진 개수"),
                                 fieldWithPath("images").description("사진 URL 목록")
 
                             )

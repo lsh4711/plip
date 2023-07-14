@@ -160,7 +160,7 @@ public class RecordController {
 
     }
 
-    //이미지 조회 - base64 인코딩된 걸 리턴
+    //이미지 전체 조회 - base64 인코딩된 걸 리턴
     @GetMapping("/{record-id}/img")
     public ResponseEntity<?> getRecordAllImg(@PathVariable("record-id") long recordId) {
         long userId = CustomUtil.getAuthId();
@@ -169,7 +169,7 @@ public class RecordController {
 
         try{
             List<String> urlTexts = storageService.getImgs(recordId, userId);
-            ImageResponseDto imageResponseDto = ImageResponseDto.builder().images(urlTexts).build();
+            ImageResponseDto imageResponseDto = ImageResponseDto.builder().size(urlTexts.size()).images(urlTexts).build();
             return new ResponseEntity<>(imageResponseDto, HttpStatus.OK);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
