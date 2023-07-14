@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import com.server.domain.member.entity.Member;
 import com.server.global.audit.BaseEntity;
@@ -42,5 +43,6 @@ public class Schedule extends BaseEntity {
     private Member member;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
+    @OrderBy(value = "days asc, orders asc")
     private List<SchedulePlace> schedulePlaces;
 }

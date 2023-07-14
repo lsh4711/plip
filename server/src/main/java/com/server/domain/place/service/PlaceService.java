@@ -43,6 +43,10 @@ public class PlaceService {
 
     public List<SchedulePlace> savePlaceLists(Schedule savedSchedule,
             List<List<Place>> placeLists) {
+        if (placeLists == null) {
+            return null;
+        }
+
         List<SchedulePlace> schedulePlaces = new ArrayList<>();
 
         for (int i = 0; i < placeLists.size(); i++) {

@@ -24,5 +24,5 @@ public class ScheduleResponse {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    private List<PlaceResponse> places;
+    private List<List<PlaceResponse>> places;
 }

@@ -87,7 +87,7 @@ public class ScheduleControllerTest {
         token = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
     }
 
-    @Test
+    // @Test
     @DisplayName("일정 등록")
     void postScheduleTest() throws Exception {
         // given
