@@ -1,15 +1,17 @@
 import dayjs from 'dayjs';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Button, HeadingParagraph } from '@/components';
 import Confirm from '@/components/common/Confirm';
 import DatePicker from '@/components/common/DatePicker';
 import RegionCard from '@/components/common/RegionCard';
+import Wrapper from '@/components/common/Wrapper';
 import { regionInfos, regions } from '@/datas/regions';
 import useModal from '@/hooks/useModal';
+import usePlanMutation from '@/queries/plan/usePlanMutation';
 import { getFormatDateString, getTripPeriod, getTripTitleWithRegion } from '@/utils/date';
-import { useNavigate } from 'react-router-dom';
-import Wrapper from '@/components/common/Wrapper';
+import parsePlanId from '@/utils/parsePlanId';
 
 interface PlanPageProps {}
 
@@ -19,8 +21,8 @@ const PlanPage = ({}: PlanPageProps) => {
   const [selectedRegion, setSelectedRegion] = useState<(typeof regions)[number] | null>(null);
 
   const [openModal] = useModal();
-
   const navigate = useNavigate();
+  const mutation = usePlanMutation();
 
   const openConfirm = () => {
     if (startDate && endDate && selectedRegion) {
@@ -58,8 +60,21 @@ const PlanPage = ({}: PlanPageProps) => {
   };
 
   const createPlan = () => {
-    navigate(`/plan/map/${selectedRegion}`);
-    // TODO request
+    mutation
+      .mutateAsync({
+        title: getTripTitleWithRegion(selectedRegion!),
+        region: selectedRegion!,
+        content: null,
+        startDate: startDate!,
+        endDate: endDate!,
+        places: null,
+      })
+      .then((res) => {
+        navigate(`/plan/map/${parsePlanId(res.headers.location)}`);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   return (
