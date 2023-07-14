@@ -254,10 +254,10 @@ public class RecordControllerTest {
         //given
         Member member = Member.builder().memberId(1L).build();
 
-        Record record1 = Record.builder().recordId(1L).title("서울 롯데월드").content("서울 롯데월드에서는...").build();
+        Record record1 = Record.builder().recordId(1L).content("서울 롯데월드에서는...").build();
         record1.setMember(member);
 
-        Record record2 = Record.builder().recordId(2L).title("서울 남산타워").content("서울 남산타워에서는...").build();
+        Record record2 = Record.builder().recordId(2L).content("서울 남산타워에서는...").build();
         record2.setMember(member);
 
         Page<Record> pageRecords = new PageImpl<>(
