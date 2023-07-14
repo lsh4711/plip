@@ -1,5 +1,6 @@
 import instance from '@/queries/axiosinstance';
 import { EMPTY_TOKEN } from '@/redux/slices/authSlice';
+import { AxiosHeaderValue } from 'axios';
 import { Navigate } from 'react-router-dom';
 
 type UseAuthRedirect = () => {
@@ -7,18 +8,25 @@ type UseAuthRedirect = () => {
   naviComponent: JSX.Element | null;
 };
 
-const useAuthRedirect: UseAuthRedirect = () => {
-  const auth = instance.defaults.headers['Authorization'];
-  if (auth === EMPTY_TOKEN || auth === undefined || auth === null || !auth)
-    return {
-      isRedirect: true,
-      naviComponent: <Navigate to={'/login'} />,
-    };
+const getAuthorizationHeader = () => instance.defaults.headers['Authorization'];
 
+const isValidToken = (token: AxiosHeaderValue) => {
+  return token === EMPTY_TOKEN || token === undefined || token === null || !token;
+};
+
+const createObjectWithComponent = (boolean: boolean, component: JSX.Element | null) => {
   return {
-    isRedirect: false,
-    naviComponent: null,
+    isRedirect: boolean,
+    naviComponent: component,
   };
+};
+
+const useAuthRedirect: UseAuthRedirect = () => {
+  const auth = getAuthorizationHeader();
+  if (isValidToken(auth)) {
+    return createObjectWithComponent(true, <Navigate to={'/login'} replace />);
+  }
+  return createObjectWithComponent(false, null);
 };
 
 export default useAuthRedirect;
