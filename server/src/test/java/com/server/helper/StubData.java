@@ -184,6 +184,8 @@ public class StubData {
     public static class MockSchedule {
         public static ScheduleDto.Post postDto = new ScheduleDto.Post();
 
+        // public static Schedule schedule;
+
         static {
             postDto.setTitle("제목");
             postDto.setContent("일정에 대한 메모");
@@ -191,6 +193,16 @@ public class StubData {
             postDto.setRegion("제주도");
             postDto.setStartDate(LocalDateTime.now());
             postDto.setEndDate(LocalDateTime.now().plusDays(5));
+
+            // schedule.setScheduleId(1L);
+            // schedule.setRegion("제주도");
+            // schedule.setTitle("제목");
+            // schedule.setContent("일정에 대한 메모");
+            // schedule.setMemberCount(1);
+            // schedule.setStartDate(LocalDateTime.now());
+            // schedule.setEndDate(LocalDateTime.now());
+            // schedule.setMember(null);
+            // schedule.setSchedulePlaces(null);
         }
     }
 

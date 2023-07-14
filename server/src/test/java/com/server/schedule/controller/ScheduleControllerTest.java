@@ -5,6 +5,10 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -13,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -94,6 +99,7 @@ public class ScheduleControllerTest {
         ScheduleDto.Post postDto = MockSchedule.postDto;
         List<List<PlaceDto.Post>> placeDtoLists = MockPlace.postDtoLists;
         postDto.setPlaces(placeDtoLists);
+
         String requestBody = gson.toJson(postDto);
 
         // List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
@@ -110,8 +116,7 @@ public class ScheduleControllerTest {
             post(BASE_URL + "/write")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .content(requestBody)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON));
+                    .contentType(MediaType.APPLICATION_JSON));
 
         // then
         actions
@@ -130,27 +135,31 @@ public class ScheduleControllerTest {
                                     .build())));
     }
 
-    // @Test
+    @Test
     @DisplayName("일정 수정")
     void patchScheduleTest() throws Exception {
         // given
         ScheduleDto.Post postDto = MockSchedule.postDto; // = patch
         List<List<PlaceDto.Post>> placeDtoLists = MockPlace.postDtoLists;
         postDto.setPlaces(placeDtoLists);
+
         String requestBody = gson.toJson(postDto);
 
-        // List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
         Schedule schedule = new Schedule();
-        schedule.setScheduleId(1L);
+        schedule.setSchedulePlaces(new ArrayList<>());
+        schedule.setStartDate(LocalDateTime.now());
+        schedule.setEndDate(LocalDateTime.now());
 
-        given(scheduleService.saveSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
+        given(scheduleService.updateSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
+
+        doNothing().when(scheduleService).deleteSchedule(1);
+
         given(placeService.savePlaceLists(Mockito.any(Schedule.class), Mockito.<List<Place>>anyList()))
-                .willReturn(null);
-        // given(schedulePlaceSedrvice.saveSchedulePlaces(Mockito.<SchedulePlace>anyList())).willReturn(null);
+                .willReturn(new ArrayList<>());
 
         // when
         ResultActions actions = mockMvc.perform(
-            post(BASE_URL + "/write")
+            patch(BASE_URL + "/{scheduleId}/edit", 1)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .content(requestBody)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -174,15 +183,90 @@ public class ScheduleControllerTest {
     @Test
     @DisplayName("일정 조회")
     void getScheduleTest() throws Exception {
+        // given
+        Schedule schedule = new Schedule();
+        schedule.setSchedulePlaces(new ArrayList<>());
+        schedule.setStartDate(LocalDateTime.now());
+        schedule.setEndDate(LocalDateTime.now());
+
+        given(scheduleService.findSchedule(Mockito.anyLong())).willReturn(schedule);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+            get(BASE_URL + "/{scheduleId}", 1)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                    document("일정 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                    .description("일정 조회")
+                                    .requestFields(List.of())
+                                    .responseFields(List.of())
+                                    .build())));
     }
 
     @Test
     @DisplayName("일정의 여행지 조회")
     void getPlacesByScheduleIdTest() throws Exception {
+        // given
+        Schedule schedule = new Schedule();
+        schedule.setSchedulePlaces(new ArrayList<>());
+        schedule.setStartDate(LocalDateTime.now());
+        schedule.setEndDate(LocalDateTime.now());
+
+        given(scheduleService.findSchedule(Mockito.anyLong())).willReturn(schedule);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+            get(BASE_URL + "/{scheduleId}/places", 1)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                    document("일정의 여행지 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                    .description("일정의 여행지 조회")
+                                    .requestFields(List.of())
+                                    .responseFields(List.of())
+                                    .build())));
     }
 
     @Test
     @DisplayName("일정 삭제")
     void deleteScheduleTest() throws Exception {
+        // given
+        doNothing().when(scheduleService).deleteSchedule(1);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+            delete(BASE_URL + "/{scheduleId}", 1)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
+
+        // then
+        actions
+                .andExpect(status().isNoContent())
+                .andDo(
+                    document("일정 삭제",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                    .description("일정 삭제")
+                                    .requestFields(List.of())
+                                    .responseFields(List.of())
+                                    .build())));
     }
 }
