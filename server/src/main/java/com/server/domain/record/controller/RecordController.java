@@ -125,9 +125,9 @@ public class RecordController {
         recordService.verify(recordId, userId);
 
         try {
-            Boolean uploadResult = imageManager.uploadImages(images, recordId, userId);
-            if (uploadResult) {
-                return new ResponseEntity<>(HttpStatus.CREATED);
+            List<String> indexs = imageManager.uploadImages(images, recordId, userId);
+            if (indexs.size()>0) {
+                return new ResponseEntity<>(new SingleResponseDto<>(indexs),HttpStatus.CREATED);
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload images.");
             }
@@ -205,6 +205,7 @@ public class RecordController {
 
         ImageResponseDto imageResponseDto = new ImageResponseDto();
         imageResponseDto.setImages(imageBase64List);
+        imageResponseDto.setSize(imageBase64List.size());
 
         return ResponseEntity.ok(imageResponseDto);
     }

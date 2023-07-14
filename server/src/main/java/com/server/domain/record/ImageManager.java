@@ -32,11 +32,13 @@ public class ImageManager {
     private final MemberService memberService;
 
     //이미지 업로드
-    public Boolean uploadImages(List<MultipartFile> images, long recordId, long userId) throws Exception {
+    public List<String> uploadImages(List<MultipartFile> images, long recordId, long userId) throws Exception {
 
         String dirName = location + "/" + userId + "/" + recordId;
 
         short result = -1;
+
+        List<String> indexs = new ArrayList<>();
 
         try {
             File folder = new File(dirName);
@@ -50,6 +52,7 @@ public class ImageManager {
                     File destination = new File(dirName + File.separator + fileName);
                     image.transferTo(destination);
                     result++;
+                    indexs.add(String.valueOf(i));
                 }
             } else { //이미 저장된 사진이 있는 경우
                 File[] existingFiles = folder.listFiles();
@@ -80,10 +83,12 @@ public class ImageManager {
                 for (int i = 0; i < images.size(); i++) {
                     MultipartFile image = images.get(i);
                     String fileExtension = getFileExtension(image);
-                    String fileName = (lastIndex + i) + fileExtension;
+                    int index=lastIndex+i;
+                    String fileName = index + fileExtension;
                     File destination = new File(dirName + File.separator + fileName);
                     image.transferTo(destination);
                     result++;
+                    indexs.add(String.valueOf(index));
                 }
 
                 existingFiles = folder.listFiles();
@@ -91,15 +96,15 @@ public class ImageManager {
 
         } catch (Exception e) {
             log.error("사진 저장 에러 :" + e.getMessage());
-            return Boolean.FALSE;
+            return null;
         }
 
         if (result == -1 || result < images.size() - 1) {
-            return Boolean.FALSE;
+            return null;
         } else if (result == images.size() - 1) {
-            return Boolean.TRUE;
+            return indexs;
         } else {
-            return Boolean.FALSE;
+            return null;
         }
     }
 

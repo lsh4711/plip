@@ -4,8 +4,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -377,7 +376,8 @@ public class RecordControllerTest {
         MockMultipartFile image2 = new MockMultipartFile(
             "images", "image2.jpg", MediaType.IMAGE_JPEG_VALUE, image2Content);
 
-        given(imageManager.uploadImages(anyList(), anyLong())).willReturn(true);
+        List<String> indexs = List.of("0", "1", "2");
+        given(imageManager.uploadImages(anyList(), anyLong(),anyLong())).willReturn(indexs);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -402,6 +402,10 @@ public class RecordControllerTest {
                     resource(
                         ResourceSnippetParameters.builder()
                             .description("사진 등록")
+                            .responseFields(
+                                fieldWithPath("data").description("사진 인덱스")
+
+                            )
                             .build()
                     )
                 )
@@ -420,7 +424,7 @@ public class RecordControllerTest {
         String dirName = location + "/" + userId + "/" + recordId;
 
         Resource imageFile = new FileSystemResource(dirName + "/0.png");
-        given(imageManager.loadImage(Mockito.anyLong(), Mockito.anyLong())).willReturn(imageFile);
+        given(imageManager.loadImage(anyLong(), anyLong(), anyLong())).willReturn(imageFile);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -471,7 +475,7 @@ public class RecordControllerTest {
         imageFiles.add(imageFile1);
         imageFiles.add(imageFile2);
 
-        given(imageManager.loadImages(anyLong())).willReturn(imageFiles);
+        given(imageManager.loadImages(anyLong(),anyLong())).willReturn(imageFiles);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -495,6 +499,7 @@ public class RecordControllerTest {
                         ResourceSnippetParameters.builder()
                             .description("사진 전체 조회")
                             .responseFields(
+                                fieldWithPath("size").description("사진 개수"),
                                 fieldWithPath("images").description("사진 목록")
 
                             )
@@ -508,7 +513,7 @@ public class RecordControllerTest {
         long recordId = 1;
         long imgId = 1;
 
-        doNothing().when(imageManager).deleteImg(recordId,imgId);
+        doNothing().when(imageManager).deleteImg(anyLong(), anyLong(),anyLong());
 
         //when
         ResultActions actions = mockMvc.perform(

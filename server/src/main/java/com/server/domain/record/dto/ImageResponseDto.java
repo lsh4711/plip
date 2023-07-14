@@ -8,5 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ImageResponseDto {
+    private int size;
     private List<String> images;
 }
