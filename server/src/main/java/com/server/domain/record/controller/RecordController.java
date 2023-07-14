@@ -121,6 +121,7 @@ public class RecordController {
     public ResponseEntity<?> uploadRecordImg(@PathVariable("record-id") long recordId,
             @RequestPart("images") List<MultipartFile> images) {
         long userId = CustomUtil.getAuthId();
+
         recordService.verify(recordId, userId);
 
         try {

@@ -2,8 +2,6 @@ package com.server.domain.record.service;
 
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class S3StorageService implements StorageService{
+public class S3StorageService implements StorageService {
 
     private static final String BUCKET_IMAGE_PATH = "record_images";
     @Value("${application.bucket.name}")
@@ -155,15 +153,16 @@ public class S3StorageService implements StorageService{
     }
 
     private File convertMultiPartFileToFile(MultipartFile multipartFile) {
-        try{
+        // try{
             File convertedFile = new File(multipartFile.getOriginalFilename());
-            FileOutputStream fileOutputStream = new FileOutputStream(convertedFile);
-            fileOutputStream.write(multipartFile.getBytes());
-            fileOutputStream.close();
+            // System.out.println(multipartFile.getOriginalFilename());
+            // FileOutputStream fileOutputStream = new FileOutputStream(convertedFile);
+            // fileOutputStream.write(multipartFile.getBytes());
+            // fileOutputStream.close();
             return convertedFile;
-        }catch (IOException e){
-            throw new RuntimeException("Failed to convert MultipartFile to File", e);
-        }
+        // }catch (IOException e){
+            // throw new RuntimeException("Failed to convert MultipartFile to File", e);
+        // }
     }
 
 
