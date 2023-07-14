@@ -60,7 +60,6 @@ import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.google.gson.Gson;
 import com.server.domain.member.entity.Member;
-import com.server.domain.record.ImageManager;
 import com.server.domain.record.dto.RecordDto;
 import com.server.domain.record.entity.Record;
 import com.server.domain.record.mapper.RecordMapper;
