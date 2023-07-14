@@ -54,7 +54,7 @@ public class S3StorageService implements StorageService{
             indexs.add(Integer.toString(index));
 
             s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
-
+            fileObj.deleteOnExit(); //임시 파일 삭제
         }
 
         return indexs;
@@ -158,10 +158,8 @@ public class S3StorageService implements StorageService{
 
     private File convertMultiPartFileToFile(MultipartFile multipartFile) {
         try{
-            File convertedFile = new File(multipartFile.getOriginalFilename());
-            FileOutputStream fileOutputStream = new FileOutputStream(convertedFile);
-            fileOutputStream.write(multipartFile.getBytes());
-            fileOutputStream.close();
+            File convertedFile = File.createTempFile("temp", null);
+            multipartFile.transferTo(convertedFile);
             return convertedFile;
         }catch (IOException e){
             throw new RuntimeException("Failed to convert MultipartFile to File", e);

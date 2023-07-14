@@ -187,4 +187,18 @@ public class RecordController {
         }
     }
 
+    @DeleteMapping("/{record-id}/img/")
+    public ResponseEntity<?> deleteRecordImgs(@PathVariable("record-id") long recordId) {
+        long userId = CustomUtil.getAuthId();
+
+        recordService.verify(recordId, userId);
+        try{
+            storageService.deleteImgs(recordId,userId);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error occurred while deleting image: " + e.getMessage());
+        }
+    }
+
 }

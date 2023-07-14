@@ -100,8 +100,8 @@ kakao:
 cloud:
   aws:
     credentials:
-      access-key: ${AWS_ACCESS_KEY}
-      secret-key: ${AWS_SECRET_ACCESS_KEY}
+      access-key: ${AWS_ACCESS_KEY2}
+      secret-key: ${AWS_SECRET_ACCESS_KEY2}
     region:
       static: ap-northeast-2
     stack:

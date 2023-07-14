@@ -135,7 +135,6 @@ public class RecordControllerTest {
                         ResourceSnippetParameters.builder()
                             .description("여행 일지 등록")
                             .requestFields(
-                                fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("내용"))
                             .responseHeaders(
                                 headerWithName(HttpHeaders.LOCATION)
@@ -146,7 +145,7 @@ public class RecordControllerTest {
 
     @Test
     @DisplayName("여행 일지를 수정한다.")
-    void RecordControllerTest() throws Exception {
+    void patchRecordTest() throws Exception {
         //given
 
         RecordDto.Patch request = (RecordDto.Patch)StubData.MockRecord.getRequestBody("recordPatch");
@@ -181,7 +180,6 @@ public class RecordControllerTest {
                         ResourceSnippetParameters.builder()
                             .description("여행 일지 수정")
                             .requestFields(
-                                fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("내용"))
                             .responseFields(
                                 List.of(
@@ -189,7 +187,6 @@ public class RecordControllerTest {
                                         .optional(),
                                     fieldWithPath("data.recordId").type(JsonFieldType.NUMBER)
                                         .description("일지 식별자"),
-                                    fieldWithPath("data.title").type(JsonFieldType.STRING).description("제목"),
                                     fieldWithPath("data.content").type(JsonFieldType.STRING).description("내용"),
                                     fieldWithPath("data.memberId").type(JsonFieldType.NUMBER)
                                         .description("회원 식별자"),
@@ -235,7 +232,6 @@ public class RecordControllerTest {
                                         .optional(),
                                     fieldWithPath("data.recordId").type(JsonFieldType.NUMBER)
                                         .description("일지 식별자"),
-                                    fieldWithPath("data.title").type(JsonFieldType.STRING).description("제목"),
                                     fieldWithPath("data.content").type(JsonFieldType.STRING).description("내용"),
                                     fieldWithPath("data.memberId").type(JsonFieldType.NUMBER)
                                         .description("회원 식별자"),
@@ -307,7 +303,6 @@ public class RecordControllerTest {
                                         .optional(),
                                     fieldWithPath("data[].recordId").type(JsonFieldType.NUMBER)
                                         .description("일지 식별자"),
-                                    fieldWithPath("data[].title").type(JsonFieldType.STRING).description("제목"),
                                     fieldWithPath("data[].content").type(JsonFieldType.STRING)
                                         .description("내용"),
                                     fieldWithPath("data[].memberId").type(JsonFieldType.NUMBER)
