@@ -32,8 +32,8 @@ public class ImageManager {
     private final MemberService memberService;
 
     //이미지 업로드
-    public Boolean uploadImages(List<MultipartFile> images, long recordId) throws Exception {
-        Long userId = getAuthenticatedMemberId();
+    public Boolean uploadImages(List<MultipartFile> images, long recordId, long userId) throws Exception {
+
         String dirName = location + "/" + userId + "/" + recordId;
 
         short result = -1;
@@ -104,8 +104,7 @@ public class ImageManager {
     }
 
     //이미지 조회 - 대표 이미지
-    public Resource loadImage(long recordId, long imgId) {
-        Long userId = getAuthenticatedMemberId();
+    public Resource loadImage(long recordId, long userId, long imgId) {
         String dirName = location + "/" + userId + "/" + recordId;
 
         try {
@@ -129,8 +128,8 @@ public class ImageManager {
     }
 
     //전체 이미지 조회
-    public List<Resource> loadImages(long recordId) {
-        Long userId = getAuthenticatedMemberId();
+    public List<Resource> loadImages(long recordId, long userId) {
+
         String dirName = location + "/" + userId + "/" + recordId;
 
         List<Resource> images = new ArrayList<>();
@@ -166,8 +165,7 @@ public class ImageManager {
     }
 
     //이미지 삭제
-    public void deleteImg(long recordId, long imgId) {
-        long userId = CustomUtil.getAuthId();
+    public void deleteImg(long recordId, long userId, long imgId) {
         String dirName = location + '/' + userId + '/' + recordId;
 
         try {
@@ -213,16 +211,6 @@ public class ImageManager {
             log.error("삭제 실패: " + e.getMessage());
             throw new CustomException(ExceptionCode.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    //로그인한 사용자 아이디 리턴
-    private Long getAuthenticatedMemberId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //현재 로그인한 사용자 이메일
-        String username = (String)authentication.getPrincipal();
-
-        // 로그인한 ID(이매일)로 Member를 찾아서 반환
-        return memberService.findMemberByEmail(username).getMemberId();
     }
 
 }
