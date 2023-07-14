@@ -2,6 +2,7 @@ package com.server.domain.record.service;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,6 @@ public class S3StorageService implements StorageService {
             indexs.add(Integer.toString(index));
 
             s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
-
         }
 
         return indexs;
@@ -153,16 +153,18 @@ public class S3StorageService implements StorageService {
     }
 
     private File convertMultiPartFileToFile(MultipartFile multipartFile) {
-        // try{
-            File convertedFile = new File(multipartFile.getOriginalFilename());
+        try{
+            File convertedFile = File.createTempFile("temp", null);
+                multipartFile.transferTo(convertedFile);
+            // File convertedFile = new File(multipartFile.getOriginalFilename());
             // System.out.println(multipartFile.getOriginalFilename());
             // FileOutputStream fileOutputStream = new FileOutputStream(convertedFile);
             // fileOutputStream.write(multipartFile.getBytes());
             // fileOutputStream.close();
             return convertedFile;
-        // }catch (IOException e){
-            // throw new RuntimeException("Failed to convert MultipartFile to File", e);
-        // }
+        }catch (IOException e){
+            throw new RuntimeException("Failed to convert MultipartFile to File", e);
+        }
     }
 
 
