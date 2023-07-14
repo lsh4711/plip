@@ -95,7 +95,7 @@ public class RecordService {
         return memberService.findMemberByEmail(username);
     }
 
-    public void verfify(long recordId, long memberId) {
+    public void verify(long recordId, long memberId) {
         boolean exists = recordRepository
                 .existsByRecordIdAndMember_MemberId(recordId, memberId);
         if (!exists) {
