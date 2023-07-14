@@ -66,6 +66,7 @@ import com.server.domain.record.dto.RecordDto;
 import com.server.domain.record.entity.Record;
 import com.server.domain.record.mapper.RecordMapper;
 import com.server.domain.record.service.RecordService;
+import com.server.domain.record.service.StorageService;
 import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.helper.StubData;
 
@@ -90,11 +91,8 @@ public class RecordControllerTest {
 
     private final static String RECORD_DEFAULT_URL = "/api/records";
 
-    @Value("${spring.servlet.multipart.location}")
-    private String location;
-
     @MockBean
-    private ImageManager imageManager;
+    private StorageService storageService;
 
     @Autowired
     private JwtTokenizer jwtTokenizer;
@@ -339,6 +337,7 @@ public class RecordControllerTest {
         long recordId = 1L;
 
         doNothing().when(service).deleteRecord(recordId);
+        doNothing().when(storageService).deleteImgs(anyLong(),anyLong());
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -377,8 +376,6 @@ public class RecordControllerTest {
         MockMultipartFile image2 = new MockMultipartFile(
             "images", "image2.jpg", MediaType.IMAGE_JPEG_VALUE, image2Content);
 
-        given(imageManager.uploadImages(anyList(), anyLong())).willReturn(true);
-
         //when
         ResultActions actions = mockMvc.perform(
             multipart(RECORD_DEFAULT_URL + "/{record-id}/img", recordId)
@@ -402,6 +399,10 @@ public class RecordControllerTest {
                     resource(
                         ResourceSnippetParameters.builder()
                             .description("사진 등록")
+                            .responseFields(
+                                fieldWithPath("data").description("사진 인덱스")
+
+                            )
                             .build()
                     )
                 )
@@ -414,13 +415,11 @@ public class RecordControllerTest {
     void getRecordImgTest() throws Exception {
         //given
         Long recordId = 1L;
-        Long userId = 1L;
         Long imgId = 1L;
 
-        String dirName = location + "/" + userId + "/" + recordId;
+        String urlText = "https://jeein-bucket.s3.ap-northeast-2.amazonaws.com/record_images/5/1/0";
 
-        Resource imageFile = new FileSystemResource(dirName + "/0.png");
-        given(imageManager.loadImage(Mockito.anyLong(), Mockito.anyLong())).willReturn(imageFile);
+        given(storageService.getImg(anyLong(), anyLong(), anyLong())).willReturn(urlText);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -429,7 +428,6 @@ public class RecordControllerTest {
                 .contentType(MediaType.IMAGE_JPEG)
 
         );
-
         //then
         actions
             .andExpect(status().isOk())
@@ -446,7 +444,7 @@ public class RecordControllerTest {
                         ResourceSnippetParameters.builder()
                             .description("사진 조회")
                             .responseFields(
-                                fieldWithPath("data").description("사진")
+                                fieldWithPath("data").description("사진 URL")
 
                             )
                             .build())));
@@ -459,19 +457,14 @@ public class RecordControllerTest {
     void getRecordAllImgTest() throws Exception {
         //given
         Long recordId = 1L;
-        Long userId = 1L;
 
-        String dirName = location + "/" + userId + "/" + recordId;
+        List<String> urlTexts = List.of(
+            "https://jeein-bucket.s3.ap-northeast-2.amazonaws.com/record_images/5/1/0",
+            "https://jeein-bucket.s3.ap-northeast-2.amazonaws.com/record_images/5/1/1",
+            "https://jeein-bucket.s3.ap-northeast-2.amazonaws.com/record_images/5/1/2"
+        );
 
-        List<Resource> imageFiles = new ArrayList<>();
-
-        Resource imageFile1 = new FileSystemResource(dirName + "/0.png");
-        Resource imageFile2 = new FileSystemResource(dirName + "/1.png");
-
-        imageFiles.add(imageFile1);
-        imageFiles.add(imageFile2);
-
-        given(imageManager.loadImages(anyLong())).willReturn(imageFiles);
+        given(storageService.getImgs(anyLong(), anyLong())).willReturn(urlTexts);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -484,7 +477,7 @@ public class RecordControllerTest {
         //then
         actions
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.images", hasSize(2)))
+            .andExpect(jsonPath("$.images", hasSize(3)))
             .andDo(
                 MockMvcRestDocumentationWrapper.document("사진 전체 조회",
                     preprocessRequest(prettyPrint()),
@@ -495,7 +488,7 @@ public class RecordControllerTest {
                         ResourceSnippetParameters.builder()
                             .description("사진 전체 조회")
                             .responseFields(
-                                fieldWithPath("images").description("사진 목록")
+                                fieldWithPath("images").description("사진 URL 목록")
 
                             )
                             .build())));
@@ -508,7 +501,7 @@ public class RecordControllerTest {
         long recordId = 1;
         long imgId = 1;
 
-        doNothing().when(imageManager).deleteImg(recordId,imgId);
+        doNothing().when(storageService).deleteImg(anyLong(),anyLong(),anyLong());
 
         //when
         ResultActions actions = mockMvc.perform(
