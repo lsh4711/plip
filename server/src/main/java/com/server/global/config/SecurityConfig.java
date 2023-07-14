@@ -102,7 +102,10 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(
-            List.of("http://127.0.0.1:5173", "http://localhost:5173", "https://plip.netlify.app"));
+            List.of("http://127.0.0.1:5173",
+                "http://localhost:5173",
+                "http://localhost:8000",
+                "https://plip.netlify.app"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("*"));
