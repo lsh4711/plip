@@ -106,7 +106,7 @@ public class SecurityConfig {
         configuration.setExposedHeaders(List.of("*"));
         configuration.addExposedHeader("Authorization");
         configuration.addExposedHeader("Refresh");
-        configuration.addExposedHeader("Location");
+        // configuration.addExposedHeader("Location");
         configuration.addAllowedHeader("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
