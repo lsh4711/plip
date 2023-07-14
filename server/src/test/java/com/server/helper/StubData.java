@@ -124,20 +124,17 @@ public class StubData {
             stubDatas = new HashMap<>();
 
             RecordDto.Post post = RecordDto.Post.builder()
-                    .title("서울 롯데월드")
                     .content("롯데월드에서는..")
                     .build();
             stubRequestBody.put("recordPost", post);
 
             RecordDto.Patch patch = RecordDto.Patch.builder()
-                    .title("서울 남산")
                     .content("남산에서는..")
                     .build();
             stubRequestBody.put("recordPatch", patch);
 
             RecordDto.Response response = RecordDto.Response.builder()
                     .recordId(1L)
-                    .title("서울 롯데월드")
                     .content("롯데월드에서는..")
                     .memberId(1L)
                     .createdAt(LocalDateTime.now().withNano(0))
@@ -147,7 +144,6 @@ public class StubData {
 
             RecordDto.Response patchResponse = RecordDto.Response.builder()
                     .recordId(1L)
-                    .title("서울 남산")
                     .content("남산에서는..")
                     .memberId(1L)
                     .createdAt(LocalDateTime.now().withNano(0))
@@ -158,7 +154,6 @@ public class StubData {
             List<RecordDto.Response> responses = List.of(
                 RecordDto.Response.builder()
                         .recordId(1L)
-                        .title("서울 롯데월드")
                         .content("롯데월드에서는..")
                         .memberId(1L)
                         .createdAt(LocalDateTime.now().withNano(0))
@@ -167,7 +162,6 @@ public class StubData {
 
                 RecordDto.Response.builder()
                         .recordId(2L)
-                        .title("서울 남산")
                         .content("남산에서는..")
                         .memberId(1L)
                         .createdAt(LocalDateTime.now().withNano(0))

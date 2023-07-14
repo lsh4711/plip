@@ -18,6 +18,7 @@ import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 import com.server.global.utils.CustomBeanUtils;
+import com.server.global.utils.CustomUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -95,7 +96,7 @@ public class RecordService {
         return memberService.findMemberByEmail(username);
     }
 
-    public void verfify(long recordId, long memberId) {
+    public void verify(long recordId, long memberId) {
         boolean exists = recordRepository
                 .existsByRecordIdAndMember_MemberId(recordId, memberId);
         if (!exists) {
