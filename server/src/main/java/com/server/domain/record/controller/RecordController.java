@@ -36,6 +36,7 @@ import com.server.domain.record.dto.RecordDto;
 import com.server.domain.record.entity.Record;
 import com.server.domain.record.mapper.RecordMapper;
 import com.server.domain.record.service.RecordService;
+import com.server.domain.record.service.StorageService;
 import com.server.global.dto.MultiResponseDto;
 import com.server.global.dto.SingleResponseDto;
 import com.server.global.exception.ExceptionCode;
@@ -57,7 +58,7 @@ public class RecordController {
 
     private final RecordService recordService;
 
-    private final ImageManager imageManager;
+    private final StorageService storageService;
 
     //여행일지 등록
     @PostMapping("/{schedule-place-id}")
@@ -110,10 +111,19 @@ public class RecordController {
     //여행일지 삭제
     @DeleteMapping("/{record-id}")
     public ResponseEntity deleteRecord(@PathVariable("record-id") @Positive long recordId) {
-        recordService.deleteRecord(recordId);
-        imageManager.deleteImgs(recordId);
+        long userId = CustomUtil.getAuthId();
+        recordService.verify(recordId, userId);
 
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        recordService.deleteRecord(recordId);
+
+        try{
+            storageService.deleteImgs(recordId, userId);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error occurred while deleting images: " + e.getMessage());
+        }
+
     }
 
     //이미지 업로드
@@ -121,19 +131,14 @@ public class RecordController {
     public ResponseEntity<?> uploadRecordImg(@PathVariable("record-id") long recordId,
             @RequestPart("images") List<MultipartFile> images) {
         long userId = CustomUtil.getAuthId();
-
         recordService.verify(recordId, userId);
 
         try {
-            Boolean uploadResult = imageManager.uploadImages(images, recordId, userId);
-            if (uploadResult) {
-                return new ResponseEntity<>(HttpStatus.CREATED);
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload images.");
-            }
+            List<String> indexs = storageService.store(images, recordId, userId);
+            return new ResponseEntity<>(new SingleResponseDto<>(indexs),HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while uploading images: " + e.getMessage());
+                .body("Error occurred while uploading images: " + e.getMessage());
         }
     }
 
@@ -145,29 +150,12 @@ public class RecordController {
 
         recordService.verify(recordId, userId);
 
-        Resource imageFile = imageManager.loadImage(recordId, userId, imgId);
-
-        if (imageFile.exists()) {
-            try {
-                Resource imageResource = new UrlResource(imageFile.getURI());
-
-                String imageBase64 = Base64.getEncoder()
-                        .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
-
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.IMAGE_JPEG);
-
-                return new ResponseEntity<>(new SingleResponseDto<>(imageBase64), HttpStatus.OK);
-
-            } catch (IOException e) {
-                log.error("이미지 파일 읽기 오류: " + e.getMessage(), e);
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(ExceptionCode.INTERNAL_SERVER_ERROR.getMessage());
-            }
-        } else {
-            log.error("이미지 파일이 존재하지 않습니다.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ExceptionCode.IMAGE_NOT_FOUND.getMessage());
+        try{
+            String urlText = storageService.getImg(recordId, userId, imgId);
+            return new ResponseEntity<>(new SingleResponseDto<>(urlText),HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error occurred while loading image: " + e.getMessage());
         }
 
     }
@@ -179,34 +167,15 @@ public class RecordController {
 
         recordService.verify(recordId, userId);
 
-        List<Resource> imageFiles = imageManager.loadImages(recordId, userId);
-        if (imageFiles.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ExceptionCode.IMAGE_NOT_FOUND.getMessage());
+        try{
+            List<String> urlTexts = storageService.getImgs(recordId, userId);
+            ImageResponseDto imageResponseDto = ImageResponseDto.builder().images(urlTexts).build();
+            return new ResponseEntity<>(imageResponseDto, HttpStatus.OK);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error occurred while loading images: " + e.getMessage());
         }
 
-        List<String> imageBase64List = new ArrayList<>();
-        for (Resource imageFile : imageFiles) {
-            try {
-                Resource imageResource = new UrlResource(imageFile.getURI());
-                if (imageResource.exists()) {
-                    String imageBase64 = Base64.getEncoder()
-                            .encodeToString(Files.readAllBytes(imageResource.getFile().toPath()));
-                    imageBase64List.add(imageBase64);
-                }
-            } catch (IOException e) {
-                log.error("이미지 파일 읽기 오류 : " + e.getMessage(), e);
-            }
-        }
-
-        if (imageBase64List.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        ImageResponseDto imageResponseDto = new ImageResponseDto();
-        imageResponseDto.setImages(imageBase64List);
-
-        return ResponseEntity.ok(imageResponseDto);
     }
 
     //이미지 삭제
@@ -218,9 +187,13 @@ public class RecordController {
 
         recordService.verify(recordId, userId);
 
-        imageManager.deleteImg(recordId, userId, imgId);
-
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        try{
+            storageService.deleteImg(recordId, userId, imgId);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error occurred while deleting image: " + e.getMessage());
+        }
     }
 
 }
