@@ -1,7 +1,6 @@
 package com.server.domain.schedule.controller;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -85,12 +84,8 @@ public class ScheduleController {
         schedulePlaces = placeService
                 .savePlaceLists(updatedSchedule, placeLists);
 
-        // test
-        LocalDate startDate = LocalDate.from(updatedSchedule.getStartDate());
-        LocalDate endDate = LocalDate.from(updatedSchedule.getEndDate());
-        int period = endDate.compareTo(startDate);
         List<List<PlaceResponse>> placeResponseLists = placeMapper
-                .schedulePlacesToPlaceResponseLists(schedulePlaces, period);
+                .schedulePlacesToPlaceResponseLists(schedulePlaces, updatedSchedule);
         ScheduleResponse scheduleResponse = scheduleMapper
                 .scheduleToScheduleResponse(updatedSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
@@ -103,13 +98,8 @@ public class ScheduleController {
     public ResponseEntity getSchedule(@PathVariable long scheduleId) {
         Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
-
-        // test
-        LocalDate startDate = LocalDate.from(foundSchedule.getStartDate());
-        LocalDate endDate = LocalDate.from(foundSchedule.getEndDate());
-        int period = endDate.compareTo(startDate);
         List<List<PlaceResponse>> placeResponseLists = placeMapper
-                .schedulePlacesToPlaceResponseLists(schedulePlaces, period);
+                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
         ScheduleResponse scheduleResponse = scheduleMapper
                 .scheduleToScheduleResponse(foundSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
@@ -122,12 +112,8 @@ public class ScheduleController {
     public ResponseEntity getPlacesByScheduleId(@PathVariable long scheduleId) {
         Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
-
-        LocalDate startDate = LocalDate.from(foundSchedule.getStartDate());
-        LocalDate endDate = LocalDate.from(foundSchedule.getEndDate());
-        int period = endDate.compareTo(startDate);
         List<List<PlaceResponse>> placeResponseLists = placeMapper
-                .schedulePlacesToPlaceResponseLists(schedulePlaces, period);
+                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
 
         return ResponseEntity.ok(placeResponseLists);
     }

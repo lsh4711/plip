@@ -37,6 +37,7 @@ public class Schedule extends BaseEntity {
     private Integer memberCount;
     private LocalDate startDate;
     private LocalDate endDate;
+    private Integer period;
 
     @ManyToOne
     @JoinColumn(name = "memberId")

@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 import com.server.domain.place.dto.PlaceDto;
 import com.server.domain.place.dto.PlaceResponse;
 import com.server.domain.place.entity.Place;
+import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
 
 @Mapper(componentModel = "spring")
@@ -35,11 +36,11 @@ public interface PlaceMapper {
     PlaceResponse schedulePlaceToPlaceResponse(SchedulePlace schedulePlace);
 
     default List<List<PlaceResponse>> schedulePlacesToPlaceResponseLists(List<SchedulePlace> schedulePlaces,
-            int period) {
+            Schedule schedule) {
         List<List<PlaceResponse>> placeResponseLists = new ArrayList<>();
 
         if (schedulePlaces == null || schedulePlaces.size() == 0) {
-            period++;
+            int period = schedule.getPeriod();
             for (int i = 0; i < period; i++) {
                 placeResponseLists.add(new ArrayList<>());
             }

@@ -104,6 +104,7 @@ public class Init {
         schedule.setStartDate(LocalDate.now());
         schedule.setEndDate(LocalDate.now().plusDays(3));
         schedule.setMember(member);
+        schedule.setPeriod(4);
 
         scheduleService.saveSchedule(schedule);
 
