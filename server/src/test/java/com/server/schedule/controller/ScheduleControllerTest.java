@@ -87,7 +87,7 @@ public class ScheduleControllerTest {
         token = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
     }
 
-    // @Test
+    @Test
     @DisplayName("일정 등록")
     void postScheduleTest() throws Exception {
         // given
@@ -130,9 +130,45 @@ public class ScheduleControllerTest {
                                     .build())));
     }
 
-    @Test
+    // @Test
     @DisplayName("일정 수정")
     void patchScheduleTest() throws Exception {
+        // given
+        ScheduleDto.Post postDto = MockSchedule.postDto; // = patch
+        List<List<PlaceDto.Post>> placeDtoLists = MockPlace.postDtoLists;
+        postDto.setPlaces(placeDtoLists);
+        String requestBody = gson.toJson(postDto);
+
+        // List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
+        Schedule schedule = new Schedule();
+        schedule.setScheduleId(1L);
+
+        given(scheduleService.saveSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
+        given(placeService.savePlaceLists(Mockito.any(Schedule.class), Mockito.<List<Place>>anyList()))
+                .willReturn(null);
+        // given(schedulePlaceSedrvice.saveSchedulePlaces(Mockito.<SchedulePlace>anyList())).willReturn(null);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+            post(BASE_URL + "/write")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .content(requestBody)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                    document("일정 수정",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                    .description("일정 수정")
+                                    .requestFields(List.of())
+                                    .responseFields(List.of())
+                                    .build())));
     }
 
     @Test

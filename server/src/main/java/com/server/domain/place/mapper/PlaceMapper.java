@@ -51,7 +51,7 @@ public interface PlaceMapper {
             int days = schedulePlace.getDays();
             PlaceResponse placeResponse = schedulePlaceToPlaceResponse(schedulePlace);
 
-            if (placeResponseLists.size() < days) {
+            while (placeResponseLists.size() < days) {
                 placeResponseLists.add(new ArrayList<>());
             }
             placeResponseLists.get(days - 1).add(placeResponse);
