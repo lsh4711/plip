@@ -45,7 +45,10 @@ const PlanMapPage = () => {
             setMapLevel={setMapLevel}
           />
 
-          <SearchTools />
+          <SearchTools
+            currentX={getRegionCenterLng(data?.region!)}
+            currentY={getRegionCenterLat(data?.region!)}
+          />
           <MenuButtons />
 
           <SidePanel position={'right'}>
@@ -87,7 +90,6 @@ const PlanMapPage = () => {
           </SidePanel>
         </>
       )}
-      <SearchTools currentX={currentPosition.lng} currentY={currentPosition.lat} />
     </div>
   );
 };
