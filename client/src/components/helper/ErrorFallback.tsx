@@ -1,15 +1,18 @@
-import { useQueryErrorResetBoundary } from '@tanstack/react-query';
-import React from 'react';
 import { FallbackProps } from 'react-error-boundary';
 import Button from '../atom/Button';
 import Paragraph from '../atom/Paragraph';
+import HeadingParagraph from '../atom/HeadingParagraph';
 
 const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
-  console.log(error);
   return (
-    <div className=" flex items-center justify-center">
-      <Paragraph>{error.message}</Paragraph>
+    <div className=" flex flex-col items-center justify-center px-3 pt-52">
+      <HeadingParagraph variant={'darkgray'} size={'xl'} className="text-center">
+        {error.message}
+      </HeadingParagraph>
       <Button onClick={() => resetErrorBoundary()}>reset</Button>
+      <Paragraph className=" mt-4">
+        <strong className=" text-sky-400">잠시</strong> 기다려주세요
+      </Paragraph>
     </div>
   );
 };

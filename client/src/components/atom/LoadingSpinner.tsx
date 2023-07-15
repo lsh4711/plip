@@ -1,13 +1,19 @@
+import { cn } from '@/utils';
 import React from 'react';
 
-interface LoadingSpinnerProps {}
+interface LoadingSpinnerProps {
+  className?: string;
+}
 
-const LoadingSpinner = ({}: LoadingSpinnerProps) => {
+const LoadingSpinner = ({ className }: LoadingSpinnerProps) => {
   return (
     <div role="status">
       <svg
         aria-hidden="true"
-        className="mr-2 h-5 w-5 animate-spin fill-blue-600 text-gray-200 dark:text-gray-600"
+        className={cn(
+          'mr-2 h-5 w-5 animate-spin fill-blue-600 text-gray-200 dark:text-gray-600',
+          className
+        )}
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
