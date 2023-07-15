@@ -6,15 +6,15 @@ const DropDownMenus = () => {
   const logoutMutation = useLogoutMutation();
   return (
     <div
-      className={`absolute right-[-2.25rem] top-9 flex w-[200px] flex-col rounded-lg border bg-white shadow-md`}
+      className={`absolute right-[-2.25rem] top-9 z-50 flex w-[200px] flex-col rounded-lg border bg-white shadow-md`}
     >
       {menus.map((item, index) => (
-        <div key={index} className="w-full border-b-2 p-4 last:border-b-0">
-          <Link to={item.route} className="flex gap-2 text-black">
+        <Link to={item.route} className="w-full border-b-2 p-4 text-black last:border-b-0">
+          <div key={index} className="flex w-full gap-2 ">
             {item.icon}
             {item.name}
-          </Link>
-        </div>
+          </div>
+        </Link>
       ))}
       <div
         className="w-full border-b-2 p-4 last:border-b-0"

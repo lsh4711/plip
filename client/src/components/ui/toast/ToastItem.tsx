@@ -15,7 +15,7 @@ const ToastItem = ({ type = 'default', children }: ToastItemProps) => {
   return (
     <div
       id="toast-default"
-      className="smooth flex w-full min-w-[300px] items-center rounded-lg bg-white p-4 text-gray-500 shadow dark:bg-gray-800 dark:text-gray-400"
+      className="smooth z-auto flex w-full min-w-[300px] items-center rounded-lg bg-white p-4 text-gray-500 shadow dark:bg-gray-800 dark:text-gray-400"
       role="alert"
     >
       <div className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-500 dark:bg-blue-800 dark:text-blue-200">

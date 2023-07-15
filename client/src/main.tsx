@@ -12,6 +12,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Provider } from 'react-redux';
 import LoadingSpinner from './components/atom/LoadingSpinner';
 import NotFound from './pages/NotFound';
+import ToastContainer from './components/ui/toast/ToastContainer';
 
 const Home = lazy(() => import('./pages/Home'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
@@ -45,8 +46,24 @@ const router = createBrowserRouter([
       { path: 'mypage/bookmark', element: <Bookmark /> },
     ],
   },
-  { path: 'plan/map/:region', element: <PlanMapPage /> },
-  { path: 'plan/detail', element: <PlanDetailPage /> },
+  {
+    path: 'plan/map/:region',
+    element: (
+      <>
+        <ToastContainer />
+        <PlanMapPage />
+      </>
+    ),
+  },
+  {
+    path: 'plan/detail',
+    element: (
+      <>
+        <ToastContainer />
+        <PlanDetailPage />,
+      </>
+    ),
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

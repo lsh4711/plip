@@ -17,9 +17,9 @@ const Home = ({}: HomeProps) => {
           <Paragraph size={'xl'} variant={'white'} weight={'extrabold'} className="mb-2">
             <span className="gradient-text">PliP</span>으로 여행 계획을 디자인해보세요!
           </Paragraph>
-          <Button variant={'primary'}>
-            <Link to="/plan">여행 시작하기</Link>
-          </Button>
+          <Link to="/plan">
+            <Button variant={'primary'}>여행 시작하기</Button>
+          </Link>
         </div>
         <div className="fixed h-full w-full bg-black bg-opacity-50 "></div>
       </div>

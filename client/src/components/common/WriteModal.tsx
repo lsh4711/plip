@@ -6,7 +6,9 @@ import { ReactComponent as CloseIcon } from '@/assets/icons/close.svg';
 import { maxImages, maxRecordCharacters } from '@/datas/constants';
 
 import useModal from '@/hooks/useModal';
-import axios from 'axios';
+import RecordAPI from '@/queries/RecordAPI';
+import useToast from '@/hooks/useToast';
+import Confirm from './Confirm';
 
 export type WriteModal = {
   type: 'default' | 'edit';
@@ -23,23 +25,14 @@ type CancelAlertProps = {
 
 const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
   const [openModal] = useModal();
+  const toast = useToast();
+  const SCHEDULE_PLACE_ID = 2;
 
   const inputImageRef = useRef<HTMLInputElement>(null);
 
-  const [uploadedImages, setUploadedImages] = useState([]);
-  const [preViewImgSrcs, setPreViewImgSrcs] = useState([]);
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [preViewImgSrcs, setPreViewImgSrcs] = useState<string[]>([]);
   const [text, setText] = useState('');
-
-  const onRemoveEntiresImages = () => {
-    axios
-      .delete('https://teamdev.shop:8000/api/records/1/imgs', {
-        headers: {
-          Authorization:
-            'Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA',
-        },
-      })
-      .then((res) => console.log(res));
-  };
 
   const onInputText = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = e.target.innerHTML;
@@ -63,15 +56,13 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
     inputImageRef.current?.click();
   };
 
-  // let uploadedImages = undefined;
-
   const onUploadImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formData = new FormData();
 
-    const imgFiles = e.target.files;
-    console.log(imgFiles);
+    const imgFiles = e.target.files!;
+    // console.log(imgFiles);
 
-    const currentUploadedImages = preViewImgSrcs.length + imgFiles?.length;
+    const currentUploadedImages = preViewImgSrcs.length + imgFiles?.length!;
 
     if (currentUploadedImages > maxImages) {
       alert('사진은 최대 15장까지 추가할 수 있습니다.');
@@ -81,9 +72,11 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
     // 이미 파일이 추가되어 있을 경우 추가적으로 파일에 formData를 합쳐줘야
     if (uploadedImages) {
       const files = Array.from([...uploadedImages, ...imgFiles]);
+      console.log(files);
       setUploadedImages(files);
     } else {
-      setUploadedImages(imgFiles);
+      const files = Array.from([...imgFiles]);
+      setUploadedImages(files);
     }
 
     let relativeImageUrls = [...preViewImgSrcs]; // 상대 경로 이미지들을 저장
@@ -94,11 +87,6 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
       const currentImageUrl = URL.createObjectURL(img); // 상대 경로
       relativeImageUrls.push(currentImageUrl);
     }
-
-    // for (let [key, value] of formData) {
-    //   console.log(key);
-    //   console.log(value);
-    // }
 
     setPreViewImgSrcs(relativeImageUrls);
   };
@@ -112,52 +100,27 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
   };
 
   const onSubmitRecord = () => {
-    console.log(uploadedImages);
-
     const formData = new FormData();
+    const record = new RecordAPI();
 
     for (let img of uploadedImages) {
       formData.append('images', img);
     }
 
-    axios
-      .post(
-        'https://teamdev.shop:8000/api/records/3',
-        { title: 'test', content: text },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization:
-              'Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA',
-          },
-          withCredentials: true,
-        }
-      )
-      .then((res) => res.headers.location)
-      .then((param) => {
-        console.log(param);
-
-        return axios
-          .post(`https://teamdev.shop:8000${param}/img`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization:
-                'Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA',
-            },
-            withCredentials: true,
-          })
-          .then((res) => console.log(res));
-      });
-
-    // axios
-    //   .post('https://teamdev.shop:8000/api/records/1/img', formData, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //       Authorization:
-    //         'Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA',
-    //     },
-    //   })
-    //   .then((res) => console.log(res));
+    try {
+      record
+        .onPostRecord(SCHEDULE_PLACE_ID, text, formData)
+        .then(() => {
+          toast({ content: '일지가 정상적으로 작성 완료되었습니다.', type: 'success' });
+          onClose();
+        })
+        .catch((e) => {
+          console.error(e);
+          toast({ content: '일지 작성 실패하였습니다.', type: 'warning' });
+        });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -210,13 +173,12 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
         <span className="self-end p-4 text-sm text-slate-400">{`( ${text.length} / ${maxRecordCharacters} )`}</span>
         <DialogButtonGroup>
           <Button
-            type={'button'}
-            variant={'ring'}
-            onClick={onRemoveEntiresImages}
+            type={'submit'}
+            variant={'primary'}
             className="text-xs md:text-base"
-            hovercolor={'default'}
+            onClick={onSubmitRecord}
           >
-            테스트
+            완료
           </Button>
           <Button
             type={'button'}
@@ -226,14 +188,6 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
             hovercolor={'default'}
           >
             취소
-          </Button>
-          <Button
-            type={'submit'}
-            variant={'primary'}
-            className="text-xs md:text-base"
-            onClick={onSubmitRecord}
-          >
-            완료
           </Button>
         </DialogButtonGroup>
       </DialogContainer>
@@ -248,32 +202,18 @@ const CancelAlert = ({ isOpen, onClose, onCloseParent }: CancelAlertProps) => {
   };
 
   return (
-    <DialogContainer
-      isOpen={isOpen}
-      onClose={onClose}
-      className="z-50 flex w-2/3 flex-col rounded-lg bg-white p-6 md:w-[560px]"
-    >
-      정말로 일지 작성을 취소하시겠습니까?
-      <DialogButtonGroup>
-        <Button
-          type={'button'}
-          variant={'ring'}
-          onClick={onClose}
-          className="text-xs md:text-base"
-          hovercolor={'default'}
-        >
-          취소
-        </Button>
-        <Button
-          type={'submit'}
-          variant={'primary'}
-          className="text-xs md:text-base"
-          onClick={onComfirmClose}
-        >
-          완료
-        </Button>
-      </DialogButtonGroup>
-    </DialogContainer>
+    <>
+      <Confirm
+        type={'default'}
+        isOpen={isOpen}
+        onClose={onComfirmClose}
+        onClickSecondaryButton={onClose}
+        title={'알림'}
+        content={'정말로 일지 작성을 취소하시겠습니까?'}
+        primaryLabel={'확인'}
+        secondaryLabel={'취소'}
+      />
+    </>
   );
 };
 

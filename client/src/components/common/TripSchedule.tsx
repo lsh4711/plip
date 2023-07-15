@@ -1,5 +1,5 @@
 import Button from '@/components/atom/Button';
-import { ResponseData } from '@/pages/PlanMapPage/PlanMapPage';
+import { ResponseData } from '@/pages/PlanMapPage';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import ScheduleAccordion from './ScheduleAccordion';
