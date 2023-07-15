@@ -2,17 +2,17 @@ import axios from 'axios';
 import BASE_URL from './BASE_URL';
 import instance from './axiosinstance';
 
-type RequestTypes = {
-  param: string;
-  formData?: FileList[];
+export type PostRecordTypes = {
+  param: number;
+  formData?: FormData;
   content?: string;
 };
 
 export default class RecordAPI {
-  readonly fileClient;
+  #fileClient;
 
   constructor() {
-    this.fileClient = axios.create({
+    this.#fileClient = axios.create({
       baseURL: BASE_URL,
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -27,17 +27,17 @@ export default class RecordAPI {
   }
 
   async #postImages(param: number, formData: FormData) {
-    return this.fileClient.post(`${param}/img`, formData);
+    return this.#fileClient.post(`${param}/img`, formData);
   }
 
-  async onPostRecord(param: number, content: string, formData: FormData) {
-    return this.#postRecord(param, content).then((res) => {
+  async onPostRecord({ param, content, formData }: PostRecordTypes) {
+    return this.#postRecord(param, content!).then((res) => {
       const recordUrl = res.headers.location;
       if (res.status >= 400) {
         throw Error('일지 작성에 실패하였습니다.');
       }
 
-      return this.#postImages(recordUrl, formData)
+      return this.#postImages(recordUrl, formData!)
         .then((res) => {
           if (res.status >= 400) {
             throw Error('사진 전송에 실패하였습니다.');
