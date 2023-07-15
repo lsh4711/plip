@@ -47,7 +47,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: 'plan/map/:region',
+    path: 'plan/map/:id',
     element: (
       <>
         <ToastContainer />
