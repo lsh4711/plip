@@ -7,9 +7,9 @@ import { maxImages, maxRecordCharacters } from '@/datas/constants';
 import { resizeFile } from '@/utils/file/resizeFile';
 
 import useModal from '@/hooks/useModal';
-import RecordAPI from '@/queries/RecordAPI';
-import useToast from '@/hooks/useToast';
 import Confirm from './Confirm';
+import useCreateRecordMutation from '@/queries/record/useCreateRecordMutation';
+import LoadingSpinner from '../atom/LoadingSpinner';
 
 export type WriteModal = {
   type: 'default' | 'edit';
@@ -26,8 +26,8 @@ type CancelAlertProps = {
 
 const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
   const [openModal] = useModal();
-  const toast = useToast();
-  const SCHEDULE_PLACE_ID = 4; // 테스트를 위한 임시 변수입니다. 요청 주소의 param으로 사용됩니다.
+  const createRecordMutation = useCreateRecordMutation();
+  const SCHEDULE_PLACE_ID = 5; // 테스트를 위한 임시 변수입니다. 요청 주소의 param으로 사용됩니다.
 
   const inputImageRef = useRef<HTMLInputElement>(document.createElement('input'));
 
@@ -104,7 +104,6 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
 
   const onSubmitRecord = async () => {
     const formData = new FormData();
-    const record = new RecordAPI();
 
     if (uploadedImages.length === 0 && text.length === 0) {
       alert('이미지 업로드 혹은 글을 작성해주세요.');
@@ -119,20 +118,9 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
       }
     }
 
-    try {
-      record
-        .onPostRecord(SCHEDULE_PLACE_ID, text, formData)
-        .then(() => {
-          toast({ content: '일지가 정상적으로 작성 완료되었습니다.', type: 'success' });
-          onClose();
-        })
-        .catch((e) => {
-          console.error(e);
-          toast({ content: '일지 작성 실패하였습니다.', type: 'warning' });
-        });
-    } catch (e) {
-      console.error(e);
-    }
+    createRecordMutation
+      .mutateAsync({ param: SCHEDULE_PLACE_ID, content: text, formData: formData })
+      .then((res) => onClose());
   };
 
   return (
@@ -190,7 +178,8 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
             className="text-xs md:text-base"
             onClick={onSubmitRecord}
           >
-            완료
+            {createRecordMutation.status === 'loading' ? <LoadingSpinner /> : null}
+            <span>완료</span>
           </Button>
           <Button
             type={'button'}
