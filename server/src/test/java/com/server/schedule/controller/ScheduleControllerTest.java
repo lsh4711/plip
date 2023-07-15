@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -39,6 +39,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.server.domain.member.entity.Member;
 import com.server.domain.place.dto.PlaceDto;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.mapper.PlaceMapper;
@@ -98,7 +99,7 @@ public class ScheduleControllerTest {
     }
 
     @Test
-    @DisplayName("일정 등록")
+    @DisplayName("여행 일정 등록")
     void postScheduleTest() throws Exception {
         // given
         ScheduleDto.Post postDto = MockSchedule.postDto;
@@ -129,45 +130,48 @@ public class ScheduleControllerTest {
                 .andExpect(header().string("Location",
                     is(startsWith("/api/schedules"))))
                 .andDo(
-                    document("일정 등록",
+                    document("여행 일정 등록",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
                                     .tag("Schedule")
-                                    .description("일정 등록")
-                                    .requestFields(List.of())
-                                    .responseFields(List.of())
+                                    .description("여행 일정 등록")
+                                    // .requestFields(List.of())
+                                    // .responseFields(List.of())
                                     .build())));
     }
 
-    // @Test
-    @DisplayName("일정 수정")
+    @Test
+    @DisplayName("여행 일정 수정")
     void patchScheduleTest() throws Exception {
         // given
-        ScheduleDto.Post postDto = MockSchedule.postDto; // = patch
+        Member member = Member.builder()
+                .memberId(1L)
+                .nickname("관리자")
+                .build();
+
         List<List<PlaceDto.Post>> placeDtoLists = MockPlace.postDtoLists;
+        ScheduleDto.Post postDto = StubData.MockSchedule.postDto;
         postDto.setPlaces(placeDtoLists);
 
-        String requestBody = gson.toJson(postDto);
+        List<SchedulePlace> schedulePlaces = StubData.MockPlace.schedulePlaces;
+        Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
+        schedule.setScheduleId(1L);
+        schedule.setPeriod(3);
+        schedule.setSchedulePlaces(schedulePlaces);
+        schedule.setMember(member);
+        schedule.setCreatedAt(LocalDateTime.now());
+        schedule.setModifiedAt(LocalDateTime.now());
 
-        Schedule schedule = new Schedule();
-        schedule.setTitle("제목");
-        // schedule
-        // schedule
-        // schedule
-        // schedule
-        // schedule.setSchedulePlaces(new ArrayList<>());
-        schedule.setStartDate(LocalDate.now());
-        schedule.setEndDate(LocalDate.now());
-        schedule.setPeriod(4);
+        String requestBody = gson.toJson(postDto);
 
         given(scheduleService.updateSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
 
         doNothing().when(scheduleService).deleteSchedule(1);
 
         given(placeService.savePlaceLists(Mockito.any(Schedule.class), Mockito.<List<Place>>anyList()))
-                .willReturn(new ArrayList<>());
+                .willReturn(schedulePlaces);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -181,28 +185,36 @@ public class ScheduleControllerTest {
         actions
                 .andExpect(status().isOk())
                 .andDo(
-                    document("일정 수정",
+                    document("여행 일정 수정",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
                                     .tag("Schedule")
-                                    .description("일정 수정")
-                                    .requestFields(List.of())
-                                    .responseFields(List.of())
+                                    .description("여행 일정 수정")
+                                    // .requestFields(List.of())
+                                    // .responseFields(List.of())
                                     .build())));
     }
 
     @Test
-    @DisplayName("일정 조회")
+    @DisplayName("여행 일정 조회")
     void getScheduleTest() throws Exception {
         // given
+        Member member = Member.builder()
+                .memberId(1L)
+                .nickname("관리자")
+                .build();
+
         ScheduleDto.Post postDto = StubData.MockSchedule.postDto;
         List<SchedulePlace> schedulePlaces = StubData.MockPlace.schedulePlaces;
         Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
         schedule.setScheduleId(1L);
         schedule.setPeriod(3);
         schedule.setSchedulePlaces(schedulePlaces);
+        schedule.setMember(member);
+        schedule.setCreatedAt(LocalDateTime.now());
+        schedule.setModifiedAt(LocalDateTime.now());
 
         given(scheduleService.findSchedule(Mockito.anyLong())).willReturn(schedule);
 
@@ -216,20 +228,20 @@ public class ScheduleControllerTest {
         actions
                 .andExpect(status().isOk())
                 .andDo(
-                    document("일정 조회",
+                    document("여행 일정 조회",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
                                     .tag("Schedule")
-                                    .description("일정 조회")
-                                    .requestFields(List.of())
-                                    .responseFields(List.of())
+                                    .description("여행 일정 조회")
+                                    // .requestFields(List.of())
+                                    // .responseFields(List.of())
                                     .build())));
     }
 
     @Test
-    @DisplayName("일정의 여행지 조회")
+    @DisplayName("여행 일정의 여행지 조회")
     void getPlacesByScheduleIdTest() throws Exception {
         // given
         ScheduleDto.Post postDto = StubData.MockSchedule.postDto;
@@ -251,20 +263,20 @@ public class ScheduleControllerTest {
         actions
                 .andExpect(status().isOk())
                 .andDo(
-                    document("일정의 여행지 조회",
+                    document("여행 일정의 여행지 조회",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
                                     .tag("Schedule")
-                                    .description("일정의 여행지 조회")
-                                    .requestFields(List.of())
-                                    .responseFields(List.of())
+                                    .description("여행 일정의 여행지 조회")
+                                    // .requestFields(List.of())
+                                    // .responseFields(List.of())
                                     .build())));
     }
 
     @Test
-    @DisplayName("일정 삭제")
+    @DisplayName("여행 일정 삭제")
     void deleteScheduleTest() throws Exception {
         // given
         doNothing().when(scheduleService).deleteSchedule(1);
@@ -278,15 +290,15 @@ public class ScheduleControllerTest {
         actions
                 .andExpect(status().isNoContent())
                 .andDo(
-                    document("일정 삭제",
+                    document("여행 일정 삭제",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(
                             ResourceSnippetParameters.builder()
                                     .tag("Schedule")
                                     .description("일정 삭제")
-                                    .requestFields(List.of())
-                                    .responseFields(List.of())
+                                    // .requestFields(List.of())
+                                    // .responseFields(List.of())
                                     .build())));
     }
 }

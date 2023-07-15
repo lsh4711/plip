@@ -216,7 +216,6 @@ public class StubData {
         public static List<SchedulePlace> schedulePlaces = new ArrayList<>();
 
         static {
-            long idx = 1;
             String[] placeNames = {"감귤 농장", "초콜릿 박물관", "제주도 바닷가"};
             String[] categoryCodes = {"MT1", "CS2", "PS3"};
             String[] categoryNames = {"대형마트", "편의점", "어린이집, 유치원"};
@@ -238,7 +237,7 @@ public class StubData {
                     category.setName(categoryNames[j - 1]);
 
                     Place place = new Place();
-                    place.setPlaceId(idx);
+                    place.setPlaceId((long)j);
                     place.setApiId(j * 10 + j);
                     place.setName(placeNames[j - 1]);
                     place.setAddress("제주도 무슨동 무슨길" + j);
@@ -250,8 +249,9 @@ public class StubData {
                     schedule.setScheduleId(1L);
 
                     SchedulePlace schedulePlace = new SchedulePlace();
-                    schedulePlace.setSchedulePlaceId(idx++);
+                    schedulePlace.setSchedulePlaceId((i - 1) * 3L + j);
                     schedulePlace.setSchedule(schedule);
+                    schedulePlace.setPlace(place);
                     schedulePlace.setDays(i);
                     schedulePlace.setOrders(j);
                     schedulePlace.setBookmark(false);
