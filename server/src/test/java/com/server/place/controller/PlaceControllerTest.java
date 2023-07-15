@@ -100,6 +100,7 @@ public class PlaceControllerTest {
                                 parameterWithName("size").description("Page Size"))),
                         resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("Place")
                                     .description("여행지별 여행 일지 조회")
                                     .responseFields(
                                         List.of(

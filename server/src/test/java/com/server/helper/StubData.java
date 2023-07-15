@@ -9,10 +9,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.server.domain.category.entity.Category;
 import com.server.domain.member.dto.MemberDto;
 import com.server.domain.place.dto.PlaceDto;
+import com.server.domain.place.entity.Place;
 import com.server.domain.record.dto.RecordDto;
 import com.server.domain.schedule.dto.ScheduleDto;
+import com.server.domain.schedule.entity.Schedule;
+import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.global.auth.dto.LoginDto;
 import com.server.global.auth.jwt.JwtTokenizer;
 
@@ -185,22 +189,36 @@ public class StubData {
     public static class MockSchedule {
         public static ScheduleDto.Post postDto = new ScheduleDto.Post();
 
+        // public static Schedule schedule;
+
         static {
             postDto.setTitle("제목");
             postDto.setContent("일정에 대한 메모");
             postDto.setMemberCount(1);
             postDto.setRegion("제주도");
             postDto.setStartDate(LocalDate.now());
-            postDto.setEndDate(LocalDate.now().plusDays(5));
+            postDto.setEndDate(LocalDate.now().plusDays(2));
+
+            // schedule.setScheduleId(1L);
+            // schedule.setRegion("제주도");
+            // schedule.setTitle("제목");
+            // schedule.setContent("일정에 대한 메모");
+            // schedule.setMemberCount(1);
+            // schedule.setStartDate(LocalDateTime.now());
+            // schedule.setEndDate(LocalDateTime.now());
+            // schedule.setMember(null);
+            // schedule.setSchedulePlaces(null);
         }
     }
 
     public static class MockPlace {
         public static List<List<PlaceDto.Post>> postDtoLists = new ArrayList<>();
+        public static List<SchedulePlace> schedulePlaces = new ArrayList<>();
 
         static {
             String[] placeNames = {"감귤 농장", "초콜릿 박물관", "제주도 바닷가"};
             String[] categoryCodes = {"MT1", "CS2", "PS3"};
+            String[] categoryNames = {"대형마트", "편의점", "어린이집, 유치원"};
 
             for (int i = 1; i <= 2; i++) {
                 List<PlaceDto.Post> postDtos = new ArrayList<>();
@@ -212,7 +230,32 @@ public class StubData {
                     postDto.setLatitude(String.format("%d.%d", j * 205 + j * 17 + j * 8, j * 27));
                     postDto.setLongitude(String.format("%d.%d", j * 121 + j * 23 + j * 3, j * 31));
                     postDto.setCategory(categoryCodes[j - 1]);
+                    postDto.setBookmark(false);
                     postDtos.add(postDto);
+
+                    Category category = new Category();
+                    category.setName(categoryNames[j - 1]);
+
+                    Place place = new Place();
+                    place.setPlaceId((long)j);
+                    place.setApiId(j * 10 + j);
+                    place.setName(placeNames[j - 1]);
+                    place.setAddress("제주도 무슨동 무슨길" + j);
+                    place.setLatitude(String.format("%d.%d", j * 205 + j * 17 + j * 8, j * 27));
+                    place.setLongitude(String.format("%d.%d", j * 121 + j * 23 + j * 3, j * 31));
+                    place.setCategory(category);
+
+                    Schedule schedule = new Schedule();
+                    schedule.setScheduleId(1L);
+
+                    SchedulePlace schedulePlace = new SchedulePlace();
+                    schedulePlace.setSchedulePlaceId((i - 1) * 3L + j);
+                    schedulePlace.setSchedule(schedule);
+                    schedulePlace.setPlace(place);
+                    schedulePlace.setDays(i);
+                    schedulePlace.setOrders(j);
+                    schedulePlace.setBookmark(false);
+                    schedulePlaces.add(schedulePlace);
                 }
                 postDtoLists.add(postDtos);
             }

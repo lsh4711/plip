@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -81,17 +80,15 @@ public class ScheduleController {
         List<List<PlaceDto.Post>> placeDtoLists = patchDto.getPlaces();
         List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
 
-        if (placeLists != null) {
-            schedulePlaceService.deleteSchedulePlaces(schedulePlaces);
-            schedulePlaces = placeService
-                    .savePlaceLists(updatedSchedule, placeLists);
-        }
+        schedulePlaceService.deleteSchedulePlaces(schedulePlaces);
+        schedulePlaces = placeService
+                .savePlaceLists(updatedSchedule, placeLists);
 
-        List<PlaceResponse> placeResponses = placeMapper
-                .schedulePlacesToPlaceResponses(schedulePlaces);
+        List<List<PlaceResponse>> placeResponseLists = placeMapper
+                .schedulePlacesToPlaceResponseLists(schedulePlaces, updatedSchedule);
         ScheduleResponse scheduleResponse = scheduleMapper
                 .scheduleToScheduleResponse(updatedSchedule);
-        scheduleResponse.setPlaces(placeResponses);
+        scheduleResponse.setPlaces(placeResponseLists);
 
         return ResponseEntity.ok(scheduleResponse);
     }
@@ -101,11 +98,11 @@ public class ScheduleController {
     public ResponseEntity getSchedule(@PathVariable long scheduleId) {
         Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
-        List<PlaceResponse> placeResponses = placeMapper
-                .schedulePlacesToPlaceResponses(schedulePlaces);
+        List<List<PlaceResponse>> placeResponseLists = placeMapper
+                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
         ScheduleResponse scheduleResponse = scheduleMapper
                 .scheduleToScheduleResponse(foundSchedule);
-        scheduleResponse.setPlaces(placeResponses);
+        scheduleResponse.setPlaces(placeResponseLists);
 
         // 나중에 member의 모든 정보대신 공개해도 되는 정보만 포함해야함
         return ResponseEntity.ok(scheduleResponse);
@@ -115,10 +112,10 @@ public class ScheduleController {
     public ResponseEntity getPlacesByScheduleId(@PathVariable long scheduleId) {
         Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
-        List<PlaceResponse> placeResponses = placeMapper
-                .schedulePlacesToPlaceResponses(schedulePlaces);
+        List<List<PlaceResponse>> placeResponseLists = placeMapper
+                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
 
-        return ResponseEntity.ok(placeResponses);
+        return ResponseEntity.ok(placeResponseLists);
     }
 
     @DeleteMapping("/{scheduleId}")
@@ -128,68 +125,5 @@ public class ScheduleController {
         return ResponseEntity.noContent().build();
     }
 
-
-    // 알림 보내는 메서드
-    // @Async
-    // private void sendNotifications(Schedule schedule, Long memberId, LocalDate startDate, LocalDate endDate) {
-    //     Notification notification = createNotificationFromSchedule(schedule);
-    //     LocalTime sendTime1 = LocalTime.of(16, 0);
-    //     LocalTime sendTime2 = LocalTime.of(16, 1);
-    //
-    //     ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5);
-    //     LocalDateTime currentTime = LocalDateTime.now();
-    //
-    //     LocalDateTime startDateTime = LocalDateTime.of(startDate, sendTime1);
-    //     LocalDateTime endDateTime = LocalDateTime.of(endDate, sendTime2);
-    //
-    //     if (startDateTime.isAfter(currentTime)) {
-    //         Duration initialDelay = Duration.between(currentTime, startDateTime);
-    //
-    //         executorService.schedule(() -> {
-    //             // 알림 전송 작업
-    //             SseEmitter emitter = emitterMap.get(memberId);
-    //             try {
-    //                 // emitter.send(notification, MediaType.APPLICATION_JSON);
-    //                 emitter.send(SseEmitter.event().name("sse").data(notification));
-    //                 System.out.println("StartDate Notification sent to memberId: " + memberId);
-    //             } catch (Exception e) {
-    //                 emitter.completeWithError(e);
-    //             }
-    //         }, initialDelay.toMillis(), TimeUnit.MILLISECONDS);
-    //     }
-    //
-    //     if (endDateTime.isAfter(currentTime)) {
-    //         Duration delay = Duration.between(currentTime, endDateTime);
-    //
-    //         executorService.schedule(() -> {
-    //             // 알림 전송 작업
-    //             SseEmitter emitter = emitterMap.get(memberId);
-    //             System.out.println(emitter);
-    //             try {
-    //                 // emitter.send(notification, MediaType.APPLICATION_JSON);
-    //                 emitter.send(SseEmitter.event().name("sse").data(notification));
-    //                 System.out.println("EndDate Notification sent to memberId: " + memberId);
-    //             } catch (Exception e) {
-    //                 e.printStackTrace();
-    //                 emitter.completeWithError(e);
-    //             } finally {
-    //                 emitter.complete();
-    //             }
-    //         }, delay.toMillis(), TimeUnit.MILLISECONDS);
-    //     }
-    // }
-    //
-    // //알림 생성
-    // private Notification createNotificationFromSchedule(Schedule schedule) {
-    //     Notification notification = new Notification();
-    //
-    //     // 필요한 알림 필드 설정
-    //     notification.setRegion(schedule.getRegion());
-    //     notification.setTitle(schedule.getTitle());
-    //     notification.setContent(schedule.getContent());
-    //
-    //
-    //     return notification;
-    // }
-
+    // 알림 보내는 메서드 test/entity/Notification 으로 옮김
 }

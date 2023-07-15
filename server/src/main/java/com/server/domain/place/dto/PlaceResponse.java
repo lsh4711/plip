@@ -10,15 +10,16 @@ public class PlaceResponse {
     private long scheduleId;
     private long schedulePlaceId;
 
+    // Place
     private long apiId;
     private String name;
     private String address;
     private String latitude;
     private String longitude;
-
-    private int days;
-    private int orders;
-    private boolean bookmark; // 구현전까진 기본값으로 false
-
     private String category;
+
+    // SchedulePlace
+    private Integer days;
+    private Integer orders;
+    private Boolean bookmark;
 }

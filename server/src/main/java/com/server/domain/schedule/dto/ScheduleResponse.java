@@ -1,6 +1,5 @@
 package com.server.domain.schedule.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,10 +19,18 @@ public class ScheduleResponse {
     private String title;
     private String content;
     private Integer memberCount;
-    private LocalDate startDate;
-    private LocalDate endDate;
+
+    // 기존 코드
+    // private LocalDate startDate; 
+    // private LocalDate endDate;
+
+    // 클라이언트 요청사항
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private Integer period;
+
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    private List<PlaceResponse> places;
+    private List<List<PlaceResponse>> places;
 }

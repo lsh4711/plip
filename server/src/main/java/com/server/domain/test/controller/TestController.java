@@ -157,10 +157,10 @@ public class TestController {
         throw new CustomException(ExceptionCode.TEST_CODE);
     }
 
-    //알림 보내는 메서드
+    // 알림 보내는 메서드
     @Async
     private void sendNotifications(long taskId, String message, long second) {
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5);
         Duration delay = Duration.ofSeconds(second);
 
         // 알림 전송 작업
