@@ -45,7 +45,7 @@ const router = createBrowserRouter([
       { path: 'mypage/bookmark', element: <Bookmark /> },
     ],
   },
-  { path: 'plan/map/:region', element: <PlanMapPage /> },
+  { path: 'plan/map/:id', element: <PlanMapPage /> },
   { path: 'plan/detail', element: <PlanDetailPage /> },
 ]);
 

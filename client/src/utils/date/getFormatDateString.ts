@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 const getFormatDateString = (
   date: Date,
   includeDate: boolean,
-  format: 'korean' | 'dot'
+  format: 'korean' | 'dot' | 'dash'
 ): string => {
   let dateString;
 
@@ -14,6 +14,9 @@ const getFormatDateString = (
       break;
     case 'dot':
       dateString = dayjs(date).format('YYYY.MM.DD.');
+      break;
+    case 'dash':
+      dateString = dayjs(date).format('YYYY-MM-DD');
       break;
   }
 

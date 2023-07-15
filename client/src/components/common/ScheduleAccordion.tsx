@@ -1,13 +1,15 @@
-import { getFormatDateString } from '@/utils/date';
 import * as Accordion from '@radix-ui/react-accordion';
 import { FiChevronDown } from '@react-icons/all-files/fi/FiChevronDown';
 import { MdRemoveCircleOutline } from '@react-icons/all-files/md/MdRemoveCircleOutline';
 import { VscMenu } from '@react-icons/all-files/vsc/VscMenu';
 
+import { ScheduledPlace } from '@/types/api/schedules-types';
+import { getFormatDateString } from '@/utils/date';
+
 type Props = {
   title: string;
   date: Date;
-  contents: Array<Record<string, string>>;
+  contents: ScheduledPlace[];
   isEditMode: boolean;
 };
 
@@ -26,28 +28,36 @@ function ScheduleAccordion({ title, date, contents, isEditMode }: Props) {
             <FiChevronDown className="AccordionChevron" color="#bbb" />
           </Accordion.Trigger>
         </Accordion.Header>
-        {contents.map(({ placeName }, idx) => (
-          <Accordion.Content
-            // TODO : key 변경
-            key={idx}
-            className="AccordionContent overflow-hidden border-t-[1px]"
-          >
-            <div className="relative flex items-center justify-between px-4 py-3">
-              {isEditMode ? (
-                <button className="absolute -translate-x-1">
-                  <MdRemoveCircleOutline color="#FF3535" />
-                </button>
-              ) : (
-                <>
-                  <div className="absolute bottom-0 top-0 h-full border-[0.68px] border-dashed border-[#bbb]"></div>
-                  <div className="absolute top-1/2 h-[6px] w-[6px] -translate-x-[2.5px] -translate-y-1/2 rounded-full bg-red-400"></div>
-                </>
-              )}
-              <div className="mx-4 flex text-xs 2xl:text-sm">{placeName}</div>
-              {isEditMode && <VscMenu color="#bbb" className="w-3 2xl:w-4" />}
+        {contents.length ? (
+          contents.map(({ name }, idx) => (
+            <Accordion.Content
+              // TODO : key 변경
+              key={idx}
+              className="AccordionContent overflow-hidden border-t-[1px]"
+            >
+              <div className="relative flex items-center justify-between px-4 py-3">
+                {isEditMode ? (
+                  <button className="absolute -translate-x-1">
+                    <MdRemoveCircleOutline color="#FF3535" />
+                  </button>
+                ) : (
+                  <>
+                    <div className="absolute bottom-0 top-0 h-full border-[0.68px] border-dashed border-[#bbb]"></div>
+                    <div className="absolute top-1/2 h-[6px] w-[6px] -translate-x-[2.5px] -translate-y-1/2 rounded-full bg-red-400"></div>
+                  </>
+                )}
+                <div className="mx-4 flex text-xs 2xl:text-sm">{name}</div>
+                {isEditMode && <VscMenu color="#bbb" className="w-3 2xl:w-4" />}
+              </div>
+            </Accordion.Content>
+          ))
+        ) : (
+          <Accordion.Content className="AccordionContent overflow-hidden border-t-[1px]">
+            <div className="flex items-center justify-center px-4 py-3 text-xs text-[#bbb]">
+              추가된 일정이 없습니다.
             </div>
           </Accordion.Content>
-        ))}
+        )}
       </Accordion.Item>
     </Accordion.Root>
   );
