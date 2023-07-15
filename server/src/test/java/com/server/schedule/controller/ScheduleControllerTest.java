@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -93,9 +94,16 @@ public class ScheduleControllerTest {
 
     private String token;
 
+    private LocalDateTime now;
+
     @BeforeAll
     public void init() {
         token = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
+    }
+
+    @BeforeEach
+    public void setTime() {
+        now = LocalDateTime.now().withNano(0);
     }
 
     @Test
@@ -161,15 +169,13 @@ public class ScheduleControllerTest {
         schedule.setPeriod(3);
         schedule.setSchedulePlaces(schedulePlaces);
         schedule.setMember(member);
-        schedule.setCreatedAt(LocalDateTime.now());
-        schedule.setModifiedAt(LocalDateTime.now());
+        schedule.setCreatedAt(now);
+        schedule.setModifiedAt(now);
 
         String requestBody = gson.toJson(postDto);
 
         given(scheduleService.updateSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
-
         doNothing().when(scheduleService).deleteSchedule(1);
-
         given(placeService.savePlaceLists(Mockito.any(Schedule.class), Mockito.<List<Place>>anyList()))
                 .willReturn(schedulePlaces);
 
@@ -213,8 +219,8 @@ public class ScheduleControllerTest {
         schedule.setPeriod(3);
         schedule.setSchedulePlaces(schedulePlaces);
         schedule.setMember(member);
-        schedule.setCreatedAt(LocalDateTime.now());
-        schedule.setModifiedAt(LocalDateTime.now());
+        schedule.setCreatedAt(now);
+        schedule.setModifiedAt(now);
 
         given(scheduleService.findSchedule(Mockito.anyLong())).willReturn(schedule);
 

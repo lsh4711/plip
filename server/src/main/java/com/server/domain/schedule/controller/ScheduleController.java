@@ -93,7 +93,6 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleResponse);
     }
 
-    // 일단은 장소 정보까지 넣어놈
     @GetMapping("/{scheduleId}")
     public ResponseEntity getSchedule(@PathVariable long scheduleId) {
         Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
@@ -104,7 +103,7 @@ public class ScheduleController {
                 .scheduleToScheduleResponse(foundSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
 
-        // 나중에 member의 모든 정보대신 공개해도 되는 정보만 포함해야함
+        // 일정 공유 기능도 겸하기에 Member의 공개해도 되는 정보만 포함해야함
         return ResponseEntity.ok(scheduleResponse);
     }
 
@@ -124,6 +123,4 @@ public class ScheduleController {
 
         return ResponseEntity.noContent().build();
     }
-
-    // 알림 보내는 메서드 test/entity/Notification 으로 옮김
 }
