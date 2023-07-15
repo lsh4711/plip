@@ -15,6 +15,7 @@ import NotFound from './pages/NotFound';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from './components/helper/ErrorFallback';
 import LoadingPage from './pages/LoadingPage';
+import ToastContainer from './components/ui/toast/ToastContainer';
 
 const Home = lazy(() => import('./pages/Home'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
@@ -49,8 +50,24 @@ const router = createBrowserRouter([
       { path: 'loading', element: <LoadingPage /> },
     ],
   },
-  { path: 'plan/map/:id', element: <PlanMapPage /> },
-  { path: 'plan/detail', element: <PlanDetailPage /> },
+  {
+    path: 'plan/map/:id',
+    element: (
+      <>
+        <ToastContainer />
+        <PlanMapPage />
+      </>
+    ),
+  },
+  {
+    path: 'plan/detail',
+    element: (
+      <>
+        <ToastContainer />
+        <PlanDetailPage />,
+      </>
+    ),
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

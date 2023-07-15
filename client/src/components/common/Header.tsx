@@ -12,7 +12,7 @@ import Avatar from './Avatar';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import useInquireUsersQuery from '@/queries/useInquireUsersQuery';
-import { EMPTY_TOKEN } from '@/redux/slices/authSlice';
+import instance from '@/queries/axiosinstance';
 
 interface HeaderProps {
   isHome?: boolean;
@@ -23,8 +23,31 @@ interface AfterHeaderProps extends HeaderProps {
 }
 
 const BeforeLogin = ({ isHome }: HeaderProps) => {
+  // admin 계정 로그인 함수 / 앞단 유효성 때문에 어드민 로그인 안됨
+
+  const onMasterLogin = () => {
+    const username = import.meta.env.VITE_ADMIN_ID;
+    const password = import.meta.env.VITE_ADMIN_PW;
+
+    instance
+      .post(
+        '/api/users/login',
+        {
+          username,
+          password,
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        console.log(res);
+      });
+  };
+
   return (
     <>
+      <Button className={isHome ? 'text-white' : ''} onClick={onMasterLogin}>
+        <Link to="#">Master</Link>
+      </Button>
       <Button className={isHome ? 'text-white' : ''}>
         <Link to="/login">Sign in</Link>
       </Button>

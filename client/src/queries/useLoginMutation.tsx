@@ -24,6 +24,7 @@ const postLogin = async (loginData: LoginType) => {
   );
   const ACCESS_TOKEN = response.headers['authorization'];
   instance.defaults.headers['Authorization'] = response.headers['authorization'];
+
   return {
     response,
     ACCESS_TOKEN,
