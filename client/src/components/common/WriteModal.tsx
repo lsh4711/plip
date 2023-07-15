@@ -4,6 +4,7 @@ import { ReactComponent as PlusCircleIcon } from '@/assets/icons/plus-circle.svg
 import { useRef, useState } from 'react';
 import { ReactComponent as CloseIcon } from '@/assets/icons/close.svg';
 import { maxImages, maxRecordCharacters } from '@/datas/constants';
+import { resizeFile } from '@/utils/file/resizeFile';
 
 import useModal from '@/hooks/useModal';
 import RecordAPI from '@/queries/RecordAPI';
@@ -26,11 +27,12 @@ type CancelAlertProps = {
 const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
   const [openModal] = useModal();
   const toast = useToast();
-  const SCHEDULE_PLACE_ID = 2;
+  const SCHEDULE_PLACE_ID = 4; // 테스트를 위한 임시 변수입니다. 요청 주소의 param으로 사용됩니다.
 
-  const inputImageRef = useRef<HTMLInputElement>(null);
+  const inputImageRef = useRef<HTMLInputElement>(document.createElement('input'));
 
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [test, setTest] = useState<File[]>([]); // 원본 이미지를 서버에 전송하기 위한 임시변수 추후 삭제 예정
   const [preViewImgSrcs, setPreViewImgSrcs] = useState<string[]>([]);
   const [text, setText] = useState('');
 
@@ -54,13 +56,11 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
   const onClickImgInputHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     inputImageRef.current?.click();
+    inputImageRef.current.value = '';
   };
 
-  const onUploadImageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formData = new FormData();
-
+  const onUploadImageHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const imgFiles = e.target.files!;
-    // console.log(imgFiles);
 
     const currentUploadedImages = preViewImgSrcs.length + imgFiles?.length!;
 
@@ -69,25 +69,28 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
       return;
     }
 
-    // 이미 파일이 추가되어 있을 경우 추가적으로 파일에 formData를 합쳐줘야
-    if (uploadedImages) {
-      const files = Array.from([...uploadedImages, ...imgFiles]);
-      console.log(files);
-      setUploadedImages(files);
+    let files: File[] = [];
+    const resizedImages: File[] = [];
+
+    // 이미 파일이 추가되어 있을 경우 추가적으로 파일에 formData를 병합
+    if (uploadedImages.length > 0) {
+      files = Array.from([...uploadedImages, ...imgFiles]);
     } else {
-      const files = Array.from([...imgFiles]);
-      setUploadedImages(files);
+      files = Array.from([...imgFiles]);
     }
 
-    let relativeImageUrls = [...preViewImgSrcs]; // 상대 경로 이미지들을 저장
+    // 업로드 이미지 미리보기
+    let relativeImageUrls: string[] = []; // 상대 경로 이미지들을 저장
 
-    for (let img of imgFiles) {
-      formData.append('images', img);
-
-      const currentImageUrl = URL.createObjectURL(img); // 상대 경로
+    for (let img of files) {
+      const resizedImage: File = (await resizeFile(img)) as File;
+      resizedImages.push(resizedImage);
+      const currentImageUrl = URL.createObjectURL(resizedImage); // 상대 경로
       relativeImageUrls.push(currentImageUrl);
     }
 
+    setTest(files);
+    setUploadedImages(resizedImages);
     setPreViewImgSrcs(relativeImageUrls);
   };
 
@@ -99,12 +102,21 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
     setUploadedImages(filteredUploadedImages);
   };
 
-  const onSubmitRecord = () => {
+  const onSubmitRecord = async () => {
     const formData = new FormData();
     const record = new RecordAPI();
 
+    if (uploadedImages.length === 0 && text.length === 0) {
+      alert('이미지 업로드 혹은 글을 작성해주세요.');
+      return;
+    }
+
     for (let img of uploadedImages) {
-      formData.append('images', img);
+      try {
+        formData.append('images', img);
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     try {

@@ -33,12 +33,17 @@ export default class RecordAPI {
   async onPostRecord(param: number, content: string, formData: FormData) {
     return this.#postRecord(param, content).then((res) => {
       const recordUrl = res.headers.location;
-      console.log(recordUrl);
       if (res.status >= 400) {
         throw Error('일지 작성에 실패하였습니다.');
       }
 
-      return this.#postImages(recordUrl, formData);
+      return this.#postImages(recordUrl, formData)
+        .then((res) => {
+          if (res.status >= 400) {
+            throw Error('사진 전송에 실패하였습니다.');
+          }
+        })
+        .catch((e) => console.error(e));
     });
   }
 
