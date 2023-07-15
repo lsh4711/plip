@@ -1,4 +1,5 @@
 import { MypageSideNav } from '@/components';
+import Preparing from '@/components/common/Preparing';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import instance from '@/queries/axiosinstance';
 import { EMPTY_TOKEN } from '@/redux/slices/authSlice';
@@ -14,7 +15,7 @@ const MyTripPage = ({}: MyTripPageProps) => {
   return (
     <div className=" flex">
       <MypageSideNav />
-      <Link to={'/signout'}>회원탈퇴 실험</Link>
+      <Preparing />
     </div>
   );
 };

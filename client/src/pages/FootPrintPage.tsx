@@ -1,4 +1,5 @@
 import { MypageSideNav } from '@/components';
+import Preparing from '@/components/common/Preparing';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 
 interface FootPrintPageProps {}
@@ -10,6 +11,7 @@ const FootPrintPage = ({}: FootPrintPageProps) => {
   return (
     <div className=" flex">
       <MypageSideNav />
+      <Preparing />
     </div>
   );
 };

@@ -9,14 +9,13 @@ interface OauthUIProps {}
 
 const OauthUI = ({}: OauthUIProps) => {
   const endpoint = useLocation();
-  console.log(endpoint);
   return (
     <>
       <div className=" mt-6 flex items-center justify-center gap-x-5">
         <KakaoButton />
         <NaverButton />
       </div>
-      <div className=" mt-6 flex flex-col items-center justify-center gap-y-6">
+      <figure className=" mt-6 flex flex-col items-center justify-center gap-y-6">
         <Paragraph>
           {endpoint.pathname === '/signup' ? (
             <>
@@ -31,16 +30,17 @@ const OauthUI = ({}: OauthUIProps) => {
               <Link to={'/signup'} className=" text-blue-500">
                 통합 회원가입 하기
               </Link>
-              <div className=" mt-3">
+              <br />
+              <span>
                 비밀번호를 잊으셨나요?{' '}
                 <Link to={'/login/password'} className=" text-blue-500">
                   비밀번호 찾기
                 </Link>
-              </div>
+              </span>
             </>
           )}
         </Paragraph>
-      </div>
+      </figure>
     </>
   );
 };
