@@ -19,7 +19,7 @@ public class ScheduleDto {
     public static class Post {
         private String title; // optional, default: "{region} 여행 레츠고!"
         private String content; // optional, default: "즐거운 {region} 여행~!"
-        private int memberCount = 1; // optional, default: 1
+        private int memberCount; // optional, default: 1
 
         @NotBlank
         private String region;

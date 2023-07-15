@@ -21,12 +21,16 @@ public class ScheduleService {
         String region = schedule.getRegion();
         String title = schedule.getTitle();
         String content = schedule.getContent();
+        int memberCount = schedule.getMemberCount();
 
         if (title == null) {
             schedule.setTitle(String.format("%s 여행 레츠고!", region));
         }
         if (content == null) {
             schedule.setContent(String.format("즐거운 %s 여행~!", region));
+        }
+        if (memberCount <= 0) {
+            schedule.setMemberCount(1);
         }
 
         return scheduleRepository.save(schedule);
