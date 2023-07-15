@@ -3,31 +3,22 @@ import { useState } from 'react';
 import { Input } from '@/components';
 import { CategoryButtonGroup, SearchResult } from '@/components/map';
 import { CategoryNames, categories } from '@/datas/categories';
-import { GetPlaceByKeywordResponse } from '@/types/mapApi/place-types';
+import { CategoryGroupCode } from '@/types/mapApi/place-types';
 import RoundButton from '../common/RoundButton';
 
-type Props = {};
+type Props = {
+  currentX: number;
+  currentY: number;
+};
 
-const SearchTools = ({}: Props) => {
+const SearchTools = ({ currentX, currentY }: Props) => {
   const [input, setInput] = useState('');
-  const [keyword, setKeyword] = useState('');
-  const [results, setResults] = useState<
-    | Pick<
-        GetPlaceByKeywordResponse,
-        'place_name' | 'road_address_name' | 'phone' | 'id' | 'category_name'
-      >[]
-    | null
-  >(null);
-
-  const onSearch = (keyword: string) => {
-    setKeyword(keyword);
-    setResults([]); // TODO
-  };
+  const [keyword, setKeyword] = useState<any>(null);
+  const [categoryCode, setCategoryCode] = useState<CategoryGroupCode>('');
 
   const onResetSearch = () => {
     setInput('');
-    setKeyword('');
-    setResults(null);
+    setKeyword(null);
   };
 
   return (
@@ -37,13 +28,14 @@ const SearchTools = ({}: Props) => {
           className="pointer-events-auto h-10 w-80 drop-shadow-xl"
           placeholder="장소를 검색하세요."
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            setInput(e.target.value);
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               if (input.length > 0) {
-                onSearch(input);
-              } else {
-                setResults(null);
+                setKeyword(input);
+                setCategoryCode('');
               }
             }
           }}
@@ -54,7 +46,8 @@ const SearchTools = ({}: Props) => {
               key={idx}
               onClick={() => {
                 setInput(categories[categoryName].name);
-                onSearch(categories[categoryName].name);
+                setKeyword(categories[categoryName].name);
+                setCategoryCode(categories[categoryName].code);
               }}
             >
               {categories[categoryName].icon}
@@ -62,7 +55,15 @@ const SearchTools = ({}: Props) => {
           ))}
         </CategoryButtonGroup>
       </div>
-      <SearchResult keyword={keyword} results={results} onResetSearch={onResetSearch} />
+      {keyword && (
+        <SearchResult
+          keyword={keyword}
+          onResetSearch={onResetSearch}
+          currentX={currentX}
+          currentY={currentY}
+          categoryCode={categoryCode}
+        />
+      )}
     </div>
   );
 };

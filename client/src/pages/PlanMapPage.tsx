@@ -124,7 +124,7 @@ const PlanMapPage = () => {
           </MarkerClusterer>
         </Map>
       )}
-      <SearchTools />
+      <SearchTools currentX={currentPosition.lng} currentY={currentPosition.lat} />
       <MenuButtons />
       <SidePanel position={'right'}>
         <TripInfo
