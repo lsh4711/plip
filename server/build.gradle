@@ -97,7 +97,7 @@ openapi3 {
     ]
     title = "코벤져스 API 문서"
     // description = "Spring REST Docs with SwaggerUI."
-    description = "admin: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA\ntest: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoidGVzdEBuYXZlci5jb20iLCJtZW1iZXJJZCI6NSwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE2ODk0OTc3NzEsImV4cCI6MTY5MjEyNTc3MX0.QMC-1_oBAnZYz-yzYJ-wgVs6B5mPu8oxfF-CfXaz5uhhonqilXai4qw7IG1rXMh8G1DjGoUobtNi8iWLsRu02Q"
+    description = "admin: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA<br />test: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoidGVzdEBuYXZlci5jb20iLCJtZW1iZXJJZCI6NSwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE2ODk0OTc3NzEsImV4cCI6MTY5MjEyNTc3MX0.QMC-1_oBAnZYz-yzYJ-wgVs6B5mPu8oxfF-CfXaz5uhhonqilXai4qw7IG1rXMh8G1DjGoUobtNi8iWLsRu02Q"
     version = "0.0.1"
     outputFileNamePrefix = 'open-api-3.0.1'
     format = 'json'
