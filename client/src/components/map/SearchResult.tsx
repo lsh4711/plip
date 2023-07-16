@@ -1,10 +1,10 @@
-import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import {
   SearchPlaceByCategory,
   SearchPlaceByKeyword,
   default as useSearchPlaceQuery,
 } from '@/queries/search/useKeywordSearchQuery';
 import { MdClose } from '@react-icons/all-files/md/MdClose';
+import { useState } from 'react';
 
 type ResultInfoProps = {
   children: React.ReactNode;
@@ -56,19 +56,14 @@ const SearchResult = ({
   currentY,
   categoryCode,
 }: SearchResultProps) => {
-  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, error, isLoading } =
-    useSearchPlaceQuery({
-      keyword,
-      currentX,
-      currentY,
-      categoryCode,
-    });
-
-  const { ref } = useIntersectionObserver(() => {
-    if (hasNextPage) fetchNextPage();
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data, error, isLoading } = useSearchPlaceQuery({
+    pageParam: currentPage,
+    keyword,
+    currentX,
+    currentY,
+    categoryCode,
   });
-
-  const pagination = data?.pages[0].pagination;
 
   return (
     <>
@@ -78,7 +73,7 @@ const SearchResult = ({
             <span className="mr-1 inline-block max-w-[8rem] overflow-hidden text-ellipsis align-top font-bold text-[#4568DC]">
               {keyword}
             </span>
-            {isLoading ? '검색중...' : <span>검색 결과 {pagination?.totalCount || 0}건</span>}
+            {isLoading ? '검색중...' : <span>검색 결과</span>}
           </div>
           <MdClose size={14} color="#bbb" className="cursor-pointer" onClick={onResetSearch} />
         </ResultInfo>
@@ -87,23 +82,44 @@ const SearchResult = ({
             <div className="flex items-center justify-center border-t-[1px] border-solid border-[#bbb] p-4 text-sm text-[#bbb]">
               검색중...
             </div>
-          ) : data?.pages[0].places.length ? (
+          ) : error ? (
+            <div>에러</div> // TODO : 에러 Fallback
+          ) : data?.places.length ? (
             <div>
-              {data?.pages.map((page, pageNumber) =>
-                page.places.map(
-                  ({ id, place_name, road_address_name, category_group_name, phone }, idx) => (
-                    <ResultItem
-                      key={id}
-                      order={pageNumber * 15 + idx}
-                      placeName={place_name}
-                      address={road_address_name}
-                      category={category_group_name}
-                      phone={phone}
-                    />
-                  )
+              {data.places.map(
+                ({ id, place_name, road_address_name, category_group_name, phone }, idx) => (
+                  <ResultItem
+                    key={id}
+                    order={idx}
+                    placeName={place_name}
+                    address={road_address_name}
+                    category={category_group_name}
+                    phone={phone}
+                  />
                 )
               )}
-              <div ref={ref} />
+              {data.pagination.first! !== data.pagination.last! && (
+                <div className="flex w-full items-center justify-center gap-3 border-t-[1px] p-2">
+                  {Array.from({ length: data.pagination.last! }).map((_, idx) => (
+                    <button
+                      onClick={() => {
+                        if (idx + 1 > currentPage) {
+                          setCurrentPage(idx + 1);
+                        } else if (idx + 1 < currentPage) {
+                          setCurrentPage(idx + 1);
+                        }
+                      }}
+                      className={`cursor-pointer px-1 text-sm hover:opacity-50 ${
+                        idx + 1 === currentPage
+                          ? 'font-extrabold text-[#4568DC]'
+                          : 'font-normal text-[#343539]'
+                      }`}
+                    >
+                      {idx + 1}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex items-center justify-center border-t-[1px] border-solid border-[#bbb] p-4 text-sm text-[#bbb]">
