@@ -16,8 +16,8 @@ export interface ScheduledPlaceBase {
   latitude: string;
   longitude: string;
   category: CategoryGroupCode;
-  bookmark: false;
-  // phone 추가 필요
+  bookmark: boolean;
+  // TODO phone 추가 필요
 }
 
 // GET : /schedules/:id
