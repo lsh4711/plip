@@ -4,7 +4,10 @@ import {
   default as useSearchPlaceQuery,
 } from '@/queries/search/useKeywordSearchQuery';
 import { MdClose } from '@react-icons/all-files/md/MdClose';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { setResult } from '@/redux/slices/searchPlaceSlice';
 
 type ResultInfoProps = {
   children: React.ReactNode;
@@ -65,6 +68,14 @@ const SearchResult = ({
     categoryCode,
   });
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (data) {
+      dispatch(setResult(data.places));
+    }
+  }, [data]);
+
   return (
     <>
       <div className="pointer-events-auto relative left-0 min-h-fit w-80 overflow-y-scroll rounded-lg border-[1px] border-solid border-[#bbb] bg-white drop-shadow-lg">
@@ -102,6 +113,7 @@ const SearchResult = ({
                 <div className="flex w-full items-center justify-center gap-3 border-t-[1px] p-2">
                   {Array.from({ length: data.pagination.last! }).map((_, idx) => (
                     <button
+                      key={idx}
                       onClick={() => {
                         if (idx + 1 > currentPage) {
                           setCurrentPage(idx + 1);

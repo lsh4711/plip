@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { Input } from '@/components';
+import RoundButton from '@/components/common/RoundButton';
 import { CategoryButtonGroup, SearchResult } from '@/components/map';
 import { CategoryNames, categories } from '@/datas/categories';
+import { setResult } from '@/redux/slices/searchPlaceSlice';
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
-import RoundButton from '../common/RoundButton';
 
 type Props = {
   currentX: number;
@@ -16,9 +18,12 @@ const SearchTools = ({ currentX, currentY }: Props) => {
   const [keyword, setKeyword] = useState<any>(null);
   const [categoryCode, setCategoryCode] = useState<CategoryGroupCode>('');
 
+  const dispatch = useDispatch();
+
   const onResetSearch = () => {
     setInput('');
     setKeyword(null);
+    dispatch(setResult([]));
   };
 
   return (
