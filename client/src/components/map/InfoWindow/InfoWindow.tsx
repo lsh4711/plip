@@ -12,13 +12,22 @@ type Props = {
   category?: string;
   phone?: string;
   className?: string;
+  onClickClose: () => void;
 };
 
-const InfoWindow = ({ placeName, address, isBookmarked, category, phone, className }: Props) => {
+const InfoWindow = ({
+  placeName,
+  address,
+  isBookmarked,
+  category,
+  phone,
+  className,
+  onClickClose,
+}: Props) => {
   return (
     <div
       className={cn([
-        'absolute z-50 flex min-w-[320px] flex-col gap-1 rounded-lg bg-white p-4 drop-shadow-lg',
+        'z-50 flex min-w-[320px] flex-col gap-1 rounded-lg bg-white p-4 drop-shadow-lg',
         className,
       ])}
     >
@@ -29,8 +38,7 @@ const InfoWindow = ({ placeName, address, isBookmarked, category, phone, classNa
           </HeadingParagraph>
           <FaStar color={isBookmarked ? '#ffdd00' : '#eee'} size={16} />
         </div>
-        {/* TODO Close Button Click Handler */}
-        <MdClose color="#bbb" size={16} onClick={() => {}} />
+        <MdClose color="#bbb" size={16} onClick={onClickClose} className="cursor-pointer" />
       </div>
 
       <span className="text-xs text-[#bbb]">{category}</span>
