@@ -57,7 +57,6 @@ public class Init {
             category.setName(name);
             categories.add(category);
         }
-
         categoryService.saveCategorys(categories);
 
         Role admin = Role.ADMIN;
