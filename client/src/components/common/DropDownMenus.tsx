@@ -9,8 +9,12 @@ const DropDownMenus = () => {
       className={`absolute right-[-2.25rem] top-9 z-50 flex w-[200px] flex-col rounded-lg border bg-white shadow-md`}
     >
       {menus.map((item, index) => (
-        <Link to={item.route} className="w-full border-b-2 p-4 text-black last:border-b-0">
-          <div key={index} className="flex w-full gap-2 ">
+        <Link
+          key={index}
+          to={item.route}
+          className="w-full border-b-2 p-4 text-black last:border-b-0"
+        >
+          <div className="flex w-full gap-2 ">
             {item.icon}
             {item.name}
           </div>

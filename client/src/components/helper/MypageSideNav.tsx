@@ -12,6 +12,7 @@ const MypageSideNav = ({}: MypageSideNavProps) => {
       <div className=" flex flex-col items-end gap-y-[1.5rem] pr-6">
         {buttonArray.map((item, idx) => (
           <Button
+            key={idx}
             className=" text-[1.25rem] font-normal hover:text-zinc-200"
             variant={path.pathname === item.slug ? 'primary' : 'default'}
           >
