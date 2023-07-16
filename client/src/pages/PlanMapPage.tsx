@@ -80,10 +80,10 @@ const PlanMapPage = () => {
             </Button>
             <ZoomButtons
               onClickZoomIn={() => {
-                setMapLevel(mapLevel - 1);
+                setMapLevel(mapLevel > 1 ? mapLevel - 1 : 1);
               }}
               onClickZoomOut={() => {
-                setMapLevel(mapLevel + 1);
+                setMapLevel(mapLevel < 14 ? mapLevel + 1 : 14);
               }}
               className={'absolute -left-16 bottom-6 z-50'}
             />
