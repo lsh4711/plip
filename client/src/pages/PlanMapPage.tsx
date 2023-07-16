@@ -7,17 +7,20 @@ import TripInfo from '@/components/common/TripInfo';
 import TripSchedule from '@/components/common/TripSchedule';
 import WriteModal from '@/components/common/WriteModal';
 import { Map, MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
+import { dummySchedule } from '@/datas/dummySchedule';
 import useModal from '@/hooks/useModal';
+import useToast from '@/hooks/useToast';
 import { usePlanQuery } from '@/queries/plan';
+import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 import getRegionCenterLat from '@/utils/map/getRegionCenterLat';
 import getRegionCenterLng from '@/utils/map/getRegionCenterLng';
-import useToast from '@/hooks/useToast';
 
 const PlanMapPage = () => {
   const { id } = useParams();
   const { data, isLoading, error } = usePlanQuery(id!);
 
-  const [schedule, setSchedule] = useState(data?.places);
+  // const [schedule, setSchedule] = useState<ScheduledPlaceBase[][]>(data?.places!);
+  const [schedule, setSchedule] = useState<ScheduledPlaceBase[][]>(dummySchedule);
 
   const [openModal] = useModal();
   const toast = useToast();
@@ -39,10 +42,13 @@ const PlanMapPage = () => {
       ) : (
         <>
           <Map
+            type="scheduling"
             centerLat={getRegionCenterLat(data?.region!)}
             centerLng={getRegionCenterLng(data?.region!)}
             mapLevel={mapLevel}
             setMapLevel={setMapLevel}
+            schedules={schedule}
+            showPolyline
           />
 
           <SearchTools
