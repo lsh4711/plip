@@ -44,10 +44,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException {
         OAuthAttributes oAuth2User = (OAuthAttributes)authentication.getPrincipal();
-        if(memberRepository.existsByEmail(oAuth2User.getEmail())){
+        /*if(memberRepository.existsByEmail(oAuth2User.getEmail())){
             AuthenticationError.sendErrorResponse(response, new CustomException(ExceptionCode.EMAIL_EXISTS));
             return;
-        }
+        }*/
         Member member = memberRepository.save(memberMapper.oauthAttributesToMember(oAuth2User));
 
         OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2TokenUtils.getOAuth2AuthorizedClient(authentication);
