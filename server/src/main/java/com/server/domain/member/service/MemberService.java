@@ -30,7 +30,6 @@ public class MemberService {
         if (member.getRole() == null) {
             member.setRole(Role.USER);
         }
-
         return memberRepository.save(member);
     }
 

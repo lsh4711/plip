@@ -1,8 +1,5 @@
 package com.server.global.file;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +18,6 @@ public class FileController {
     @GetMapping
     public ResponseEntity getImage(@RequestParam String region) {
         byte[] base64EncodedImage = fileService.getImageByRegion(region);
-        List<String> imgs = new ArrayList<>();
-        // imgs.add(base64EncodedImage);
 
         return ResponseEntity.ok()
                 // .contentType(MediaType.IMAGE_JPEG)

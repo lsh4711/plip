@@ -123,8 +123,7 @@ public class Init {
         List<SchedulePlace> schedulePlaces = new ArrayList<>();
 
         for (int i = 1; i <= 3; i++) {
-            Category category = new Category();
-            category.setCategoryId((long)i);
+            Category category = categories.get(i);
             Place place = new Place();
             place.setApiId(i * 10 + i);
             place.setName(placeNames[i - 1]);

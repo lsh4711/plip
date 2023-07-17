@@ -17,7 +17,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.server.domain.member.mapper.MemberMapper;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.oauth.service.KakaoTokenOauthService;
 import com.server.domain.token.service.RedisUtils;
@@ -45,7 +44,6 @@ public class SecurityConfig {
     private final RedisUtils redisUtils;
     private final OAuth2TokenUtils oAuth2TokenUtils;
     private final KakaoTokenOauthService kakaoTokenOauthService;
-    private final MemberMapper memberMapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -71,12 +69,13 @@ public class SecurityConfig {
                         .and()
                         .successHandler(
                             new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer,
-                                oAuth2TokenUtils, kakaoTokenOauthService, memberMapper)))
+                                oAuth2TokenUtils, kakaoTokenOauthService)))
                 .apply(customFilterConfigurers())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
                         .antMatchers(HttpMethod.GET, "/*/places/*/records").permitAll()
                         .antMatchers(HttpMethod.GET, "/*/records/*").permitAll()
+                        .antMatchers(HttpMethod.GET, "/*/schedules/*/share").permitAll()
                         .antMatchers("/*/users").authenticated()
                         .antMatchers("/*/records").authenticated()
                         .antMatchers("/*/records/**").authenticated()
@@ -112,6 +111,7 @@ public class SecurityConfig {
         configuration.addExposedHeader("Authorization");
         configuration.addExposedHeader("Refresh");
         configuration.addExposedHeader("Location");
+        configuration.addExposedHeader("Set-Cookie");
         configuration.addAllowedHeader("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

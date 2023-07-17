@@ -16,7 +16,7 @@ public class FileService {
     private String basePath;
 
     public byte[] getImageByRegion(String region) {
-        byte[] base64EncodedImage = null;
+        byte[] image = null;
         String fullPath = String.format("%s/%s.webp",
             basePath,
             region);
@@ -24,13 +24,12 @@ public class FileService {
 
         if (file.exists()) {
             try {
-                byte[] image = FileUtils.readFileToByteArray(file);
-                base64EncodedImage = image;
+                image = FileUtils.readFileToByteArray(file);
             } catch (IOException e) {
                 throw new CustomException(ExceptionCode.IMAGE_NOT_FOUND);
             }
         }
 
-        return base64EncodedImage;
+        return image;
     }
 }

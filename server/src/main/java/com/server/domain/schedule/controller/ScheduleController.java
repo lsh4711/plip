@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.domain.member.entity.Member;
@@ -97,6 +98,23 @@ public class ScheduleController {
     @GetMapping("/{scheduleId}")
     public ResponseEntity getSchedule(@PathVariable long scheduleId) {
         Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
+        List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
+        List<List<PlaceResponse>> placeResponseLists = placeMapper
+                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
+        ScheduleResponse scheduleResponse = scheduleMapper
+                .scheduleToScheduleResponse(foundSchedule);
+        scheduleResponse.setPlaces(placeResponseLists);
+        scheduleResponse.setPlaceSize(schedulePlaces.size());
+
+        // 일정 공유 기능도 겸하기에 Member의 공개해도 되는 정보만 포함해야함
+        return ResponseEntity.ok(scheduleResponse);
+    }
+
+    @GetMapping("/{scheduleId}/share")
+    public ResponseEntity getScheduleByMemberIdAndEmail(@PathVariable long scheduleId,
+            @RequestParam("id") long memberId,
+            @RequestParam String email) {
+        Schedule foundSchedule = scheduleService.findSharedSchedule(scheduleId, memberId, email);
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
         List<List<PlaceResponse>> placeResponseLists = placeMapper
                 .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);

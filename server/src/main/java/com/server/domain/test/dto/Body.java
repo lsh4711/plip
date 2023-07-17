@@ -25,9 +25,9 @@ public class Body {
 
     public static class Content {
         private String title = "제목입니다.";
-        private int image_width = 167;
-        private int image_height = 200;
-        private String image_url = "https://cdn.discordapp.com/attachments/1121434466871676948/1130436086041157696/logo.png";
+        private int image_width = 600;
+        private int image_height = 400;
+        private String image_url = "https://teamdev.shop:8000/files/images?region=seoul";
         private Link link = new Link();
     }
 

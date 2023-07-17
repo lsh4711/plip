@@ -21,6 +21,9 @@ java {
 }
 
 configurations {
+    all { //기타 로깅 스타터의 모든 발생을 Log4j2 스타터로 대체
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
     compileOnly {
         extendsFrom annotationProcessor
     }
@@ -66,6 +69,13 @@ dependencies {
     implementation 'commons-io:commons-io:2.13.0'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE' // s3 버킷 사용
     implementation 'org.springframework.boot:spring-boot-starter-batch:2.7.13'
+
+    // log
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2' //log4j2 추가
+    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.79.Final:osx-aarch_64' //m2에서 애플리케이션 실행 오류로 추가
+    implementation 'org.springframework.boot:spring-boot-starter-aop' //aop 추가
+
+
 }
 
 tasks.named('test') {

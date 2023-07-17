@@ -10,4 +10,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     Schedule findByScheduleIdAndMember_MemberId(long scheduleId,
             long memberId);
+
+    Schedule findByScheduleIdAndMember_MemberIdAndMember_Email(long scheduleId,
+            long memberId, String email);
 }

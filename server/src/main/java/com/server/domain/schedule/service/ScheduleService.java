@@ -55,6 +55,18 @@ public class ScheduleService {
         return schedule;
     }
 
+    public Schedule findSharedSchedule(long scheduleId, long memberId, String email) {
+        Schedule schedule = scheduleRepository
+                .findByScheduleIdAndMember_MemberIdAndMember_Email(scheduleId, memberId, email);
+
+        if (schedule == null) {
+            throw new CustomException(
+                ExceptionCode.SCHEDULE_NOT_FOUND);
+        }
+
+        return schedule;
+    }
+
     public void deleteSchedule(long scheduleId) {
         long memberId = CustomUtil.getAuthId();
 
