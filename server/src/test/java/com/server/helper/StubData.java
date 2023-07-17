@@ -193,7 +193,6 @@ public class StubData {
 
         static {
             postDto.setTitle("제목");
-            postDto.setContent("일정에 대한 메모");
             postDto.setMemberCount(1);
             postDto.setRegion("제주도");
             postDto.setStartDate(LocalDate.now());

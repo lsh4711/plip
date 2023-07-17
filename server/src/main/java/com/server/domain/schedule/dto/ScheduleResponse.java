@@ -17,7 +17,6 @@ public class ScheduleResponse {
     private Long scheduleId;
     private String region;
     private String title;
-    private String content;
     private Integer memberCount;
 
     // 기존 코드

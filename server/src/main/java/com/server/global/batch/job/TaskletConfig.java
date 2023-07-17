@@ -5,15 +5,14 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import com.server.global.batch.tasklet.BatchTasklet;
 
 import lombok.RequiredArgsConstructor;
 
-@Configuration
+// @Configuration
 @RequiredArgsConstructor
-public class BatchConfig {
+public class TaskletConfig {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
@@ -54,4 +53,5 @@ public class BatchConfig {
 
         return customStep3;
     }
+
 }

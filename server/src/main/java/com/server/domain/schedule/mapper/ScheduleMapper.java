@@ -22,7 +22,7 @@ public interface ScheduleMapper {
         LocalDate endDate = postDto.getEndDate();
         int period = endDate.compareTo(startDate);
 
-        schedule.setContent(postDto.getContent());
+        // schedule.setContent(postDto.getContent());
         schedule.setEndDate(endDate);
         schedule.setMemberCount(postDto.getMemberCount());
         schedule.setRegion(postDto.getRegion());
@@ -46,7 +46,7 @@ public interface ScheduleMapper {
             int period = endDate.compareTo(startDate);
             schedule.setPeriod(period + 1);
         }
-        schedule.setContent(patchDto.getContent());
+        // schedule.setContent(patchDto.getContent());
         schedule.setEndDate(endDate);
         schedule.setMemberCount(patchDto.getMemberCount());
         schedule.setRegion(patchDto.getRegion());
@@ -74,7 +74,7 @@ public interface ScheduleMapper {
         }
         scheduleResponse.setStartDate(startDate);
         scheduleResponse.setEndDate(endDate);
-        scheduleResponse.setContent(schedule.getContent());
+        // scheduleResponse.setContent(schedule.getContent());
         scheduleResponse.setCreatedAt(schedule.getCreatedAt());
         scheduleResponse.setMemberCount(schedule.getMemberCount());
         scheduleResponse.setModifiedAt(schedule.getModifiedAt());

@@ -95,17 +95,28 @@ public class Init {
         Member member = Member.builder()
                 .memberId(1L)
                 .build();
-        Schedule schedule = new Schedule();
-        schedule.setRegion("제주도");
-        schedule.setTitle("즐거운 여행 제목");
-        schedule.setContent("여행 내용");
-        schedule.setMemberCount(5);
-        schedule.setStartDate(LocalDate.now());
-        schedule.setEndDate(LocalDate.now().plusDays(3));
-        schedule.setMember(member);
-        schedule.setPeriod(4);
+        // Schedule schedule = new Schedule();
+        // schedule.setRegion("제주도");
+        // schedule.setTitle("즐거운 여행 제목");
+        // schedule.setContent("여행 내용");
+        // schedule.setMemberCount(5);
+        // schedule.setStartDate(LocalDate.now());
+        // schedule.setEndDate(LocalDate.now().plusDays(3));
+        // schedule.setMember(member);
+        // schedule.setPeriod(4);
+        for (int i = 0; i < 32; i++) {
+            Schedule schedule = new Schedule();
+            schedule.setRegion("제주도");
+            schedule.setTitle("즐거운 여행 제목");
+            schedule.setMemberCount(5);
+            schedule.setStartDate(LocalDate.now());
+            schedule.setEndDate(LocalDate.now().plusDays(3));
+            schedule.setMember(member);
+            schedule.setPeriod(4);
+            scheduleService.saveSchedule(schedule);
+        }
 
-        scheduleService.saveSchedule(schedule);
+        // scheduleService.saveSchedule(schedule);
 
         String[] placeNames = {"감귤 농장", "초콜릿 박물관", "제주도 바닷가"};
         List<Place> places = new ArrayList<>();
