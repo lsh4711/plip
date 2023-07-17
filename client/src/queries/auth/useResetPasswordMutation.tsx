@@ -1,8 +1,8 @@
 import { ResetPasswordType } from '@/schema/resetPasswordSchema';
-import instance from './axiosinstance';
 import { useMutation } from '@tanstack/react-query';
 import useToast from '@/hooks/useToast';
 import { useNavigate } from 'react-router-dom';
+import instance from '../axiosinstance';
 
 const patchResetPassword = async ({ email, password }: ResetPasswordType) => {
   const response = await instance.patch(
@@ -13,6 +13,7 @@ const patchResetPassword = async ({ email, password }: ResetPasswordType) => {
     },
     { withCredentials: true }
   );
+  return response;
 };
 
 const useResetPasswordMutation = () => {

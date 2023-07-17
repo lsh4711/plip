@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import instance from './axiosinstance';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import instance from '../axiosinstance';
 
 interface User {
   data: { nickname: string };

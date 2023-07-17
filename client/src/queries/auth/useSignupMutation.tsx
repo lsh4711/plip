@@ -1,9 +1,9 @@
 import { SignupType } from '@/schema/signupSchema';
 import { useMutation } from '@tanstack/react-query';
-import instance from './axiosinstance';
 import useToast from '@/hooks/useToast';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import instance from '../axiosinstance';
 
 const postSignup = async (signupData: SignupType) => {
   const response = await instance.post(

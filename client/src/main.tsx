@@ -16,7 +16,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from './components/helper/ErrorFallback';
 import LoadingPage from './pages/LoadingPage';
 import ToastContainer from './components/ui/toast/ToastContainer';
-import KakaoRedirect from './pages/KakaoRedirect';
+import OauthRedirect from './pages/OauthRedirect';
 
 const Home = lazy(() => import('./pages/Home'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
@@ -49,7 +49,7 @@ const router = createBrowserRouter([
       { path: 'mypage/footprint', element: <FootPrintPage /> },
       { path: 'mypage/bookmark', element: <Bookmark /> },
       { path: 'loading', element: <LoadingPage /> },
-      { path: 'oauth', element: <KakaoRedirect /> },
+      { path: 'oauth', element: <OauthRedirect /> },
     ],
   },
   {

@@ -1,11 +1,11 @@
 import { useDispatch } from 'react-redux';
-import instance from './axiosinstance';
 import { useMutation } from '@tanstack/react-query';
 import useToast from '@/hooks/useToast';
 import { AppDispatch } from '@/redux/store';
 import { setLogout } from '@/redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import useSuccessFailToast from '@/hooks/useSuccessFailToast';
+import instance from '../axiosinstance';
 
 const postLogout = async () => {
   const response = await instance.post('/api/users/logout', null, {
@@ -21,7 +21,7 @@ const useLogoutMutation = () => {
   const mutationHandler = useSuccessFailToast();
 
   const logoutMutation = useMutation({
-    mutationFn: postLogout,
+    mutationFn: () => postLogout(),
     onSuccess: mutationHandler.onSuccess('로그아웃에 성공했습니다.', () => {
       dispatch(setLogout());
       navigate('/');

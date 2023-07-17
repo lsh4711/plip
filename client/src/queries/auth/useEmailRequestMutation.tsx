@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import instance from './axiosinstance';
+import instance from '../axiosinstance';
 import useToast from '@/hooks/useToast';
 import useSuccessFailToast from '@/hooks/useSuccessFailToast';
 

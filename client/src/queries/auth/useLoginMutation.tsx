@@ -1,5 +1,4 @@
 import { useMutation } from '@tanstack/react-query';
-import instance from './axiosinstance';
 import { LoginType } from '@/schema/loginSchema';
 import useToast from '@/hooks/useToast';
 import useInquireUsersQuery from './useInquireUsersQuery';
@@ -7,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
 import useSetAccessToken from '@/hooks/useSetAccessToken';
 import useSuccessFailToast from '@/hooks/useSuccessFailToast';
+import instance from '../axiosinstance';
 
 const postLogin = async (loginData: LoginType) => {
   const response = await instance.post(
@@ -47,7 +47,6 @@ const useLoginMutation = () => {
         });
 
         inquireQuery.refetch();
-
         return data;
       });
     },

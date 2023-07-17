@@ -11,8 +11,8 @@ import { useCloseDropdown } from '@/hooks/useCloseDropdown';
 import Avatar from './Avatar';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import useInquireUsersQuery from '@/queries/useInquireUsersQuery';
 import instance from '@/queries/axiosinstance';
+import useInquireUsersQuery from '@/queries/auth/useInquireUsersQuery';
 
 interface HeaderProps {
   isHome?: boolean;
