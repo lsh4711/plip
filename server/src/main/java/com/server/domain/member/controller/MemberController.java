@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.server.domain.mail.service.MailService;
 import com.server.domain.member.dto.MemberDto;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.mapper.MemberMapper;
@@ -31,10 +32,12 @@ public class MemberController {
     private final String MEMBER_DEFAULT_URL = "/api/users";
     private final MemberMapper memberMapper;
     private final MemberService memberService;
+    private final MailService mailService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> postMember(@Valid @RequestBody MemberDto.Post request) {
         Member createMember = memberService.createMember(memberMapper.memberDtoPostToMember(request));
+        mailService.sendMail(createMember.getEmail(), "welcome");
         URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, createMember.getMemberId());
         return ResponseEntity.created(location).build();
     }

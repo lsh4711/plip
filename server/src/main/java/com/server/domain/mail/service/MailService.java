@@ -40,10 +40,15 @@ public class MailService {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
 
             mimeMessageHelper.setTo(email);
-            mimeMessageHelper.setSubject("[PLIP] 이메일 인증을 위한 인증코드를 발송했습니다.");
             mimeMessageHelper.setText(setContext(authCode, type), true);
+            if(!type.equals("welcome")){
+                mimeMessageHelper.setSubject("[PLIP] 이메일 인증을 위한 인증코드를 발송했습니다.");
+                authMailCodeService.saveAuthCode(authCode, email);
+            }else{
+                mimeMessageHelper.setSubject("[PLIP] 회원가입을 축하드립니다!");
+            }
             javaMailSender.send(mimeMessage);
-            authMailCodeService.saveAuthCode(authCode, email);
+
         } catch (MessagingException e) {
             log.info("##" + email + " 메일 보내기 실패!! 에러 메시지: " + e);
         }
@@ -63,6 +68,8 @@ public class MailService {
         if(type.equals("signup")){
             return templateEngine.process("signup", context);
         }
+        else if(type.equals("welcome"))
+            return templateEngine.process("welcome", context);
         return templateEngine.process("pw", context);
     }
 
