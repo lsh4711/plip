@@ -3,6 +3,7 @@
     {
       "scheduleId": "123",
       "title": "",
+      "region": "seoul",
       "memberCount": 5,
       "placeCount": 20,
       "isEnd": false,
@@ -14,6 +15,7 @@
     {
       "scheduleId": "124",
       "title": "서울 여행 레츠고!",
+      "region": "busan",
       "memberCount": 4,
       "placeCount": 12,
       "isEnd": true,
@@ -25,6 +27,7 @@
     {
       "scheduleId": "125",
       "title": "설레는 서울 여행~!",
+      "region": "jeju",
       "memberCount": 6,
       "placeCount": 30,
       "isEnd": false,

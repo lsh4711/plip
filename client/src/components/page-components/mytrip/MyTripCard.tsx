@@ -4,19 +4,21 @@ import { ReactComponent as StampIcon } from '@/assets/icons/stamp.svg';
 import { ReactComponent as KakaoIcon } from '@/assets/icons/kakaoauth.svg';
 import { ReactComponent as ShareIcon } from '@/assets/icons/share-link.svg';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useEffect, useState } from 'react';
+import { MyTripTypes } from '@/types/mytrip/mytrip-types';
 
 import defaultImage from '/region/seoul.webp';
 import GridItem from './GridItem';
 import Button from '@/components/atom/Button';
 import Stamp from './Stamp';
-import { useEffect, useState } from 'react';
-import { MyTripTypes } from '@/types/mytrip/mytrip-types';
 import useToast from '@/hooks/useToast';
 import getDday from '@/utils/date/getDday';
+import { regionInfos } from '@/datas/regions';
 
 const MyTripCard = ({
   scheduleId,
   title,
+  region,
   memberCount,
   placeCount,
   isEnd,
@@ -53,7 +55,7 @@ const MyTripCard = ({
       </span>
       <div id="img" className="relative mr-4 shrink-0 ">
         <img
-          src={defaultImage}
+          src={regionInfos[region].imgUrl}
           alt="region"
           width={280}
           height={180}
