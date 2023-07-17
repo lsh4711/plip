@@ -19,9 +19,8 @@ const OauthRedirect = () => {
   const token = getAccesstokenToQueryString(querystring);
   const dispatchAccesstoken = useSetAccessToken();
   setAccessTokenToHeader(token);
-  inquireQuery.refetch();
+  inquireQuery.refetch().then(() => navigate('/'));
   dispatchAccesstoken({ accesstoken: token });
-  navigate('/');
   return <div>oauth 리다이렉트</div>;
 };
 
