@@ -8,8 +8,8 @@
       "isEnd": false,
       "createdAt": "2023.07.17",
       "modifiedAt": "2023.07.17",
-      "startDate": "2023.07.17",
-      "endDate": "2023.07.17"
+      "startDate": "2023.07.24",
+      "endDate": "2023.07.26"
     },
     {
       "scheduleId": "124",
@@ -30,8 +30,8 @@
       "isEnd": false,
       "createdAt": "2023.07.17",
       "modifiedAt": "2023.07.17",
-      "startDate": "2023.07.17",
-      "endDate": "2023.07.17"
+      "startDate": "2023.06.28",
+      "endDate": "2023.07.24"
     }
   ]
 }

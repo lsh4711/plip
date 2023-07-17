@@ -5,8 +5,8 @@ export interface MyTripTypes {
   memberCount: number;
   placeCount: number;
   isEnd: boolean;
-  createdAt: string | Date;
-  modifiedAt: string | Date;
-  startDate: string | Date;
-  endDate: string | Date;
+  createdAt: Date;
+  modifiedAt: Date;
+  startDate: Date;
+  endDate: Date;
 }

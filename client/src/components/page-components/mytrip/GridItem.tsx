@@ -11,8 +11,12 @@ type Props = {
 const maxTitleLength = 30;
 
 const GridItem = ({ title, content, editable }: Props) => {
-  const [isEdit, setIsEdit] = useState(false);
-  const [text, setText] = useState(!editable ? (content as string) : '서울 여행 레츠고!');
+  const [isEdit, setIsEdit] = useState(editable);
+  const [text, setText] = useState(
+    editable && (content as String).length === 0
+      ? '여행의 이름을 지어주세요~!'
+      : (content as string)
+  );
 
   const editRef = useRef(document.createElement('div'));
 
