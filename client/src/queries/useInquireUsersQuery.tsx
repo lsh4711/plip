@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import instance from './axiosinstance';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { EMPTY_TOKEN } from '@/redux/slices/authSlice';
 
 interface User {
   data: { nickname: string };

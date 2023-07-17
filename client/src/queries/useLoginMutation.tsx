@@ -1,15 +1,12 @@
-import { isSuccessStatus } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
-import BASE_URL from './BASE_URL';
 import instance from './axiosinstance';
 import { LoginType } from '@/schema/loginSchema';
 import useToast from '@/hooks/useToast';
 import { AxiosError } from 'axios';
 import useInquireUsersQuery from './useInquireUsersQuery';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
-import { setAccessToken } from '@/redux/slices/authSlice';
+import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
+import useSetAccessToken from '@/hooks/useSetAccessToken';
 
 const postLogin = async (loginData: LoginType) => {
   const response = await instance.post(
@@ -23,7 +20,6 @@ const postLogin = async (loginData: LoginType) => {
     }
   );
   const ACCESS_TOKEN = response.headers['authorization'];
-  instance.defaults.headers['Authorization'] = response.headers['authorization'];
 
   return {
     response,
@@ -35,12 +31,12 @@ const useLoginMutation = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const inquireQuery = useInquireUsersQuery();
-  const dispatch = useDispatch<AppDispatch>();
+  const accessTokenSetter = useSetAccessToken();
   const loginMutation = useMutation({
     mutationFn: (loginData: LoginType) => postLogin(loginData),
     onSuccess(data, variables, context) {
       navigate('/');
-      dispatch(setAccessToken({ accesstoken: data.ACCESS_TOKEN }));
+      accessTokenSetter({ accesstoken: data.ACCESS_TOKEN });
       inquireQuery.refetch().then((data) => {
         toast({
           content: '로그인에 성공했습니다.',

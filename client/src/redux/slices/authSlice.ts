@@ -1,8 +1,7 @@
+import { EMPTY_TOKEN } from '@/datas/constants';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export const EMPTY_TOKEN = 'empty';
-
-interface AccessTokenType {
+export interface AccessTokenType {
   accesstoken: string | typeof EMPTY_TOKEN;
 }
 
@@ -26,7 +25,6 @@ const authSlice = createSlice({
     setLogout: (state) => {
       state.accesstoken = EMPTY_TOKEN;
       state.isLogin = false;
-      console.log(state);
     },
   },
 });
