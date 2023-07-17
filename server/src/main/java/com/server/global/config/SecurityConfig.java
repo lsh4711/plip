@@ -74,15 +74,19 @@ public class SecurityConfig {
                                 oAuth2TokenUtils, kakaoTokenOauthService, memberMapper)))
                 .apply(customFilterConfigurers())
                 .and()
-                .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers(HttpMethod.GET, "/*/places/*/records").permitAll()
-                        .antMatchers(HttpMethod.GET, "/*/records/*").permitAll()
-                        .antMatchers("/*/users").authenticated()
-                        .antMatchers("/*/records").authenticated()
-                        .antMatchers("/*/records/**").authenticated()
-                        .antMatchers("/*/places/**").authenticated()
-                        .antMatchers("/*/schedules/**").authenticated()
-                        .anyRequest().permitAll());
+                .successHandler(
+                    new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer, oAuth2TokenUtils, kakaoTokenOauthService)))
+            .apply(customFilterConfigurers())
+            .and()
+            .authorizeHttpRequests(authorize -> authorize
+                .antMatchers(HttpMethod.GET, "/*/places/*/records").permitAll()
+                .antMatchers(HttpMethod.GET,"/*/records/*").permitAll()
+                .antMatchers("/*/users").authenticated()
+                .antMatchers("/*/records").authenticated()
+                .antMatchers("/*/records/**").authenticated()
+                .antMatchers("/*/places/**").authenticated()
+                .antMatchers("/*/schedules/**").authenticated()
+                .anyRequest().permitAll());
 
         return http.build();
     }
@@ -111,6 +115,7 @@ public class SecurityConfig {
         configuration.setExposedHeaders(List.of("*"));
         configuration.addExposedHeader("Authorization");
         configuration.addExposedHeader("Refresh");
+        configuration.addExposedHeader("Set-Cookie");
         configuration.addExposedHeader("Location");
         configuration.addAllowedHeader("*");
 
