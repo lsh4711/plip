@@ -49,7 +49,6 @@ const router = createBrowserRouter([
       { path: 'mypage/footprint', element: <FootPrintPage /> },
       { path: 'mypage/bookmark', element: <Bookmark /> },
       { path: 'loading', element: <LoadingPage /> },
-      { path: 'oauth', element: <OauthRedirect /> },
     ],
   },
   {
@@ -70,6 +69,7 @@ const router = createBrowserRouter([
       </>
     ),
   },
+  { path: 'oauth', element: <OauthRedirect /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
