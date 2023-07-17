@@ -45,7 +45,6 @@ public class SecurityConfig {
     private final RedisUtils redisUtils;
     private final OAuth2TokenUtils oAuth2TokenUtils;
     private final KakaoTokenOauthService kakaoTokenOauthService;
-    private final MemberMapper memberMapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -71,7 +70,7 @@ public class SecurityConfig {
                 .and()
                 .successHandler(
                     new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer,
-                        oAuth2TokenUtils, kakaoTokenOauthService, memberMapper)))
+                        oAuth2TokenUtils, kakaoTokenOauthService)))
             .apply(customFilterConfigurers())
             .and()
             .authorizeHttpRequests(authorize -> authorize
