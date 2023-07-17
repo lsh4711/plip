@@ -23,8 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Aspect
 @Slf4j
-public class RequestBodyLoggingAspect {
-    private static final Logger logger = LogManager.getLogger(RequestBodyLoggingAspect.class);
+public class RequestLoggingAspect {
+    private static final Logger logger = LogManager.getLogger(RequestLoggingAspect.class);
 
     @Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
     public void restControllerClassMethods() {}
