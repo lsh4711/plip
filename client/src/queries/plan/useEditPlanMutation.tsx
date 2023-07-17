@@ -15,10 +15,6 @@ const patchPlan = ({ id, places }: PatchPlan) =>
     { places },
     {
       withCredentials: true,
-      headers: {
-        Authorization:
-          'Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoidGVzdEBuYXZlci5jb20iLCJtZW1iZXJJZCI6NSwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE2ODk0OTc3NzEsImV4cCI6MTY5MjEyNTc3MX0.QMC-1_oBAnZYz-yzYJ-wgVs6B5mPu8oxfF-CfXaz5uhhonqilXai4qw7IG1rXMh8G1DjGoUobtNi8iWLsRu02Q',
-      },
     }
   );
 
