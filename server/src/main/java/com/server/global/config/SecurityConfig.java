@@ -45,7 +45,6 @@ public class SecurityConfig {
     private final RedisUtils redisUtils;
     private final OAuth2TokenUtils oAuth2TokenUtils;
     private final KakaoTokenOauthService kakaoTokenOauthService;
-    private final MemberMapper memberMapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
