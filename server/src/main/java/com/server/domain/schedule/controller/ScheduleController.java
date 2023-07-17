@@ -1,6 +1,7 @@
 package com.server.domain.schedule.controller;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -108,6 +109,26 @@ public class ScheduleController {
 
         // 일정 공유 기능도 겸하기에 Member의 공개해도 되는 정보만 포함해야함
         return ResponseEntity.ok(scheduleResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity getSchedules() {
+        List<Schedule> foundSchedules = scheduleService.findSchedules();
+        List<ScheduleResponse> scheduleResponses = new ArrayList<>();
+
+        for (Schedule schedule : foundSchedules) {
+            List<SchedulePlace> schedulePlaces = schedule.getSchedulePlaces();
+            List<List<PlaceResponse>> placeResponseLists = placeMapper
+                    .schedulePlacesToPlaceResponseLists(schedulePlaces, schedule);
+            ScheduleResponse scheduleResponse = scheduleMapper
+                    .scheduleToScheduleResponse(schedule);
+            scheduleResponse.setPlaces(placeResponseLists);
+            scheduleResponse.setPlaceSize(schedulePlaces.size());
+            scheduleResponses.add(scheduleResponse);
+        }
+
+        // 일정 공유 기능도 겸하기에 Member의 공개해도 되는 정보만 포함해야함
+        return ResponseEntity.ok(scheduleResponses);
     }
 
     @GetMapping("/{scheduleId}/share")

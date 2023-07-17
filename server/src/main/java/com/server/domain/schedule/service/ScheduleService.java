@@ -1,5 +1,8 @@
 package com.server.domain.schedule.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.server.domain.schedule.entity.Schedule;
@@ -53,6 +56,19 @@ public class ScheduleService {
         }
 
         return schedule;
+    }
+
+    public List<Schedule> findSchedules() {
+        Sort sort = Sort.by("createdAt").descending();
+        long memberId = CustomUtil.getAuthId();
+        List<Schedule> schedules = scheduleRepository.findAllByMember_memberId(memberId, sort);
+
+        if (schedules == null || schedules.size() == 0) {
+            throw new CustomException(
+                ExceptionCode.SCHEDULE_NOT_FOUND);
+        }
+
+        return schedules;
     }
 
     public Schedule findSharedSchedule(long scheduleId, long memberId, String email) {
