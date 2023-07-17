@@ -89,6 +89,7 @@ public class ScheduleController {
         ScheduleResponse scheduleResponse = scheduleMapper
                 .scheduleToScheduleResponse(updatedSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
+        scheduleResponse.setPlaceSize(schedulePlaces.size());
 
         return ResponseEntity.ok(scheduleResponse);
     }
@@ -102,6 +103,7 @@ public class ScheduleController {
         ScheduleResponse scheduleResponse = scheduleMapper
                 .scheduleToScheduleResponse(foundSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
+        scheduleResponse.setPlaceSize(schedulePlaces.size());
 
         // 일정 공유 기능도 겸하기에 Member의 공개해도 되는 정보만 포함해야함
         return ResponseEntity.ok(scheduleResponse);
@@ -114,7 +116,7 @@ public class ScheduleController {
         List<List<PlaceResponse>> placeResponseLists = placeMapper
                 .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
 
-        return ResponseEntity.ok(placeResponseLists);
+        return ResponseEntity.ok(placeResponseLists); // size 정보 넣지않은 상태
     }
 
     @DeleteMapping("/{scheduleId}")

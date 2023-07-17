@@ -5,6 +5,7 @@ import javax.persistence.EntityManagerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.server.domain.schedule.entity.Schedule;
+import com.server.global.batch.parameter.CustomJobParameter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,14 +23,23 @@ import lombok.RequiredArgsConstructor;
 public class ChunkConfig {
     private int chunkSize = 10;
 
+    private static final String JOB_NAME = "customJob";
+
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final EntityManagerFactory entityManagerFactory;
+    private final CustomJobParameter customJobParameter;
+
+    @Bean(JOB_NAME + "Parameter")
+    @JobScope
+    public CustomJobParameter createJobParameter() {
+        return new CustomJobParameter();
+    }
 
     @Bean
-    public Job batchJob() {
-        Job customJob = jobBuilderFactory.get("customJob")
-                .start(batchStep())
+    public Job getCustomJob() {
+        Job customJob = jobBuilderFactory.get(JOB_NAME)
+                .start(getCustomStep())
                 .build();
 
         return customJob;
@@ -36,12 +47,12 @@ public class ChunkConfig {
 
     // @Bean
     // @JobScope
-    public Step batchStep() {
-        Step customStep = stepBuilderFactory.get("customStep")
+    public Step getCustomStep() {
+        Step customStep = stepBuilderFactory.get(JOB_NAME + "Step")
                 .<Schedule, Schedule>chunk(chunkSize)
-                .reader(reader())
+                .reader(getCustomReader())
                 // .processor(null)
-                .writer(writer())
+                .writer(getCustomWriter())
                 // .faultTolerant()
                 // .retry(Exception.class) // 알림 전송 실패 시
                 // .noRollback(Exception.class) // test
@@ -53,12 +64,12 @@ public class ChunkConfig {
 
     // @Bean
     // @StepScope
-    public JpaPagingItemReader<Schedule> reader() {
+    public JpaPagingItemReader<Schedule> getCustomReader() {
         // Map<String, Object> parameter = new HashMap<>();
         // parameter.put("date", null);
 
         JpaPagingItemReader<Schedule> reader = new JpaPagingItemReaderBuilder<Schedule>()
-                .name("customReader")
+                .name(JOB_NAME + "Reader")
                 .entityManagerFactory(entityManagerFactory)
                 .pageSize(chunkSize)
                 .queryString("SELECT s FROM Schedule s ORDER BY id") // 정렬 필수
@@ -78,7 +89,7 @@ public class ChunkConfig {
     // @Bean
     // @StepScope
     // public JpaItemWriter<Schedule> writer() {
-    public ItemWriter<Schedule> writer() {
+    public ItemWriter<Schedule> getCustomWriter() {
         // JpaItemWriter<Schedule> writer = new JpaItemWriterBuilder<Schedule>()
         //         .entityManagerFactory(entityManagerFactory)
         //         .build();
@@ -92,6 +103,7 @@ public class ChunkConfig {
                         System.out.println("에러: " + test);
                         continue;
                     }
+                    System.out.println(customJobParameter.getDate());
                     System.out.printf("scheduleId: %d\n", schedule.getScheduleId());
                     break;
                 }

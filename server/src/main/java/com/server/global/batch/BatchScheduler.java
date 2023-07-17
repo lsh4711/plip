@@ -2,11 +2,9 @@ package com.server.global.batch;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
@@ -31,16 +29,15 @@ public class BatchScheduler {
         System.out.println("testtesttesttesttesttesttesttest");
     }
 
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 5000)
     public void test() {
-        // JobParameter parameter = new JobParameter()
-        // .add
-        Map<String, JobParameter> map = new HashMap<>();
-        // map.put("key", parameter);
+        JobParameters parameters = new JobParametersBuilder()
+                .addString("date", LocalDate.now().toString())
+                .addLong("hour", 7L)
+                .toJobParameters();
 
-        JobParameters parameters = new JobParameters(map);
         try {
-            jobLauncher.run(chunkConfig.batchJob(), parameters);
+            jobLauncher.run(chunkConfig.getCustomJob(), parameters);
         } catch (JobExecutionAlreadyRunningException
                 | JobRestartException
                 | JobInstanceAlreadyCompleteException

@@ -132,6 +132,7 @@ public class Init {
             place.setLatitude(String.format("%d.%d", i * 205 + i * 17 + i * 8, i * 27));
             place.setLongitude(String.format("%d.%d", i * 121 + i * 23 + i * 3, i * 31));
             place.setCategory(category);
+            place.setPhone("010-0000-0000");
             places.add(place);
 
             Schedule newSchedule = new Schedule();

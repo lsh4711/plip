@@ -20,7 +20,8 @@ public class PlaceDto {
         @NotBlank
         private String address;
 
-        @Pattern(regexp = "^\\d{2,5}-?\\d{3,4}-?\\d{4}$") // 테스트 필요
+        @NotNull
+        @Pattern(regexp = "|^\\d{2,5}-?\\d{3,4}-?\\d{4}$")
         private String phone;
 
         @NotBlank
@@ -29,7 +30,7 @@ public class PlaceDto {
         @NotBlank
         private String longitude;
 
-        @NotBlank
+        @NotNull
         private String category;
 
         @NotNull

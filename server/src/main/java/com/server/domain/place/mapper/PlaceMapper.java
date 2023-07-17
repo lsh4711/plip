@@ -32,6 +32,7 @@ public interface PlaceMapper {
     @Mapping(source = "place.latitude", target = "latitude")
     @Mapping(source = "place.longitude", target = "longitude")
 
+    @Mapping(source = "place.phone", target = "phone")
     @Mapping(source = "place.category.name", target = "category")
     PlaceResponse schedulePlaceToPlaceResponse(SchedulePlace schedulePlace);
 

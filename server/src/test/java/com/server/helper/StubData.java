@@ -226,6 +226,7 @@ public class StubData {
                     postDto.setApiId(j * 10 + j);
                     postDto.setName(placeNames[j - 1]);
                     postDto.setAddress("제주도 무슨동 무슨길" + j);
+                    postDto.setPhone("010-0000-0000");
                     postDto.setLatitude(String.format("%d.%d", j * 205 + j * 17 + j * 8, j * 27));
                     postDto.setLongitude(String.format("%d.%d", j * 121 + j * 23 + j * 3, j * 31));
                     postDto.setCategory(categoryCodes[j - 1]);
@@ -240,6 +241,7 @@ public class StubData {
                     place.setApiId(j * 10 + j);
                     place.setName(placeNames[j - 1]);
                     place.setAddress("제주도 무슨동 무슨길" + j);
+                    place.setPhone("010-0000-0000");
                     place.setLatitude(String.format("%d.%d", j * 205 + j * 17 + j * 8, j * 27));
                     place.setLongitude(String.format("%d.%d", j * 121 + j * 23 + j * 3, j * 31));
                     place.setCategory(category);
