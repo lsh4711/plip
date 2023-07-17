@@ -1,5 +1,3 @@
-import React from 'react';
-import BASE_URL from './BASE_URL';
 import instance from './axiosinstance';
 import { useMutation } from '@tanstack/react-query';
 import { useDispatch } from 'react-redux';

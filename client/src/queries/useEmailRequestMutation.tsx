@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import instance from './axiosinstance';
 import useToast from '@/hooks/useToast';
-import { AxiosError } from 'axios';
 import useSuccessFailToast from '@/hooks/useSuccessFailToast';
 
 const useEmailRequestMutation = (type: 'pw' | 'signup') => {

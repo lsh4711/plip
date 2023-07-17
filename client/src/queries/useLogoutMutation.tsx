@@ -1,8 +1,7 @@
 import { useDispatch } from 'react-redux';
 import instance from './axiosinstance';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import useToast from '@/hooks/useToast';
-import { AxiosError } from 'axios';
 import { AppDispatch } from '@/redux/store';
 import { setLogout } from '@/redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';

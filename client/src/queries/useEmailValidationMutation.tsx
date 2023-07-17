@@ -1,8 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import BASE_URL from './BASE_URL';
 import instance from './axiosinstance';
 import useToast from '@/hooks/useToast';
-import { AxiosError } from 'axios';
 import useSuccessFailToast from '@/hooks/useSuccessFailToast';
 
 interface EmailValidationType {

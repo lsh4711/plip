@@ -2,7 +2,6 @@ import { useMutation } from '@tanstack/react-query';
 import instance from './axiosinstance';
 import { LoginType } from '@/schema/loginSchema';
 import useToast from '@/hooks/useToast';
-import { AxiosError } from 'axios';
 import useInquireUsersQuery from './useInquireUsersQuery';
 import { useNavigate } from 'react-router-dom';
 import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
