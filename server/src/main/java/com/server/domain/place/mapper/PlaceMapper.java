@@ -1,5 +1,6 @@
 package com.server.domain.place.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mapstruct.Mapper;
@@ -8,6 +9,7 @@ import org.mapstruct.Mapping;
 import com.server.domain.place.dto.PlaceDto;
 import com.server.domain.place.dto.PlaceResponse;
 import com.server.domain.place.entity.Place;
+import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
 
 @Mapper(componentModel = "spring")
@@ -21,7 +23,7 @@ public interface PlaceMapper {
 
     // PlaceResponse placeToPlaceResponse(Place place);
 
-    // 'SchedulePlace'가 아닌 'Place'의 Response로 구분
+    // 'SchedulePlace'가 아닌 'Place'의 Response로 분류
     @Mapping(source = "schedule.scheduleId", target = "scheduleId")
     @Mapping(source = "place.placeId", target = "placeId")
     @Mapping(source = "place.apiId", target = "apiId")
@@ -33,5 +35,31 @@ public interface PlaceMapper {
     @Mapping(source = "place.category.name", target = "category")
     PlaceResponse schedulePlaceToPlaceResponse(SchedulePlace schedulePlace);
 
-    List<PlaceResponse> schedulePlacesToPlaceResponses(List<SchedulePlace> schedulePlaces);
+    default List<List<PlaceResponse>> schedulePlacesToPlaceResponseLists(List<SchedulePlace> schedulePlaces,
+            Schedule schedule) {
+        int period = schedule.getPeriod();
+        List<List<PlaceResponse>> placeResponseLists = new ArrayList<>();
+
+        if (schedulePlaces == null || schedulePlaces.size() == 0) {
+            for (int i = 0; i < period; i++) {
+                placeResponseLists.add(new ArrayList<>());
+            }
+            return placeResponseLists;
+        }
+
+        // 최적화 가능
+        for (SchedulePlace schedulePlace : schedulePlaces) {
+            int days = schedulePlace.getDays();
+            PlaceResponse placeResponse = schedulePlaceToPlaceResponse(schedulePlace);
+            while (placeResponseLists.size() < days) {
+                placeResponseLists.add(new ArrayList<>());
+            }
+            placeResponseLists.get(days - 1).add(placeResponse);
+        }
+        while (placeResponseLists.size() < period) {
+            placeResponseLists.add(new ArrayList<>());
+        }
+
+        return placeResponseLists;
+    }
 }

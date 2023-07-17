@@ -58,11 +58,11 @@ public class ScheduleService {
     public void deleteSchedule(long scheduleId) {
         long memberId = CustomUtil.getAuthId();
 
-        verfify(scheduleId, memberId);
+        verify(scheduleId, memberId);
         scheduleRepository.deleteById(scheduleId);
     }
 
-    public void verfify(long scheduleId, long memberId) {
+    public void verify(long scheduleId, long memberId) {
         boolean exists = scheduleRepository
                 .existsByScheduleIdAndMember_MemberId(scheduleId, memberId);
 

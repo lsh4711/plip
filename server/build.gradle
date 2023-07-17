@@ -58,14 +58,15 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:' + restdocsApiSpecVersion
-    testImplementation 'org.mockito:mockito-inline' //static Mock 매핑을 위한
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     testImplementation 'org.mockito:mockito-inline'
 
-    // springfox.documentation.staticdocs 의존성 추가
-    testImplementation 'io.springfox:springfox-staticdocs:2.0.1'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE' //s3 버킷 사용
+
+    implementation 'commons-io:commons-io:2.13.0'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE' //s3 버킷 사용
 
 }
 
@@ -92,8 +93,10 @@ bootJar {
 }
 
 openapi3 {
-    server = "https://teamdev.shop:8000"
-    // server = "http://localhost:8000"
+    servers = [ 
+        {url = 'https://teamdev.shop:8000'},
+        {url = 'https://localhost:8000'}
+    ]
     title = "코벤져스 API 문서"
     // description = "Spring REST Docs with SwaggerUI."
     description = "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA"

@@ -26,8 +26,6 @@ public class Record extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long recordId;
 
-    @Column(nullable = false)
-    private String title;
 
     @Column(nullable = false)
     private String content;
@@ -43,9 +41,8 @@ public class Record extends BaseEntity {
     private SchedulePlace schedulePlace;
 
     @Builder
-    public Record(Long recordId, String title, String content) {
+    public Record(Long recordId, String content) {
         this.recordId = recordId;
-        this.title = title;
         this.content = content;
     }
 }

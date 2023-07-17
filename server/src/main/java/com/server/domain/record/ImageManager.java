@@ -32,11 +32,13 @@ public class ImageManager {
     private final MemberService memberService;
 
     //이미지 업로드
-    public Boolean uploadImages(List<MultipartFile> images, long recordId) throws Exception {
-        Long userId = getAuthenticatedMemberId();
+    public List<String> uploadImages(List<MultipartFile> images, long recordId, long userId) throws Exception {
+
         String dirName = location + "/" + userId + "/" + recordId;
 
         short result = -1;
+
+        List<String> indexs = new ArrayList<>();
 
         try {
             File folder = new File(dirName);
@@ -50,6 +52,7 @@ public class ImageManager {
                     File destination = new File(dirName + File.separator + fileName);
                     image.transferTo(destination);
                     result++;
+                    indexs.add(String.valueOf(i));
                 }
             } else { //이미 저장된 사진이 있는 경우
                 File[] existingFiles = folder.listFiles();
@@ -80,10 +83,12 @@ public class ImageManager {
                 for (int i = 0; i < images.size(); i++) {
                     MultipartFile image = images.get(i);
                     String fileExtension = getFileExtension(image);
-                    String fileName = (lastIndex + i) + fileExtension;
+                    int index=lastIndex+i;
+                    String fileName = index + fileExtension;
                     File destination = new File(dirName + File.separator + fileName);
                     image.transferTo(destination);
                     result++;
+                    indexs.add(String.valueOf(index));
                 }
 
                 existingFiles = folder.listFiles();
@@ -91,21 +96,20 @@ public class ImageManager {
 
         } catch (Exception e) {
             log.error("사진 저장 에러 :" + e.getMessage());
-            return Boolean.FALSE;
+            return null;
         }
 
         if (result == -1 || result < images.size() - 1) {
-            return Boolean.FALSE;
+            return null;
         } else if (result == images.size() - 1) {
-            return Boolean.TRUE;
+            return indexs;
         } else {
-            return Boolean.FALSE;
+            return null;
         }
     }
 
     //이미지 조회 - 대표 이미지
-    public Resource loadImage(long recordId, long imgId) {
-        Long userId = getAuthenticatedMemberId();
+    public Resource loadImage(long recordId, long userId, long imgId) {
         String dirName = location + "/" + userId + "/" + recordId;
 
         try {
@@ -129,8 +133,8 @@ public class ImageManager {
     }
 
     //전체 이미지 조회
-    public List<Resource> loadImages(long recordId) {
-        Long userId = getAuthenticatedMemberId();
+    public List<Resource> loadImages(long recordId, long userId) {
+
         String dirName = location + "/" + userId + "/" + recordId;
 
         List<Resource> images = new ArrayList<>();
@@ -166,8 +170,7 @@ public class ImageManager {
     }
 
     //이미지 삭제
-    public void deleteImg(long recordId, long imgId) {
-        long userId = CustomUtil.getAuthId();
+    public void deleteImg(long recordId, long userId, long imgId) {
         String dirName = location + '/' + userId + '/' + recordId;
 
         try {
@@ -213,16 +216,6 @@ public class ImageManager {
             log.error("삭제 실패: " + e.getMessage());
             throw new CustomException(ExceptionCode.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    //로그인한 사용자 아이디 리턴
-    private Long getAuthenticatedMemberId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //현재 로그인한 사용자 이메일
-        String username = (String)authentication.getPrincipal();
-
-        // 로그인한 ID(이매일)로 Member를 찾아서 반환
-        return memberService.findMemberByEmail(username).getMemberId();
     }
 
 }

@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import com.server.domain.category.entity.Category;
 import com.server.global.audit.BaseEntity;
@@ -33,6 +34,9 @@ public class Place extends BaseEntity {
 
     private String latitude; // 사용자 지정시 같은 좌표가
     private String longitude; // 중복될 것 같으니 복합키 고려
+
+    @Transient
+    private Boolean bookmark;
 
     @ManyToOne
     @JoinColumn(name = "categoryId")

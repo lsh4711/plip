@@ -20,6 +20,11 @@ env:
 
   REDIRECT_URL8000: ${{ secrets.REDIRECT_URL8000 }}
   API_KEY: ${{ secrets.API_KEY }}
+
+  # s3
+  AWS_ACCESS_KEY2: ${{ secrets.AWS_ACCESS_KEY2 }}
+  AWS_SECRET_ACCESS_KEY2: ${{ secrets.AWS_SECRET_ACCESS_KEY2 }}
+
   
 jobs:
   build:

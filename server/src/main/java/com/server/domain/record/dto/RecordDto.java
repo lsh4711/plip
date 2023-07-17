@@ -14,7 +14,6 @@ public class RecordDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Post {
-        private String title;
         private String content;
 
     }
@@ -26,7 +25,6 @@ public class RecordDto {
     @AllArgsConstructor
     public static class Patch {
         private Long recordId;
-        private String title;
         private String content;
 
     }
@@ -37,7 +35,6 @@ public class RecordDto {
     @AllArgsConstructor
     public static class Response {
         private Long recordId;
-        private String title;
         private String content;
         private Long memberId;
         private LocalDateTime createdAt;

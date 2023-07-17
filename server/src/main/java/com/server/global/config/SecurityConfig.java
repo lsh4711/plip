@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -51,24 +50,29 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .headers().frameOptions().sameOrigin()
-            .and()
-            .csrf().disable()
-            .cors(withDefaults())
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .logout()
-            .logoutUrl("/api/users/logout")
-            .deleteCookies("Refresh")
-            .addLogoutHandler(new MemberLogoutHandler(redisUtils, jwtTokenizer))
-            .logoutSuccessHandler(new MemberLogoutSuccessHandler())
-            .and()
-            .exceptionHandling()
-            .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
-            .and()
-            .oauth2Login(oauth2 -> oauth2
-                .userInfoEndpoint()
-                .userService(oAuth2UserService)
+                .headers().frameOptions().sameOrigin()
+                .and()
+                .csrf().disable()
+                .cors(withDefaults())
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .logout()
+                .logoutUrl("/api/users/logout")
+                .deleteCookies("Refresh")
+                .addLogoutHandler(new MemberLogoutHandler(redisUtils, jwtTokenizer))
+                .logoutSuccessHandler(new MemberLogoutSuccessHandler())
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+                .and()
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint()
+                        .userService(oAuth2UserService)
+                        .and()
+                        .successHandler(
+                            new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer,
+                                oAuth2TokenUtils, kakaoTokenOauthService, memberMapper)))
+                .apply(customFilterConfigurers())
                 .and()
                 .successHandler(
                     new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer, oAuth2TokenUtils, kakaoTokenOauthService)))
@@ -89,7 +93,7 @@ public class SecurityConfig {
 
     @Bean
     public CustomFilterConfig customFilterConfigurers() {
-        return new CustomFilterConfig(jwtTokenizer, delegateTokenUtil, accessTokenRenewalUtil,redisUtils);
+        return new CustomFilterConfig(jwtTokenizer, delegateTokenUtil, accessTokenRenewalUtil, redisUtils);
     }
 
     @Bean
@@ -101,13 +105,18 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(List.of("http://127.0.0.1:5173", "http://localhost:5173","https://plip.netlify.app"));
+        configuration.setAllowedOrigins(
+            List.of("http://127.0.0.1:5173",
+                "http://localhost:5173",
+                "http://localhost:8000",
+                "https://plip.netlify.app"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("*"));
         configuration.addExposedHeader("Authorization");
         configuration.addExposedHeader("Refresh");
         configuration.addExposedHeader("Set-Cookie");
+        configuration.addExposedHeader("Location");
         configuration.addAllowedHeader("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

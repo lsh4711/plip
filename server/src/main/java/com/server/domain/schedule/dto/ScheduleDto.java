@@ -3,6 +3,7 @@ package com.server.domain.schedule.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import com.server.domain.place.dto.PlaceDto;
@@ -31,7 +32,7 @@ public class ScheduleDto {
 
         // @NotNull
         // @Size(min = 1)
-        private List<List<PlaceDto.Post>> places;
+        private List<List<PlaceDto.@Valid Post>> places;
     }
 
     @Getter
@@ -48,6 +49,6 @@ public class ScheduleDto {
         @OptionalDateValid
         private LocalDate endDate;
 
-        private List<List<PlaceDto.Post>> places;
+        private List<List<PlaceDto.@Valid Post>> places;
     }
 }
