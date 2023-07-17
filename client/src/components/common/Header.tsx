@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
 import { ReactComponent as MypageIcon } from '../../assets/icons/mypage.svg';
@@ -62,6 +62,14 @@ const AfterLogin = ({ isHome }: AfterHeaderProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useCloseDropdown(ref, false);
   const inquireQuery = useInquireUsersQuery();
+  const isLogin = useSelector((state: RootState) => state.auth.accesstoken);
+
+  useEffect(() => {
+    if (isLogin) {
+      inquireQuery.refetch();
+    }
+  }, [isLogin]);
+
   return (
     <>
       <Link to="/mypage/mytrip">

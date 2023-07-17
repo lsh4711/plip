@@ -24,6 +24,8 @@ const createObjectWithComponent = (boolean: boolean, component: JSX.Element | nu
 
 const useAuthRedirect: UseAuthRedirect = () => {
   const auth = getAuthorizationHeader();
+  console.log(auth);
+  console.log(isValidToken(auth));
   if (isValidToken(auth)) {
     return createObjectWithComponent(true, <Navigate to={'/login'} replace />);
   }
