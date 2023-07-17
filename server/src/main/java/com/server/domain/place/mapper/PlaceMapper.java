@@ -33,7 +33,8 @@ public interface PlaceMapper {
     @Mapping(source = "place.longitude", target = "longitude")
 
     @Mapping(source = "place.phone", target = "phone")
-    @Mapping(source = "place.category.name", target = "category")
+    @Mapping(source = "place.category.code", target = "category")
+    @Mapping(source = "place.category.name", target = "categoryName")
     PlaceResponse schedulePlaceToPlaceResponse(SchedulePlace schedulePlace);
 
     default List<List<PlaceResponse>> schedulePlacesToPlaceResponseLists(List<SchedulePlace> schedulePlaces,

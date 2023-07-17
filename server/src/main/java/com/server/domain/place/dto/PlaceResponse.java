@@ -18,6 +18,7 @@ public class PlaceResponse {
     private String latitude;
     private String longitude;
     private String category;
+    private String categoryName;
 
     // SchedulePlace
     private Integer days;
