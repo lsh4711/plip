@@ -3,9 +3,17 @@ import { FiChevronUp } from '@react-icons/all-files/fi/FiChevronUp';
 import { useState } from 'react';
 
 import { Button } from '@/components';
+import { RootState } from '@/redux/store';
+import { useSelector } from 'react-redux';
 
-const SelectDayButton = () => {
+type Props = {
+  addSchedule: (day: number) => void;
+};
+
+const SelectDayButton = ({ addSchedule }: Props) => {
   const [showSelect, setShowSelect] = useState(false);
+  const { schedules } = useSelector((state: RootState) => state.schedule);
+
   return (
     <div className="relative">
       <Button
@@ -17,11 +25,15 @@ const SelectDayButton = () => {
         일정에 추가하기 {showSelect ? <FiChevronUp /> : <FiChevronDown />}
       </Button>
       {showSelect && (
-        <div className="absolute mt-1 flex max-h-32 w-32 flex-col gap-2 overflow-y-scroll rounded-lg border-[1px] bg-white bg-scroll px-4 py-2 drop-shadow-lg">
-          {['Day1', 'Day2', 'Day3', 'Day4', 'Day5'].map((day, idx) => (
-            <div key={idx} className="cursor-pointer text-sm hover:text-blue-300">
-              {day}
-            </div>
+        <div className="absolute right-0 mt-1 flex max-h-32 w-fit flex-col gap-2 overflow-y-scroll rounded-lg border-[1px] bg-white bg-scroll px-4 py-3 drop-shadow-lg">
+          {schedules.map((_, idx) => (
+            <button
+              key={idx}
+              className="cursor-pointer text-base hover:text-blue-300"
+              onClick={() => addSchedule(idx + 1)}
+            >
+              {`Day ${idx + 1}`}
+            </button>
           ))}
         </div>
       )}

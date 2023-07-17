@@ -3,17 +3,19 @@ import { FiChevronDown } from '@react-icons/all-files/fi/FiChevronDown';
 import { MdRemoveCircleOutline } from '@react-icons/all-files/md/MdRemoveCircleOutline';
 import { VscMenu } from '@react-icons/all-files/vsc/VscMenu';
 
-import { ScheduledPlace } from '@/types/api/schedules-types';
+import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 import { getFormatDateString } from '@/utils/date';
+import { COLORS } from '@/datas/map-constants';
 
 type Props = {
+  order: number;
   title: string;
   date: Date;
-  contents: ScheduledPlace[];
+  contents: ScheduledPlaceBase[];
   isEditMode: boolean;
 };
 
-function ScheduleAccordion({ title, date, contents, isEditMode }: Props) {
+function ScheduleAccordion({ order, title, date, contents, isEditMode }: Props) {
   return (
     <Accordion.Root type="single" defaultValue="schedule" collapsible>
       <Accordion.Item className="overflow-hidden rounded-lg bg-[#F6F8FC]" value="schedule">
@@ -43,7 +45,10 @@ function ScheduleAccordion({ title, date, contents, isEditMode }: Props) {
                 ) : (
                   <>
                     <div className="absolute bottom-0 top-0 h-full border-[0.68px] border-dashed border-[#bbb]"></div>
-                    <div className="absolute top-1/2 h-[6px] w-[6px] -translate-x-[2.5px] -translate-y-1/2 rounded-full bg-red-400"></div>
+                    <div
+                      className="absolute top-1/2 h-[7.5px] w-[7.5px] -translate-x-[3.5px] -translate-y-1/2 rounded-full"
+                      style={{ backgroundColor: COLORS[order % COLORS.length] }}
+                    ></div>
                   </>
                 )}
                 <div className="mx-4 flex text-xs 2xl:text-sm">{name}</div>

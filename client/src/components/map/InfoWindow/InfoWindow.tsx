@@ -1,24 +1,69 @@
 import { FaStar } from '@react-icons/all-files/fa/FaStar';
 import { MdClose } from '@react-icons/all-files/md/MdClose';
+import { useDispatch } from 'react-redux';
 
 import { HeadingParagraph, Paragraph } from '@/components';
 import { SelectDayButton } from '@/components/map/InfoWindow';
+import { allCategories } from '@/datas/categories';
+import useToast from '@/hooks/useToast';
+import { addSchedule } from '@/redux/slices/scheduleSlice';
+import { CategoryGroupCode } from '@/types/mapApi/place-types';
 import { cn } from '@/utils';
 
 type Props = {
+  id: number;
   placeName: string;
   address: string;
-  isBookmarked?: boolean;
-  category?: string;
+  latitude: string;
+  longitude: string;
+  isBookmarked: boolean;
+  category: CategoryGroupCode;
   phone?: string;
   className?: string;
+  onClickClose: () => void;
 };
 
-const InfoWindow = ({ placeName, address, isBookmarked, category, phone, className }: Props) => {
+const InfoWindow = ({
+  id,
+  placeName,
+  address,
+  latitude,
+  longitude,
+  isBookmarked,
+  category,
+  phone,
+  className,
+  onClickClose,
+}: Props) => {
+  const dispatch = useDispatch();
+  const toast = useToast();
+
+  const add = (day: number) => {
+    dispatch(
+      addSchedule({
+        day,
+        schedule: {
+          apiId: id,
+          name: placeName,
+          address,
+          latitude,
+          longitude,
+          category: category!,
+          bookmark: isBookmarked!,
+        },
+      })
+    );
+    toast({
+      type: 'success',
+      content: `Day ${day}에 추가되었습니다.`,
+    });
+    onClickClose();
+  };
+
   return (
     <div
       className={cn([
-        'absolute z-50 flex min-w-[320px] flex-col gap-1 rounded-lg bg-white p-4 drop-shadow-lg',
+        'z-50 flex min-w-[320px] flex-col gap-1 rounded-lg bg-white p-4 drop-shadow-lg',
         className,
       ])}
     >
@@ -29,11 +74,10 @@ const InfoWindow = ({ placeName, address, isBookmarked, category, phone, classNa
           </HeadingParagraph>
           <FaStar color={isBookmarked ? '#ffdd00' : '#eee'} size={16} />
         </div>
-        {/* TODO Close Button Click Handler */}
-        <MdClose color="#bbb" size={16} onClick={() => {}} />
+        <MdClose color="#bbb" size={16} onClick={onClickClose} className="cursor-pointer" />
       </div>
 
-      <span className="text-xs text-[#bbb]">{category}</span>
+      <span className="text-xs text-[#bbb]">{allCategories[category!]}</span>
       <div className="flex items-end justify-between">
         <div className="flex flex-col gap-1">
           <Paragraph variant={'darkgray'} className="text-xs">
@@ -47,7 +91,7 @@ const InfoWindow = ({ placeName, address, isBookmarked, category, phone, classNa
           </Paragraph>
         </div>
 
-        <SelectDayButton />
+        <SelectDayButton addSchedule={add} />
       </div>
     </div>
   );

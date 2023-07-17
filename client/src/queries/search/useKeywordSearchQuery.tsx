@@ -1,7 +1,9 @@
+import { useQuery } from '@tanstack/react-query';
+
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
-import { useInfiniteQuery } from '@tanstack/react-query';
 
 export interface UseSearchPlaceQueryBaseProps {
+  pageParam?: number;
   currentX: number;
   currentY: number;
 }
@@ -13,7 +15,6 @@ interface SearchPlaceResults {
 
 export interface SearchPlaceByKeyword extends UseSearchPlaceQueryBaseProps {
   keyword: string;
-  pageParam?: number;
 }
 
 const searchPlaceByKeyword = ({ pageParam, keyword, currentX, currentY }: SearchPlaceByKeyword) => {
@@ -45,7 +46,6 @@ const searchPlaceByKeyword = ({ pageParam, keyword, currentX, currentY }: Search
 
 export interface SearchPlaceByCategory extends UseSearchPlaceQueryBaseProps {
   categoryCode: CategoryGroupCode;
-  pageParam?: number;
 }
 
 const searchPlaceByCategory = ({
@@ -80,6 +80,7 @@ const searchPlaceByCategory = ({
 };
 
 const useSearchPlaceQuery = ({
+  pageParam,
   keyword,
   currentX,
   currentY,
@@ -88,21 +89,15 @@ const useSearchPlaceQuery = ({
   let queryFn;
 
   if (categoryCode === '') {
-    queryFn = ({ pageParam = 1 }) =>
-      searchPlaceByKeyword({ pageParam, keyword, currentX, currentY });
+    queryFn = () => searchPlaceByKeyword({ pageParam, keyword, currentX, currentY });
   } else {
-    queryFn = ({ pageParam = 1 }) =>
-      searchPlaceByCategory({ pageParam, currentX, currentY, categoryCode });
+    queryFn = () => searchPlaceByCategory({ pageParam, currentX, currentY, categoryCode });
   }
 
-  return useInfiniteQuery({
-    queryKey: ['searchPlace', keyword, currentX, currentY, categoryCode],
+  return useQuery({
+    queryKey: ['searchPlace', keyword, currentX, currentY, categoryCode, pageParam],
     queryFn,
-    getNextPageParam: (lastPage, allPages) => {
-      return (
-        lastPage.pagination.current < lastPage.pagination.last && lastPage.pagination.current + 1
-      );
-    },
+    keepPreviousData: true,
     suspense: false,
   });
 };
