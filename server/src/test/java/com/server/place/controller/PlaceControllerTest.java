@@ -100,6 +100,7 @@ public class PlaceControllerTest {
                                 parameterWithName("size").description("Page Size"))),
                         resource(
                             ResourceSnippetParameters.builder()
+                                    .tag("Place")
                                     .description("여행지별 여행 일지 조회")
                                     .responseFields(
                                         List.of(
@@ -107,7 +108,6 @@ public class PlaceControllerTest {
                                                     .optional(),
                                             fieldWithPath("data[].recordId").type(JsonFieldType.NUMBER)
                                                     .description("일지 식별자"),
-                                            fieldWithPath("data[].title").type(JsonFieldType.STRING).description("제목"),
                                             fieldWithPath("data[].content").type(JsonFieldType.STRING)
                                                     .description("내용"),
                                             fieldWithPath("data[].memberId").type(JsonFieldType.NUMBER)

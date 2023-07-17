@@ -71,6 +71,7 @@ public class TokenControllerTest {
                     preprocessResponse(prettyPrint()),
                     resource(
                         ResourceSnippetParameters.builder()
+                            .tag("Token")
                             .description("회원 등록")
                             .responseHeaders(
                                 headerWithName("Authorization").description("재발급받은 인증 토큰")

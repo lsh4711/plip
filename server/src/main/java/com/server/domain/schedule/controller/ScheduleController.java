@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -81,17 +80,15 @@ public class ScheduleController {
         List<List<PlaceDto.Post>> placeDtoLists = patchDto.getPlaces();
         List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
 
-        if (placeLists != null) {
-            schedulePlaceService.deleteSchedulePlaces(schedulePlaces);
-            schedulePlaces = placeService
-                    .savePlaceLists(updatedSchedule, placeLists);
-        }
+        schedulePlaceService.deleteSchedulePlaces(schedulePlaces);
+        schedulePlaces = placeService
+                .savePlaceLists(updatedSchedule, placeLists);
 
-        List<PlaceResponse> placeResponses = placeMapper
-                .schedulePlacesToPlaceResponses(schedulePlaces);
+        List<List<PlaceResponse>> placeResponseLists = placeMapper
+                .schedulePlacesToPlaceResponseLists(schedulePlaces, updatedSchedule);
         ScheduleResponse scheduleResponse = scheduleMapper
                 .scheduleToScheduleResponse(updatedSchedule);
-        scheduleResponse.setPlaces(placeResponses);
+        scheduleResponse.setPlaces(placeResponseLists);
 
         return ResponseEntity.ok(scheduleResponse);
     }
@@ -101,11 +98,11 @@ public class ScheduleController {
     public ResponseEntity getSchedule(@PathVariable long scheduleId) {
         Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
-        List<PlaceResponse> placeResponses = placeMapper
-                .schedulePlacesToPlaceResponses(schedulePlaces);
+        List<List<PlaceResponse>> placeResponseLists = placeMapper
+                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
         ScheduleResponse scheduleResponse = scheduleMapper
                 .scheduleToScheduleResponse(foundSchedule);
-        scheduleResponse.setPlaces(placeResponses);
+        scheduleResponse.setPlaces(placeResponseLists);
 
         // 나중에 member의 모든 정보대신 공개해도 되는 정보만 포함해야함
         return ResponseEntity.ok(scheduleResponse);
@@ -115,10 +112,10 @@ public class ScheduleController {
     public ResponseEntity getPlacesByScheduleId(@PathVariable long scheduleId) {
         Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
-        List<PlaceResponse> placeResponses = placeMapper
-                .schedulePlacesToPlaceResponses(schedulePlaces);
+        List<List<PlaceResponse>> placeResponseLists = placeMapper
+                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
 
-        return ResponseEntity.ok(placeResponses);
+        return ResponseEntity.ok(placeResponseLists);
     }
 
     @DeleteMapping("/{scheduleId}")
@@ -127,4 +124,6 @@ public class ScheduleController {
 
         return ResponseEntity.noContent().build();
     }
+
+    // 알림 보내는 메서드 test/entity/Notification 으로 옮김
 }

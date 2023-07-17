@@ -82,6 +82,11 @@ public class Init {
                 .password("wldls")
                 .nickname("지인짱")
                 .build());
+        members.add(Member.builder()
+                .email("test@naver.com")
+                .password("test1234!")
+                .nickname("테스트")
+                .build());
 
         for (Member member : members) {
             member.setRole(admin);
@@ -99,6 +104,7 @@ public class Init {
         schedule.setStartDate(LocalDate.now());
         schedule.setEndDate(LocalDate.now().plusDays(3));
         schedule.setMember(member);
+        schedule.setPeriod(4);
 
         scheduleService.saveSchedule(schedule);
 
@@ -127,7 +133,7 @@ public class Init {
             schedulePlace.setPlace(newPlace);
             schedulePlace.setDays(1);
             schedulePlace.setOrders(i);
-            // schedulePlace.setBookmark(false);
+            schedulePlace.setBookmark(false);
             schedulePlaces.add(schedulePlace);
         }
 
