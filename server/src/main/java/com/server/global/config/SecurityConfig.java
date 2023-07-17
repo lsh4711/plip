@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -51,39 +50,39 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .headers().frameOptions().sameOrigin()
+            .headers().frameOptions().sameOrigin()
+            .and()
+            .csrf().disable()
+            .cors(withDefaults())
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .logout()
+            .logoutUrl("/api/users/logout")
+            .deleteCookies("Refresh")
+            .addLogoutHandler(new MemberLogoutHandler(redisUtils, jwtTokenizer))
+            .logoutSuccessHandler(new MemberLogoutSuccessHandler())
+            .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+            .and()
+            .oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint()
+                .userService(oAuth2UserService)
                 .and()
-                .csrf().disable()
-                .cors(withDefaults())
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .logout()
-                .logoutUrl("/api/users/logout")
-                .deleteCookies("Refresh")
-                .addLogoutHandler(new MemberLogoutHandler(redisUtils, jwtTokenizer))
-                .logoutSuccessHandler(new MemberLogoutSuccessHandler())
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
-                .and()
-                .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint()
-                        .userService(oAuth2UserService)
-                        .and()
-                        .successHandler(
-                            new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer,
-                                oAuth2TokenUtils, kakaoTokenOauthService, memberMapper)))
-                .apply(customFilterConfigurers())
-                .and()
-                .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers(HttpMethod.GET, "/*/places/*/records").permitAll()
-                        .antMatchers(HttpMethod.GET, "/*/records/*").permitAll()
-                        .antMatchers("/*/users").authenticated()
-                        .antMatchers("/*/records").authenticated()
-                        .antMatchers("/*/records/**").authenticated()
-                        .antMatchers("/*/places/**").authenticated()
-                        .antMatchers("/*/schedules/**").authenticated()
-                        .anyRequest().permitAll());
+                .successHandler(
+                    new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer,
+                        oAuth2TokenUtils, kakaoTokenOauthService, memberMapper)))
+            .apply(customFilterConfigurers())
+            .and()
+            .authorizeHttpRequests(authorize -> authorize
+                .antMatchers(HttpMethod.GET, "/*/places/*/records").permitAll()
+                .antMatchers(HttpMethod.GET, "/*/records/*").permitAll()
+                .antMatchers("/*/users").authenticated()
+                .antMatchers("/*/records").authenticated()
+                .antMatchers("/*/records/**").authenticated()
+                .antMatchers("/*/places/**").authenticated()
+                .antMatchers("/*/schedules/**").authenticated()
+                .anyRequest().permitAll());
 
         return http.build();
     }
