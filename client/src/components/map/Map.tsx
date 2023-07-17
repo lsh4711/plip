@@ -82,7 +82,7 @@ const Map = ({
             onClickMarker({
               apiId: parseInt(result.id),
               name: result.place_name,
-              address: result.road_address_name,
+              address: result.address_name,
               latitude: result.y,
               longitude: result.x,
               category: result.category_group_code as CategoryGroupCode,
@@ -123,8 +123,12 @@ const Map = ({
           zIndex={50}
         >
           <InfoWindow
+            id={selectedPlace.apiId}
             placeName={selectedPlace.name}
             address={selectedPlace.address}
+            latitude={selectedPlace.latitude}
+            longitude={selectedPlace.longitude}
+            category={selectedPlace.category}
             isBookmarked={selectedPlace.bookmark}
             onClickClose={() => setSelectedPlace(null)}
             className="absolute bottom-8 -translate-x-1/2"
