@@ -76,6 +76,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .antMatchers(HttpMethod.GET, "/*/places/*/records").permitAll()
                 .antMatchers(HttpMethod.GET, "/*/records/*").permitAll()
+                .antMatchers(HttpMethod.GET,"/*/schedule/*/share").permitAll()
                 .antMatchers("/*/users").authenticated()
                 .antMatchers("/*/records").authenticated()
                 .antMatchers("/*/records/**").authenticated()
