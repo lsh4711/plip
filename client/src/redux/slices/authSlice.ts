@@ -1,5 +1,7 @@
 import { EMPTY_TOKEN } from '@/datas/constants';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
+import instance from '@/queries/axiosinstance';
 
 export interface AccessTokenType {
   accesstoken: string | typeof EMPTY_TOKEN;
@@ -23,6 +25,7 @@ const authSlice = createSlice({
       state.isLogin = true;
     },
     setLogout: (state) => {
+      setAccessTokenToHeader(EMPTY_TOKEN);
       state.accesstoken = EMPTY_TOKEN;
       state.isLogin = false;
     },

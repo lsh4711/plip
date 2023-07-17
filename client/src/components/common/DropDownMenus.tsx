@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { menus } from '@/datas/menus';
 import { ReactComponent as LogoutIcon } from '@/assets/icons/logout.svg';
 import useLogoutMutation from '@/queries/auth/useLogoutMutation';
+import { EMPTY_TOKEN } from '@/datas/constants';
+import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
 const DropDownMenus = () => {
   const logoutMutation = useLogoutMutation();
   return (
@@ -22,7 +24,9 @@ const DropDownMenus = () => {
       ))}
       <div
         className="w-full border-b-2 p-4 last:border-b-0"
-        onClick={() => logoutMutation.mutate('')}
+        onClick={() => {
+          logoutMutation.mutate('');
+        }}
       >
         <button className="flex gap-2 text-black">
           <LogoutIcon />
