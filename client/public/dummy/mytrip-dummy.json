@@ -1,0 +1,37 @@
+{
+  "data": [
+    {
+      "scheduleId": "123",
+      "title": "",
+      "memberCount": 5,
+      "placeCount": 20,
+      "isEnd": false,
+      "createdAt": "2023.07.17",
+      "modifiedAt": "2023.07.17",
+      "startDate": "2023.07.17",
+      "endDate": "2023.07.17"
+    },
+    {
+      "scheduleId": "124",
+      "title": "서울 여행 레츠고!",
+      "memberCount": 4,
+      "placeCount": 12,
+      "isEnd": true,
+      "createdAt": "2023.07.17",
+      "modifiedAt": "2023.07.17",
+      "startDate": "2023.07.17",
+      "endDate": "2023.07.17"
+    },
+    {
+      "scheduleId": "125",
+      "title": "설레는 서울 여행~!",
+      "memberCount": 6,
+      "placeCount": 30,
+      "isEnd": false,
+      "createdAt": "2023.07.17",
+      "modifiedAt": "2023.07.17",
+      "startDate": "2023.07.17",
+      "endDate": "2023.07.17"
+    }
+  ]
+}

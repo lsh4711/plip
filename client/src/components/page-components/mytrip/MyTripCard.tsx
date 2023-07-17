@@ -2,17 +2,22 @@ import { ReactComponent as PeopleIcon } from '@/assets/icons/people.svg';
 import { ReactComponent as TrashIcon } from '@/assets/icons/trash-can.svg';
 import { ReactComponent as StampIcon } from '@/assets/icons/stamp.svg';
 
-import defaultImage from '../../../../public/region/seoul.webp';
+import defaultImage from '/region/seoul.webp';
 import GridItem from './GridItem';
 import Button from '@/components/atom/Button';
 import Stamp from './Stamp';
 import { useState } from 'react';
+import { MyTripTypes } from '@/types/mytrip/mytrip-types';
 
-type Props = {
-  isEnd?: boolean;
-};
-
-const MyTripCard = ({ isEnd }: Props) => {
+const MyTripCard = ({
+  title,
+  memberCount,
+  placeCount,
+  isEnd,
+  modifiedAt,
+  startDate,
+  endDate,
+}: MyTripTypes) => {
   const [endTrip, setEndTrip] = useState(isEnd);
 
   const onToggleEndTripHandler = () => {
@@ -38,11 +43,11 @@ const MyTripCard = ({ isEnd }: Props) => {
         {/* 상단 */}
         <div className="flex w-full flex-1 pt-4">
           <div className="grid flex-1 grid-cols-2 items-center gap-2">
-            <GridItem title="여행이름" content="즐거운 여행 레츠고!" editable={true} />
-            <GridItem title="마지막 수정일" content="2023.07.01" />
-            <GridItem title="우리 여행가요!" content="2023.07.12~2023.07.14" />
-            <GridItem title="여행장소" content="20" />
-            <GridItem title={<PeopleIcon width={16} height={16} />} content="6" />
+            <GridItem title="여행 이름" content={title} editable={true} />
+            <GridItem title="마지막 수정일" content={modifiedAt} />
+            <GridItem title="우리 여행가요!" content={`${startDate}~${endDate}`} />
+            <GridItem title="여행 장소" content={placeCount} />
+            <GridItem title={<PeopleIcon width={16} height={16} />} content={memberCount} />
           </div>
 
           <div className="flex w-[120px] items-center justify-center gap-4">

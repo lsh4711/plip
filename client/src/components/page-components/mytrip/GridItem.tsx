@@ -4,7 +4,7 @@ import Button from '@/components/atom/Button';
 
 type Props = {
   title: string | ReactElement;
-  content: string;
+  content: string | Date | number;
   editable?: boolean;
 };
 
@@ -12,7 +12,7 @@ const maxTitleLength = 30;
 
 const GridItem = ({ title, content, editable }: Props) => {
   const [isEdit, setIsEdit] = useState(false);
-  const [text, setText] = useState(!editable ? content : '서울 여행 레츠고!');
+  const [text, setText] = useState(!editable ? (content as string) : '서울 여행 레츠고!');
 
   const editRef = useRef(document.createElement('div'));
 
@@ -48,12 +48,12 @@ const GridItem = ({ title, content, editable }: Props) => {
     const range = document.createRange();
     const sel = window.getSelection();
 
-    // console.log('child nodes?');
-    // console.log(editRef.current.childNodes);
-    // console.log(editRef.current.lastChild.length);
-
-    // 제목이 작성되어져 있고 포커스되었을 때 커서가 맨 끝으로 이동
-    if (editRef.current !== null && editRef.current.lastChild !== null) {
+    if (
+      typeof editRef.current.lastChild === 'object' &&
+      editRef.current.lastChild !== null &&
+      editRef.current.lastChild.nodeType === Node.TEXT_NODE
+    ) {
+      // @ts-ignore
       range.setStart(editRef.current.lastChild, editRef.current.lastChild.length);
       sel?.removeAllRanges();
       sel?.addRange(range);
