@@ -7,7 +7,7 @@ import { AxiosError } from 'axios';
 const useEmailRequestMutation = (type: 'pw' | 'signup') => {
   const toast = useToast();
   const postEmailRequest = async (email: string) => {
-    const response = await instance.post(`/api/mail?type=${type}/signup`, {
+    const response = await instance.post(`/api/mail?type=${type}`, {
       email,
     });
     return response;
