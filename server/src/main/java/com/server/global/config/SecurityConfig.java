@@ -71,7 +71,7 @@ public class SecurityConfig {
                 .userService(oAuth2UserService)
                 .and()
                 .successHandler(
-                    new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer, oAuth2TokenUtils, kakaoTokenOauthService,memberMapper)))
+                    new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer, oAuth2TokenUtils, kakaoTokenOauthService)))
             .apply(customFilterConfigurers())
             .and()
             .authorizeHttpRequests(authorize -> authorize
@@ -107,6 +107,7 @@ public class SecurityConfig {
         configuration.setExposedHeaders(List.of("*"));
         configuration.addExposedHeader("Authorization");
         configuration.addExposedHeader("Refresh");
+        configuration.addExposedHeader("Set-Cookie");
         configuration.addAllowedHeader("*");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
