@@ -98,12 +98,12 @@ const SearchResult = ({
           ) : data?.places.length ? (
             <div>
               {data.places.map(
-                ({ id, place_name, road_address_name, category_group_name, phone }, idx) => (
+                ({ id, place_name, address_name, category_group_name, phone }, idx) => (
                   <ResultItem
                     key={id}
                     order={idx}
                     placeName={place_name}
-                    address={road_address_name}
+                    address={address_name}
                     category={category_group_name}
                     phone={phone}
                   />
