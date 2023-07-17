@@ -7,6 +7,7 @@ import useInquireUsersQuery from './useInquireUsersQuery';
 import { useNavigate } from 'react-router-dom';
 import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
 import useSetAccessToken from '@/hooks/useSetAccessToken';
+import useSuccessFailToast from '@/hooks/useSuccessFailToast';
 
 const postLogin = async (loginData: LoginType) => {
   const response = await instance.post(
@@ -20,6 +21,7 @@ const postLogin = async (loginData: LoginType) => {
     }
   );
   const ACCESS_TOKEN = response.headers['authorization'];
+  setAccessTokenToHeader(ACCESS_TOKEN);
 
   return {
     response,
@@ -32,6 +34,8 @@ const useLoginMutation = () => {
   const navigate = useNavigate();
   const inquireQuery = useInquireUsersQuery();
   const accessTokenSetter = useSetAccessToken();
+  const mutateHandler = useSuccessFailToast();
+
   const loginMutation = useMutation({
     mutationFn: (loginData: LoginType) => postLogin(loginData),
     onSuccess(data, variables, context) {
@@ -48,14 +52,7 @@ const useLoginMutation = () => {
         return data;
       });
     },
-    onError: (error: AxiosError) => {
-      const message =
-        typeof error.response?.data === 'string' ? error.response.data : '로그인에 실패했습니다.';
-      toast({
-        content: message,
-        type: 'warning',
-      });
-    },
+    onError: mutateHandler.onError('로그인에 실패했습니다.'),
   });
   return loginMutation;
 };

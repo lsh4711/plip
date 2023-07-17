@@ -3,6 +3,7 @@ import BASE_URL from './BASE_URL';
 import instance from './axiosinstance';
 import useToast from '@/hooks/useToast';
 import { AxiosError } from 'axios';
+import useSuccessFailToast from '@/hooks/useSuccessFailToast';
 
 interface EmailValidationType {
   email: string;
@@ -18,6 +19,7 @@ const postEmailValidation = async ({ email, authcode }: EmailValidationType) => 
 };
 
 const useEmailValidationMutation = () => {
+  const mutationHandler = useSuccessFailToast();
   const toast = useToast();
 
   const emailValidation = useMutation({
@@ -28,16 +30,7 @@ const useEmailValidationMutation = () => {
         type: 'success',
       });
     },
-    onError: (error: AxiosError) => {
-      const message =
-        typeof error.response?.data === 'string'
-          ? error.response.data
-          : '이메일 인증에 실패했습니다.';
-      toast({
-        content: message,
-        type: 'warning',
-      });
-    },
+    onError: mutationHandler.onError('인증에 실패했습니다.'),
   });
   return emailValidation;
 };

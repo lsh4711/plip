@@ -1,5 +1,6 @@
+import { EMPTY_TOKEN } from '@/datas/constants';
 import instance from '@/queries/axiosinstance';
-import { EMPTY_TOKEN } from '@/redux/slices/authSlice';
+
 import { AxiosHeaderValue } from 'axios';
 import { Navigate } from 'react-router-dom';
 
