@@ -17,11 +17,10 @@ public class ScheduleResponse {
     private Long scheduleId;
     private String region;
     private String title;
-    private String content;
     private Integer memberCount;
 
     // 기존 코드
-    // private LocalDate startDate; 
+    // private LocalDate startDate;
     // private LocalDate endDate;
 
     // 클라이언트 요청사항
@@ -32,5 +31,6 @@ public class ScheduleResponse {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
+    private Integer placeSize;
     private List<List<PlaceResponse>> places;
 }

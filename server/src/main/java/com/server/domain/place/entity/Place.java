@@ -32,6 +32,8 @@ public class Place extends BaseEntity {
     private String name; // optional, default: 사용자 지정 장소
     private String address;
 
+    private String phone;
+
     private String latitude; // 사용자 지정시 같은 좌표가
     private String longitude; // 중복될 것 같으니 복합키 고려
 

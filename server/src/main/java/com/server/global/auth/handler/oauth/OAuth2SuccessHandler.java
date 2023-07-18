@@ -11,7 +11,6 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.server.domain.member.entity.Member;

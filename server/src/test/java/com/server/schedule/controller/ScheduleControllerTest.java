@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -40,6 +41,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.server.domain.member.entity.Member;
+import com.server.domain.member.service.MemberService;
 import com.server.domain.place.dto.PlaceDto;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.mapper.PlaceMapper;
@@ -83,6 +85,9 @@ public class ScheduleControllerTest {
             .create();
 
     @MockBean
+    private MemberService memberService;
+
+    @MockBean
     private ScheduleService scheduleService;
 
     @MockBean
@@ -93,9 +98,16 @@ public class ScheduleControllerTest {
 
     private String token;
 
+    private LocalDateTime now;
+
     @BeforeAll
     public void init() {
         token = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
+    }
+
+    @BeforeEach
+    public void setTime() {
+        now = LocalDateTime.now().withNano(0);
     }
 
     @Test
@@ -112,10 +124,16 @@ public class ScheduleControllerTest {
         Schedule schedule = new Schedule();
         schedule.setScheduleId(1L);
 
+        Member member = Member.builder()
+                .memberId(1L)
+                .build();
+
+        given(memberService.findMember(Mockito.anyLong())).willReturn(member);
         given(scheduleService.saveSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
         given(placeService.savePlaceLists(Mockito.any(Schedule.class), Mockito.<List<Place>>anyList()))
                 .willReturn(null);
         // given(schedulePlaceSedrvice.saveSchedulePlaces(Mockito.<SchedulePlace>anyList())).willReturn(null);
+        doNothing().when(scheduleService).sendKakaoMessage(Mockito.any(Schedule.class), Mockito.any(Member.class));
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -161,15 +179,13 @@ public class ScheduleControllerTest {
         schedule.setPeriod(3);
         schedule.setSchedulePlaces(schedulePlaces);
         schedule.setMember(member);
-        schedule.setCreatedAt(LocalDateTime.now());
-        schedule.setModifiedAt(LocalDateTime.now());
+        schedule.setCreatedAt(now);
+        schedule.setModifiedAt(now);
 
         String requestBody = gson.toJson(postDto);
 
         given(scheduleService.updateSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
-
         doNothing().when(scheduleService).deleteSchedule(1);
-
         given(placeService.savePlaceLists(Mockito.any(Schedule.class), Mockito.<List<Place>>anyList()))
                 .willReturn(schedulePlaces);
 
@@ -213,8 +229,8 @@ public class ScheduleControllerTest {
         schedule.setPeriod(3);
         schedule.setSchedulePlaces(schedulePlaces);
         schedule.setMember(member);
-        schedule.setCreatedAt(LocalDateTime.now());
-        schedule.setModifiedAt(LocalDateTime.now());
+        schedule.setCreatedAt(now);
+        schedule.setModifiedAt(now);
 
         given(scheduleService.findSchedule(Mockito.anyLong())).willReturn(schedule);
 
