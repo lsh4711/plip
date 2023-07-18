@@ -5,6 +5,7 @@ import { EMPTY_TOKEN } from '@/datas/constants';
 import { KAKAO_OAUTH_ACCESS_TOKEN } from '@/datas/constants';
 import useSetAccessToken from '@/hooks/useSetAccessToken';
 import addBearer from '@/utils/auth/addBearer';
+import useInquireUsersQuery from '@/queries/auth/useInquireUsersQuery';
 const getAccesstokenToQueryString = (callback: URLSearchParams) => {
   const token = callback.get(KAKAO_OAUTH_ACCESS_TOKEN);
   if (typeof token !== 'string') return EMPTY_TOKEN;
@@ -12,11 +13,13 @@ const getAccesstokenToQueryString = (callback: URLSearchParams) => {
 };
 
 const OauthRedirect = () => {
+  const inquireQuery = useInquireUsersQuery();
   const [querystring] = useSearchParams();
   const token = addBearer(getAccesstokenToQueryString(querystring));
   const dispatchAccesstoken = useSetAccessToken();
   setAccessTokenToHeader(token);
   dispatchAccesstoken({ accesstoken: token });
+  inquireQuery.refetch();
 
   return <Navigate to={'/'} replace />;
 };
