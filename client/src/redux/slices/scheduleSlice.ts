@@ -3,10 +3,12 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 
 interface InitialState {
+  isStale: boolean;
   schedules: ScheduledPlaceBase[][];
 }
 
 const initialState: InitialState = {
+  isStale: false,
   schedules: [[]],
 };
 
@@ -14,6 +16,9 @@ const scheduleSlice = createSlice({
   name: 'scheduleSlice',
   initialState,
   reducers: {
+    setIsStale: (state, { payload }: PayloadAction<InitialState['isStale']>) => {
+      state.isStale = payload;
+    },
     setSchedule: (state, { payload }: PayloadAction<InitialState['schedules']>) => {
       state.schedules = payload;
     },
@@ -27,5 +32,5 @@ const scheduleSlice = createSlice({
   },
 });
 
-export const { setSchedule, addSchedule } = scheduleSlice.actions;
+export const { setIsStale, setSchedule, addSchedule } = scheduleSlice.actions;
 export default scheduleSlice;
