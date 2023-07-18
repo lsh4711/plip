@@ -1,10 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import instance from '../axiosinstance';
-import useToast from '@/hooks/useToast';
 import useSuccessFailToast from '@/hooks/useSuccessFailToast';
 
 const useEmailRequestMutation = (type: 'pw' | 'signup') => {
-  const toast = useToast();
   const mutateHandler = useSuccessFailToast();
   const postEmailRequest = async (email: string) => {
     const response = await instance.post(`/api/mail?type=${type}/signup`, {
