@@ -121,9 +121,9 @@ public class JwtTokenizer {
         ResponseCookie cookie = ResponseCookie.from("Refresh", refreshToken)
             .maxAge(60 * 60 * 24 * 3)
             // TODO: 배포 환경에서 추가
-            //.domain("https://plip.netlify.app/")
+            .domain("localhost")
             //.secure(true)
-            .sameSite("None")
+            //.sameSite("None")
             .path("/")
             .httpOnly(true)
             .build();
