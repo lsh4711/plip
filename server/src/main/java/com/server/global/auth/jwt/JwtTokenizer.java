@@ -120,10 +120,8 @@ public class JwtTokenizer {
     public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
         ResponseCookie cookie = ResponseCookie.from("Refresh", refreshToken)
             .maxAge(60 * 60 * 24 * 3)
-            // TODO: 배포 환경에서 추가
-            .domain("localhost")
-            //.secure(true)
-            //.sameSite("None")
+            .secure(true)
+            .sameSite("None")
             .path("/")
             .httpOnly(true)
             .build();
