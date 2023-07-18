@@ -62,6 +62,7 @@ const Map = ({
       level={mapLevel} // 지도의 확대 레벨
       className="h-screen w-screen"
       isPanto
+      onClick={() => dispatch(setSelectedPlace(null))}
       onDragEnd={(
         target // 검색 지점 변경 용도
       ) =>
