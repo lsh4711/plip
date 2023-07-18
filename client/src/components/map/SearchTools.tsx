@@ -95,6 +95,7 @@ const SearchTools = ({ currentLng, currentLat }: Props) => {
             hovercolor={'default'}
             className={`fixed bottom-8 left-1/2 z-[99] rounded-3xl py-1 text-[#4568dc] drop-shadow-lg hover:bg-[#eee]`}
             onClick={() => {
+              dispatch(setSelectedPlace(null));
               setSearchCenterPosition({ lat: currentLat, lng: currentLng });
             }}
           >
