@@ -3,9 +3,14 @@ import { useState } from 'react';
 
 import Button from '@/components/atom/Button';
 import ScheduleAccordion from './ScheduleAccordion';
-import { GetScheduleResponse } from '@/types/api/schedules-types';
+import { GetScheduleResponse, ScheduledPlaceBase } from '@/types/api/schedules-types';
 
-function TripSchedule({ startDate, places }: Pick<GetScheduleResponse, 'startDate' | 'places'>) {
+type Props = {
+  startDate: GetScheduleResponse['startDate'];
+  places: ScheduledPlaceBase[][];
+};
+
+function TripSchedule({ startDate, places }: Props) {
   const [isEditMode, setIsEditMode] = useState(false);
 
   return (
@@ -36,6 +41,7 @@ function TripSchedule({ startDate, places }: Pick<GetScheduleResponse, 'startDat
       {places.map((place, idx: number) => (
         <ScheduleAccordion
           key={idx}
+          order={idx}
           title={`Day ${idx + 1}`}
           date={dayjs(startDate).add(idx, 'day').toDate()}
           contents={place}

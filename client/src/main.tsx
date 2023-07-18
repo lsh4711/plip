@@ -61,7 +61,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: 'plan/detail',
+    path: 'plan/detail/:id',
     element: (
       <>
         <ToastContainer />

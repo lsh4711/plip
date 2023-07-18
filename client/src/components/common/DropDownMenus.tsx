@@ -16,6 +16,7 @@ const DropDownMenus = () => {
           className="w-full border-b-2 p-4 text-black last:border-b-0"
         >
           <div key={index} className="flex w-full gap-2 ">
+
             {item.icon}
             {item.name}
           </div>

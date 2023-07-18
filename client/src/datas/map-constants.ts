@@ -1,23 +1,17 @@
-// #FF0000 (빨강)
-// #00FF00 (초록)
-// #0000FF (파랑)
-// #FFFF00 (노랑)
-// #FF00FF (자홍)
-// #00FFFF (청록)
-// #800080 (보라)
-// #FFA500 (주황)
-// #008000 (짙은 초록)
-// #FFC0CB (분홍)
-
 export const COLORS = [
-  '#FF0000',
-  '#00FF00',
-  '#0000FF',
-  '#FFFF00',
-  '#FF00FF',
-  '#00FFFF',
-  '#800080',
-  '#FFA500',
-  '#008000',
-  '#FFC0CB',
+  '#FF0000', // red
+  '#fa7d00', // orange
+  '#ffdc2b', // yellow
+  '#008000', // deep green
+  '#009dff', // blue
+  '#4e07e8', // deep blue
+  '#FF00FF', // hot pink
+  '#ff6554', // carrot
+  '#ff8d54', // light orange
+  '#ffc229', // dark yellow
+  '#bfff00', // light green
+  '#4de800', // green
+  '#09edbc', // mint
+  '#ff42a7', // pink
+  '#800080', // grape
 ];

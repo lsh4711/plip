@@ -118,8 +118,8 @@ const MyPage = ({}: MyPageProps) => {
                   </div>
                 </div>
                 <Paragraph variant={'red'} size="xs" className=" mt-1">
-                  <p> {isNicknameValid ? null : '중복된 닉네임입니다.'}</p>
-                  <p> {editForm.formState.errors.nickname?.message}</p>
+                  <span> {isNicknameValid ? null : '중복된 닉네임입니다.'}</span>
+                  <span> {editForm.formState.errors.nickname?.message}</span>
                 </Paragraph>
               </div>
             </div>
@@ -214,7 +214,7 @@ const MyPage = ({}: MyPageProps) => {
                 />
               </div>
               <Paragraph variant={'red'} size="xs" className=" mt-1">
-                <p>{editForm.formState.errors.password?.message}</p>
+                <span>{editForm.formState.errors.password?.message}</span>
               </Paragraph>
             </div>
 

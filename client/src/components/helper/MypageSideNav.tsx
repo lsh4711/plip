@@ -8,10 +8,11 @@ const MypageSideNav = ({}: MypageSideNavProps) => {
   const path = useLocation();
   console.log(path);
   return (
-    <nav className=" sticky left-0 right-0 top-0 h-screen w-[18.75rem] border-r border-zinc-400 pt-[6rem] ">
+    <nav className=" sticky left-0 right-0 top-0 h-screen w-[18.75rem] shrink-0 border-r border-zinc-400 pt-[6rem] ">
       <div className=" flex flex-col items-end gap-y-[1.5rem] pr-6">
         {buttonArray.map((item, idx) => (
           <Button
+            key={idx}
             className=" text-[1.25rem] font-normal hover:text-zinc-200"
             variant={path.pathname === item.slug ? 'primary' : 'default'}
           >
