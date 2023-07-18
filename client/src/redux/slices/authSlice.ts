@@ -1,7 +1,7 @@
-import { EMPTY_TOKEN } from '@/datas/constants';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import loginLocalStorage from '@/utils/auth/localstorage';
 import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
+import { EMPTY_TOKEN } from '@/datas/constants';
 
 export interface AccessTokenType {
   accesstoken: string | typeof EMPTY_TOKEN;
