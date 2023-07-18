@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useBeforeUnload } from 'react-router-dom';
 
 import { Button } from '@/components';
 import Confirm from '@/components/common/Confirm';
@@ -16,6 +16,7 @@ import { useEditPlanMutation, usePlanQuery } from '@/queries/plan';
 import { setIsStale } from '@/redux/slices/scheduleSlice';
 import { RootState } from '@/redux/store';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
+import { setSearchPlaceResults } from '@/redux/slices/placeSlice';
 
 const PlanMapPage = () => {
   const { id } = useParams();
@@ -73,6 +74,12 @@ const PlanMapPage = () => {
       autoPatchSchedule();
     }
   });
+
+  useBeforeUnload(
+    useCallback(() => {
+      dispatch(setSearchPlaceResults([]));
+    }, [])
+  );
 
   // TODO 일지 작성 페이지로 이동 필요
   const openWriteDiaryModal = () => {
