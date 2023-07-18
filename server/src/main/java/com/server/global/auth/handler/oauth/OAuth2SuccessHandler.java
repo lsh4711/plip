@@ -75,6 +75,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             .newInstance()
             .scheme("http")
             .host("localhost") // 리다이렉트 시킬 클라이언트 주소
+            .port(5173)
             .path("/oauth")
             .queryParams(queryParams)
             .build()
