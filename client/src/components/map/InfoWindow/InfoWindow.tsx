@@ -89,7 +89,7 @@ const InfoWindow = ({
             variant={'darkgray'}
             className={`text-xs ${phone ? 'text-[#343539]' : 'text-[#bbb]'}`}
           >
-            {phone ? '064-123-3456' : '전화번호 미등록'}
+            {phone ? phone : '전화번호 미등록'}
           </Paragraph>
         </div>
 

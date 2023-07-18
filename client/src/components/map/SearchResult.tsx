@@ -7,7 +7,8 @@ import { MdClose } from '@react-icons/all-files/md/MdClose';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { setResult } from '@/redux/slices/searchPlaceSlice';
+import { setSearchPlaceResults, setSelectedPlace } from '@/redux/slices/placeSlice';
+import { CategoryGroupCode } from '@/types/mapApi/place-types';
 
 type ResultInfoProps = {
   children: React.ReactNode;
@@ -23,21 +24,53 @@ const ResultInfo = ({ children }: ResultInfoProps) => {
 
 type ResultItemProps = {
   order: number;
+  placeId: number;
   placeName: string;
   address: string;
-  category: string;
+  categoryGroupName: string;
+  category: CategoryGroupCode;
   phone: string;
+  latitude: string;
+  longitude: string;
 };
 
-const ResultItem = ({ order, placeName, address, category, phone }: ResultItemProps) => {
+const ResultItem = ({
+  placeId,
+  order,
+  placeName,
+  address,
+  categoryGroupName,
+  category,
+  phone,
+  latitude,
+  longitude,
+}: ResultItemProps) => {
+  const dispatch = useDispatch();
+
   return (
-    <div className="flex flex-col gap-1 border-t-[1px] border-solid px-4 py-2">
+    <div
+      className="flex cursor-pointer flex-col gap-1 border-t-[1px] border-solid px-4 py-2"
+      onClick={() =>
+        dispatch(
+          setSelectedPlace({
+            apiId: placeId,
+            name: placeName,
+            address,
+            latitude,
+            longitude,
+            category,
+            bookmark: false, // TODO : 추후 변경
+            phone,
+          })
+        )
+      }
+    >
       <div className="flex items-center gap-2">
         <span className="font-extrabold text-[#4568DC]">{order + 1}</span>
         <span className="overflow-hidden text-ellipsis whitespace-nowrap font-bold">
           {placeName}
         </span>
-        <span className="shrink-0 text-xs text-[#bbb]">{category || ''}</span>
+        <span className="shrink-0 text-xs text-[#bbb]">{categoryGroupName || ''}</span>
       </div>
       <span className="text-xs">{address}</span>
       <span className={`text-xs ${phone ? 'text-[#343539]' : 'text-[#bbb]'}`}>
@@ -72,7 +105,7 @@ const SearchResult = ({
 
   useEffect(() => {
     if (data) {
-      dispatch(setResult(data.places));
+      dispatch(setSearchPlaceResults(data.places));
     }
   }, [data]);
 
@@ -94,18 +127,36 @@ const SearchResult = ({
               검색중...
             </div>
           ) : error ? (
-            <div>에러</div> // TODO : 에러 Fallback
+            <div className="flex items-center justify-center border-t-[1px] border-solid border-[#bbb] p-4 text-sm text-[#bbb]">
+              검색에 실패했어요. 잠시 후에 다시 시도해 주세요.
+            </div>
           ) : data?.places.length ? (
             <div>
               {data.places.map(
-                ({ id, place_name, address_name, category_group_name, phone }, idx) => (
+                (
+                  {
+                    id,
+                    place_name,
+                    address_name,
+                    category_group_code,
+                    category_group_name,
+                    phone,
+                    x,
+                    y,
+                  },
+                  idx
+                ) => (
                   <ResultItem
                     key={id}
+                    placeId={Number(id)}
                     order={idx}
                     placeName={place_name}
                     address={address_name}
-                    category={category_group_name}
+                    categoryGroupName={category_group_name}
+                    category={category_group_code as CategoryGroupCode}
                     phone={phone}
+                    latitude={y}
+                    longitude={x}
                   />
                 )
               )}
