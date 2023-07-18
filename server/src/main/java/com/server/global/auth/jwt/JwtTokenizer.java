@@ -123,6 +123,7 @@ public class JwtTokenizer {
             // TODO: 배포 환경에서 추가
             //.domain("https://plip.netlify.app/")
             //.secure(true)
+            .sameSite("None")
             .path("/")
             .httpOnly(true)
             .build();
