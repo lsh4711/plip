@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.server.domain.record.entity.Record;
 import com.server.domain.record.repository.RecordRepository;
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.repository.SchedulePlaceRepository;
@@ -42,10 +43,10 @@ public class SchedulePlaceService {
 
     }
 
-    // public List<Record> findRecordsBySchedulePlaceId(long schedulePlaceId) {
+    public List<Record> findRecordsBySchedulePlaceId(long schedulePlaceId) {
+        List<Record> records = recordRepository
+                .findAllBySchedulePlace_SchedulePlaceId(schedulePlaceId);
 
-    //     // List<Record> records = recordRepository
-    //     //         .findAllBySchedulePlace_SchedulePlaceId(schedulePlaceId);
-    //     return null;
-    // }
+        return records;
+    }
 }
