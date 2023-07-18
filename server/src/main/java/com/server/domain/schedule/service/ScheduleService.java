@@ -72,10 +72,6 @@ public class ScheduleService {
         long memberId = CustomUtil.getAuthId();
         List<Schedule> schedules = scheduleRepository.findAllByMember_memberId(memberId, sort);
 
-        if (schedules == null || schedules.size() == 0) {
-            throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
-        }
-
         return schedules;
     }
 

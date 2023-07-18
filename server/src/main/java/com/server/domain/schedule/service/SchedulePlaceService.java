@@ -4,18 +4,19 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.server.domain.record.repository.RecordRepository;
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.repository.SchedulePlaceRepository;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
-@Service
-public class SchedulePlaceService {
-    private SchedulePlaceRepository schedulePlaceRepository;
+import lombok.RequiredArgsConstructor;
 
-    public SchedulePlaceService(SchedulePlaceRepository schedulePlaceRepository) {
-        this.schedulePlaceRepository = schedulePlaceRepository;
-    }
+@Service
+@RequiredArgsConstructor
+public class SchedulePlaceService {
+    private final SchedulePlaceRepository schedulePlaceRepository;
+    private final RecordRepository recordRepository;
 
     public void saveSchedulePlaces(List<SchedulePlace> schedulePlaces) {
         schedulePlaceRepository.saveAll(schedulePlaces);
@@ -39,5 +40,12 @@ public class SchedulePlaceService {
             schedulePlaceRepository.deleteAll(schedulePlaces);
         }
 
+    }
+
+    public List<Record> findRecordsBySchedulePlaceId(long schedulePlaceId) {
+
+        // List<Record> records = recordRepository
+        //         .findAllBySchedulePlace_SchedulePlaceId(schedulePlaceId);
+        return null;
     }
 }
