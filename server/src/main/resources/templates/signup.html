@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
+<head>
+    <meta charset="UTF-8">
+</head>
 <body>
-<div style="margin:100px;">
-    <h1> 안녕하세요.</h1>
-    <h1> PLIP에서 보내는 인증 코드입니다.</h1>
-    <br>
-    <p> 아래 코드를 회원가입 창으로 돌아가 입력해주세요.</p>
-    <br>
-    <div align="center" style="border:1px solid black; font-family:verdana;">
-        <h3 style="color:blue"> 회원가입 인증 코드 입니다. </h3>
-        <div style="font-size:130%" th:text="${code}"></div>
+<div class="text-on-img">
+    <div style="width: 600px; height: 600px; background-image: url(https://user-images.githubusercontent.com/55998706/253955432-f3fc3e58-d9e5-4e53-82e4-6100b3242c38.png);">
+        <h1 style="font-family: 맑은고딕; color: white; padding-top: 200px; padding-left: 20px">안녕하세요,</h1>
+        <h2 style="font-family: 맑은고딕; color: white; padding-left: 20px">PliP에서 보내는 인증 코드입니다.</h2>
+        <p style="font-family: 맑은고딕; color:white; padding-left: 20px;"> 아래 코드를 회원가입 창으로 돌아가 입력해주세요.</p>
+        <div align="center"
+             style="margin: 40px 20px 0px 20px; align: center; border: thick double white; font-family: verdana;">
+            <h3 style="color:blue"> 회원가입 메일 인증 코드 입니다. </h3>
+            <div style="font-size:130%" th:text="${code}"></div>
+        </div>
     </div>
-    <br/>
 </div>
-
 </body>
 </html>
