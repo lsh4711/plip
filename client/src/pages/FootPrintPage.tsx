@@ -22,10 +22,12 @@ const FootPrintPage = ({}: FootPrintPageProps) => {
       <MypageSideNav />
       <div className="relatvie">
         <Map
+          type="recording"
           centerLat={center.lat}
           centerLng={center.lng}
           mapLevel={mapLevel}
           setMapLevel={setMapLevel}
+          schedules={[[]]}
         />
         <ZoomButtons
           onClickZoomIn={() => {
