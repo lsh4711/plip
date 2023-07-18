@@ -2,8 +2,7 @@ import { Link } from 'react-router-dom';
 import { menus } from '@/datas/menus';
 import { ReactComponent as LogoutIcon } from '@/assets/icons/logout.svg';
 import useLogoutMutation from '@/queries/auth/useLogoutMutation';
-import { EMPTY_TOKEN } from '@/datas/constants';
-import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
+
 const DropDownMenus = () => {
   const logoutMutation = useLogoutMutation();
   return (
