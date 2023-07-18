@@ -85,6 +85,7 @@ const Map = ({
               address: result.address_name,
               latitude: result.y,
               longitude: result.x,
+              phone: result.phone,
               category: result.category_group_code as CategoryGroupCode,
               bookmark: false,
             })
@@ -129,6 +130,7 @@ const Map = ({
             latitude={selectedPlace.latitude}
             longitude={selectedPlace.longitude}
             category={selectedPlace.category}
+            phone={selectedPlace.phone}
             isBookmarked={selectedPlace.bookmark}
             onClickClose={() => setSelectedPlace(null)}
             className="absolute bottom-8 -translate-x-1/2"
