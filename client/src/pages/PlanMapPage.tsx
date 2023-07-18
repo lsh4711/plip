@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import { Button } from '@/components';
@@ -11,30 +11,33 @@ import { Map, MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
 import useDebounce from '@/hooks/useDebounce';
 import useModal from '@/hooks/useModal';
 import { useEditPlanMutation, usePlanQuery } from '@/queries/plan';
+import { setIsStale } from '@/redux/slices/scheduleSlice';
 import { RootState } from '@/redux/store';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
 
 const PlanMapPage = () => {
   const { id } = useParams();
   const { data, isLoading, error } = usePlanQuery(id!);
-  const { schedules } = useSelector((state: RootState) => state.schedule);
+  const { isStale, schedules } = useSelector((state: RootState) => state.schedule);
 
   const [openModal] = useModal();
   const [mapLevel, setMapLevel] = useState(8);
 
+  const dispatch = useDispatch();
   const mutation = useEditPlanMutation(id!);
   const patchSchedule = () =>
     mutation.mutate({
       id: id!,
       places: schedules,
     });
-  const autoPatchSchedule = useDebounce(patchSchedule, 1000 * 10);
+  const autoPatchSchedule = useDebounce(patchSchedule, 1000 * 15);
 
   useEffect(() => {
-    if (JSON.stringify(data?.places!) !== JSON.stringify(schedules)) {
+    if (isStale) {
+      dispatch(setIsStale(false));
       autoPatchSchedule();
     }
-  }, [schedules]);
+  });
 
   // TODO 일지 작성 페이지로 이동 필요
   const openWriteDiaryModal = () => {

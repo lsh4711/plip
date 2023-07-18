@@ -6,7 +6,7 @@ import { HeadingParagraph, Paragraph } from '@/components';
 import { SelectDayButton } from '@/components/map/InfoWindow';
 import { allCategories } from '@/datas/categories';
 import useToast from '@/hooks/useToast';
-import { addSchedule } from '@/redux/slices/scheduleSlice';
+import { addSchedule, setIsStale } from '@/redux/slices/scheduleSlice';
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
 import { cn } from '@/utils';
 
@@ -54,6 +54,7 @@ const InfoWindow = ({
         },
       })
     );
+    dispatch(setIsStale(true));
     toast({
       type: 'success',
       content: `Day ${day}에 추가되었습니다.`,
