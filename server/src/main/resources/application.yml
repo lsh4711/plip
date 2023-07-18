@@ -1,9 +1,9 @@
 server:
   port: 8000
-  ssl:
-    key-store: classpath:aws.p12
-    key-store-type: PKCS12
-    key-store-password: ${KEY_STORE_PASSWORD}
+  #ssl:
+  #  key-store: classpath:aws.p12
+  #  key-store-type: PKCS12
+  #  key-store-password: ${KEY_STORE_PASSWORD}
 spring:
   config.activate.on-profile: default
   redis:
@@ -26,7 +26,7 @@ spring:
   servlet:
     multipart:
       enabled: true
-      location: ${IMAGE_STORAGE_LOCATION}
+      location: c://dev #${IMAGE_STORAGE_LOCATION}
       maxFileSize: 10MB
       maxRequestSize: 10MB
     web:
@@ -36,8 +36,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${EMAIL_USERNAME}
-    password: ${EMAIL_PASSWORD}
+    username: ss # ${EMAIL_USERNAME}
+    password: ss # ${EMAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -81,8 +81,8 @@ spring:
 jwt:
   key:
     secret: ${JWT_SECRET_KEY}
-  access-token-expiration-minutes: ${ACCESS_EXPIRATION_MINUTES} #1분
-  refresh-token-expiration-minutes: ${REFRESH_EXPIRATION_MINUTES} #3일
+  access-token-expiration-minutes: 4200 # ${ACCESS_EXPIRATION_MINUTES} #1분
+  refresh-token-expiration-minutes: 4200 # ${REFRESH_EXPIRATION_MINUTES} #3일
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
@@ -92,16 +92,14 @@ springdoc:
     path: /docs/swagger
   
 kakao:
-    redirect-url: ${REDIRECT_URL8000}
-    api-key: ${API_KEY}
-    #redirect-url: dsadasdassd
-    #api-key: dasdasdasdsaasdasdsa
+    redirect-url: dsads # ${REDIRECT_URL8000}
+    api-key: dsads # ${API_KEY}
 
 cloud:
   aws:
     credentials:
-      access-key: ${AWS_ACCESS_KEY2}
-      secret-key: ${AWS_SECRET_ACCESS_KEY2}
+      access-key: dasdas #${AWS_ACCESS_KEY2}
+      secret-key: dsad #${AWS_SECRET_ACCESS_KEY2}
     region:
       static: ap-northeast-2
     stack:
