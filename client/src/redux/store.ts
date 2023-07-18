@@ -1,14 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authSlice } from './slices';
 import scheduleSlice from './slices/scheduleSlice';
-import searchPlaceSlice from './slices/searchPlaceSlice';
+import placeSlice from './slices/placeSlice';
 import toastSlice from './slices/toastSlice';
 
 const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
     toast: toastSlice.reducer,
-    searchPlace: searchPlaceSlice.reducer,
+    place: placeSlice.reducer,
     schedule: scheduleSlice.reducer,
   },
 });
