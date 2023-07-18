@@ -26,7 +26,7 @@ const useEditPlanMutation = (id: string) => {
     onSuccess: (data) => {
       queryClient.invalidateQueries(['/schedule', id]);
       toast({
-        content: '저장되었습니다.',
+        content: '자동 저장되었습니다.',
         type: 'success',
       });
     },
