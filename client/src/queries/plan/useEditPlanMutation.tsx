@@ -25,10 +25,6 @@ const useEditPlanMutation = (id: string) => {
   return useMutation(patchPlan, {
     onSuccess: (data) => {
       queryClient.invalidateQueries(['/schedule', id]);
-      toast({
-        content: '자동 저장되었습니다.',
-        type: 'success',
-      });
     },
     onError: (e) => {
       toast({
