@@ -5,6 +5,11 @@ server:
     key-store-type: PKCS12
     key-store-password: ${KEY_STORE_PASSWORD}
 spring:
+  batch:
+    job:
+      enabled: false
+  #   jdbc:
+  #     initialize-schema: always # 작동하는지 확인 필요
   config.activate.on-profile: default
   redis:
     host: localhost

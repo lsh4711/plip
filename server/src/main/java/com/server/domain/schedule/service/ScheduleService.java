@@ -1,32 +1,44 @@
 package com.server.domain.schedule.service;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.server.domain.member.entity.Member;
+import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.repository.ScheduleRepository;
+import com.server.domain.test.auth.KakaoAuth;
+import com.server.domain.test.dto.Body.Content;
+import com.server.domain.test.dto.Body.Feed;
+import com.server.domain.test.dto.Body.Link;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 import com.server.global.utils.CustomBeanUtils;
 import com.server.global.utils.CustomUtil;
 
-@Service
-public class ScheduleService {
-    private ScheduleRepository scheduleRepository;
+import lombok.RequiredArgsConstructor;
 
-    public ScheduleService(ScheduleRepository scheduleRepository) {
-        this.scheduleRepository = scheduleRepository;
-    }
+@Service
+@RequiredArgsConstructor
+public class ScheduleService {
+    private final ScheduleRepository scheduleRepository;
+
+    private final KakaoAuth kakaoAuth;
 
     public Schedule saveSchedule(Schedule schedule) {
         String region = schedule.getRegion();
         String title = schedule.getTitle();
-        String content = schedule.getContent();
+        int memberCount = schedule.getMemberCount();
 
         if (title == null) {
             schedule.setTitle(String.format("%s 여행 레츠고!", region));
         }
-        if (content == null) {
-            schedule.setContent(String.format("즐거운 %s 여행~!", region));
+        if (memberCount <= 0) {
+            schedule.setMemberCount(1);
         }
 
         return scheduleRepository.save(schedule);
@@ -55,6 +67,29 @@ public class ScheduleService {
         return schedule;
     }
 
+    public List<Schedule> findSchedules() {
+        Sort sort = Sort.by("createdAt").descending();
+        long memberId = CustomUtil.getAuthId();
+        List<Schedule> schedules = scheduleRepository.findAllByMember_memberId(memberId, sort);
+
+        if (schedules == null || schedules.size() == 0) {
+            throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
+        }
+
+        return schedules;
+    }
+
+    public Schedule findSharedSchedule(long scheduleId, long memberId, String email) {
+        Schedule schedule = scheduleRepository
+                .findByScheduleIdAndMember_MemberIdAndMember_Email(scheduleId, memberId, email);
+
+        if (schedule == null) {
+            throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
+        }
+
+        return schedule;
+    }
+
     public void deleteSchedule(long scheduleId) {
         long memberId = CustomUtil.getAuthId();
 
@@ -70,5 +105,61 @@ public class ScheduleService {
             throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
         }
 
+    }
+
+    public Feed getFeedTemplate(Schedule schedule) {
+        // Member
+        Member member = schedule.getMember();
+        long memberId = member.getMemberId();
+        String email = member.getEmail();
+        String nickname = member.getNickname();
+
+        // Schedule
+        long scheduleId = schedule.getScheduleId();
+        String region = schedule.getRegion();
+        LocalDate startDate = schedule.getStartDate();
+        LocalDate endDate = schedule.getEndDate();
+        int period = schedule.getPeriod();
+        String term = period == 1 ? "당일치기" : String.format("%d박 %d일", period - 1, period);
+
+        // Feed
+        String basesUrl = "https://plip.netlify.app/plan/detail";
+        String shareUrl = String.format("%s/%d/share?id=%d&email=%s",
+            basesUrl,
+            scheduleId,
+            memberId,
+            email);
+        Link link = Link.builder()
+                .web_url(shareUrl)
+                .mobile_web_url(shareUrl)
+                .build();
+        Content content = Content.builder()
+                .title(String.format("%s님의 %s 여행 일정입니다.", nickname, region))
+                .description(String.format("기간: %s ~ %s (%s)", startDate, endDate, term))
+                .image_width(600)
+                .image_height(400)
+                .image_url("https://teamdev.shop:8000/files/images?region=" + region)
+                .link(link)
+                .build();
+        Feed feed = Feed.builder()
+                .object_type("feed")
+                .content(content)
+                .build();
+
+        return feed;
+    }
+
+    @Async
+    public void sendKakaoMessage(Schedule schedule, Member member) {
+        KakaoToken kakaoToken = member.getKakaoToken();
+
+        if (kakaoToken == null) {
+            return; // or throw CustomExcepion
+        }
+
+        String accessToken = kakaoToken.getAccessToken();
+        Feed template = getFeedTemplate(schedule);
+
+        kakaoAuth.sendMessage(template, accessToken);
     }
 }

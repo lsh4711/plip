@@ -3,13 +3,10 @@ package com.server.domain.test.controller;
 import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
-
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import java.util.List;
-
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,10 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.web.servlet.ModelAndView;
-
+import com.server.domain.member.entity.Member;
+import com.server.domain.oauth.entity.KakaoToken;
+import com.server.domain.oauth.service.KakaoTokenOauthService;
 import com.server.domain.test.auth.Token;
-
 import com.server.domain.test.dto.TestDto;
 import com.server.domain.test.entity.Test;
 import com.server.domain.test.mapper.TestMapper;
@@ -50,6 +47,8 @@ public class TestController {
 
     private final KakaoService kakaoService;
 
+    private final KakaoTokenOauthService kakaoTokenOauthService;
+
     @Value("${kakao.redirect-url}")
     private String redirecUrl;
 
@@ -62,7 +61,7 @@ public class TestController {
 
     @GetMapping
     public ResponseEntity getToken(HttpServletResponse response,
-        @RequestParam(value = "code", required = false) String code) throws IOException {
+            @RequestParam(value = "code", required = false) String code) throws IOException {
         if (code == null) {
             String location = String.format(
                 "https://kauth.kakao.com/oauth/authorize?client_id=%s&redirect_uri=%s/test&response_type=code&scope=talk_message",
@@ -86,15 +85,25 @@ public class TestController {
             redirecUrl,
             redirecUrl,
             ids);
+        Member member = Member.builder()
+                .memberId(1L)
+                .build();
+        KakaoToken kakaoToken = KakaoToken.builder()
+                .accessToken(accessToken)
+                // .refreshToken(refreshToken)
+                .member(member)
+                .build();
+
+        kakaoTokenOauthService.saveTestToken(kakaoToken);
 
         return ResponseEntity.ok(body.replace("\\n", "<br />"));
     }
 
     @GetMapping("/{message}")
     public ResponseEntity sendMessage(HttpServletResponse response,
-        @PathVariable("message") String message,
-        @RequestParam(value = "id", required = false) Long taskId,
-        @RequestParam(value = "time", required = false) Long second) throws IOException {
+            @PathVariable("message") String message,
+            @RequestParam(value = "id", required = false) Long taskId,
+            @RequestParam(value = "time", required = false) Long second) throws IOException {
         if (tokens == null) {
             response.sendRedirect(redirecUrl + "/test");
             return ResponseEntity.ok("인증 필요.");
@@ -138,7 +147,7 @@ public class TestController {
 
     @PatchMapping("/{testId}")
     public ResponseEntity postTest(@PathVariable("testId") long testId,
-        @RequestBody TestDto.Patch patchDto) {
+            @RequestBody TestDto.Patch patchDto) {
         Test test = testMapper.patchDtoToTest(patchDto);
         test.setTestId(testId);
 
@@ -176,4 +185,3 @@ public class TestController {
 
     }
 }
-

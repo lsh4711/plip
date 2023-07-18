@@ -6,7 +6,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.google.gson.Gson;
+import com.server.domain.test.dto.Body;
+import com.server.domain.test.dto.Body.Link;
+
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class KakaoAuth {
     @Value("${kakao.redirect-url}")
     private String redirecUrl;
@@ -16,6 +23,8 @@ public class KakaoAuth {
 
     private String tokenApiUrl = "https://kauth.kakao.com/oauth/token";
     private String messageApiUrl = "https://kapi.kakao.com/v2/api/talk/memo/default/send";
+
+    private final Gson gson;
 
     public Token requestTokens(String code) {
         Token tokens = WebClient.create(tokenApiUrl)
@@ -38,8 +47,35 @@ public class KakaoAuth {
         return null;
     }
 
+    // @Async
+    public void sendMessage(Object template, String accessToken) {
+        String body = gson.toJson(template);
+
+        System.out.println(body);
+
+        String result = WebClient.create(messageApiUrl)
+                .post()
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header("Authorization", "Bearer " + accessToken)
+                .body(BodyInserters
+                        .fromFormData("template_object", body))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+
+    // test
     public String sendMessage(String accessToken, String message) {
-        String body = "{\"object_type\": \"text\", \"text\": \"" + message + "\", \"link\": {}}";
+        Body.Text bodyBuilder = Body.Text.builder()
+                .object_type("text")
+                .text(message)
+                .link(new Link())
+                .build();
+        String body = gson.toJson(bodyBuilder);
+
+        // String body = "{\"object_type\": \"text\", \"text\": \"" + message + "\", \"link\": {}}";
+        // System.out.println(body);
         String result = WebClient.create(messageApiUrl)
                 .post()
                 .accept(MediaType.APPLICATION_JSON)
