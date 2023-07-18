@@ -37,7 +37,7 @@ const searchPlaceByKeyword = ({ pageParam, keyword, currentX, currentY }: Search
       {
         x: currentX,
         y: currentY,
-        radius: 2000,
+        radius: 20000,
         page: pageParam,
       }
     );
@@ -73,6 +73,7 @@ const searchPlaceByCategory = ({
       {
         x: currentX,
         y: currentY,
+        radius: 20000,
         page: pageParam,
       }
     );
