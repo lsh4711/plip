@@ -28,16 +28,6 @@ public class PlaceController {
 
     private final RecordMapper recordMapper;
 
-    // @GetMapping("/category")
-    // public ResponseEntity getPlacesByCategory(@RequestParam @Min(1) int size,
-    //         @RequestParam @Min(1) int page,
-    //         @RequestParam String category) {
-    //     Page<Place> pagePlaces = placeService.getPlacesByCategory(size, page - 1, category);
-    //     List<Place> places = pagePlaces.getContent();
-
-    //     return new ResponseEntity<>(null);
-    // }
-
     // 해당 장소를 방문한 모든 회원의 일지를 조회, 정렬 필요한지 확인해야함
     @GetMapping("/{place-id}/records")
     public ResponseEntity<?> getRecords(@PathVariable("place-id") @Positive Long placeId,

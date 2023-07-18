@@ -2,7 +2,9 @@ package com.server.domain.schedule.controller;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -25,8 +27,10 @@ import com.server.domain.place.dto.PlaceResponse;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.mapper.PlaceMapper;
 import com.server.domain.place.service.PlaceService;
+import com.server.domain.record.entity.Record;
 import com.server.domain.schedule.dto.ScheduleDto;
 import com.server.domain.schedule.dto.ScheduleResponse;
+import com.server.domain.schedule.dto.ScheduleShareResponse;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.mapper.ScheduleMapper;
@@ -148,8 +152,18 @@ public class ScheduleController {
         scheduleResponse.setPlaces(placeResponseLists);
         scheduleResponse.setPlaceSize(schedulePlaces.size());
 
-        // 일정 공유 기능도 겸하기에 Member의 공개해도 되는 정보만 포함해야함
-        return ResponseEntity.ok(scheduleResponse);
+        Map<Long, List<Record>> map = new HashMap<>();
+        for (SchedulePlace schedulePlace : schedulePlaces) {
+            long schedulePlaceId = schedulePlace.getSchedulePlaceId();
+            List<Record> records = schedulePlace.getRecords();
+            map.put(schedulePlaceId, records);
+        }
+        ScheduleShareResponse scheduleShareResponse = ScheduleShareResponse.builder()
+                .schedule(scheduleResponse)
+                .recordsMap(map)
+                .build();
+
+        return ResponseEntity.ok(scheduleShareResponse);
     }
 
     @GetMapping("/{scheduleId}/places")

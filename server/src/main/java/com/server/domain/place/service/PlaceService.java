@@ -77,9 +77,9 @@ public class PlaceService {
         return schedulePlaces;
     }
 
-    public Object getPlacesByCategory(int size, int page, String category) {
-        return null;
-    }
+    // public Object getPlacesByCategory(int size, int page, String category) {
+    //     return null;
+    // }
 
     public List<Record> findRecords(Long placeId) {
         List<Record> foundRecords = new ArrayList<>();
