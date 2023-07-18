@@ -27,7 +27,9 @@ import com.server.domain.place.dto.PlaceResponse;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.mapper.PlaceMapper;
 import com.server.domain.place.service.PlaceService;
+import com.server.domain.record.dto.RecordDto;
 import com.server.domain.record.entity.Record;
+import com.server.domain.record.mapper.RecordMapper;
 import com.server.domain.schedule.dto.ScheduleDto;
 import com.server.domain.schedule.dto.ScheduleResponse;
 import com.server.domain.schedule.dto.ScheduleShareResponse;
@@ -54,6 +56,8 @@ public class ScheduleController {
     private final PlaceMapper placeMapper;
 
     private final SchedulePlaceService schedulePlaceService;
+
+    private final RecordMapper recordMapper;
 
     @Transactional
     @PostMapping("/write")
@@ -152,11 +156,13 @@ public class ScheduleController {
         scheduleResponse.setPlaces(placeResponseLists);
         scheduleResponse.setPlaceSize(schedulePlaces.size());
 
-        Map<Long, List<Record>> map = new HashMap<>();
+        Map<Long, List<RecordDto.Response>> map = new HashMap<>();
         for (SchedulePlace schedulePlace : schedulePlaces) {
             long schedulePlaceId = schedulePlace.getSchedulePlaceId();
             List<Record> records = schedulePlace.getRecords();
-            map.put(schedulePlaceId, records);
+            List<RecordDto.Response> recordResponses = recordMapper
+                    .recordsToRecordResponses(records);
+            map.put(schedulePlaceId, recordResponses);
         }
         ScheduleShareResponse scheduleShareResponse = ScheduleShareResponse.builder()
                 .schedule(scheduleResponse)
