@@ -4,8 +4,13 @@ import { getAuthorizationHeader, isValidToken } from '@/utils/auth';
 import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
 import useInquireUsersQuery from './useInquireUsersQuery';
 import useSetAccessToken from '@/hooks/useSetAccessToken';
+import loginLocalStorage from '@/utils/auth/localstorage';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 const getAccessTokenAxios = async () => {
+  console.log('실행되나요?');
+
   const response = await instance.get('/api/tokens', { withCredentials: true });
   const ACCESS_TOKEN = response.headers['authorization'];
   setAccessTokenToHeader(ACCESS_TOKEN);
@@ -15,13 +20,14 @@ const getAccessTokenAxios = async () => {
 const useGetAccessTokenQuery = () => {
   const inquireQuery = useInquireUsersQuery();
   const dispatchAccessToken = useSetAccessToken();
-
+  const wasLogin = loginLocalStorage.getWasLoginFromLocalStorage;
+  const isLogin = useSelector((state: RootState) => state.auth.isLogin);
   const getAccessTokenQuery = useQuery({
     queryKey: ['getAccessToken'],
     queryFn: getAccessTokenAxios,
     suspense: true,
     retry: 1,
-    enabled: !isValidToken(getAuthorizationHeader()),
+    enabled: wasLogin && !isLogin,
     staleTime: 1000 * 60 * 10,
     onSuccess: (response) => {
       inquireQuery.refetch().then(() => inquireQuery.refetch());
