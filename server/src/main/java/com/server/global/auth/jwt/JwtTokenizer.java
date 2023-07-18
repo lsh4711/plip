@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -105,12 +106,19 @@ public class JwtTokenizer {
     }
 
     public String getHeaderRefreshToken(HttpServletRequest request) {
-        return Arrays.stream(request.getCookies())
+        Cookie[] cookies = request.getCookies();
+        if(cookies == null)  throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
+        for(Cookie cookie : cookies){
+            if(cookie.getName().equals("Refresh"))
+                return cookie.getValue();
+        }
+        throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
+        /*return Arrays.stream(request.getCookies())
             .filter(cookie -> cookie.getName().equals("Refresh"))
             .findFirst()
             .orElseThrow(() -> new CustomException(
                 ExceptionCode.REFRESH_TOKEN_NOT_FOUND))
-            .getValue();
+            .getValue();*/
     }
 
     public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {

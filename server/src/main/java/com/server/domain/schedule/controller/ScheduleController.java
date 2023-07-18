@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.server.domain.mail.service.MailService;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.service.MemberService;
 import com.server.domain.place.dto.PlaceDto;
@@ -50,6 +51,7 @@ public class ScheduleController {
     private final PlaceMapper placeMapper;
 
     private final SchedulePlaceService schedulePlaceService;
+    private final MailService mailService;
 
     @Transactional
     @PostMapping("/write")
@@ -70,6 +72,10 @@ public class ScheduleController {
 
         // 비동기
         scheduleService.sendKakaoMessage(savedSchedule, member);
+        /**
+         * @Author: 다영
+         * */
+        mailService.sendScheduleMail(savedSchedule, member);
 
         return ResponseEntity.created(location).build();
     }
