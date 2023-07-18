@@ -127,7 +127,9 @@ const SearchResult = ({
               검색중...
             </div>
           ) : error ? (
-            <div>에러</div> // TODO : 에러 Fallback
+            <div className="flex items-center justify-center border-t-[1px] border-solid border-[#bbb] p-4 text-sm text-[#bbb]">
+              검색에 실패했어요. 잠시 후에 다시 시도해 주세요.
+            </div>
           ) : data?.places.length ? (
             <div>
               {data.places.map(

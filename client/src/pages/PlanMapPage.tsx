@@ -17,6 +17,7 @@ import { setIsStale } from '@/redux/slices/scheduleSlice';
 import { RootState } from '@/redux/store';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
 import { setSearchPlaceResults } from '@/redux/slices/placeSlice';
+import LoadingPage from './LoadingPage';
 
 const PlanMapPage = () => {
   const { id } = useParams();
@@ -91,7 +92,7 @@ const PlanMapPage = () => {
   return (
     <div className="relative h-full w-full">
       {isLoading ? (
-        <div>로딩중</div> // TODO fallback 넣기
+        <LoadingPage />
       ) : error ? (
         <div>에러</div> // TODO fallback 넣기
       ) : (
