@@ -74,9 +74,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         queryParams.add("refresh_token", refreshToken);
         return UriComponentsBuilder
             .newInstance()
-            .scheme("http")
-            .host("localhost") // 리다이렉트 시킬 클라이언트 주소
-            .port(5173)
+            .scheme("https")
+            .host("plip.netlify.app") // 리다이렉트 시킬 클라이언트 주소
             .path("/oauth")
             .queryParams(queryParams)
             .build()
