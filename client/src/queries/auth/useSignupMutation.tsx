@@ -1,10 +1,9 @@
 import { SignupType } from '@/schema/signupSchema';
-import BASE_URL from './BASE_URL';
 import { useMutation } from '@tanstack/react-query';
-import instance from './axiosinstance';
 import useToast from '@/hooks/useToast';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import instance from '../axiosinstance';
 
 const postSignup = async (signupData: SignupType) => {
   const response = await instance.post(
@@ -46,22 +45,3 @@ const useSignupMutation = () => {
 };
 
 export default useSignupMutation;
-
-// 예전 fetch 코드
-// export const postSignup = async (signupData: SignupType) => {
-//   const parsedSignupData = {
-//     email: signupData.email,
-//     password: signupData.password,
-//     nickname: signupData.nickname,
-//   };
-
-//   const response = await fetch(`${BASE_URL}/api/users/signup`, {
-//     method: 'POST',
-//     body: JSON.stringify(parsedSignupData),
-//     // credentials: 'include',
-//     headers: {
-//       'Content-Type': 'application/json;charset=utf-8',
-//     },
-//   });
-//   return response;
-// };

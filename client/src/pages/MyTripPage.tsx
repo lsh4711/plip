@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import MyTripCard from '@/components/page-components/mytrip/MyTripCard';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import useMyTripQuery from '@/queries/mytrip/useMyTripQuery';
+import instance from '@/queries/axiosinstance';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 interface MyTripPageProps {}
 

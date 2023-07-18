@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
 import { ReactComponent as MypageIcon } from '../../assets/icons/mypage.svg';
@@ -11,8 +11,9 @@ import { useCloseDropdown } from '@/hooks/useCloseDropdown';
 import Avatar from './Avatar';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import useInquireUsersQuery from '@/queries/useInquireUsersQuery';
 import instance from '@/queries/axiosinstance';
+import useInquireUsersQuery from '@/queries/auth/useInquireUsersQuery';
+import LoadingSpinner from '../atom/LoadingSpinner';
 
 interface HeaderProps {
   isHome?: boolean;
@@ -90,8 +91,6 @@ const Header = () => {
   const isHome = useLocation().pathname === '/';
   const isLogin = useSelector((state: RootState) => state.auth.isLogin);
 
-  const accesstoken = useSelector((state: RootState) => state.auth.accesstoken);
-  const inquireQuery = useInquireUsersQuery();
   return (
     <header
       className={`left-0 top-0 z-40 h-[80px] w-full px-12 ${
@@ -105,9 +104,11 @@ const Header = () => {
             <span className="gradient-text text-xl font-bold">PliP</span>
           </div>
         </Link>
-        <div className="relative flex items-center gap-4">
-          {isLogin ? <AfterLogin isHome={isHome} /> : <BeforeLogin isHome={isHome} />}
-        </div>
+        <React.Suspense fallback={<LoadingSpinner />}>
+          <div className="relative flex items-center gap-4">
+            {isLogin ? <AfterLogin isHome={isHome} /> : <BeforeLogin isHome={isHome} />}
+          </div>
+        </React.Suspense>
       </nav>
     </header>
   );

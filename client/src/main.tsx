@@ -16,6 +16,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from './components/helper/ErrorFallback';
 import LoadingPage from './pages/LoadingPage';
 import ToastContainer from './components/ui/toast/ToastContainer';
+import OauthRedirect from './pages/OauthRedirect';
 
 const Home = lazy(() => import('./pages/Home'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
@@ -68,6 +69,7 @@ const router = createBrowserRouter([
       </>
     ),
   },
+  { path: 'oauth', element: <OauthRedirect /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

@@ -103,6 +103,7 @@ const Map = ({
               address: result.address_name,
               latitude: result.y,
               longitude: result.x,
+              phone: result.phone,
               category: result.category_group_code as CategoryGroupCode,
               phone: result.phone,
               bookmark: false,

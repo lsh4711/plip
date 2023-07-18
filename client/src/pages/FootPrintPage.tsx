@@ -22,7 +22,7 @@ const FootPrintPage = ({}: FootPrintPageProps) => {
       <MypageSideNav />
       <div className="relatvie">
         <Map
-          type={'recording'}
+          type="recording"
           centerLat={center.lat}
           centerLng={center.lng}
           mapLevel={mapLevel}

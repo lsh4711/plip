@@ -1,8 +1,13 @@
 import { HeadingParagraph } from '@/components';
 import { OauthUI } from '@/components';
 import LoginForm from '@/components/forms/LoginForm';
+import useAuthRedirect from '@/hooks/useAuthRedirect';
+import { Navigate } from 'react-router';
 
 const LoginPage = () => {
+  const auth = useAuthRedirect();
+  if (!auth.isRedirect) return <Navigate to={'/'} replace />;
+
   return (
     <main className="mx-auto mt-24 flex max-w-[1024px] flex-col items-center justify-center">
       <div className=" mb-10">
