@@ -1,12 +1,13 @@
-import { SetStateAction, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import { CustomOverlayMap, Map as KakaoMap, MapMarker, Polyline } from 'react-kakao-maps-sdk';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { InfoWindow } from '@/components/map/InfoWindow';
 import { COLORS } from '@/datas/map-constants';
 import { RootState } from '@/redux/store';
 import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
+import { setSelectedPlace } from '@/redux/slices/placeSlice';
 
 interface mapProps {
   type: 'scheduling' | 'recording';
@@ -29,21 +30,27 @@ const Map = ({
   schedules,
   showPolyline = false,
 }: mapProps) => {
-  const [selectedPlace, setSelectedPlace] = useState<ScheduledPlaceBase | null>(null);
-  const { results } = useSelector((state: RootState) => state.searchPlace);
+  const { searchPlaceResults, selectedPlace } = useSelector((state: RootState) => state.place);
+  const dispatch = useDispatch();
 
   const onClickMarker = (place: ScheduledPlaceBase) => {
     if (type === 'scheduling') {
-      setSelectedPlace(place);
-      if (setCenterPosition) {
-        // 포커스된 마커 위치를 가운데로 옮기기 위함
-        setCenterPosition({ lat: parseFloat(place.latitude), lng: parseFloat(place.longitude) });
-      }
+      dispatch(setSelectedPlace(place));
     }
     if (type === 'recording') {
       // TODO : open editor modal
     }
   };
+
+  useEffect(() => {
+    if (setCenterPosition && selectedPlace) {
+      // 포커스된 마커 위치를 가운데로 옮기기 위함
+      setCenterPosition({
+        lat: parseFloat(selectedPlace.latitude),
+        lng: parseFloat(selectedPlace.longitude),
+      });
+    }
+  }, [selectedPlace]);
 
   return (
     <KakaoMap // 지도를 표시할 Container
@@ -87,7 +94,7 @@ const Map = ({
         ))
       )}
 
-      {results.map((result, idx) => (
+      {searchPlaceResults.map((result, idx) => (
         <MapMarker
           key={result.id}
           position={{
@@ -148,7 +155,7 @@ const Map = ({
             category={selectedPlace.category}
             phone={selectedPlace.phone}
             isBookmarked={selectedPlace.bookmark}
-            onClickClose={() => setSelectedPlace(null)}
+            onClickClose={() => dispatch(setSelectedPlace(null))}
             className="absolute bottom-8 -translate-x-1/2"
           />
         </CustomOverlayMap>
