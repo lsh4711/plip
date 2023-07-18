@@ -26,6 +26,10 @@ const PlanMapPage = () => {
   const toast = useToast();
   const [openModal] = useModal();
   const [mapLevel, setMapLevel] = useState(8);
+  const [centerPosition, setCenterPosition] = useState({
+    lat: getRegionCenterLat(data?.region!),
+    lng: getRegionCenterLng(data?.region!),
+  });
 
   const dispatch = useDispatch();
   const mutation = useEditPlanMutation(id!);
@@ -87,18 +91,16 @@ const PlanMapPage = () => {
         <>
           <Map
             type="scheduling"
-            centerLat={getRegionCenterLat(data?.region!)}
-            centerLng={getRegionCenterLng(data?.region!)}
+            centerLat={centerPosition.lat}
+            centerLng={centerPosition.lng}
+            setCenterPosition={setCenterPosition}
             mapLevel={mapLevel}
             setMapLevel={setMapLevel}
             schedules={schedules}
             showPolyline
           />
 
-          <SearchTools
-            currentX={getRegionCenterLng(data?.region!)}
-            currentY={getRegionCenterLat(data?.region!)}
-          />
+          <SearchTools currentLng={centerPosition.lng} currentLat={centerPosition.lat} />
           <MenuButtons />
 
           <SidePanel position={'right'}>

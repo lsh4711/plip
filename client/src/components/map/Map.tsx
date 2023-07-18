@@ -13,6 +13,7 @@ interface mapProps {
   centerLat: number;
   centerLng: number;
   mapLevel: number;
+  setCenterPosition?: React.Dispatch<SetStateAction<{ lat: number; lng: number }>>; // 임시 optional
   setMapLevel: React.Dispatch<SetStateAction<number>>;
   schedules: ScheduledPlaceBase[][];
   showPolyline?: boolean;
@@ -22,6 +23,7 @@ const Map = ({
   type,
   centerLat,
   centerLng,
+  setCenterPosition,
   mapLevel,
   setMapLevel,
   schedules,
@@ -33,6 +35,10 @@ const Map = ({
   const onClickMarker = (place: ScheduledPlaceBase) => {
     if (type === 'scheduling') {
       setSelectedPlace(place);
+      if (setCenterPosition) {
+        // 포커스된 마커 위치를 가운데로 옮기기 위함
+        setCenterPosition({ lat: parseFloat(place.latitude), lng: parseFloat(place.longitude) });
+      }
     }
     if (type === 'recording') {
       // TODO : open editor modal
@@ -48,6 +54,16 @@ const Map = ({
       }}
       level={mapLevel} // 지도의 확대 레벨
       className="h-screen w-screen"
+      isPanto
+      onDragEnd={(
+        target // 검색 지점 변경 용도
+      ) =>
+        setCenterPosition &&
+        setCenterPosition({
+          lat: target.getCenter().getLat(),
+          lng: target.getCenter().getLng(),
+        })
+      }
       onZoomChanged={(map) => setMapLevel(map.getLevel())}
       zoomable={!selectedPlace}
     >
