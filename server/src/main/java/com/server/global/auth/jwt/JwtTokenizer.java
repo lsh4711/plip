@@ -122,7 +122,8 @@ public class JwtTokenizer {
             .maxAge(60 * 60 * 24 * 3)
             // TODO: 배포 환경에서 추가
             //.domain("https://plip.netlify.app/")
-            //.secure(true)
+            .secure(true)
+            .sameSite("None")
             .path("/")
             .httpOnly(true)
             .build();
