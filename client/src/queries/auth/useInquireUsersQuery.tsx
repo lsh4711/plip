@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+
 import instance from '../axiosinstance';
 
 interface User {
@@ -8,7 +7,6 @@ interface User {
 }
 
 const useInquireUsersQuery = () => {
-  const accesstoken = useSelector((state: RootState) => state.auth.accesstoken);
   const getUsers = async () => {
     const response = await instance.get<User>('/api/users', {
       withCredentials: true,
@@ -17,7 +15,7 @@ const useInquireUsersQuery = () => {
   };
 
   const inquireUsers = useQuery({
-    queryKey: ['users', accesstoken],
+    queryKey: ['users'],
     queryFn: getUsers,
     suspense: true,
     retry: 3,

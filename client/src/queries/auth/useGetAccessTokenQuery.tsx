@@ -30,6 +30,7 @@ const useGetAccessTokenQuery = () => {
     enabled: wasLogin && !isLogin,
     staleTime: 1000 * 60 * 10,
     onSuccess: (response) => {
+      console.log('온석섹슥');
       inquireQuery.refetch().then(() => inquireQuery.refetch());
       dispatchAccessToken({ accesstoken: response.headers['authorization'] });
     },
