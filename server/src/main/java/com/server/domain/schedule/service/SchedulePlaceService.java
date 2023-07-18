@@ -42,10 +42,10 @@ public class SchedulePlaceService {
 
     }
 
-    public List<Record> findRecordsBySchedulePlaceId(long schedulePlaceId) {
+    // public List<Record> findRecordsBySchedulePlaceId(long schedulePlaceId) {
 
-        // List<Record> records = recordRepository
-        //         .findAllBySchedulePlace_SchedulePlaceId(schedulePlaceId);
-        return null;
-    }
+    //     // List<Record> records = recordRepository
+    //     //         .findAllBySchedulePlace_SchedulePlaceId(schedulePlaceId);
+    //     return null;
+    // }
 }
