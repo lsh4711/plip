@@ -1,5 +1,9 @@
 package com.server.global.batch.job;
 
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.EntityManagerFactory;
 
 import org.springframework.batch.core.Job;
@@ -7,16 +11,24 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.server.domain.member.entity.Member;
+import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.schedule.entity.Schedule;
+import com.server.domain.test.auth.KakaoAuth;
 import com.server.global.batch.parameter.CustomJobParameter;
 
 import lombok.RequiredArgsConstructor;
+
+// Schedule 테이블을 이용하면 이미 알림을 보냈던 일정을 계속 확인하게 되므로
+// 나중에 알림을 보낼 행만 별도의 테이블에서 관리
 
 @Configuration
 @RequiredArgsConstructor
@@ -30,29 +42,32 @@ public class ChunkConfig {
     private final EntityManagerFactory entityManagerFactory;
     private final CustomJobParameter customJobParameter;
 
-    @Bean(JOB_NAME + "Parameter")
+    private final KakaoAuth kakaoAuth;
+
+    // @Bean(JOB_NAME + "Parameter")
+    @Bean
     @JobScope
     public CustomJobParameter createJobParameter() {
         return new CustomJobParameter();
     }
 
     @Bean
-    public Job getCustomJob() {
+    public Job customJob() {
         Job customJob = jobBuilderFactory.get(JOB_NAME)
-                .start(getCustomStep())
+                .start(customStep())
                 .build();
 
         return customJob;
     }
 
-    // @Bean
-    // @JobScope
-    public Step getCustomStep() {
+    @Bean
+    @JobScope
+    public Step customStep() {
         Step customStep = stepBuilderFactory.get(JOB_NAME + "Step")
                 .<Schedule, Schedule>chunk(chunkSize)
-                .reader(getCustomReader())
-                // .processor(null)
-                .writer(getCustomWriter())
+                .reader(customReader())
+                .processor(customProcessor())
+                .writer(customWriter())
                 // .faultTolerant()
                 // .retry(Exception.class) // 알림 전송 실패 시
                 // .noRollback(Exception.class) // test
@@ -62,34 +77,53 @@ public class ChunkConfig {
         return customStep;
     }
 
-    // @Bean
-    // @StepScope
-    public JpaPagingItemReader<Schedule> getCustomReader() {
-        // Map<String, Object> parameter = new HashMap<>();
-        // parameter.put("date", null);
+    @Bean
+    @StepScope
+    public JpaPagingItemReader<Schedule> customReader() {
+        LocalDate date = customJobParameter.getDate();
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("date", date);
 
         JpaPagingItemReader<Schedule> reader = new JpaPagingItemReaderBuilder<Schedule>()
                 .name(JOB_NAME + "Reader")
                 .entityManagerFactory(entityManagerFactory)
                 .pageSize(chunkSize)
-                .queryString("SELECT s FROM Schedule s ORDER BY id") // 정렬 필수
+                .queryString(
+                    "SELECT s FROM Schedule s WHERE s.startDate = :date AND s.member.kakaoToken IS NOT NULL ORDER BY id") // 정렬 필수
+                .parameterValues(parameters)
                 .build();
 
         return reader;
     }
 
-    // Schedule 테이블을 이용하면 이미 알림을 보냈던 일정을 계속 확인하게 되므로
-    // 나중에 알림을 보낼 행만 별도의 테이블에서 관리
+    // @Bean(JOB_NAME + "Processor")
     // @Bean
     // @StepScope
-    // public ItemProcessor<Schedule, Schedule> processor() {
-    //     return null;
-    // }
+    public ItemProcessor<Schedule, Schedule> customProcessor() {
+        int hour = customJobParameter.getHour();
+
+        return schedule -> {
+            Member member = schedule.getMember();
+            long memberId = member.getMemberId();
+            KakaoToken kakaoToken = member.getKakaoToken();
+            String accessToken = kakaoToken.getAccessToken();
+            if (hour == 7) {
+                String message = "오늘은 설레는 여행날이네요.";
+                kakaoAuth.sendMessage(accessToken, message);
+            } else if (hour == 21) {
+                String message = "내일은 설레는 여행날이네요.";
+                kakaoAuth.sendMessage(accessToken, message);
+            }
+
+            return null;
+        };
+    }
 
     // @Bean
     // @StepScope
     // public JpaItemWriter<Schedule> writer() {
-    public ItemWriter<Schedule> getCustomWriter() {
+    public ItemWriter<Schedule> customWriter() {
         // JpaItemWriter<Schedule> writer = new JpaItemWriterBuilder<Schedule>()
         //         .entityManagerFactory(entityManagerFactory)
         //         .build();
@@ -103,7 +137,7 @@ public class ChunkConfig {
                         System.out.println("에러: " + test);
                         continue;
                     }
-                    System.out.println(customJobParameter.getDate());
+                    // System.out.println(customJobParameter.getDate());
                     System.out.printf("scheduleId: %d\n", schedule.getScheduleId());
                     break;
                 }

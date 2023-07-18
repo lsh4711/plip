@@ -73,6 +73,7 @@ public class SecurityConfig {
                 .apply(customFilterConfigurers())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
+                        .antMatchers(HttpMethod.GET, "/test/**").permitAll()
                         .antMatchers(HttpMethod.GET, "/*/places/*/records").permitAll()
                         .antMatchers(HttpMethod.GET, "/*/records/*").permitAll()
                         .antMatchers(HttpMethod.GET, "/*/schedules/*/share").permitAll()

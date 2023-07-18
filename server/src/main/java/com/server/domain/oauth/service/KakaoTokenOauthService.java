@@ -3,10 +3,8 @@ package com.server.domain.oauth.service;
 import org.springframework.stereotype.Service;
 
 import com.server.domain.member.entity.Member;
-
 import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.oauth.repository.KakaoTokenRepository;
-
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,10 +15,20 @@ public class KakaoTokenOauthService {
 
     public void saveToken(String accessToken, String refreshToken, Member member) {
         KakaoToken token = KakaoToken.builder()
-            .AccessToken(accessToken)
-            .RefreshToken(refreshToken)
-            .member(member)
-            .build();
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .member(member)
+                .build();
         kakaoTokenRepository.save(token);
+    }
+
+    public void saveTestToken(KakaoToken kakaoToken) {
+        kakaoTokenRepository.save(kakaoToken);
+    }
+
+    public KakaoToken findKakaoTokenByMemberId(long memberId) {
+        KakaoToken kakaoToken = kakaoTokenRepository.findByMember_MemberId(memberId);
+
+        return kakaoToken;
     }
 }

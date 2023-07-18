@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.domain.member.entity.Member;
+import com.server.domain.member.service.MemberService;
 import com.server.domain.place.dto.PlaceDto;
 import com.server.domain.place.dto.PlaceResponse;
 import com.server.domain.place.entity.Place;
@@ -43,6 +44,8 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
     private final ScheduleMapper scheduleMapper;
 
+    private final MemberService memberService;
+
     private final PlaceService placeService;
     private final PlaceMapper placeMapper;
 
@@ -52,9 +55,7 @@ public class ScheduleController {
     @PostMapping("/write")
     public ResponseEntity postSchedule(@Valid @RequestBody ScheduleDto.Post postDto) {
         long memberId = CustomUtil.getAuthId();
-        Member member = Member.builder()
-                .memberId(memberId)
-                .build();
+        Member member = memberService.findMember(memberId);
         Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
         schedule.setMember(member);
 
@@ -66,6 +67,9 @@ public class ScheduleController {
 
         URI location = UriCreator.createUri("/api/schedules",
             savedSchedule.getScheduleId());
+
+        // 비동기
+        scheduleService.sendKakaoMessage(savedSchedule, member);
 
         return ResponseEntity.created(location).build();
     }

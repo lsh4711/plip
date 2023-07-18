@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.google.gson.Gson;
 import com.server.domain.test.dto.Body;
+import com.server.domain.test.dto.Body.Link;
 
 import lombok.RequiredArgsConstructor;
 
@@ -46,12 +47,35 @@ public class KakaoAuth {
         return null;
     }
 
+    // @Async
+    public void sendMessage(Object template, String accessToken) {
+        String body = gson.toJson(template);
+
+        System.out.println(body);
+
+        String result = WebClient.create(messageApiUrl)
+                .post()
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header("Authorization", "Bearer " + accessToken)
+                .body(BodyInserters
+                        .fromFormData("template_object", body))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+
+    // test
     public String sendMessage(String accessToken, String message) {
-        Body.Location bodyBuilder = new Body.Location();
+        Body.Text bodyBuilder = Body.Text.builder()
+                .object_type("text")
+                .text(message)
+                .link(new Link())
+                .build();
         String body = gson.toJson(bodyBuilder);
 
         // String body = "{\"object_type\": \"text\", \"text\": \"" + message + "\", \"link\": {}}";
-        System.out.println(body);
+        // System.out.println(body);
         String result = WebClient.create(messageApiUrl)
                 .post()
                 .accept(MediaType.APPLICATION_JSON)

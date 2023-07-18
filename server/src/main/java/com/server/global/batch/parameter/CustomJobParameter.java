@@ -5,8 +5,10 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Value;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class CustomJobParameter {
     private LocalDate date;
     private int hour;

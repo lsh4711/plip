@@ -1,7 +1,6 @@
 package com.server.global.batch;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -11,33 +10,41 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import com.server.global.batch.job.ChunkConfig;
 
 import lombok.RequiredArgsConstructor;
 
 // @Async
-// @Component
+@Component
 @RequiredArgsConstructor
 public class BatchScheduler {
     private final JobLauncher jobLauncher;
     private final ChunkConfig chunkConfig;
 
-    @Scheduled(cron = "30 22 2 * * *")
-    public void testtest() {
-        System.out.println(LocalDateTime.now());
-        System.out.println("testtesttesttesttesttesttesttest");
+    // @Scheduled(cron = "15 47 2 * * *")
+    public void runJobAt21() {
+        LocalDate date = LocalDate.now().plusDays(1);
+
+        runJob(date, 21);
     }
 
-    @Scheduled(fixedDelay = 5000)
-    public void test() {
+    @Scheduled(cron = "0 4 4 * * *")
+    public void runJobAt7() {
+        LocalDate date = LocalDate.now();
+
+        runJob(date, 7);
+    }
+
+    public void runJob(LocalDate date, long hour) {
         JobParameters parameters = new JobParametersBuilder()
-                .addString("date", LocalDate.now().toString())
-                .addLong("hour", 7L)
+                .addString("date", date.toString())
+                .addLong("hour", hour)
                 .toJobParameters();
 
         try {
-            jobLauncher.run(chunkConfig.getCustomJob(), parameters);
+            jobLauncher.run(chunkConfig.customJob(), parameters);
         } catch (JobExecutionAlreadyRunningException
                 | JobRestartException
                 | JobInstanceAlreadyCompleteException
@@ -45,16 +52,6 @@ public class BatchScheduler {
             e.printStackTrace();
             System.out.println("에러");
         }
-        System.out.println(LocalDateTime.now().withNano(0));
-    }
 
-    // @Scheduled(cron = "0 0 21 * * *")
-    public void runJobAt21() {
-        LocalDate day = LocalDate.now().plusDays(1);
-    }
-
-    // @Scheduled(cron = "0 0 7 * * *")
-    public void runJobAt7() {
-        LocalDate day = LocalDate.now();
     }
 }

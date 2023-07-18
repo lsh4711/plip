@@ -14,6 +14,8 @@ import com.server.domain.category.service.CategoryService;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.entity.Member.Role;
 import com.server.domain.member.service.MemberService;
+import com.server.domain.oauth.entity.KakaoToken;
+import com.server.domain.oauth.service.KakaoTokenOauthService;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.service.PlaceService;
 import com.server.domain.schedule.entity.Schedule;
@@ -43,6 +45,9 @@ public class Init {
 
     // Category
     private final CategoryService categoryService;
+
+    // KakaoToken
+    private final KakaoTokenOauthService kakaoTokenOauthService;
 
     @PostConstruct
     public void init() {
@@ -91,6 +96,14 @@ public class Init {
             member.setRole(admin);
             memberService.createMember(member);
         }
+        Member testMember = Member.builder()
+                .memberId(1L)
+                .build();
+        KakaoToken kakaoToken = KakaoToken.builder()
+                .accessToken("tOY0hmN6A9H8RpiX2nkDCmOZECpCN-QqpNMCMqknCisNHgAAAYln0WhQ")
+                .member(testMember)
+                .build();
+        kakaoTokenOauthService.saveTestToken(kakaoToken);
 
         Member member = Member.builder()
                 .memberId(1L)
@@ -104,7 +117,14 @@ public class Init {
         // schedule.setEndDate(LocalDate.now().plusDays(3));
         // schedule.setMember(member);
         // schedule.setPeriod(4);
+
+        // Member member2 = Member.builder()
+        //         .memberId(2L)
+        //         .build();
         for (int i = 0; i < 32; i++) {
+            // if (i > 3) {
+            //     member = member2;
+            // }
             Schedule schedule = new Schedule();
             schedule.setRegion("제주도");
             schedule.setTitle("즐거운 여행 제목");
