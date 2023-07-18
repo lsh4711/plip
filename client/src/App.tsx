@@ -5,9 +5,9 @@ import { useEffect } from 'react';
 import instance from './queries/axiosinstance';
 
 export default function App() {
-  // useEffect(() => {
-  //   instance.get('/api/tokens', { withCredentials: true }).then((data) => console.log(data));
-  // }, []);
+  useEffect(() => {
+    instance.get('/api/tokens', { withCredentials: true }).then((data) => console.log(data));
+  }, []);
   return (
     <>
       <Header />
