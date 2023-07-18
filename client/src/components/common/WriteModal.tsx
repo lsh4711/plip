@@ -12,6 +12,7 @@ import useCreateRecordMutation from '@/queries/record/useCreateRecordMutation';
 import LoadingSpinner from '../atom/LoadingSpinner';
 
 export type WriteModal = {
+  id: number;
   type: 'default' | 'edit';
   content?: string;
   isOpen: boolean;
@@ -24,10 +25,10 @@ type CancelAlertProps = {
   onCloseParent: () => void;
 };
 
-const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
+const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
   const [openModal] = useModal();
   const createRecordMutation = useCreateRecordMutation();
-  const SCHEDULE_PLACE_ID = 5; // 테스트를 위한 임시 변수입니다. 요청 주소의 param으로 사용됩니다.
+  const SCHEDULE_PLACE_ID = id; // 테스트를 위한 임시 변수입니다. 요청 주소의 param으로 사용됩니다.
 
   const inputImageRef = useRef<HTMLInputElement>(document.createElement('input'));
 

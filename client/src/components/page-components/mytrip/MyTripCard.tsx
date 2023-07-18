@@ -6,21 +6,23 @@ import { ReactComponent as ShareIcon } from '@/assets/icons/share-link.svg';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useEffect, useState } from 'react';
 import { MyTripTypes } from '@/types/mytrip/mytrip-types';
+import { regionInfos } from '@/datas/regions';
+import { Link } from 'react-router-dom';
 
-import defaultImage from '/region/seoul.webp';
 import GridItem from './GridItem';
 import Button from '@/components/atom/Button';
 import Stamp from './Stamp';
 import useToast from '@/hooks/useToast';
 import getDday from '@/utils/date/getDday';
-import { regionInfos } from '@/datas/regions';
+import useMyTripQuery from '@/queries/mytrip/useMyTripQuery';
+import { getFormatDateString } from '@/utils/date';
 
 const MyTripCard = ({
   scheduleId,
   title,
   region,
   memberCount,
-  placeCount,
+  placeSize,
   isEnd,
   modifiedAt,
   startDate,
@@ -68,9 +70,19 @@ const MyTripCard = ({
         <div className="flex w-full flex-1 pt-4">
           <div className="grid flex-1 grid-cols-2 items-center gap-2">
             <GridItem title="여행 이름" content={title} editable={true} />
-            <GridItem title="마지막 수정일" content={modifiedAt} />
-            <GridItem title="우리 여행가요!" content={`${startDate}~${endDate}`} />
-            <GridItem title="여행 장소" content={placeCount} />
+            <GridItem
+              title="마지막 수정일"
+              content={getFormatDateString(modifiedAt, false, 'dash')}
+            />
+            <GridItem
+              title="우리 여행가요!"
+              content={`${getFormatDateString(startDate, false, 'dash')}~${getFormatDateString(
+                endDate,
+                false,
+                'dash'
+              )}`}
+            />
+            <GridItem title="여행 장소" content={placeSize} />
             <GridItem title={<PeopleIcon width={16} height={16} />} content={memberCount} />
           </div>
 
@@ -92,13 +104,15 @@ const MyTripCard = ({
           >
             여행일지
           </Button>
-          <Button
-            variant={'ring'}
-            hovercolor={'default'}
-            className="h-[50px] w-[120px] text-sm text-zinc-900"
-          >
-            일정상세보기
-          </Button>
+          <Link to={`/plan/detail/${scheduleId}`}>
+            <Button
+              variant={'ring'}
+              hovercolor={'default'}
+              className="h-[50px] w-[120px] text-sm text-zinc-900"
+            >
+              일정상세보기
+            </Button>
+          </Link>
           <Button
             variant={'ring'}
             hovercolor={'default'}

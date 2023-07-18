@@ -71,6 +71,7 @@ const GridItem = ({ title, content, editable }: Props) => {
         className="outline-none"
         ref={editRef}
         contentEditable={isEdit}
+        suppressContentEditableWarning={true}
         onInput={onInputText}
         onBlur={onToggleEditHandler}
         placeholder="여행의 이름을 정해주세요!"

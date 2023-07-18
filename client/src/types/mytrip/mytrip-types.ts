@@ -6,7 +6,7 @@ export interface MyTripTypes {
   title: string;
   region: (typeof regions)[number];
   memberCount: number;
-  placeCount: number;
+  placeSize: number;
   isEnd: boolean;
   createdAt: Date;
   modifiedAt: Date;

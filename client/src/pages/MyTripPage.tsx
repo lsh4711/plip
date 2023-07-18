@@ -1,11 +1,10 @@
 import { Button, MypageSideNav, Paragraph, SortingToolbar } from '@/components';
-import { MyTripTypes } from '@/types/mytrip/mytrip-types';
-import { useEffect, useState } from 'react';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-circle.svg';
+import { Link } from 'react-router-dom';
 
 import MyTripCard from '@/components/page-components/mytrip/MyTripCard';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
-import { Link } from 'react-router-dom';
+import useMyTripQuery from '@/queries/mytrip/useMyTripQuery';
 
 interface MyTripPageProps {}
 
@@ -13,13 +12,7 @@ const MyTripPage = ({}: MyTripPageProps) => {
   const auth = useAuthRedirect();
   if (auth.isRedirect) return auth.naviComponent;
 
-  const [dummyData, setDummyData] = useState<MyTripTypes[] | []>([]);
-
-  useEffect(() => {
-    fetch('/dummy/mytrip-dummy.json')
-      .then((res) => res.json())
-      .then((data) => setDummyData(data.data));
-  }, []);
+  const { data, isLoading, error } = useMyTripQuery();
 
   return (
     <div className=" flex">
@@ -28,11 +21,11 @@ const MyTripPage = ({}: MyTripPageProps) => {
         <SortingToolbar />
         <div
           className={` flex flex-1 flex-col ${
-            dummyData.length > 0 ? '' : ' items-center justify-center'
+            data!.length > 0 ? '' : ' items-center justify-center'
           }`}
         >
-          {dummyData.length > 0 ? (
-            dummyData.map((item) => <MyTripCard key={item.scheduleId} {...item} />)
+          {data!.length > 0 ? (
+            data!.map((item) => <MyTripCard key={item.scheduleId} {...item} />)
           ) : (
             <Link to="/plan" className=" flex flex-col items-center justify-center gap-2">
               <Paragraph>최근 여행 일정이 없습니다. 여행 계획해볼까요?</Paragraph>
