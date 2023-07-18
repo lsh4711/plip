@@ -1,17 +1,9 @@
-import instance from '@/queries/axiosinstance';
-import { EMPTY_TOKEN } from '@/redux/slices/authSlice';
-import { AxiosHeaderValue } from 'axios';
 import { Navigate } from 'react-router-dom';
+import { getAuthorizationHeader, isValidToken } from '@/utils/auth';
 
 type UseAuthRedirect = () => {
   isRedirect: boolean;
   naviComponent: JSX.Element | null;
-};
-
-const getAuthorizationHeader = () => instance.defaults.headers['Authorization'];
-
-const isValidToken = (token: AxiosHeaderValue) => {
-  return token === EMPTY_TOKEN || token === undefined || token === null || !token;
 };
 
 const createObjectWithComponent = (boolean: boolean, component: JSX.Element | null) => {

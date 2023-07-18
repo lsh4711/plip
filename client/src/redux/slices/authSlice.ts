@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import loginLocalStorage from '@/utils/auth/localstorage';
+import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
+import { EMPTY_TOKEN } from '@/datas/constants';
 
-export const EMPTY_TOKEN = 'empty';
-
-interface AccessTokenType {
+export interface AccessTokenType {
   accesstoken: string | typeof EMPTY_TOKEN;
 }
 
@@ -22,11 +23,13 @@ const authSlice = createSlice({
     setAccessToken: (state, action: PayloadAction<AccessTokenType>) => {
       state.accesstoken = action.payload.accesstoken;
       state.isLogin = true;
+      loginLocalStorage.setWasLoginToTrue();
     },
     setLogout: (state) => {
+      setAccessTokenToHeader(EMPTY_TOKEN);
       state.accesstoken = EMPTY_TOKEN;
       state.isLogin = false;
-      console.log(state);
+      loginLocalStorage.setRemoveWasLoginFromLocalStorage();
     },
   },
 });

@@ -5,7 +5,8 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/plus-circle.svg';
 
 import MyTripCard from '@/components/page-components/mytrip/MyTripCard';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
-import { Link } from 'react-router-dom';
+import instance from '@/queries/axiosinstance';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 
 interface MyTripPageProps {}
 
