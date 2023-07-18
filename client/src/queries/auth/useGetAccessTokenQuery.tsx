@@ -24,7 +24,7 @@ const useGetAccessTokenQuery = () => {
     enabled: !isValidToken(getAuthorizationHeader()),
     staleTime: 1000 * 60 * 10,
     onSuccess: (response) => {
-      inquireQuery.refetch();
+      inquireQuery.refetch().then(() => inquireQuery.refetch());
       dispatchAccessToken({ accesstoken: response.headers['authorization'] });
     },
   });

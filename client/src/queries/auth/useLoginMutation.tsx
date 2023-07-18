@@ -6,6 +6,7 @@ import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
 import useSetAccessToken from '@/hooks/useSetAccessToken';
 import useSuccessFailToast from '@/hooks/useSuccessFailToast';
 import instance from '../axiosinstance';
+import useInquireUsersQuery from './useInquireUsersQuery';
 
 const postLogin = async (loginData: LoginType) => {
   const response = await instance.post(
@@ -32,11 +33,13 @@ const useLoginMutation = () => {
   const navigate = useNavigate();
   const dispatchAccesstoken = useSetAccessToken();
   const mutateHandler = useSuccessFailToast();
+  const inquireQuery = useInquireUsersQuery();
 
   const loginMutation = useMutation({
     mutationFn: (loginData: LoginType) => postLogin(loginData),
     onSuccess(data, variables, context) {
       navigate('/');
+      inquireQuery.refetch().then(() => inquireQuery.refetch());
       dispatchAccesstoken({ accesstoken: data.ACCESS_TOKEN });
       toast({
         content: '로그인에 성공했습니다.',

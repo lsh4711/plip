@@ -5,10 +5,10 @@ import { useEffect } from 'react';
 import useGetAccessTokenQuery from './queries/auth/useGetAccessTokenQuery';
 
 export default function App() {
-  const getTokenQuery = useGetAccessTokenQuery();
-  useEffect(() => {
-    getTokenQuery.refetch();
-  }, []);
+  // const getTokenQuery = useGetAccessTokenQuery();
+  // useEffect(() => {
+  //   getTokenQuery.refetch();
+  // }, []);
   return (
     <>
       <Header />
