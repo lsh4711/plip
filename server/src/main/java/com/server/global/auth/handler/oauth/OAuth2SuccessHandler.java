@@ -11,7 +11,6 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.server.domain.member.entity.Member;
@@ -74,8 +73,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         queryParams.add("refresh_token", refreshToken);
         return UriComponentsBuilder
             .newInstance()
-            .scheme("https")
-            .host("plip.netlify.app") // 리다이렉트 시킬 클라이언트 주소
+            .scheme("http")
+            .host("localhost") // 리다이렉트 시킬 클라이언트 주소
             .path("/oauth")
             .queryParams(queryParams)
             .build()
