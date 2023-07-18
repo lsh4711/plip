@@ -18,7 +18,7 @@ type Props = {
   longitude: string;
   isBookmarked: boolean;
   category: CategoryGroupCode;
-  phone?: string;
+  phone: string;
   className?: string;
   onClickClose: () => void;
 };
@@ -50,6 +50,7 @@ const InfoWindow = ({
           longitude,
           category: category!,
           bookmark: isBookmarked!,
+          phone: phone!,
         },
       })
     );
