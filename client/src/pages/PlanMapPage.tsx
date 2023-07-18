@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { Button } from '@/components';
+import Confirm from '@/components/common/Confirm';
 import SidePanel from '@/components/common/SidePanel';
 import TripInfo from '@/components/common/TripInfo';
 import TripSchedule from '@/components/common/TripSchedule';
@@ -10,31 +11,64 @@ import WriteModal from '@/components/common/WriteModal';
 import { Map, MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
 import useDebounce from '@/hooks/useDebounce';
 import useModal from '@/hooks/useModal';
+import useToast from '@/hooks/useToast';
 import { useEditPlanMutation, usePlanQuery } from '@/queries/plan';
+import { setIsStale } from '@/redux/slices/scheduleSlice';
 import { RootState } from '@/redux/store';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
 
 const PlanMapPage = () => {
   const { id } = useParams();
   const { data, isLoading, error } = usePlanQuery(id!);
-  const { schedules } = useSelector((state: RootState) => state.schedule);
+  const { isStale, schedules } = useSelector((state: RootState) => state.schedule);
 
+  const navigate = useNavigate();
+  const toast = useToast();
   const [openModal] = useModal();
   const [mapLevel, setMapLevel] = useState(8);
 
+  const dispatch = useDispatch();
   const mutation = useEditPlanMutation(id!);
-  const patchSchedule = () =>
-    mutation.mutate({
-      id: id!,
-      places: schedules,
-    });
-  const autoPatchSchedule = useDebounce(patchSchedule, 1000 * 10);
+  const patchSchedule = (noticeType: 'toast' | 'confirm') =>
+    mutation
+      .mutateAsync({
+        id: id!,
+        places: schedules,
+      })
+      .then((res) => {
+        dispatch(setIsStale(false));
+        if (noticeType === 'confirm') {
+          openModal(({ isOpen, close }) => (
+            <Confirm
+              type="default"
+              title="일정 저장 완료!"
+              content="일정 목록으로 이동할까요?"
+              primaryLabel="일정 목록으로 이동하기"
+              secondaryLabel="이어서 작성하기"
+              onClickPrimaryButton={() => {
+                navigate('/mypage');
+                close();
+              }}
+              onClickSecondaryButton={close}
+              isOpen={isOpen}
+              onClose={close}
+            />
+          ));
+        }
+        if (noticeType === 'toast') {
+          toast({
+            content: '자동 저장되었습니다.',
+            type: 'success',
+          });
+        }
+      });
+  const autoPatchSchedule = useDebounce(() => patchSchedule('toast'), 1000 * 15);
 
   useEffect(() => {
-    if (JSON.stringify(data?.places!) !== JSON.stringify(schedules)) {
+    if (isStale) {
       autoPatchSchedule();
     }
-  }, [schedules]);
+  });
 
   // TODO 일지 작성 페이지로 이동 필요
   const openWriteDiaryModal = () => {
@@ -81,7 +115,7 @@ const PlanMapPage = () => {
               variant={'primary'}
               className="absolute -left-1/2 top-6"
               onClick={() => {
-                patchSchedule();
+                patchSchedule('confirm');
               }}
             >
               일정 저장하기
