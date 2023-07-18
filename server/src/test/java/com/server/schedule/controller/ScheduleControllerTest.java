@@ -41,6 +41,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.server.domain.member.entity.Member;
+import com.server.domain.member.service.MemberService;
 import com.server.domain.place.dto.PlaceDto;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.mapper.PlaceMapper;
@@ -84,6 +85,9 @@ public class ScheduleControllerTest {
             .create();
 
     @MockBean
+    private MemberService memberService;
+
+    @MockBean
     private ScheduleService scheduleService;
 
     @MockBean
@@ -120,10 +124,16 @@ public class ScheduleControllerTest {
         Schedule schedule = new Schedule();
         schedule.setScheduleId(1L);
 
+        Member member = Member.builder()
+                .memberId(1L)
+                .build();
+
+        given(memberService.findMember(Mockito.anyLong())).willReturn(member);
         given(scheduleService.saveSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
         given(placeService.savePlaceLists(Mockito.any(Schedule.class), Mockito.<List<Place>>anyList()))
                 .willReturn(null);
         // given(schedulePlaceSedrvice.saveSchedulePlaces(Mockito.<SchedulePlace>anyList())).willReturn(null);
+        doNothing().when(scheduleService).sendKakaoMessage(Mockito.any(Schedule.class), Mockito.any(Member.class));
 
         // when
         ResultActions actions = mockMvc.perform(
