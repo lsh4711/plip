@@ -4,7 +4,7 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/plus-circle.svg';
 import { useRef } from 'react';
 import { MdClose } from '@react-icons/all-files/md/MdClose';
 
-const RecordOverray = ({ onClickClose }) => {
+const RecordOverray = ({ onClickClose }: { onClickClose: () => void }) => {
   const ref = useRef<HTMLDivElement>(null);
   return (
     <div

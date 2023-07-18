@@ -48,7 +48,7 @@ const Map = ({
     if (type === 'recording') {
       // TODO : open editor modal
       console.log(place);
-      openWriteDiaryModal(place.schedulePlaceId);
+      openWriteDiaryModal(place.schedulePlaceId!);
     }
   };
 
@@ -104,6 +104,7 @@ const Map = ({
               latitude: result.y,
               longitude: result.x,
               category: result.category_group_code as CategoryGroupCode,
+              phone: result.phone,
               bookmark: false,
             })
           }

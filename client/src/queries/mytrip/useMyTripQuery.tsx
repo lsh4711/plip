@@ -4,13 +4,7 @@ import ScheduleAPI from '../ScheduleAPI';
 const useMyTripQuery = () => {
   const scheduleAPI = new ScheduleAPI();
 
-  //   return useQuery({
-  //     queryKey: '/schedules',
-  //     queryFn: () => {
-  //       scheduleAPI.getAllMySchedules();
-  //     },
-  //   });
-  return useQuery(['/schedules'], scheduleAPI.getAllMySchedules);
+  return useQuery(['/schedules'], scheduleAPI.getAllMySchedules, { useErrorBoundary: false });
 };
 
 export default useMyTripQuery;

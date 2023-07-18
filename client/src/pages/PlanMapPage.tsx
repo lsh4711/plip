@@ -11,7 +11,6 @@ import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
 import SidePanel from '@/components/common/SidePanel';
 import TripInfo from '@/components/common/TripInfo';
 import TripSchedule from '@/components/common/TripSchedule';
-import WriteModal from '@/components/common/WriteModal';
 import useDebounce from '@/hooks/useDebounce';
 import useModal from '@/hooks/useModal';
 
@@ -20,7 +19,6 @@ const PlanMapPage = () => {
   const { data, isLoading, error } = usePlanQuery(id!);
   const { schedules } = useSelector((state: RootState) => state.schedule);
 
-  const [openModal] = useModal();
   const [mapLevel, setMapLevel] = useState(8);
 
   const mutation = useEditPlanMutation(id!);
@@ -36,13 +34,6 @@ const PlanMapPage = () => {
       autoPatchSchedule();
     }
   }, [schedules]);
-
-  // TODO 일지 작성 페이지로 이동 필요
-  const openWriteDiaryModal = () => {
-    openModal(({ isOpen, close }) => (
-      <WriteModal type={'default'} isOpen={isOpen} onClose={close} />
-    ));
-  };
 
   return (
     <div className="relative h-full w-full">
@@ -86,14 +77,6 @@ const PlanMapPage = () => {
               }}
             >
               일정 저장하기
-            </Button>
-            {/* TODO 일지 작성 페이지로 이동 필요 */}
-            <Button
-              variant={'primary'}
-              className="absolute -left-1/2 top-20"
-              onClick={openWriteDiaryModal}
-            >
-              일지 작성하기
             </Button>
             <ZoomButtons
               onClickZoomIn={() => {
