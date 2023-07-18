@@ -62,11 +62,10 @@ const PlanMapPage = () => {
           });
         }
       });
-  const autoPatchSchedule = useDebounce(patchSchedule, 1000 * 15);
+  const autoPatchSchedule = useDebounce(() => patchSchedule('toast'), 1000 * 15);
 
   useEffect(() => {
     if (isStale) {
-      autoPatchSchedule('toast');
       autoPatchSchedule();
     }
   });
