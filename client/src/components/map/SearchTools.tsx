@@ -6,7 +6,7 @@ import { Button, Input } from '@/components';
 import RoundButton from '@/components/common/RoundButton';
 import { CategoryButtonGroup, SearchResult } from '@/components/map';
 import { CategoryNames, categories } from '@/datas/categories';
-import { setSearchPlaceResults } from '@/redux/slices/placeSlice';
+import { setSearchPlaceResults, setSelectedPlace } from '@/redux/slices/placeSlice';
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
 import { getDistanceByLatLng } from '@/utils/map';
 
@@ -30,6 +30,7 @@ const SearchTools = ({ currentLng, currentLat }: Props) => {
     setInput('');
     setKeyword(null);
     setSearchCenterPosition({ lat: currentLat, lng: currentLng });
+    dispatch(setSelectedPlace(null));
     dispatch(setSearchPlaceResults([]));
   };
 
