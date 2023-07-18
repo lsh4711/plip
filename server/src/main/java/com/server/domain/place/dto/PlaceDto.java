@@ -21,7 +21,7 @@ public class PlaceDto {
         private String address;
 
         @NotNull
-        @Pattern(regexp = "|^\\d{2,5}-?\\d{3,4}-?\\d{4}$")
+        @Pattern(regexp = "|^\\d{2,5}(-\\d{3,4})?(-\\d{4})?$")
         private String phone;
 
         @NotBlank
