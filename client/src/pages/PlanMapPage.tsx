@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useBeforeUnload } from 'react-router-dom';
 
 import { Button } from '@/components';
 import { Map, MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
@@ -16,7 +16,6 @@ import { useEditPlanMutation, usePlanQuery } from '@/queries/plan';
 import { setIsStale } from '@/redux/slices/scheduleSlice';
 import { RootState } from '@/redux/store';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
-import { setResult } from '@/redux/slices/searchPlaceSlice';
 
 const PlanMapPage = () => {
   const { id } = useParams();
@@ -27,6 +26,10 @@ const PlanMapPage = () => {
   const toast = useToast();
   const [openModal] = useModal();
   const [mapLevel, setMapLevel] = useState(8);
+  const [centerPosition, setCenterPosition] = useState({
+    lat: getRegionCenterLat(data?.region!),
+    lng: getRegionCenterLng(data?.region!),
+  });
 
   const dispatch = useDispatch();
   const mutation = useEditPlanMutation(id!);
@@ -71,6 +74,12 @@ const PlanMapPage = () => {
     }
   });
 
+  useBeforeUnload(
+    useCallback(() => {
+      dispatch(setSearchPlaceResults([]));
+    }, [])
+  );
+
   useEffect(() => {
     window.addEventListener('beforeunload', () => dispatch(setResult([])));
     return () => {
@@ -81,25 +90,23 @@ const PlanMapPage = () => {
   return (
     <div className="relative h-full w-full">
       {isLoading ? (
-        <div>로딩중</div> // TODO fallback 넣기
+        <LoadingPage />
       ) : error ? (
         <div>에러</div> // TODO fallback 넣기
       ) : (
         <>
           <Map
             type="scheduling"
-            centerLat={getRegionCenterLat(data?.region!)}
-            centerLng={getRegionCenterLng(data?.region!)}
+            centerLat={centerPosition.lat}
+            centerLng={centerPosition.lng}
+            setCenterPosition={setCenterPosition}
             mapLevel={mapLevel}
             setMapLevel={setMapLevel}
             schedules={schedules}
             showPolyline
           />
 
-          <SearchTools
-            currentX={getRegionCenterLng(data?.region!)}
-            currentY={getRegionCenterLat(data?.region!)}
-          />
+          <SearchTools currentLng={centerPosition.lng} currentLat={centerPosition.lat} />
           <MenuButtons />
 
           <SidePanel position={'right'}>
