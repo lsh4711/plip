@@ -2,7 +2,7 @@ import * as Accordion from '@radix-ui/react-accordion';
 import { MdRemoveCircleOutline } from '@react-icons/all-files/md/MdRemoveCircleOutline';
 import { VscMenu } from '@react-icons/all-files/vsc/VscMenu';
 import type { Identifier, XYCoord } from 'dnd-core';
-import { useRef } from 'react';
+import { Dispatch, SetStateAction, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 
 type EditmodeContent = {
@@ -11,6 +11,7 @@ type EditmodeContent = {
   visitNumber: number;
   dayNumber: number;
   moveItem: (dragIndex: number, hoverIndex: number) => void;
+  setIsDragEnd: Dispatch<SetStateAction<boolean>>;
 };
 
 type DragContent = {
@@ -19,7 +20,14 @@ type DragContent = {
   type: string;
 };
 
-const EditmodeContent = ({ id, name, visitNumber, dayNumber, moveItem }: EditmodeContent) => {
+const EditmodeContent = ({
+  id,
+  name,
+  visitNumber,
+  dayNumber,
+  moveItem,
+  setIsDragEnd,
+}: EditmodeContent) => {
   const ref = useRef<any>(null);
   const [{ handlerId }, drop] = useDrop<DragContent, void, { handlerId: Identifier | null }>({
     accept: `content-${dayNumber}`,
@@ -66,6 +74,9 @@ const EditmodeContent = ({ id, name, visitNumber, dayNumber, moveItem }: Editmod
     collect: (monitor: any) => ({
       isDragging: monitor.isDragging(),
     }),
+    end: () => {
+      setIsDragEnd(true);
+    },
   });
 
   const opacity = isDragging ? 0 : 1;

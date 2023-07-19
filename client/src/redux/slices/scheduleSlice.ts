@@ -29,8 +29,15 @@ const scheduleSlice = createSlice({
       const { day, schedule } = payload;
       state.schedules[day - 1].push(schedule);
     },
+    editSchedule: (
+      state,
+      { payload }: PayloadAction<{ dayNumber: number; schedule: ScheduledPlaceBase[] }>
+    ) => {
+      const { dayNumber, schedule } = payload;
+      state.schedules.splice(dayNumber, 1, schedule);
+    },
   },
 });
 
-export const { setIsStale, setSchedule, addSchedule } = scheduleSlice.actions;
+export const { setIsStale, setSchedule, addSchedule, editSchedule } = scheduleSlice.actions;
 export default scheduleSlice;

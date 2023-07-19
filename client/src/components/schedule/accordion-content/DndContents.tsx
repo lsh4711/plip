@@ -1,9 +1,11 @@
 import update from 'immutability-helper';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useDispatch } from 'react-redux';
 
 import { EditmodeContent } from '@/components/schedule/accordion-content';
+import { editSchedule } from '@/redux/slices/scheduleSlice';
 import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 
 type DndContents = {
@@ -12,8 +14,17 @@ type DndContents = {
 };
 
 const DndContents = ({ contents, dayNumber }: DndContents) => {
+  const [isDragEnd, setIsDragEnd] = useState(false);
   const [placelist, setPlaceList] = useState(contents);
-  console.log(placelist);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isDragEnd) {
+      dispatch(editSchedule({ dayNumber, schedule: placelist }));
+      setIsDragEnd(false);
+    }
+  }, [isDragEnd]);
 
   const moveItem = useCallback((dragIndex: number, hoverIndex: number) => {
     setPlaceList((prevItems) =>
@@ -35,6 +46,7 @@ const DndContents = ({ contents, dayNumber }: DndContents) => {
         name={name}
         dayNumber={dayNumber}
         moveItem={moveItem}
+        setIsDragEnd={setIsDragEnd}
       />
     ),
     []
