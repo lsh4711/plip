@@ -31,7 +31,7 @@ public class ScheduleService {
 
     private final KakaoApiService kakaoApiService;
 
-    private KakaoTemplateConstructor kakaoTemplateMapper;
+    private final KakaoTemplateConstructor kakaoTemplateMapper;
 
     public Schedule saveSchedule(Schedule schedule) {
         String title = schedule.getTitle();
