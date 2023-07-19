@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 
 import Button from '@/components/atom/Button';
-import ScheduleAccordion from './ScheduleAccordion';
+import { ScheduleAccordion } from '@/components/schedule';
 import { GetScheduleResponse, ScheduledPlaceBase } from '@/types/api/schedules-types';
 
 type Props = {
@@ -41,7 +41,7 @@ function TripSchedule({ startDate, places }: Props) {
       {places.map((place, idx: number) => (
         <ScheduleAccordion
           key={idx}
-          order={idx}
+          dayNumber={idx}
           title={`Day ${idx + 1}`}
           date={dayjs(startDate).add(idx, 'day').toDate()}
           contents={place}
