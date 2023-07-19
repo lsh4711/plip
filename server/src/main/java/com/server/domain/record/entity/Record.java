@@ -2,6 +2,7 @@ package com.server.domain.record.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,16 +27,17 @@ public class Record extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long recordId;
 
+
     @Column(nullable = false)
     private String content;
 
     //연관관계 매핑 Record:Member -> N:1
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
     private Member member;
 
     //연관관계 매핑 Record:SchedulePlace -> N:1
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedulePlaceId")
     private SchedulePlace schedulePlace;
 
