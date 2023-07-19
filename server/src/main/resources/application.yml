@@ -28,6 +28,7 @@ spring:
       hibernate:
         ddl-auto: create
         format_sql: true
+        default_batch_fetch_size: 1000 # N+1
   servlet:
     multipart:
       enabled: true
