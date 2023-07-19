@@ -78,10 +78,6 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             log.error("### 토큰의 서명이 잘못 됐습니다. 변조 데이터일 가능성이 있습니다.");
             AuthenticationError.sendErrorResponse(response, new CustomException(ExceptionCode.SIGNATURE_INVALID));
         }
-        /*catch (Exception e) {
-            log.error("### 토큰 검증 외의 오류 : " + e);
-            AuthenticationError.sendErrorResponse(response,  new CustomException(ExceptionCode.INTERNAL_SERVER_ERROR));
-        }*/
     }
 
     @Override

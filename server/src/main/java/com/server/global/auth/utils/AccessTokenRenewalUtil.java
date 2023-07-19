@@ -26,7 +26,6 @@ public class AccessTokenRenewalUtil {
     private final DelegateTokenUtil delegateTokenUtil;
     private final JwtTokenizer jwtTokenizer;
 
-    // TODO: 쿠키 재발급으로 변경, 레디스로 검증을 한번 할지 물어보고 리팩토링
     public Token renewAccessToken(HttpServletRequest request) {
         try{
             String refreshToken = jwtTokenizer.getHeaderRefreshToken(request);

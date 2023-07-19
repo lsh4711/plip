@@ -58,11 +58,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = delegateTokenUtil.delegateAccessToken(member);
         String refreshToken = delegateTokenUtil.delegateRefreshToken(member);
 
-        // TODO: 우선 레디스에 저장안함. 추후에 레디스로 검증할지 생각...
-        // refreshTokenService.saveTokenInfo(member.getMemberId(), refreshToken, accessToken);
         String uri = createURI(accessToken, refreshToken).toString();
         log.info("## OAuth2 로그인 성공! 토큰을 발급합니다. 해당 주소로 보낼게용 " + uri);
-        // TODO: OAuth2 로그인 시 쿠키로 가는 지 확인해보기
         jwtTokenizer.setHeaderRefreshToken(response, refreshToken);
         getRedirectStrategy().sendRedirect(request, response, uri);
     }
@@ -73,9 +70,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         queryParams.add("refresh_token", refreshToken);
         return UriComponentsBuilder
             .newInstance()
-            .scheme("http")
-            .host("localhost") // 리다이렉트 시킬 클라이언트 주소
-            .port(5173)
+            .scheme("https")
+            .host("plip.netlify.app") // 리다이렉트 시킬 클라이언트 주소
             .path("/oauth")
             .queryParams(queryParams)
             .build()
