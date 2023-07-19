@@ -2,6 +2,7 @@ package com.server.domain.oauth.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,7 +23,7 @@ public class KakaoApiService {
 
     private final Gson gson;
 
-    // @Async
+    @Async
     public void sendMessage(Object template, String accessToken) {
         String body = gson.toJson(template);
 

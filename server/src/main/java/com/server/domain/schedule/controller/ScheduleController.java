@@ -57,9 +57,10 @@ public class ScheduleController {
     private final PlaceMapper placeMapper;
 
     private final SchedulePlaceService schedulePlaceService;
-    private final MailService mailService;
 
     private final RecordMapper recordMapper;
+
+    private final MailService mailService;
 
     @Transactional
     @PostMapping("/write")
