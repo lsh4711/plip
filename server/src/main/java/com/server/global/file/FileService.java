@@ -32,4 +32,22 @@ public class FileService {
 
         return image;
     }
+
+    public byte[] getGifImageByName(String name) {
+        byte[] image = null;
+        String fullPath = String.format("%s/%s.gif",
+            basePath,
+            name);
+        File file = new File(fullPath);
+
+        if (file.exists()) {
+            try {
+                image = FileUtils.readFileToByteArray(file);
+            } catch (IOException e) {
+                throw new CustomException(ExceptionCode.IMAGE_NOT_FOUND);
+            }
+        }
+
+        return image;
+    }
 }

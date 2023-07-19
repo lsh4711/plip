@@ -21,8 +21,8 @@ import org.springframework.context.annotation.Configuration;
 
 import com.server.domain.member.entity.Member;
 import com.server.domain.oauth.entity.KakaoToken;
+import com.server.domain.oauth.service.KakaoApiService;
 import com.server.domain.schedule.entity.Schedule;
-import com.server.domain.test.auth.KakaoAuth;
 import com.server.global.batch.parameter.CustomJobParameter;
 
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class ChunkConfig {
     private final EntityManagerFactory entityManagerFactory;
     private final CustomJobParameter customJobParameter;
 
-    private final KakaoAuth kakaoAuth;
+    private final KakaoApiService kakaoAuth;
 
     // @Bean(JOB_NAME + "Parameter")
     @Bean
@@ -141,8 +141,8 @@ public class ChunkConfig {
                     System.out.printf("scheduleId: %d\n", schedule.getScheduleId());
                     break;
                 }
-
             }
         };
+
     }
 }
