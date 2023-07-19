@@ -139,7 +139,6 @@ public class ScheduleController {
             scheduleResponses.add(scheduleResponse);
         }
 
-        // 일정 공유 기능도 겸하기에 Member의 공개해도 되는 정보만 포함해야함
         return ResponseEntity.ok(scheduleResponses);
     }
 
@@ -157,6 +156,7 @@ public class ScheduleController {
         scheduleResponse.setPlaceSize(schedulePlaces.size());
 
         Map<Long, List<RecordDto.Response>> map = new HashMap<>();
+
         for (SchedulePlace schedulePlace : schedulePlaces) {
             long schedulePlaceId = schedulePlace.getSchedulePlaceId();
             List<Record> records = schedulePlace.getRecords();
@@ -164,6 +164,7 @@ public class ScheduleController {
                     .recordsToRecordResponses(records);
             map.put(schedulePlaceId, recordResponses);
         }
+
         ScheduleShareResponse scheduleShareResponse = ScheduleShareResponse.builder()
                 .schedule(scheduleResponse)
                 .recordsMap(map)
