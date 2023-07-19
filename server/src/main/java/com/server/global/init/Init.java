@@ -67,24 +67,14 @@ public class Init {
         Role admin = Role.ADMIN;
         List<Member> members = new ArrayList<>();
         members.add(Member.builder()
-                .email("admin")
-                .password("admin")
+                .email("admin@naver.com")
+                .password("admin1234!")
                 .nickname("관리자")
                 .build());
         members.add(Member.builder()
                 .email("lsh@naver.com")
                 .password("lsh")
                 .nickname("음악")
-                .build());
-        members.add(Member.builder()
-                .email("dbsek21@naver.com")
-                .password("dbsek21")
-                .nickname("다영짱")
-                .build());
-        members.add(Member.builder()
-                .email("wldls@naver.com")
-                .password("wldls")
-                .nickname("지인짱")
                 .build());
         members.add(Member.builder()
                 .email("test@naver.com")

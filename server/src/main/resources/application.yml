@@ -28,6 +28,7 @@ spring:
       hibernate:
         ddl-auto: create
         format_sql: true
+        default_batch_fetch_size: 1000 # N+1
   servlet:
     multipart:
       enabled: true
@@ -86,8 +87,8 @@ spring:
 jwt:
   key:
     secret: ${JWT_SECRET_KEY}
-  access-token-expiration-minutes: ${ACCESS_EXPIRATION_MINUTES} #1분
-  refresh-token-expiration-minutes: ${REFRESH_EXPIRATION_MINUTES} #3일
+  access-token-expiration-minutes: ${ACCESS_EXPIRATION_MINUTES}
+  refresh-token-expiration-minutes: ${REFRESH_EXPIRATION_MINUTES}
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
@@ -99,8 +100,6 @@ springdoc:
 kakao:
     redirect-url: ${REDIRECT_URL8000}
     api-key: ${API_KEY}
-    #redirect-url: dsadasdassd
-    #api-key: dasdasdasdsaasdasdsa
 
 cloud:
   aws:

@@ -32,4 +32,8 @@ public class KakaoToken extends BaseEntity {
     @JoinColumn(name = "memberId")
     @OneToOne
     private Member member;
+
+    public void setAccessToken(String accessToken){
+        this.accessToken = accessToken;
+    }
 }
