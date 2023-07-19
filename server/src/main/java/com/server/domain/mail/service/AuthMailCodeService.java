@@ -1,5 +1,7 @@
 package com.server.domain.mail.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 public class AuthMailCodeService {
     private final AuthMailCodeRepository authMailCodeRepository;
 
-    public void saveAuthCode(String authCode, String email) {
+    public void saveOrUpdateAuthCode(String authCode, String email) {
+        Optional<AuthMailCode> authMailCode = authMailCodeRepository.findByEmail(email);
+        authMailCode.ifPresent(authMailCodeRepository::delete);
         authMailCodeRepository.save(AuthMailCode.builder().authCode(authCode).email(email).build());
     }
 

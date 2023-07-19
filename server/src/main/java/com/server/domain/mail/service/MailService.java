@@ -44,7 +44,7 @@ public class MailService {
             mimeMessageHelper.setTo(email);
             mimeMessageHelper.setText(setContext(authCode, type), true);
             if(type.equals("signup") || type.equals("pw")){
-                authMailCodeService.saveAuthCode(authCode, email);
+                authMailCodeService.saveOrUpdateAuthCode(authCode, email);
             }
             mimeMessageHelper.setSubject(mailUtils.setSubject(type));
             javaMailSender.send(mimeMessage);
