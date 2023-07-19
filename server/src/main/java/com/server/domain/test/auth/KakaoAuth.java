@@ -11,7 +11,9 @@ import com.server.domain.test.dto.Body;
 import com.server.domain.test.dto.Body.Link;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class KakaoAuth {
@@ -51,7 +53,7 @@ public class KakaoAuth {
     public void sendMessage(Object template, String accessToken) {
         String body = gson.toJson(template);
 
-        System.out.println(body);
+        log.debug(body);
 
         String result = WebClient.create(messageApiUrl)
                 .post()

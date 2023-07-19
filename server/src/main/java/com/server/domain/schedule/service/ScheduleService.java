@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.server.domain.member.entity.Member;
 import com.server.domain.oauth.entity.KakaoToken;
+import com.server.domain.region.entity.Region;
+import com.server.domain.region.repository.RegionRepository;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.repository.ScheduleRepository;
 import com.server.domain.test.auth.KakaoAuth;
@@ -27,15 +29,22 @@ import lombok.RequiredArgsConstructor;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
+    private final RegionRepository regionRepository;
+
     private final KakaoAuth kakaoAuth;
 
     public Schedule saveSchedule(Schedule schedule) {
-        String region = schedule.getRegion();
         String title = schedule.getTitle();
         int memberCount = schedule.getMemberCount();
 
+        Region region = schedule.getRegion();
+        String engName = region.getEngName();
+        Region foundRegion = regionRepository.findByEngName(engName);
+        String korName = foundRegion.getKorName();
+
+        schedule.setRegion(foundRegion);
         if (title == null) {
-            schedule.setTitle(String.format("%s 여행 레츠고!", region));
+            schedule.setTitle(String.format("%s 여행 레츠고!", korName));
         }
         if (memberCount <= 0) {
             schedule.setMemberCount(1);
@@ -48,6 +57,11 @@ public class ScheduleService {
         long scheduleId = schedule.getScheduleId();
         Schedule foundSchedule = findSchedule(scheduleId);
 
+        Region region = schedule.getRegion();
+        String engName = region.getEngName();
+        Region foundRegion = regionRepository.findByEngName(engName);
+
+        schedule.setRegion(foundRegion);
         CustomBeanUtils.copyNonNullProperties(schedule, foundSchedule);
         saveSchedule(foundSchedule);
 
@@ -71,10 +85,6 @@ public class ScheduleService {
         Sort sort = Sort.by("createdAt").descending();
         long memberId = CustomUtil.getAuthId();
         List<Schedule> schedules = scheduleRepository.findAllByMember_memberId(memberId, sort);
-
-        if (schedules == null || schedules.size() == 0) {
-            throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
-        }
 
         return schedules;
     }
@@ -116,11 +126,15 @@ public class ScheduleService {
 
         // Schedule
         long scheduleId = schedule.getScheduleId();
-        String region = schedule.getRegion();
         LocalDate startDate = schedule.getStartDate();
         LocalDate endDate = schedule.getEndDate();
         int period = schedule.getPeriod();
         String term = period == 1 ? "당일치기" : String.format("%d박 %d일", period - 1, period);
+
+        // Region
+        Region region = schedule.getRegion();
+        String engName = region.getEngName();
+        String korName = region.getKorName();
 
         // Feed
         String basesUrl = "https://plip.netlify.app/plan/detail";
@@ -134,11 +148,11 @@ public class ScheduleService {
                 .mobile_web_url(shareUrl)
                 .build();
         Content content = Content.builder()
-                .title(String.format("%s님의 %s 여행 일정입니다.", nickname, region))
+                .title(String.format("%s님의 %s 여행 일정입니다.", nickname, korName))
                 .description(String.format("기간: %s ~ %s (%s)", startDate, endDate, term))
                 .image_width(600)
                 .image_height(400)
-                .image_url("https://teamdev.shop:8000/files/images?region=" + region)
+                .image_url("https://teamdev.shop:8000/files/images?region=" + engName)
                 .link(link)
                 .build();
         Feed feed = Feed.builder()

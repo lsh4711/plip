@@ -9,13 +9,12 @@ import com.server.domain.schedule.repository.SchedulePlaceRepository;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
-@Service
-public class SchedulePlaceService {
-    private SchedulePlaceRepository schedulePlaceRepository;
+import lombok.RequiredArgsConstructor;
 
-    public SchedulePlaceService(SchedulePlaceRepository schedulePlaceRepository) {
-        this.schedulePlaceRepository = schedulePlaceRepository;
-    }
+@Service
+@RequiredArgsConstructor
+public class SchedulePlaceService {
+    private final SchedulePlaceRepository schedulePlaceRepository;
 
     public void saveSchedulePlaces(List<SchedulePlace> schedulePlaces) {
         schedulePlaceRepository.saveAll(schedulePlaces);

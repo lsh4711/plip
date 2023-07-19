@@ -24,7 +24,7 @@ public class KakaoTokenOauthService {
                 .member(member)
                 .build();
         Optional<KakaoToken> findToken = kakaoTokenRepository.findByMember_MemberId(member.getMemberId());
-        if(findToken.isEmpty())
+        if (findToken.isEmpty())
             kakaoTokenRepository.save(token);
         else
             findToken.get().setAccessToken(accessToken);

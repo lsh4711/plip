@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import com.server.domain.place.entity.Place;
 import com.server.domain.record.entity.Record;
@@ -46,6 +47,7 @@ public class SchedulePlace extends BaseEntity {
     private Place place;
 
     // 나중에 이미지도 같이 지우는 법을 찾아야함
+    @OrderBy(value = "createdAt DESC")
     @OneToMany(mappedBy = "schedulePlace", cascade = CascadeType.REMOVE)
     private List<Record> records;
 }
