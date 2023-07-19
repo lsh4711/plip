@@ -14,17 +14,22 @@ type DndContents = {
 };
 
 const DndContents = ({ contents, dayNumber }: DndContents) => {
-  const [isDragEnd, setIsDragEnd] = useState(false);
+  const [isEditActionEnd, setIsEditActionEnd] = useState(false);
   const [placelist, setPlaceList] = useState(contents);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isDragEnd) {
+    if (isEditActionEnd) {
       dispatch(editSchedule({ dayNumber, schedule: placelist }));
-      setIsDragEnd(false);
+      setIsEditActionEnd(false);
     }
-  }, [isDragEnd]);
+  }, [isEditActionEnd]);
+
+  const removeItem = (visitNumber: number) => {
+    setPlaceList((prevList) => prevList.filter((_, idx) => visitNumber !== idx));
+    setIsEditActionEnd(true);
+  };
 
   const moveItem = useCallback((dragIndex: number, hoverIndex: number) => {
     setPlaceList((prevItems) =>
@@ -46,7 +51,8 @@ const DndContents = ({ contents, dayNumber }: DndContents) => {
         name={name}
         dayNumber={dayNumber}
         moveItem={moveItem}
-        setIsDragEnd={setIsDragEnd}
+        setIsEditActionEnd={setIsEditActionEnd}
+        removeItem={removeItem}
       />
     ),
     []

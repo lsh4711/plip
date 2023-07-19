@@ -11,7 +11,8 @@ type EditmodeContent = {
   visitNumber: number;
   dayNumber: number;
   moveItem: (dragIndex: number, hoverIndex: number) => void;
-  setIsDragEnd: Dispatch<SetStateAction<boolean>>;
+  setIsEditActionEnd: Dispatch<SetStateAction<boolean>>;
+  removeItem: (visitNumber: number) => void;
 };
 
 type DragContent = {
@@ -26,7 +27,8 @@ const EditmodeContent = ({
   visitNumber,
   dayNumber,
   moveItem,
-  setIsDragEnd,
+  setIsEditActionEnd,
+  removeItem,
 }: EditmodeContent) => {
   const ref = useRef<any>(null);
   const [{ handlerId }, drop] = useDrop<DragContent, void, { handlerId: Identifier | null }>({
@@ -75,7 +77,7 @@ const EditmodeContent = ({
       isDragging: monitor.isDragging(),
     }),
     end: () => {
-      setIsDragEnd(true);
+      setIsEditActionEnd(true);
     },
   });
 
@@ -92,7 +94,7 @@ const EditmodeContent = ({
     >
       <div className="relative flex items-center justify-between px-4 py-3">
         <button className="absolute -translate-x-1">
-          <MdRemoveCircleOutline color="#FF3535" />
+          <MdRemoveCircleOutline color="#FF3535" onClick={() => removeItem(visitNumber)} />
         </button>
         <div className="mx-4 flex text-xs 2xl:text-sm">{name}</div>
         <VscMenu color="#bbb" className="w-3 2xl:w-4" />
