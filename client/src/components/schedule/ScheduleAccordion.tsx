@@ -1,7 +1,9 @@
 import * as Accordion from '@radix-ui/react-accordion';
 import { FiChevronDown } from '@react-icons/all-files/fi/FiChevronDown';
+import { useDispatch } from 'react-redux';
 
 import { BlankContent, Content, DndContents } from '@/components/schedule/accordion-content';
+import { setSelectedPlace } from '@/redux/slices/placeSlice';
 import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 import { getFormatDateString } from '@/utils/date';
 
@@ -14,6 +16,8 @@ type ScheduleAccordion = {
 };
 
 function ScheduleAccordion({ dayNumber, title, date, contents, isEditMode }: ScheduleAccordion) {
+  const dispatch = useDispatch();
+
   return (
     <Accordion.Root type="single" defaultValue="schedule" collapsible>
       <Accordion.Item className="overflow-hidden rounded-lg bg-[#F6F8FC]" value="schedule">
@@ -32,8 +36,15 @@ function ScheduleAccordion({ dayNumber, title, date, contents, isEditMode }: Sch
           isEditMode ? (
             <DndContents contents={contents} dayNumber={dayNumber} />
           ) : (
-            contents.map(({ name, apiId }) => (
-              <Content key={apiId} name={name} dayNumber={dayNumber} />
+            contents.map((content) => (
+              <Content
+                key={content.apiId}
+                name={content.name}
+                dayNumber={dayNumber}
+                onClick={() => {
+                  dispatch(setSelectedPlace(content));
+                }}
+              />
             ))
           )
         ) : (

@@ -5,11 +5,15 @@ import { COLORS } from '@/datas/map-constants';
 type Content = {
   name: string;
   dayNumber: number;
+  onClick: () => void;
 };
 
-const Content = ({ name, dayNumber }: Content) => {
+const Content = ({ name, dayNumber, onClick }: Content) => {
   return (
-    <Accordion.Content className="AccordionContent overflow-hidden border-t-[1px]">
+    <Accordion.Content
+      className="AccordionContent cursor-pointer overflow-hidden border-t-[1px]"
+      onClick={onClick}
+    >
       <div className="relative flex items-center justify-between px-4 py-3">
         <div className="absolute bottom-0 top-0 h-full border-[0.68px] border-dashed border-[#bbb]"></div>
         <div
