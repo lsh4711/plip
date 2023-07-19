@@ -33,11 +33,12 @@ public class FileService {
         return image;
     }
 
-    public byte[] getGifImageByName(String name) {
+    public byte[] getImageByName(String name, String extension) {
         byte[] image = null;
-        String fullPath = String.format("%s/%s.gif",
+        String fullPath = String.format("%s/%s.%s",
             basePath,
-            name);
+            name,
+            extension);
         File file = new File(fullPath);
 
         if (file.exists()) {

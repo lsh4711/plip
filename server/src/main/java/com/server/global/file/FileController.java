@@ -26,12 +26,13 @@ public class FileController {
     }
 
     @GetMapping("/gifs")
-    public ResponseEntity getGifImage(@RequestParam String name) {
-        byte[] base64EncodedImage = fileService.getGifImageByName(name);
+    public ResponseEntity getCustomImage(@RequestParam String name) {
+        String extension = "png";
+        byte[] base64EncodedImage = fileService.getImageByName(name, extension);
 
         return ResponseEntity.ok()
                 // .contentType(MediaType.IMAGE_JPEG)
-                .header("Content-Type", "image/gif")
+                .header("Content-Type", "image/" + extension)
                 .body(base64EncodedImage);
     }
 }
