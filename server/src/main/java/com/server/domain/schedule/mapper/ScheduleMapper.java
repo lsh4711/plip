@@ -2,6 +2,7 @@ package com.server.domain.schedule.mapper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.mapstruct.Mapper;
@@ -27,7 +28,7 @@ public interface ScheduleMapper {
         Schedule schedule = new Schedule();
         LocalDate startDate = postDto.getStartDate();
         LocalDate endDate = postDto.getEndDate();
-        int period = endDate.compareTo(startDate);
+        int period = (int)ChronoUnit.DAYS.between(startDate, endDate);
 
         schedule.setEndDate(endDate);
         schedule.setMemberCount(postDto.getMemberCount());
@@ -53,7 +54,7 @@ public interface ScheduleMapper {
         LocalDate endDate = patchDto.getEndDate();
 
         if (startDate != null && endDate != null) {
-            int period = endDate.compareTo(startDate);
+            int period = (int)ChronoUnit.DAYS.between(startDate, endDate);
             schedule.setPeriod(period + 1);
         }
         schedule.setEndDate(endDate);
