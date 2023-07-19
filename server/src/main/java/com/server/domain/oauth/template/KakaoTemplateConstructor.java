@@ -38,7 +38,7 @@ public class KakaoTemplateConstructor {
                 .description("PliP과 함께 여행 일정을 작성하러 가볼까요?")
                 .image_width(100)
                 .image_height(100)
-                .image_url("https://teamdev.shop:8000/files/images/gifs?name=test")
+                .image_url("https://teamdev.shop:8000/files/images/test?name=test")
                 .link(link)
                 .build();
         Feed feed = Feed.builder()

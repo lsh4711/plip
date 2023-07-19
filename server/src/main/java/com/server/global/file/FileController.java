@@ -25,7 +25,7 @@ public class FileController {
                 .body(base64EncodedImage);
     }
 
-    @GetMapping("/gifs")
+    @GetMapping("/test")
     public ResponseEntity getCustomImage(@RequestParam String name) {
         String extension = "png";
         byte[] base64EncodedImage = fileService.getImageByName(name, extension);
