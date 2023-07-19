@@ -17,6 +17,7 @@ public class ArrayHashMap implements Iterable<String[]> {
 
     public ArrayHashMap() {
         LinkedHashMap<String, String> categoryMap = new LinkedHashMap<>();
+        categoryMap.put("", "");
         categoryMap.put("MT1", "대형마트");
         categoryMap.put("CS2", "편의점");
         categoryMap.put("PS3", "어린이집, 유치원");

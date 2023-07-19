@@ -16,9 +16,10 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import com.server.domain.mail.entity.AuthMailCode;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.repository.MemberRepository;
-import com.server.domain.member.service.MemberService;
+import com.server.domain.schedule.entity.Schedule;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
+import com.server.global.utils.MailUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,19 +32,23 @@ public class MailService {
     private final SpringTemplateEngine templateEngine;
     private final AuthMailCodeService authMailCodeService;
     private final MemberRepository memberRepository;
+    private final MailUtils mailUtils;
 
     @Async
     public void sendMail(String email, String type) {
-        String authCode = createCode();
+        String authCode = mailUtils.createCode();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
 
             mimeMessageHelper.setTo(email);
-            mimeMessageHelper.setSubject("[PLIP] 이메일 인증을 위한 인증코드를 발송했습니다.");
             mimeMessageHelper.setText(setContext(authCode, type), true);
+            if(type.equals("signup") || type.equals("pw")){
+                authMailCodeService.saveOrUpdateAuthCode(authCode, email);
+            }
+            mimeMessageHelper.setSubject(mailUtils.setSubject(type));
             javaMailSender.send(mimeMessage);
-            authMailCodeService.saveAuthCode(authCode, email);
+
         } catch (MessagingException e) {
             log.info("##" + email + " 메일 보내기 실패!! 에러 메시지: " + e);
         }
@@ -60,30 +65,7 @@ public class MailService {
     public String setContext(String code, String type) {
         Context context = new Context();
         context.setVariable("code", code);
-        if(type.equals("signup")){
-            return templateEngine.process("signup", context);
-        }
-        return templateEngine.process("pw", context);
-    }
-
-    private String createCode() {
-        Random random = new Random();
-        StringBuffer key = new StringBuffer();
-
-        for (int i = 0; i < 8; i++) {
-            int index = random.nextInt(4);
-            switch (index) {
-                case 0:
-                    key.append((char)((int)random.nextInt(26) + 97));
-                    break;
-                case 1:
-                    key.append((char)((int)random.nextInt(26) + 65));
-                    break;
-                default:
-                    key.append(random.nextInt(9));
-            }
-        }
-        return key.toString();
+        return templateEngine.process(type, context);
     }
 
     public void authenticationMailCode(AuthMailCode userAuthMailCode) {
@@ -93,5 +75,24 @@ public class MailService {
             throw new CustomException(ExceptionCode.AUTH_MAIL_CODE_MISMATCH);
         }
         authMailCodeService.removeAuthCode(findAuthCode.getEmail());
+    }
+
+    @Async
+    public void sendScheduleMail(Schedule schedule, Member member) {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+
+            mimeMessageHelper.setTo(member.getEmail());
+            Context context = new Context();
+            context.setVariable("content", mailUtils.getContent(schedule, member));
+            context.setVariable("uri", mailUtils.getUri(schedule, member));
+            mimeMessageHelper.setText(templateEngine.process("schedule", context), true);
+            mimeMessageHelper.setSubject(mailUtils.getMailTitle(schedule, member));
+            javaMailSender.send(mimeMessage);
+
+        } catch (MessagingException e) {
+            log.info("##" + member.getEmail() + " 메일 보내기 실패!! 에러 메시지: " + e);
+        }
     }
 }

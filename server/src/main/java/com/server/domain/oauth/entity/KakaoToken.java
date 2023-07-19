@@ -26,10 +26,14 @@ public class KakaoToken extends BaseEntity {
     @Id
     private Long id;
     @Column
-    private String AccessToken;
+    private String accessToken;
     @Column
-    private String RefreshToken;
+    private String refreshToken;
     @JoinColumn(name = "memberId")
     @OneToOne
     private Member member;
+
+    public void setAccessToken(String accessToken){
+        this.accessToken = accessToken;
+    }
 }

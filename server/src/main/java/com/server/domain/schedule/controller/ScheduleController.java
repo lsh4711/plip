@@ -1,6 +1,7 @@
 package com.server.domain.schedule.controller;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -14,9 +15,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.server.domain.mail.service.MailService;
 import com.server.domain.member.entity.Member;
+import com.server.domain.member.service.MemberService;
 import com.server.domain.place.dto.PlaceDto;
 import com.server.domain.place.dto.PlaceResponse;
 import com.server.domain.place.entity.Place;
@@ -41,18 +45,19 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
     private final ScheduleMapper scheduleMapper;
 
+    private final MemberService memberService;
+
     private final PlaceService placeService;
     private final PlaceMapper placeMapper;
 
     private final SchedulePlaceService schedulePlaceService;
+    private final MailService mailService;
 
     @Transactional
     @PostMapping("/write")
     public ResponseEntity postSchedule(@Valid @RequestBody ScheduleDto.Post postDto) {
         long memberId = CustomUtil.getAuthId();
-        Member member = Member.builder()
-                .memberId(memberId)
-                .build();
+        Member member = memberService.findMember(memberId);
         Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
         schedule.setMember(member);
 
@@ -64,6 +69,13 @@ public class ScheduleController {
 
         URI location = UriCreator.createUri("/api/schedules",
             savedSchedule.getScheduleId());
+
+        // 비동기
+        scheduleService.sendKakaoMessage(savedSchedule, member);
+        /**
+         * @Author: 다영
+         * */
+        mailService.sendScheduleMail(savedSchedule, member);
 
         return ResponseEntity.created(location).build();
     }
@@ -89,11 +101,11 @@ public class ScheduleController {
         ScheduleResponse scheduleResponse = scheduleMapper
                 .scheduleToScheduleResponse(updatedSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
+        scheduleResponse.setPlaceSize(schedulePlaces.size());
 
         return ResponseEntity.ok(scheduleResponse);
     }
 
-    // 일단은 장소 정보까지 넣어놈
     @GetMapping("/{scheduleId}")
     public ResponseEntity getSchedule(@PathVariable long scheduleId) {
         Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
@@ -103,8 +115,46 @@ public class ScheduleController {
         ScheduleResponse scheduleResponse = scheduleMapper
                 .scheduleToScheduleResponse(foundSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
+        scheduleResponse.setPlaceSize(schedulePlaces.size());
 
-        // 나중에 member의 모든 정보대신 공개해도 되는 정보만 포함해야함
+        // 일정 공유 기능도 겸하기에 Member의 공개해도 되는 정보만 포함해야함
+        return ResponseEntity.ok(scheduleResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity getSchedules() {
+        List<Schedule> foundSchedules = scheduleService.findSchedules();
+        List<ScheduleResponse> scheduleResponses = new ArrayList<>();
+
+        for (Schedule schedule : foundSchedules) {
+            List<SchedulePlace> schedulePlaces = schedule.getSchedulePlaces();
+            List<List<PlaceResponse>> placeResponseLists = placeMapper
+                    .schedulePlacesToPlaceResponseLists(schedulePlaces, schedule);
+            ScheduleResponse scheduleResponse = scheduleMapper
+                    .scheduleToScheduleResponse(schedule);
+            scheduleResponse.setPlaces(placeResponseLists);
+            scheduleResponse.setPlaceSize(schedulePlaces.size());
+            scheduleResponses.add(scheduleResponse);
+        }
+
+        // 일정 공유 기능도 겸하기에 Member의 공개해도 되는 정보만 포함해야함
+        return ResponseEntity.ok(scheduleResponses);
+    }
+
+    @GetMapping("/{scheduleId}/share")
+    public ResponseEntity getScheduleByMemberIdAndEmail(@PathVariable long scheduleId,
+            @RequestParam("id") long memberId,
+            @RequestParam String email) {
+        Schedule foundSchedule = scheduleService.findSharedSchedule(scheduleId, memberId, email);
+        List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
+        List<List<PlaceResponse>> placeResponseLists = placeMapper
+                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
+        ScheduleResponse scheduleResponse = scheduleMapper
+                .scheduleToScheduleResponse(foundSchedule);
+        scheduleResponse.setPlaces(placeResponseLists);
+        scheduleResponse.setPlaceSize(schedulePlaces.size());
+
+        // 일정 공유 기능도 겸하기에 Member의 공개해도 되는 정보만 포함해야함
         return ResponseEntity.ok(scheduleResponse);
     }
 
@@ -115,7 +165,7 @@ public class ScheduleController {
         List<List<PlaceResponse>> placeResponseLists = placeMapper
                 .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
 
-        return ResponseEntity.ok(placeResponseLists);
+        return ResponseEntity.ok(placeResponseLists); // size 정보 넣지않은 상태
     }
 
     @DeleteMapping("/{scheduleId}")
@@ -124,6 +174,4 @@ public class ScheduleController {
 
         return ResponseEntity.noContent().build();
     }
-
-    // 알림 보내는 메서드 test/entity/Notification 으로 옮김
 }

@@ -30,7 +30,6 @@ public class MemberService {
         if (member.getRole() == null) {
             member.setRole(Role.USER);
         }
-
         return memberRepository.save(member);
     }
 
@@ -49,6 +48,14 @@ public class MemberService {
     public void deleteMember(String email) {
         Member member = findMemberByEmail(email);
         memberRepository.delete(member);
+    }
+
+    @Transactional(readOnly = true)
+    public Member findMember(long memberId) {
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+
+        return optionalMember.orElseThrow(
+            () -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
     //회원이메일로 등록된 회원인지 검증

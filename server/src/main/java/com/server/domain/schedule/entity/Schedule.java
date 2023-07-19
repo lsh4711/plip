@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,13 +34,12 @@ public class Schedule extends BaseEntity {
 
     private String region;
     private String title;
-    private String content;
     private Integer memberCount;
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer period;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")
     private Member member;
 

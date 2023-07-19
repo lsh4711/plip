@@ -1,6 +1,7 @@
 package com.server.domain.place.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,13 +33,15 @@ public class Place extends BaseEntity {
     private String name; // optional, default: 사용자 지정 장소
     private String address;
 
+    private String phone;
+
     private String latitude; // 사용자 지정시 같은 좌표가
     private String longitude; // 중복될 것 같으니 복합키 고려
 
     @Transient
     private Boolean bookmark;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryId")
     private Category category;
 }
