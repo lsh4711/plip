@@ -62,8 +62,6 @@ public class ScheduleController {
 
     private final MailService mailService;
 
-    private final RecordMapper recordMapper;
-
     @Transactional
     @PostMapping("/write")
     public ResponseEntity postSchedule(@Valid @RequestBody ScheduleDto.Post postDto) {
