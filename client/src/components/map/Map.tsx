@@ -1,18 +1,20 @@
-import { SetStateAction, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import { CustomOverlayMap, Map as KakaoMap, MapMarker, Polyline } from 'react-kakao-maps-sdk';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { InfoWindow } from '@/components/map/InfoWindow';
 import { COLORS } from '@/datas/map-constants';
 import { RootState } from '@/redux/store';
 import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
+import { setSelectedPlace } from '@/redux/slices/placeSlice';
 
 interface mapProps {
   type: 'scheduling' | 'recording';
   centerLat: number;
   centerLng: number;
   mapLevel: number;
+  setCenterPosition?: React.Dispatch<SetStateAction<{ lat: number; lng: number }>>; // 임시 optional
   setMapLevel: React.Dispatch<SetStateAction<number>>;
   schedules: ScheduledPlaceBase[][];
   showPolyline?: boolean;
@@ -22,22 +24,33 @@ const Map = ({
   type,
   centerLat,
   centerLng,
+  setCenterPosition,
   mapLevel,
   setMapLevel,
   schedules,
   showPolyline = false,
 }: mapProps) => {
-  const [selectedPlace, setSelectedPlace] = useState<ScheduledPlaceBase | null>(null);
-  const { results } = useSelector((state: RootState) => state.searchPlace);
+  const { searchPlaceResults, selectedPlace } = useSelector((state: RootState) => state.place);
+  const dispatch = useDispatch();
 
   const onClickMarker = (place: ScheduledPlaceBase) => {
     if (type === 'scheduling') {
-      setSelectedPlace(place);
+      dispatch(setSelectedPlace(place));
     }
     if (type === 'recording') {
       // TODO : open editor modal
     }
   };
+
+  useEffect(() => {
+    if (setCenterPosition && selectedPlace) {
+      // 포커스된 마커 위치를 가운데로 옮기기 위함
+      setCenterPosition({
+        lat: parseFloat(selectedPlace.latitude),
+        lng: parseFloat(selectedPlace.longitude),
+      });
+    }
+  }, [selectedPlace]);
 
   return (
     <KakaoMap // 지도를 표시할 Container
@@ -48,6 +61,17 @@ const Map = ({
       }}
       level={mapLevel} // 지도의 확대 레벨
       className="h-screen w-screen"
+      isPanto
+      onClick={() => dispatch(setSelectedPlace(null))}
+      onDragEnd={(
+        target // 검색 지점 변경 용도
+      ) =>
+        setCenterPosition &&
+        setCenterPosition({
+          lat: target.getCenter().getLat(),
+          lng: target.getCenter().getLng(),
+        })
+      }
       onZoomChanged={(map) => setMapLevel(map.getLevel())}
       zoomable={!selectedPlace}
     >
@@ -71,48 +95,49 @@ const Map = ({
         ))
       )}
 
-      {results.map((result, idx) => (
-        <MapMarker
-          key={result.id}
-          position={{
-            lat: parseFloat(result.y),
-            lng: parseFloat(result.x),
-          }}
-          onClick={() =>
-            onClickMarker({
-              apiId: parseInt(result.id),
-              name: result.place_name,
-              address: result.address_name,
-              latitude: result.y,
-              longitude: result.x,
-              phone: result.phone,
-              category: result.category_group_code as CategoryGroupCode,
-              bookmark: false,
-            })
-          }
-          image={{
-            src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png',
-            size: {
-              width: 48,
-              height: 48,
-            },
-            options: {
-              spriteSize: {
-                width: 36,
-                height: 691,
+      {searchPlaceResults.length &&
+        searchPlaceResults.map((result, idx) => (
+          <MapMarker
+            key={result.id}
+            position={{
+              lat: parseFloat(result.y),
+              lng: parseFloat(result.x),
+            }}
+            onClick={() =>
+              onClickMarker({
+                apiId: parseInt(result.id),
+                name: result.place_name,
+                address: result.address_name,
+                latitude: result.y,
+                longitude: result.x,
+                phone: result.phone,
+                category: result.category_group_code as CategoryGroupCode,
+                bookmark: false,
+              })
+            }
+            image={{
+              src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png',
+              size: {
+                width: 48,
+                height: 48,
               },
-              spriteOrigin: {
-                x: 0,
-                y: idx * 46,
+              options: {
+                spriteSize: {
+                  width: 36,
+                  height: 691,
+                },
+                spriteOrigin: {
+                  x: 0,
+                  y: idx * 46,
+                },
+                offset: {
+                  x: 13,
+                  y: 37,
+                },
               },
-              offset: {
-                x: 13,
-                y: 37,
-              },
-            },
-          }}
-        />
-      ))}
+            }}
+          />
+        ))}
 
       {selectedPlace && (
         <CustomOverlayMap
@@ -132,7 +157,7 @@ const Map = ({
             category={selectedPlace.category}
             phone={selectedPlace.phone}
             isBookmarked={selectedPlace.bookmark}
-            onClickClose={() => setSelectedPlace(null)}
+            onClickClose={() => dispatch(setSelectedPlace(null))}
             className="absolute bottom-8 -translate-x-1/2"
           />
         </CustomOverlayMap>
