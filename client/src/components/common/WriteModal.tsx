@@ -40,11 +40,11 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
   const onInputText = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = e.target.innerHTML;
 
-    if (inputText.length > 300) {
-      alert(`일지의 내용은 ${maxRecordCharacters}자를 초과할 수 없습니다.`);
-      e.target.innerHTML = text;
-      return;
-    }
+    // if (inputText.length > 300) {
+    //   alert(`일지의 내용은 ${maxRecordCharacters}자를 초과할 수 없습니다.`);
+    //   e.target.innerHTML = text;
+    //   return;
+    // }
     setText(inputText);
   };
 

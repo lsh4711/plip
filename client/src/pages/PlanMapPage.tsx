@@ -4,9 +4,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { Button } from '@/components';
 import { Map, MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
-import { useEditPlanMutation, usePlanQuery } from '@/queries/plan';
-import { RootState } from '@/redux/store';
-import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
 
 import Confirm from '@/components/common/Confirm';
 import SidePanel from '@/components/common/SidePanel';
@@ -19,6 +16,7 @@ import { useEditPlanMutation, usePlanQuery } from '@/queries/plan';
 import { setIsStale } from '@/redux/slices/scheduleSlice';
 import { RootState } from '@/redux/store';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
+import { setResult } from '@/redux/slices/searchPlaceSlice';
 
 const PlanMapPage = () => {
   const { id } = useParams();
@@ -73,12 +71,12 @@ const PlanMapPage = () => {
     }
   });
 
-  // TODO 일지 작성 페이지로 이동 필요
-  const openWriteDiaryModal = () => {
-    openModal(({ isOpen, close }) => (
-      <WriteModal type={'default'} isOpen={isOpen} onClose={close} />
-    ));
-  };
+  useEffect(() => {
+    window.addEventListener('beforeunload', () => dispatch(setResult([])));
+    return () => {
+      window.removeEventListener('beforeunload', () => dispatch(setResult([])));
+    };
+  }, []);
 
   return (
     <div className="relative h-full w-full">
@@ -123,6 +121,7 @@ const PlanMapPage = () => {
             >
               일정 저장하기
             </Button>
+
             <ZoomButtons
               onClickZoomIn={() => {
                 setMapLevel(mapLevel > 1 ? mapLevel - 1 : 1);

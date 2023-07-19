@@ -1,6 +1,5 @@
 import { Button, MypageSideNav, Paragraph, SortingToolbar } from '@/components';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-circle.svg';
-import { Link } from 'react-router-dom';
 
 import MyTripCard from '@/components/page-components/mytrip/MyTripCard';
 import useAuthRedirect from '@/hooks/useAuthRedirect';

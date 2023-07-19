@@ -32,6 +32,7 @@ const Map = ({
   showPolyline = false,
 }: mapProps) => {
   const [selectedPlace, setSelectedPlace] = useState<ScheduledPlaceBase | null>(null);
+  const [currentHoverMarker, setCurrentHoverMarker] = useState<ScheduledPlaceBase | null>(null);
   const { results } = useSelector((state: RootState) => state.searchPlace);
   const [openModal] = useModal();
 
@@ -53,7 +54,10 @@ const Map = ({
   };
 
   const onHoverMarker = (place: ScheduledPlaceBase) => {
-    setSelectedPlace(place);
+    if (type === 'recording') {
+      setSelectedPlace(place);
+      setCurrentHoverMarker(place);
+    }
   };
 
   return (
@@ -83,7 +87,6 @@ const Map = ({
                 height: 32,
               },
             }}
-            onClick={() => onClickMarker(place)}
             onMouseOver={() => onHoverMarker(place)}
           />
         ))
@@ -105,7 +108,6 @@ const Map = ({
               longitude: result.x,
               phone: result.phone,
               category: result.category_group_code as CategoryGroupCode,
-              phone: result.phone,
               bookmark: false,
             })
           }
@@ -152,10 +154,14 @@ const Map = ({
               category={selectedPlace.category}
               isBookmarked={selectedPlace.bookmark}
               onClickClose={() => setSelectedPlace(null)}
+              phone={selectedPlace.phone}
               className="absolute bottom-8 -translate-x-1/2"
             />
           ) : (
-            <RecordOverray onClickClose={() => setSelectedPlace(null)} />
+            <RecordOverray
+              onClickClose={() => setSelectedPlace(null)}
+              onClickMarker={() => onClickMarker(currentHoverMarker!)}
+            />
           )}
         </CustomOverlayMap>
       )}

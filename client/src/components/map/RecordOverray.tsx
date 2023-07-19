@@ -4,7 +4,13 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/plus-circle.svg';
 import { useRef } from 'react';
 import { MdClose } from '@react-icons/all-files/md/MdClose';
 
-const RecordOverray = ({ onClickClose }: { onClickClose: () => void }) => {
+const RecordOverray = ({
+  onClickClose,
+  onClickMarker,
+}: {
+  onClickClose: () => void;
+  onClickMarker: () => void;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   return (
     <div
@@ -20,7 +26,7 @@ const RecordOverray = ({ onClickClose }: { onClickClose: () => void }) => {
         />
         <Paragraph>작성된 일지가 없어요😥</Paragraph>
         <Paragraph>일지를 작성하러 가시겠습니까?</Paragraph>
-        <Button variant={'default'} hovercolor={'default'}>
+        <Button variant={'default'} hovercolor={'default'} onClick={onClickMarker}>
           <PlusIcon />
         </Button>
       </div>

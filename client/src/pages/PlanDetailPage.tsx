@@ -10,6 +10,8 @@ import TripInfo from '@/components/common/TripInfo';
 import TripSchedule from '@/components/common/TripSchedule';
 import { useState } from 'react';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
+import axios from 'axios';
+import instance from '@/queries/axiosinstance';
 
 interface PlanDetailPageProps {}
 
@@ -19,6 +21,12 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
   const { schedules } = useSelector((state: RootState) => state.schedule);
 
   const [mapLevel, setMapLevel] = useState(8);
+
+  useState(() => {
+    instance
+      .get(`/api/schedules/${id}/share?id=5&email=test@naver.com`)
+      .then((res) => console.log(res));
+  });
 
   return (
     <div className="relative h-full w-full">
