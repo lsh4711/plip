@@ -23,7 +23,8 @@ public class MailController {
     private final MailService mailService;
     private final AuthMailCodeMapper authMailCodeMapper;
 
-    @PostMapping()
+    //회원가입시 이메일 인증
+    @PostMapping
     public ResponseEntity<?> postSignupSendEmail(@RequestParam("type")String type, @Valid @RequestBody MailDto.Post request) {
         mailService.verificationEmail(request.getEmail(),type);
         mailService.sendMail(request.getEmail(),type);
@@ -31,6 +32,7 @@ public class MailController {
     }
 
 
+    //이메일 인증 여부 코드로 확인
     @PostMapping("/auth")
     public ResponseEntity<?> postAuthEmail(@RequestBody AuthMailCodeDto.Post request) {
         mailService.authenticationMailCode(authMailCodeMapper.authMailCodeDtoPostToAuthMailCode(request));

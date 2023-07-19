@@ -75,6 +75,7 @@ public class ScheduleController {
         /**
          * @Author: 다영
          * */
+        //일정 등록 시 이메일 전송
         mailService.sendScheduleMail(savedSchedule, member);
 
         return ResponseEntity.created(location).build();
