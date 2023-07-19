@@ -5,9 +5,9 @@
 
 - **Project**: [사이트 이름]
 
-- **Development Duration**: `2023.06.28~2023.06.26`
+- **Development Duration**: `2023.06.28~2023.07.27`
 
-- **Deploy URI**: [Stackoverflow clone project](http://ec2-52-78-15-107.ap-northeast-2.compute.amazonaws.com/)
+- **Deploy URI**: [PliP(여행 일정 계획 서비스)](https://plip.netlify.app/)
 
 ## 👪Team
 ### Frontend
@@ -38,6 +38,7 @@
 
 
 ### Spring REST Docs with SwaggerUI
+**Docs**: [Docs](https://teamdev.shop:8000)
 
 
 ### ERD Diagram
