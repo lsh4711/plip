@@ -24,4 +24,14 @@ public class FileController {
                 .header("Content-Type", "image/webp")
                 .body(base64EncodedImage);
     }
+
+    @GetMapping("/gifs")
+    public ResponseEntity getGifImage(@RequestParam String name) {
+        byte[] base64EncodedImage = fileService.getGifImageByName(name);
+
+        return ResponseEntity.ok()
+                // .contentType(MediaType.IMAGE_JPEG)
+                .header("Content-Type", "image/gif")
+                .body(base64EncodedImage);
+    }
 }

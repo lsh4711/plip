@@ -1,6 +1,5 @@
 package com.server.domain.schedule.service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
@@ -9,14 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.server.domain.member.entity.Member;
 import com.server.domain.oauth.entity.KakaoToken;
+import com.server.domain.oauth.service.KakaoApiService;
+import com.server.domain.oauth.template.KakaoTemplateConstructor;
+import com.server.domain.oauth.template.KakaoTemplateObject.Feed;
 import com.server.domain.region.entity.Region;
 import com.server.domain.region.repository.RegionRepository;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.repository.ScheduleRepository;
-import com.server.domain.test.auth.KakaoAuth;
-import com.server.domain.test.dto.Body.Content;
-import com.server.domain.test.dto.Body.Feed;
-import com.server.domain.test.dto.Body.Link;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 import com.server.global.utils.CustomBeanUtils;
@@ -31,7 +29,9 @@ public class ScheduleService {
 
     private final RegionRepository regionRepository;
 
-    private final KakaoAuth kakaoAuth;
+    private final KakaoApiService kakaoApiService;
+
+    private KakaoTemplateConstructor kakaoTemplateMapper;
 
     public Schedule saveSchedule(Schedule schedule) {
         String title = schedule.getTitle();
@@ -117,52 +117,6 @@ public class ScheduleService {
 
     }
 
-    public Feed getFeedTemplate(Schedule schedule) {
-        // Member
-        Member member = schedule.getMember();
-        long memberId = member.getMemberId();
-        String email = member.getEmail();
-        String nickname = member.getNickname();
-
-        // Schedule
-        long scheduleId = schedule.getScheduleId();
-        LocalDate startDate = schedule.getStartDate();
-        LocalDate endDate = schedule.getEndDate();
-        int period = schedule.getPeriod();
-        String term = period == 1 ? "당일치기" : String.format("%d박 %d일", period - 1, period);
-
-        // Region
-        Region region = schedule.getRegion();
-        String engName = region.getEngName();
-        String korName = region.getKorName();
-
-        // Feed
-        String basesUrl = "https://plip.netlify.app/plan/detail";
-        String shareUrl = String.format("%s/%d/share?id=%d&email=%s",
-            basesUrl,
-            scheduleId,
-            memberId,
-            email);
-        Link link = Link.builder()
-                .web_url(shareUrl)
-                .mobile_web_url(shareUrl)
-                .build();
-        Content content = Content.builder()
-                .title(String.format("%s님의 %s 여행 일정입니다.", nickname, korName))
-                .description(String.format("기간: %s \n~ %s (%s)", startDate, endDate, term))
-                .image_width(600)
-                .image_height(400)
-                .image_url("https://teamdev.shop:8000/files/images?region=" + engName)
-                .link(link)
-                .build();
-        Feed feed = Feed.builder()
-                .object_type("feed")
-                .content(content)
-                .build();
-
-        return feed;
-    }
-
     @Async
     public void sendKakaoMessage(Schedule schedule, Member member) {
         KakaoToken kakaoToken = member.getKakaoToken();
@@ -172,8 +126,8 @@ public class ScheduleService {
         }
 
         String accessToken = kakaoToken.getAccessToken();
-        Feed template = getFeedTemplate(schedule);
+        Feed feedTemplate = kakaoTemplateMapper.getFeedTemplate(schedule, member);
 
-        kakaoAuth.sendMessage(template, accessToken);
+        kakaoApiService.sendMessage(feedTemplate, accessToken);
     }
 }
