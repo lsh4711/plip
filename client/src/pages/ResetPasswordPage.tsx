@@ -1,9 +1,7 @@
 import { HeadingParagraph } from '@/components';
 import ResetPasswordForm from '@/components/forms/ResetPasswordForm';
 
-interface ResetPasswordProps {}
-
-const ResetPasswordPage = ({}: ResetPasswordProps) => {
+const ResetPasswordPage = () => {
   return (
     <main className=" mx-auto flex h-[80%] max-w-[1024px] flex-col  items-center justify-center">
       <HeadingParagraph variant={'darkgray'} size="lg" className=" mb-10 text-center">

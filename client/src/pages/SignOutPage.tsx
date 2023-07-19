@@ -16,7 +16,9 @@ const SignOutPage = () => {
         <Paragraph variant={'red'} weight={'bold'} className=" my-4">
           {SIGNOUT_VALIDATION_STRING}
         </Paragraph>
+
         <SignoutForm />
+        
         <div className=" mt-6 flex w-[460px] flex-col">
           <Button
             className=" bg-zinc-400 text-white"
