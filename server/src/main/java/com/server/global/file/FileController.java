@@ -24,4 +24,15 @@ public class FileController {
                 .header("Content-Type", "image/webp")
                 .body(base64EncodedImage);
     }
+
+    @GetMapping("/test")
+    public ResponseEntity getCustomImage(@RequestParam String name) {
+        String extension = "png";
+        byte[] base64EncodedImage = fileService.getImageByName(name, extension);
+
+        return ResponseEntity.ok()
+                // .contentType(MediaType.IMAGE_JPEG)
+                .header("Content-Type", "image/" + extension)
+                .body(base64EncodedImage);
+    }
 }
