@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class ScheduleShareResponse {
+public class SharedScheduleResponse {
     private ScheduleResponse schedule;
     private Map<Long, List<RecordDto.Response>> recordsMap;
 }

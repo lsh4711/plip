@@ -33,7 +33,7 @@ import com.server.domain.record.entity.Record;
 import com.server.domain.record.mapper.RecordMapper;
 import com.server.domain.schedule.dto.ScheduleDto;
 import com.server.domain.schedule.dto.ScheduleResponse;
-import com.server.domain.schedule.dto.ScheduleShareResponse;
+import com.server.domain.schedule.dto.SharedScheduleResponse;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.mapper.ScheduleMapper;
@@ -167,12 +167,12 @@ public class ScheduleController {
             map.put(schedulePlaceId, recordResponses);
         }
 
-        ScheduleShareResponse scheduleShareResponse = ScheduleShareResponse.builder()
+        SharedScheduleResponse sharedScheduleResponse = SharedScheduleResponse.builder()
                 .schedule(scheduleResponse)
                 .recordsMap(map)
                 .build();
 
-        return ResponseEntity.ok(scheduleShareResponse);
+        return ResponseEntity.ok(sharedScheduleResponse);
     }
 
     @GetMapping("/{scheduleId}/places")

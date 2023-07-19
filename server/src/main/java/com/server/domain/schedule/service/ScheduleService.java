@@ -149,7 +149,7 @@ public class ScheduleService {
                 .build();
         Content content = Content.builder()
                 .title(String.format("%s님의 %s 여행 일정입니다.", nickname, korName))
-                .description(String.format("기간: %s ~ %s (%s)", startDate, endDate, term))
+                .description(String.format("기간: %s \n~ %s (%s)", startDate, endDate, term))
                 .image_width(600)
                 .image_height(400)
                 .image_url("https://teamdev.shop:8000/files/images?region=" + engName)
