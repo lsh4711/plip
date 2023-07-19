@@ -2,9 +2,6 @@ package com.server.global.auth.userdetails;
 
 import java.util.Optional;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -17,7 +14,6 @@ import com.server.domain.member.mapper.MemberMapper;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.oauth.service.KakaoApiService;
 import com.server.domain.oauth.template.KakaoTemplateConstructor;
-import com.server.domain.oauth.template.KakaoTemplateObject.Feed;
 import com.server.global.auth.utils.OAuth2TokenUtils;
 
 import lombok.RequiredArgsConstructor;
@@ -49,15 +45,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Member member = memberMapper.oauthAttributesToMember(attributes);
             memberRepository.save(member);
 
-            Authentication authentication = SecurityContextHolder.getContext()
-                    .getAuthentication();
-            OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2TokenUtils.getOAuth2AuthorizedClient(authentication);
-            if (oAuth2TokenUtils.getOAuthRegistration(oAuth2AuthorizedClient).equals("kakao")) {
-                String accessTokenValue = oAuth2TokenUtils.getOAuthAccessToken(oAuth2AuthorizedClient);
-                Feed feedTemplate = kakaoTemplateConstructor
-                        .getWelcomeTemplate(member);
-                kakaoApiService.sendMessage(feedTemplate, accessTokenValue); // 카카오 메시지
-            }
+            // Authentication authentication = SecurityContextHolder.getContext()
+            //         .getAuthentication();
+            // OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2TokenUtils.getOAuth2AuthorizedClient(authentication);
+            // if (oAuth2TokenUtils.getOAuthRegistration(oAuth2AuthorizedClient).equals("kakao")) {
+            //     String accessTokenValue = oAuth2TokenUtils.getOAuthAccessToken(oAuth2AuthorizedClient);
+            //     Feed feedTemplate = kakaoTemplateConstructor
+            //             .getWelcomeTemplate(member);
+            //     kakaoApiService.sendMessage(feedTemplate, accessTokenValue); // 카카오 메시지
+            // }
             mailService.sendMail(attributes.getEmail(), "welcome"); // 메일
         }
     }
