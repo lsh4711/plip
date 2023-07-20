@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useBeforeUnload, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { Button } from '@/components';
 import Confirm from '@/components/common/Confirm';
@@ -74,11 +74,11 @@ const PlanMapPage = () => {
     }
   });
 
-  useBeforeUnload(
-    useCallback(() => {
+  useEffect(() => {
+    return () => {
       dispatch(setSearchPlaceResults([]));
-    }, [])
-  );
+    };
+  }, []);
 
   return (
     <div className="relative h-full w-full">
