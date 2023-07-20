@@ -10,8 +10,8 @@ const Home = () => {
 
   return (
     <>
-      <div className="landing relative h-full w-full bg-[url('../assets/imgs/gyeonggi.webp')] bg-cover bg-center bg-no-repeat">
-        <div className="absolute bottom-[5%] left-0 right-0 z-50 flex flex-col items-center px-10 sm:bottom-[80px] sm:left-0 sm:block sm:px-16">
+      <div className="landing h-full w-full bg-[url('../assets/imgs/gyeonggi.webp')] bg-cover bg-center bg-no-repeat">
+        <div className="z-50 flex h-full w-full flex-col items-center justify-end bg-black/50 px-10 pb-6 pt-[76px] sm:items-start sm:pb-10">
           <Paragraph
             size={'md'}
             variant={'white'}
@@ -44,7 +44,6 @@ const Home = () => {
             여행 시작하기
           </Button>
         </div>
-        <div className="fixed h-full w-full bg-black bg-opacity-50 "></div>
       </div>
     </>
   );

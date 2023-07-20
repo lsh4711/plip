@@ -76,7 +76,7 @@ const Header = () => {
 
   return (
     <header
-      className={`left-0 top-0 z-40 h-[76px] w-full px-12 ${
+      className={`left-0 top-0 z-40 h-[76px] w-full px-10 ${
         isHome ? ' fixed' : 'stikcy border-b-2 bg-white'
       }`}
     >
