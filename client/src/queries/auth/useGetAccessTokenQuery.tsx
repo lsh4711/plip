@@ -5,8 +5,11 @@ import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
 import useInquireUsersQuery from './useInquireUsersQuery';
 import useSetAccessToken from '@/hooks/useSetAccessToken';
 import loginLocalStorage from '@/utils/auth/loginLocalStorage';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { AxiosError } from 'axios';
+import useToast from '@/hooks/useToast';
+import { setLogout } from '@/redux/slices/authSlice';
 
 const getAccessTokenAxios = async () => {
   console.log('실행되나요?');
@@ -19,7 +22,9 @@ const getAccessTokenAxios = async () => {
 
 const useGetAccessTokenQuery = () => {
   const inquireQuery = useInquireUsersQuery();
+  const toast = useToast();
   const dispatchAccessToken = useSetAccessToken();
+  const dispatch = useDispatch();
   const wasLogin = loginLocalStorage.getWasLoginFromLocalStorage;
   const isLogin = useSelector((state: RootState) => state.auth.isLogin);
   const getAccessTokenQuery = useQuery({
@@ -32,6 +37,12 @@ const useGetAccessTokenQuery = () => {
     onSuccess: (response) => {
       inquireQuery.refetch().then(() => inquireQuery.refetch());
       dispatchAccessToken({ accesstoken: response.headers['authorization'] });
+    },
+    onError: (error: AxiosError) => {
+      if (error.response && error.response.status === 401) {
+        toast({ content: '로그인 토큰이 만료되었습니다.' });
+        dispatch(setLogout());
+      }
     },
   });
 

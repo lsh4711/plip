@@ -17,6 +17,7 @@ import ErrorFallback from './components/helper/ErrorFallback';
 import LoadingPage from './pages/LoadingPage';
 import ToastContainer from './components/ui/toast/ToastContainer';
 import OauthRedirect from './pages/OauthRedirect';
+import AxiosProvider from './components/helper/AxiosProvider';
 
 const Home = lazy(() => import('./pages/Home'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
@@ -78,8 +79,10 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <ModalProvider>
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Suspense fallback={<LoadingPage />}>
-            <RouterProvider router={router} />
-            <ReactQueryDevtools />
+            <AxiosProvider>
+              <RouterProvider router={router} />
+              <ReactQueryDevtools />
+            </AxiosProvider>
           </Suspense>
         </ErrorBoundary>
       </ModalProvider>

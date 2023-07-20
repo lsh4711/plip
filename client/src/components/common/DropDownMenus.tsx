@@ -16,7 +16,6 @@ const DropDownMenus = () => {
           className="w-full border-b-2 p-4 text-black last:border-b-0"
         >
           <div key={index} className="flex w-full gap-2 ">
-
             {item.icon}
             {item.name}
           </div>
@@ -33,6 +32,13 @@ const DropDownMenus = () => {
           로그아웃
         </button>
       </div>
+
+      <Link to={'/signout'} className="w-full border-b-2 p-4 last:border-b-0">
+        <button className="flex gap-2 text-black">
+          <LogoutIcon />
+          회원탈퇴
+        </button>
+      </Link>
     </div>
   );
 };
