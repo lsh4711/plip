@@ -10,8 +10,6 @@ export const COLORS = [
   '#ff8d54', // light orange
   '#ffc229', // dark yellow
   '#bfff00', // light green
-  '#4de800', // green
   '#09edbc', // mint
   '#ff42a7', // pink
-  '#800080', // grape
 ];
