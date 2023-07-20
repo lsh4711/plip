@@ -58,6 +58,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
                 AuthenticationError.sendErrorResponse(response, ce);
             } catch (ExpiredJwtException je) {
                 log.error("### 리프레쉬 토큰을 찾을 수 없음");
+                jwtTokenizer.resetHeaderRefreshToken(response);
                 AuthenticationError.sendErrorResponse(response, new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND));
             }
         } catch (MalformedJwtException mje) {
