@@ -4,8 +4,8 @@ import { ReactComponent as PlusIcon } from '@/assets/icons/plus-circle.svg';
 import MyTripCard from '@/components/page-components/mytrip/MyTripCard';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import useMyTripQuery from '@/queries/mytrip/useMyTripQuery';
-import instance from '@/queries/axiosinstance';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import LoadingSpinner from '@/components/atom/LoadingSpinner';
 
 interface MyTripPageProps {}
 
@@ -25,7 +25,8 @@ const MyTripPage = ({}: MyTripPageProps) => {
             data!.length > 0 ? '' : ' items-center justify-center'
           }`}
         >
-          {data!.length > 0 ? (
+          {isLoading && <LoadingSpinner />}
+          {!isLoading && data!.length > 0 ? (
             data!.map((item) => <MyTripCard key={item.scheduleId} {...item} />)
           ) : (
             <Link to="/plan" className=" flex flex-col items-center justify-center gap-2">

@@ -7,15 +7,18 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useEffect, useState } from 'react';
 import { MyTripTypes } from '@/types/mytrip/mytrip-types';
 import { regionInfos } from '@/datas/regions';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import GridItem from './GridItem';
 import Button from '@/components/atom/Button';
 import Stamp from './Stamp';
 import useToast from '@/hooks/useToast';
 import getDday from '@/utils/date/getDday';
-import useMyTripQuery from '@/queries/mytrip/useMyTripQuery';
 import { getFormatDateString } from '@/utils/date';
+import useModal from '@/hooks/useModal';
+import Confirm from '@/components/common/Confirm';
+import useRemoveTripMutation from '@/queries/mytrip/useRemoveTripMutation';
+import LoadingSpinner from '@/components/atom/LoadingSpinner';
 
 const MyTripCard = ({
   scheduleId,
@@ -33,9 +36,32 @@ const MyTripCard = ({
   const [shareLink, setShareLink] = useState('');
 
   const toats = useToast();
+  const [openModal] = useModal();
+  const removeTripMutation = useRemoveTripMutation();
 
   const onToggleEndTripHandler = () => {
     setEndTrip(!endTrip);
+  };
+
+  const onDeleteTrip = () => {
+    const onConfirm = (close: () => void) => {
+      removeTripMutation.mutateAsync(scheduleId).then(() => {
+        close();
+      });
+    };
+
+    openModal(({ isOpen, close }) => (
+      <Confirm
+        type={'warning'}
+        title={'일정 삭제'}
+        content={'일정을 삭제하시겠습니까? 삭제된 일정은 복구할 수 없습니다.'}
+        primaryLabel={`${removeTripMutation.status === 'loading' ? <LoadingSpinner /> : '확인'}`}
+        secondaryLabel={'취소'}
+        isOpen={isOpen}
+        onClose={close}
+        onClickPrimaryButton={() => onConfirm(close)}
+      />
+    ));
   };
 
   const getDdayString = (): string => {
@@ -69,7 +95,7 @@ const MyTripCard = ({
         {/* 상단 */}
         <div className="flex w-full flex-1 pt-4">
           <div className="grid flex-1 grid-cols-2 items-center gap-2">
-            <GridItem title="여행 이름" content={title} editable={true} />
+            <GridItem id={scheduleId} title="여행 이름" content={title} editable={true} />
             <GridItem
               title="마지막 수정일"
               content={getFormatDateString(modifiedAt, false, 'dash')}
@@ -90,7 +116,7 @@ const MyTripCard = ({
             <Button hovercolor={'default'} className="p-0" onClick={onToggleEndTripHandler}>
               <StampIcon fill={endTrip ? '#4568DC' : ''} />
             </Button>
-            <Button hovercolor={'default'} className="p-0">
+            <Button hovercolor={'default'} className="p-0" onClick={onDeleteTrip}>
               <TrashIcon />
             </Button>
           </div>
@@ -113,13 +139,15 @@ const MyTripCard = ({
               일정상세보기
             </Button>
           </Link>
-          <Button
-            variant={'ring'}
-            hovercolor={'default'}
-            className="h-[50px] w-[120px] text-sm text-zinc-900"
-          >
-            일정 수정
-          </Button>
+          <Link to={`/plan/map/${scheduleId}`}>
+            <Button
+              variant={'ring'}
+              hovercolor={'default'}
+              className="h-[50px] w-[120px] text-sm text-zinc-900"
+            >
+              일정 수정
+            </Button>
+          </Link>
           <div className="flex items-center gap-6">
             <Button
               variant={'ring'}

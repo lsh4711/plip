@@ -62,7 +62,6 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
                 일정 수정하기
               </Button>
             </Link>
-            {/* TODO 일지 작성 페이지로 이동 필요 */}
 
             <ZoomButtons
               onClickZoomIn={() => {

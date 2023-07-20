@@ -7,9 +7,9 @@ import { maxImages, maxRecordCharacters } from '@/datas/constants';
 import { resizeFile } from '@/utils/file/resizeFile';
 
 import useModal from '@/hooks/useModal';
-import Confirm from './Confirm';
+import Confirm from '../Confirm';
 import useCreateRecordMutation from '@/queries/record/useCreateRecordMutation';
-import LoadingSpinner from '../atom/LoadingSpinner';
+import LoadingSpinner from '../../atom/LoadingSpinner';
 
 export type WriteModal = {
   id: number;

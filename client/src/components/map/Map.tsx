@@ -8,7 +8,7 @@ import { RootState } from '@/redux/store';
 import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
 
-import WriteModal from '../common/WriteModal';
+import WriteModal from '../common/modals/WriteModal';
 import useModal from '@/hooks/useModal';
 import RecordOverray from './RecordOverray';
 import { setSelectedPlace } from '@/redux/slices/placeSlice';

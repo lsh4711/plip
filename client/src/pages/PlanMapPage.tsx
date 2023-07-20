@@ -3,12 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams, useBeforeUnload } from 'react-router-dom';
 
 import { Button } from '@/components';
-import { Map, MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
-
 import Confirm from '@/components/common/Confirm';
 import SidePanel from '@/components/common/SidePanel';
 import TripInfo from '@/components/common/TripInfo';
 import TripSchedule from '@/components/common/TripSchedule';
+import { Map, MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
 import useDebounce from '@/hooks/useDebounce';
 import useModal from '@/hooks/useModal';
 import useToast from '@/hooks/useToast';
@@ -16,6 +15,8 @@ import { useEditPlanMutation, usePlanQuery } from '@/queries/plan';
 import { setIsStale } from '@/redux/slices/scheduleSlice';
 import { RootState } from '@/redux/store';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
+import { setSearchPlaceResults } from '@/redux/slices/placeSlice';
+import LoadingPage from './LoadingPage';
 
 const PlanMapPage = () => {
   const { id } = useParams();
@@ -80,13 +81,6 @@ const PlanMapPage = () => {
     }, [])
   );
 
-  useEffect(() => {
-    window.addEventListener('beforeunload', () => dispatch(setResult([])));
-    return () => {
-      window.removeEventListener('beforeunload', () => dispatch(setResult([])));
-    };
-  }, []);
-
   return (
     <div className="relative h-full w-full">
       {isLoading ? (
@@ -128,7 +122,6 @@ const PlanMapPage = () => {
             >
               일정 저장하기
             </Button>
-
             <ZoomButtons
               onClickZoomIn={() => {
                 setMapLevel(mapLevel > 1 ? mapLevel - 1 : 1);
