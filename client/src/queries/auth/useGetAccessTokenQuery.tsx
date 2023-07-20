@@ -39,7 +39,7 @@ const useGetAccessTokenQuery = () => {
       dispatchAccessToken({ accesstoken: response.headers['authorization'] });
     },
     onError: (error: AxiosError) => {
-      if (error.response && error.response.status === 403) {
+      if (error.response && error.response.status === 401) {
         toast({ content: '로그인 토큰이 만료되었습니다.' });
         dispatch(setLogout());
       }

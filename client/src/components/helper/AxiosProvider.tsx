@@ -13,9 +13,10 @@ const AxiosProvider = ({ children }: AxiosProviderProps) => {
     instance.interceptors.response.use(
       (response) => response,
       async (error: AxiosError) => {
-        if (error.response && error.response.status === 403) {
+        if (error.response && error.response.status === 401) {
           const originalRequest = error.config;
           await getAccesstokenQuery.refetch();
+          return instance(originalRequest!);
         }
         return Promise.reject(error);
       }
