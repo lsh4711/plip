@@ -106,6 +106,7 @@ const SearchResult = ({
   useEffect(() => {
     if (data) {
       dispatch(setSearchPlaceResults(data.places));
+      onResetSearch();
     }
   }, [data]);
 

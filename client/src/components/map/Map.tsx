@@ -8,14 +8,6 @@ import { setSelectedPlace } from '@/redux/slices/placeSlice';
 import { RootState } from '@/redux/store';
 import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
-<<<<<<< HEAD
-
-import WriteModal from '../common/modals/WriteModal';
-import useModal from '@/hooks/useModal';
-import RecordOverray from './RecordOverray';
-import { setSelectedPlace } from '@/redux/slices/placeSlice';
-=======
->>>>>>> c176f60bea22e0dcf0764803fcc1ebcbab6180a9
 
 interface mapProps {
   type: 'scheduling' | 'recording';
@@ -41,30 +33,12 @@ const Map = ({
   const { searchPlaceResults, selectedPlace } = useSelector((state: RootState) => state.place);
   const dispatch = useDispatch();
 
-  const [currentHoverMarker, setCurrentHoverMarker] = useState<ScheduledPlaceBase | null>(null);
-  const [openModal] = useModal();
-
-  const openWriteDiaryModal = (schedulePlaceId: number) => {
-    openModal(({ isOpen, close }) => (
-      <WriteModal id={schedulePlaceId} type={'default'} isOpen={isOpen} onClose={close} />
-    ));
-  };
-
   const onClickMarker = (place: ScheduledPlaceBase) => {
     if (type === 'scheduling') {
       dispatch(setSelectedPlace(place));
     }
     if (type === 'recording') {
       // TODO : open editor modal
-      console.log(place);
-      openWriteDiaryModal(place.schedulePlaceId!);
-    }
-  };
-
-  const onHoverMarker = (place: ScheduledPlaceBase) => {
-    if (type === 'recording') {
-      setSelectedPlace(place);
-      setCurrentHoverMarker(place);
     }
   };
 
@@ -118,7 +92,7 @@ const Map = ({
                 height: 32,
               },
             }}
-            onMouseOver={() => onHoverMarker(place)}
+            onClick={() => onClickMarker(place)}
           />
         ))
       )}
