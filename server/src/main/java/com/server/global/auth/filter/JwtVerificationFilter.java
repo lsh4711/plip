@@ -1,7 +1,6 @@
 package com.server.global.auth.filter;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.FilterChain;
@@ -9,22 +8,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.google.gson.Gson;
-import com.server.domain.token.repository.RefreshTokenRepository;
 import com.server.domain.token.service.RedisUtils;
-import com.server.domain.token.service.RefreshTokenService;
 import com.server.global.auth.error.AuthenticationError;
 import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.auth.utils.AccessTokenRenewalUtil;
@@ -70,6 +56,9 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             } catch (CustomException ce) {
                 log.error("### 리프레쉬 토큰을 찾을 수 없음");
                 AuthenticationError.sendErrorResponse(response, ce);
+            } catch (ExpiredJwtException je) {
+                log.error("### 리프레쉬 토큰을 찾을 수 없음");
+                AuthenticationError.sendErrorResponse(response, new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND));
             }
         } catch (MalformedJwtException mje) {
             log.error("### 올바르지 않은 토큰 형식입니다.");
@@ -81,7 +70,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
 
         return authorization == null || !authorization.startsWith("Bearer");
