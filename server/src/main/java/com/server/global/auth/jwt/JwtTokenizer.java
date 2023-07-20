@@ -2,7 +2,6 @@ package com.server.global.auth.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +24,7 @@ import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -78,12 +78,16 @@ public class JwtTokenizer {
 
     public Jws<Claims> getClaims(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
+        try{
+            Jws<Claims> claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(jws);
+            return claims;
+        } catch (ExpiredJwtException eje){
+            throw eje;
+        }
 
-        Jws<Claims> claims = Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(jws);
-        return claims;
     }
 
     public Date getTokenExpiration(int expirationMinutes) {
@@ -134,7 +138,6 @@ public class JwtTokenizer {
             .httpOnly(true)
             .build();
         response.setHeader("Set-Cookie", cookie.toString());
-        //response.setHeader("Refresh", refreshToken);
     }
 
 
