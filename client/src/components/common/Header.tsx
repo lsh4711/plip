@@ -1,19 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
+
+import { useCloseDropdown } from '@/hooks/useCloseDropdown';
+import useInquireUsersQuery from '@/queries/auth/useInquireUsersQuery';
+import instance from '@/queries/axiosinstance';
+import { RootState } from '@/redux/store';
 import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
 import { ReactComponent as MypageIcon } from '../../assets/icons/mypage.svg';
 import { ReactComponent as NotifyIcon } from '../../assets/icons/notification.svg';
 import { ReactComponent as LogoIcon } from '../../assets/logo.svg';
-
 import Button from '../atom/Button';
-import DropDownMenus from './DropDownMenus';
-import { useCloseDropdown } from '@/hooks/useCloseDropdown';
-import Avatar from './Avatar';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
-import instance from '@/queries/axiosinstance';
-import useInquireUsersQuery from '@/queries/auth/useInquireUsersQuery';
 import LoadingSpinner from '../atom/LoadingSpinner';
+import Avatar from './Avatar';
+import DropDownMenus from './DropDownMenus';
 
 interface HeaderProps {
   isHome?: boolean;
@@ -70,8 +70,8 @@ const Header = () => {
 
   return (
     <header
-      className={`left-0 top-0 z-40 h-[80px] w-full px-12 ${
-        isHome ? ' fixed' : 'stikcy border border-b-2 bg-white'
+      className={`left-0 top-0 z-40 w-full px-12 py-5 ${
+        isHome ? ' fixed' : 'stikcy border-b-2 bg-white'
       }`}
     >
       <nav className="m-auto flex h-full items-center justify-between">
