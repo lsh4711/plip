@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { menus } from '@/datas/menus';
-import { ReactComponent as LogoutIcon } from '@/assets/icons/logout.svg';
+import { FcUnlock } from '@react-icons/all-files/fc/FcUnlock';
+
 import useLogoutMutation from '@/queries/auth/useLogoutMutation';
 
 const DropDownMenus = () => {
@@ -13,9 +14,9 @@ const DropDownMenus = () => {
         <Link
           key={item.name}
           to={item.route}
-          className="w-full border-b-2 p-4 text-black last:border-b-0"
+          className="border-b-[1.5px] p-4 text-black last:border-b-0"
         >
-          <div key={index} className="flex w-full gap-2 ">
+          <div key={index} className="flex w-full items-center gap-2">
             {item.icon}
             {item.name}
           </div>
@@ -28,17 +29,17 @@ const DropDownMenus = () => {
         }}
       >
         <button className="flex gap-2 text-black">
-          <LogoutIcon />
+          <FcUnlock size={20} />
           로그아웃
         </button>
       </div>
 
-      <Link to={'/signout'} className="w-full border-b-2 p-4 last:border-b-0">
+      {/* <Link to={'/signout'} className="w-full border-b-2 p-4 last:border-b-0">
         <button className="flex gap-2 text-black">
           <LogoutIcon />
           회원탈퇴
         </button>
-      </Link>
+      </Link> */}
     </div>
   );
 };
