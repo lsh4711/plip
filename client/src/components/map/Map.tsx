@@ -42,6 +42,13 @@ const Map = ({
     }
   };
 
+  const onHoverMarker = (place: ScheduledPlaceBase) => {
+    if (type === 'recording') {
+      console.log(place.schedulePlaceId);
+      dispatch(setSelectedPlace(place));
+    }
+  };
+
   useEffect(() => {
     if (setCenterPosition && selectedPlace) {
       // 포커스된 마커 위치를 가운데로 옮기기 위함
@@ -93,6 +100,7 @@ const Map = ({
               },
             }}
             onClick={() => onClickMarker(place)}
+            onMouseOver={() => onHoverMarker(place)}
           />
         ))
       )}
@@ -152,6 +160,7 @@ const Map = ({
         >
           <InfoWindow
             id={selectedPlace.apiId}
+            type={type}
             placeName={selectedPlace.name}
             address={selectedPlace.address}
             latitude={selectedPlace.latitude}

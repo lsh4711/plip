@@ -10,6 +10,7 @@ import { TripInfo, TripSchedule } from '@/components/schedule';
 import { useState } from 'react';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
 import instance from '@/queries/axiosinstance';
+import NoRecord from '@/components/map/NoRecord';
 
 interface PlanDetailPageProps {}
 
@@ -17,6 +18,7 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
   const { id } = useParams();
   const { data, isLoading, error } = usePlanQuery(id!);
   const { schedules } = useSelector((state: RootState) => state.schedule);
+  const isLogin = useSelector((state: RootState) => state.auth.isLogin);
 
   const [mapLevel, setMapLevel] = useState(8);
 
@@ -44,6 +46,9 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
             showPolyline
           />
           <MenuButtons />
+          <div className="fixed left-6 top-[5%] z-50 flex h-[80%] w-72 flex-col rounded-lg bg-white opacity-80 drop-shadow-2xl hover:opacity-100 2xl:h-[800px] 2xl:w-[340px]">
+            <NoRecord />
+          </div>
 
           <SidePanel position={'right'}>
             <TripInfo
@@ -54,12 +59,13 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
             />
             <TripSchedule startDate={data?.startDate!} places={schedules} />
 
-            {/* Side Panel 좌측 바깥 */}
-            <Link to={`/plan/map/${id}`}>
-              <Button variant={'primary'} className="absolute -left-1/2 top-6" onClick={() => {}}>
-                일정 수정하기
-              </Button>
-            </Link>
+            {isLogin && (
+              <Link to={`/plan/map/${id}`}>
+                <Button variant={'primary'} className="absolute -left-1/2 top-6" onClick={() => {}}>
+                  일정 수정하기
+                </Button>
+              </Link>
+            )}
 
             <ZoomButtons
               onClickZoomIn={() => {
