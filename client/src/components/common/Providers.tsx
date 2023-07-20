@@ -1,6 +1,5 @@
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import useError from '@/hooks/useError';
-import AxiosProvider from '../helper/AxiosProvider';
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -23,11 +22,7 @@ const Providers = ({ children }: ProvidersProps) => {
     }),
   });
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <AxiosProvider>{children}</AxiosProvider>
-    </QueryClientProvider>
-  );
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 };
 
 export default Providers;
