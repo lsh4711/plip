@@ -50,7 +50,7 @@ const PlanMapPage = () => {
               primaryLabel="일정 목록으로 이동하기"
               secondaryLabel="이어서 작성하기"
               onClickPrimaryButton={() => {
-                navigate('/mypage');
+                navigate('/mypage/mytrip');
                 close();
               }}
               onClickSecondaryButton={close}
