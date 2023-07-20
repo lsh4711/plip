@@ -20,8 +20,8 @@ const SearchTools = ({ currentLng, currentLat }: Props) => {
   const [keyword, setKeyword] = useState<any>(null);
   const [categoryCode, setCategoryCode] = useState<CategoryGroupCode>('');
   const [searchCenterPosition, setSearchCenterPosition] = useState({
-    lat: currentLng,
-    lng: currentLat,
+    lat: currentLat,
+    lng: currentLng,
   });
 
   const dispatch = useDispatch();
