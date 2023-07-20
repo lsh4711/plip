@@ -4,7 +4,7 @@ import { getAuthorizationHeader, isValidToken } from '@/utils/auth';
 import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
 import useInquireUsersQuery from './useInquireUsersQuery';
 import useSetAccessToken from '@/hooks/useSetAccessToken';
-import loginLocalStorage from '@/utils/auth/localstorage';
+import loginLocalStorage from '@/utils/auth/loginLocalStorage';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 
@@ -30,7 +30,6 @@ const useGetAccessTokenQuery = () => {
     enabled: wasLogin && !isLogin,
     staleTime: 1000 * 60 * 10,
     onSuccess: (response) => {
-      console.log('온석섹슥');
       inquireQuery.refetch().then(() => inquireQuery.refetch());
       dispatchAccessToken({ accesstoken: response.headers['authorization'] });
     },

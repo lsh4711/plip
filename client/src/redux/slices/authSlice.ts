@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import loginLocalStorage from '@/utils/auth/localstorage';
+import loginLocalStorage from '@/utils/auth/loginLocalStorage';
 import setAccessTokenToHeader from '@/utils/auth/setAccesstokenToHeader';
 import { EMPTY_TOKEN } from '@/datas/constants';
 

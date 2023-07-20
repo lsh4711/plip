@@ -8,9 +8,7 @@ import useAuthRedirect from '@/hooks/useAuthRedirect';
 import instance from '@/queries/axiosinstance';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 
-interface MyTripPageProps {}
-
-const MyTripPage = ({}: MyTripPageProps) => {
+const MyTripPage = () => {
   const auth = useAuthRedirect();
   if (auth.isRedirect) return auth.naviComponent;
 
