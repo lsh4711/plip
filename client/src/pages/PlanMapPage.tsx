@@ -5,7 +5,6 @@ import { useBeforeUnload, useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components';
 import Confirm from '@/components/common/Confirm';
 import SidePanel from '@/components/common/SidePanel';
-import WriteModal from '@/components/common/WriteModal';
 import { Map, MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
 import { TripInfo, TripSchedule } from '@/components/schedule';
 import useDebounce from '@/hooks/useDebounce';
@@ -81,13 +80,6 @@ const PlanMapPage = () => {
     }, [])
   );
 
-  // TODO 일지 작성 페이지로 이동 필요
-  const openWriteDiaryModal = () => {
-    openModal(({ isOpen, close }) => (
-      <WriteModal type={'default'} isOpen={isOpen} onClose={close} />
-    ));
-  };
-
   return (
     <div className="relative h-full w-full">
       {isLoading ? (
@@ -128,14 +120,6 @@ const PlanMapPage = () => {
               }}
             >
               일정 저장하기
-            </Button>
-            {/* TODO 일지 작성 페이지로 이동 필요 */}
-            <Button
-              variant={'primary'}
-              className="absolute -left-1/2 top-20"
-              onClick={openWriteDiaryModal}
-            >
-              일지 작성하기
             </Button>
             <ZoomButtons
               onClickZoomIn={() => {

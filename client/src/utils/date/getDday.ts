@@ -5,8 +5,6 @@ const getDday = (date: Date): number => {
   const expired = dayjs(date);
   const diff = now.diff(expired, 'day', false);
 
-  console.log(diff);
-
   return diff;
 };
 

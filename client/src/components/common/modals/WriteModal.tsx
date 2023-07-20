@@ -7,11 +7,12 @@ import { maxImages, maxRecordCharacters } from '@/datas/constants';
 import { resizeFile } from '@/utils/file/resizeFile';
 
 import useModal from '@/hooks/useModal';
-import Confirm from './Confirm';
+import Confirm from '../Confirm';
 import useCreateRecordMutation from '@/queries/record/useCreateRecordMutation';
-import LoadingSpinner from '../atom/LoadingSpinner';
+import LoadingSpinner from '../../atom/LoadingSpinner';
 
 export type WriteModal = {
+  id: number;
   type: 'default' | 'edit';
   content?: string;
   isOpen: boolean;
@@ -24,10 +25,10 @@ type CancelAlertProps = {
   onCloseParent: () => void;
 };
 
-const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
+const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
   const [openModal] = useModal();
   const createRecordMutation = useCreateRecordMutation();
-  const SCHEDULE_PLACE_ID = 5; // 테스트를 위한 임시 변수입니다. 요청 주소의 param으로 사용됩니다.
+  const SCHEDULE_PLACE_ID = id; // 테스트를 위한 임시 변수입니다. 요청 주소의 param으로 사용됩니다.
 
   const inputImageRef = useRef<HTMLInputElement>(document.createElement('input'));
 
@@ -39,11 +40,11 @@ const WriteModal = ({ type, isOpen, onClose }: WriteModal) => {
   const onInputText = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = e.target.innerHTML;
 
-    if (inputText.length > 300) {
-      alert(`일지의 내용은 ${maxRecordCharacters}자를 초과할 수 없습니다.`);
-      e.target.innerHTML = text;
-      return;
-    }
+    // if (inputText.length > 300) {
+    //   alert(`일지의 내용은 ${maxRecordCharacters}자를 초과할 수 없습니다.`);
+    //   e.target.innerHTML = text;
+    //   return;
+    // }
     setText(inputText);
   };
 
