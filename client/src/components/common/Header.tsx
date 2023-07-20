@@ -26,12 +26,18 @@ interface AfterHeaderProps extends HeaderProps {
 const BeforeLogin = ({ isHome }: HeaderProps) => {
   return (
     <>
-      <Link to="/login">
-        <Button className={isHome ? 'text-white' : ''}>Sign in</Button>
-      </Link>
-      <Link to="/signup">
-        <Button variant={'primary'}>Sign up</Button>
-      </Link>
+      {/* <Button className={isHome ? 'text-white' : ''} onClick={onMasterLogin}>
+        <Link to="#">Master</Link>
+      </Button> */}
+      <Button
+        hovercolor={'default'}
+        className={`hover:text-[#4568DC] ${isHome ? 'text-white' : 'hover:bg-[#4568DC]/10'}`}
+      >
+        <Link to="/login">Sign in</Link>
+      </Button>
+      <Button variant={'primary'}>
+        <Link to="/signup">Sign up</Link>
+      </Button>
     </>
   );
 };
@@ -70,7 +76,7 @@ const Header = () => {
 
   return (
     <header
-      className={`left-0 top-0 z-40 w-full px-12 py-5 ${
+      className={`left-0 top-0 z-40 h-[76px] w-full px-12 ${
         isHome ? ' fixed' : 'stikcy border-b-2 bg-white'
       }`}
     >
