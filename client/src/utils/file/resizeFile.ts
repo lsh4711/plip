@@ -1,8 +1,8 @@
-import FileResizer from 'react-image-file-resizer';
+import Resizer from 'react-image-file-resizer';
 
 export const resizeFile = (file: File) => {
   return new Promise((resolve) => {
-    FileResizer.imageFileResizer(
+    Resizer.imageFileResizer(
       file,
       300,
       300,
