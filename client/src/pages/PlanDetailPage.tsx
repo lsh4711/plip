@@ -6,11 +6,9 @@ import { useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 
 import SidePanel from '@/components/common/SidePanel';
-import TripInfo from '@/components/common/TripInfo';
-import TripSchedule from '@/components/common/TripSchedule';
+import { TripInfo, TripSchedule } from '@/components/schedule';
 import { useState } from 'react';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
-import axios from 'axios';
 import instance from '@/queries/axiosinstance';
 
 interface PlanDetailPageProps {}
