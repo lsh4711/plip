@@ -1,9 +1,7 @@
 import { Button, Paragraph } from '@/components';
 import { Link } from 'react-router-dom';
-// 렌더 페이지
-interface HomeProps {}
 
-const Home = ({}: HomeProps) => {
+const Home = () => {
   return (
     <>
       <div className="randing relative h-full w-full bg-[url('../assets/imgs/gyeonggi.webp')] bg-cover bg-center bg-no-repeat">

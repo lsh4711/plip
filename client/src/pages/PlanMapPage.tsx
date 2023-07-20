@@ -1,21 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams, useBeforeUnload } from 'react-router-dom';
+import { useBeforeUnload, useNavigate, useParams } from 'react-router-dom';
 
 import { Button } from '@/components';
 import Confirm from '@/components/common/Confirm';
 import SidePanel from '@/components/common/SidePanel';
-import TripInfo from '@/components/common/TripInfo';
-import TripSchedule from '@/components/common/TripSchedule';
 import { Map, MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
+import { TripInfo, TripSchedule } from '@/components/schedule';
 import useDebounce from '@/hooks/useDebounce';
 import useModal from '@/hooks/useModal';
 import useToast from '@/hooks/useToast';
 import { useEditPlanMutation, usePlanQuery } from '@/queries/plan';
+import { setSearchPlaceResults } from '@/redux/slices/placeSlice';
 import { setIsStale } from '@/redux/slices/scheduleSlice';
 import { RootState } from '@/redux/store';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
-import { setSearchPlaceResults } from '@/redux/slices/placeSlice';
 import LoadingPage from './LoadingPage';
 
 const PlanMapPage = () => {

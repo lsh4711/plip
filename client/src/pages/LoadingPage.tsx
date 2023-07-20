@@ -1,6 +1,5 @@
 import { HeadingParagraph, Paragraph } from '@/components';
 import LoadingSpinner from '@/components/atom/LoadingSpinner';
-import React from 'react';
 
 const LoadingPage = () => {
   return (

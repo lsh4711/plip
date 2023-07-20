@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 
 import Avatar from '@/components/common/Avatar';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
+
 interface MyPageProps {}
 
 const MyPage = ({}: MyPageProps) => {

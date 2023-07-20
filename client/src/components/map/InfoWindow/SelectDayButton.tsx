@@ -3,6 +3,7 @@ import { FiChevronUp } from '@react-icons/all-files/fi/FiChevronUp';
 import { useState } from 'react';
 
 import { Button } from '@/components';
+import useToast from '@/hooks/useToast';
 import { RootState } from '@/redux/store';
 import { useSelector } from 'react-redux';
 
@@ -13,6 +14,7 @@ type Props = {
 const SelectDayButton = ({ addSchedule }: Props) => {
   const [showSelect, setShowSelect] = useState(false);
   const { schedules } = useSelector((state: RootState) => state.schedule);
+  const toast = useToast();
 
   return (
     <div className="relative">
@@ -30,7 +32,16 @@ const SelectDayButton = ({ addSchedule }: Props) => {
             <button
               key={idx}
               className="cursor-pointer text-base hover:text-blue-300"
-              onClick={() => addSchedule(idx + 1)}
+              onClick={() => {
+                if (schedules[idx].length >= 16) {
+                  toast({
+                    type: 'warning',
+                    content: '장소는 최대 16개까지 추가할 수 있습니다.',
+                  });
+                  return;
+                }
+                addSchedule(idx + 1);
+              }}
             >
               {`Day ${idx + 1}`}
             </button>

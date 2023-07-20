@@ -7,9 +7,7 @@ import useMyTripQuery from '@/queries/mytrip/useMyTripQuery';
 import { Link } from 'react-router-dom';
 import LoadingSpinner from '@/components/atom/LoadingSpinner';
 
-interface MyTripPageProps {}
-
-const MyTripPage = ({}: MyTripPageProps) => {
+const MyTripPage = () => {
   const auth = useAuthRedirect();
   if (auth.isRedirect) return auth.naviComponent;
 

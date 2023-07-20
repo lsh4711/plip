@@ -1,9 +1,7 @@
 import { useNavigate } from 'react-router';
 import { Button, HeadingParagraph, Paragraph } from '@/components';
 
-interface NotFoundProps {}
-
-const NotFound = ({}: NotFoundProps) => {
+const NotFound = () => {
   const navigate = useNavigate();
 
   return (

@@ -1,17 +1,21 @@
-import { SetStateAction, useEffect, useState } from 'react';
+import { SetStateAction, useEffect } from 'react';
 import { CustomOverlayMap, Map as KakaoMap, MapMarker, Polyline } from 'react-kakao-maps-sdk';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { InfoWindow } from '@/components/map/InfoWindow';
 import { COLORS } from '@/datas/map-constants';
+import { setSelectedPlace } from '@/redux/slices/placeSlice';
 import { RootState } from '@/redux/store';
 import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
+<<<<<<< HEAD
 
 import WriteModal from '../common/modals/WriteModal';
 import useModal from '@/hooks/useModal';
 import RecordOverray from './RecordOverray';
 import { setSelectedPlace } from '@/redux/slices/placeSlice';
+=======
+>>>>>>> c176f60bea22e0dcf0764803fcc1ebcbab6180a9
 
 interface mapProps {
   type: 'scheduling' | 'recording';
@@ -97,8 +101,8 @@ const Map = ({
       onZoomChanged={(map) => setMapLevel(map.getLevel())}
       zoomable={!selectedPlace}
     >
-      {schedules.map((marker, idx) =>
-        marker.map((place) => (
+      {schedules.map((marker, dayNumber) =>
+        marker.map((place, visitNumber) => (
           <MapMarker
             key={place.apiId}
             position={{
@@ -106,7 +110,9 @@ const Map = ({
               lng: parseFloat(place.longitude),
             }}
             image={{
-              src: `/marker/marker${idx % COLORS.length}.webp`,
+              src: `/markers/marker${dayNumber % COLORS.length}/marker-${
+                dayNumber % COLORS.length
+              }-${visitNumber + 1}.svg`,
               size: {
                 width: 32,
                 height: 32,
@@ -186,9 +192,9 @@ const Map = ({
       )}
 
       {showPolyline &&
-        schedules.map((schedule, idx) => (
+        schedules.map((schedule, dayNumber) => (
           <Polyline
-            key={idx}
+            key={dayNumber}
             path={[
               ...schedule.map((place) => ({
                 lat: parseFloat(place.latitude),
@@ -197,7 +203,7 @@ const Map = ({
             ]}
             strokeOpacity={0.7}
             strokeWeight={14 - mapLevel}
-            strokeColor={COLORS[idx % COLORS.length]}
+            strokeColor={COLORS[dayNumber % COLORS.length]}
           />
         ))}
     </KakaoMap>

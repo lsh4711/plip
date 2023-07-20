@@ -10,4 +10,5 @@ export const maxRecordCharacters = 300;
 // auth
 
 export const KAKAO_OAUTH_ACCESS_TOKEN = 'access_token' as const;
-export const EMPTY_TOKEN = 'empty';
+export const EMPTY_TOKEN = 'empty' as const;
+export const SIGNOUT_VALIDATION_STRING = '성지현그녀는감히전설이라고할수있다' as const;
