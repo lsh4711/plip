@@ -1,13 +1,19 @@
 import { Button, Image, MyrecordImg, Paragraph, SortingToolbar } from '@/components';
 import MypageSideNav from '@/components/helper/MypageSideNav';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
+import instance from '@/queries/axiosinstance';
 import { Record } from '@/types/api/records-types';
+import { useEffect } from 'react';
 
 interface MyRecordPageProps {}
 
 const MyRecordPage = ({}: MyRecordPageProps) => {
   const auth = useAuthRedirect();
   if (auth.isRedirect) return auth.naviComponent;
+
+  useEffect(() => {
+    instance.get('/api/records', { withCredentials: true }).then((data) => console.log(data));
+  }, []);
 
   return (
     <main className=" flex">
