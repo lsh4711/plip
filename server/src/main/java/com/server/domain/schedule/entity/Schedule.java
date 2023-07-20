@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
 import com.server.domain.member.entity.Member;
+import com.server.domain.region.entity.Region;
 import com.server.global.audit.BaseEntity;
 
 import lombok.AllArgsConstructor;
@@ -32,7 +33,6 @@ public class Schedule extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long scheduleId;
 
-    private String region;
     private String title;
     private Integer memberCount;
     private LocalDate startDate;
@@ -43,7 +43,11 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "memberId")
     private Member member;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "regionId")
+    private Region region;
+
     @OrderBy(value = "days, orders")
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
     private List<SchedulePlace> schedulePlaces;
 }

@@ -2,13 +2,17 @@ package com.server.domain.schedule.mapper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import org.mapstruct.Mapper;
 
 import com.server.domain.member.entity.Member;
+import com.server.domain.region.entity.Region;
 import com.server.domain.schedule.dto.ScheduleDto;
 import com.server.domain.schedule.dto.ScheduleResponse;
 import com.server.domain.schedule.entity.Schedule;
+import com.server.domain.schedule.entity.SchedulePlace;
 
 @Mapper(componentModel = "spring")
 public interface ScheduleMapper {
@@ -17,14 +21,18 @@ public interface ScheduleMapper {
             return null;
         }
 
+        String engName = postDto.getRegion();
+        Region region = new Region();
+        region.setEngName(engName);
+
         Schedule schedule = new Schedule();
         LocalDate startDate = postDto.getStartDate();
         LocalDate endDate = postDto.getEndDate();
-        int period = endDate.compareTo(startDate);
+        int period = (int)ChronoUnit.DAYS.between(startDate, endDate);
 
         schedule.setEndDate(endDate);
         schedule.setMemberCount(postDto.getMemberCount());
-        schedule.setRegion(postDto.getRegion());
+        schedule.setRegion(region);
         schedule.setStartDate(startDate);
         schedule.setTitle(postDto.getTitle());
         schedule.setPeriod(period + 1);
@@ -37,17 +45,21 @@ public interface ScheduleMapper {
             return null;
         }
 
+        String engName = patchDto.getRegion();
+        Region region = new Region();
+        region.setEngName(engName);
+
         Schedule schedule = new Schedule();
         LocalDate startDate = patchDto.getStartDate();
         LocalDate endDate = patchDto.getEndDate();
 
         if (startDate != null && endDate != null) {
-            int period = endDate.compareTo(startDate);
+            int period = (int)ChronoUnit.DAYS.between(startDate, endDate);
             schedule.setPeriod(period + 1);
         }
         schedule.setEndDate(endDate);
         schedule.setMemberCount(patchDto.getMemberCount());
-        schedule.setRegion(patchDto.getRegion());
+        schedule.setRegion(region);
         schedule.setStartDate(startDate);
         schedule.setTitle(patchDto.getTitle());
 
@@ -60,10 +72,17 @@ public interface ScheduleMapper {
         if (schedule == null) {
             return null;
         }
+        Region region = schedule.getRegion();
+        String engName = region.getEngName();
+        String korName = region.getKorName();
 
         Member member = schedule.getMember();
         LocalDateTime startDate = schedule.getStartDate().atStartOfDay();
         LocalDateTime endDate = schedule.getEndDate().atStartOfDay();
+
+        List<SchedulePlace> schedulePlaces = schedule.getSchedulePlaces();
+        int placeSize = schedulePlaces.size();
+
         ScheduleResponse scheduleResponse = new ScheduleResponse();
 
         if (member != null) {
@@ -76,9 +95,11 @@ public interface ScheduleMapper {
         scheduleResponse.setMemberCount(schedule.getMemberCount());
         scheduleResponse.setModifiedAt(schedule.getModifiedAt());
         scheduleResponse.setPeriod(schedule.getPeriod());
-        scheduleResponse.setRegion(schedule.getRegion());
+        scheduleResponse.setRegion(engName);
+        scheduleResponse.setKorRegion(korName);
         scheduleResponse.setScheduleId(schedule.getScheduleId());
         scheduleResponse.setTitle(schedule.getTitle());
+        scheduleResponse.setPlaceSize(placeSize);
 
         return scheduleResponse;
     }

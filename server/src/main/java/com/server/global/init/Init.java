@@ -18,6 +18,8 @@ import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.oauth.service.KakaoTokenOauthService;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.service.PlaceService;
+import com.server.domain.region.entity.Region;
+import com.server.domain.region.service.RegionService;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.service.SchedulePlaceService;
@@ -46,15 +48,18 @@ public class Init {
     // Category
     private final CategoryService categoryService;
 
+    // Region
+    private final RegionService regionService;
+
     // KakaoToken
     private final KakaoTokenOauthService kakaoTokenOauthService;
 
     @PostConstruct
     public void init() {
-        ArrayHashMap map = new ArrayHashMap();
         List<Category> categories = new ArrayList<>();
+        ArrayHashMap categoryMap = new ArrayHashMap("category");
 
-        for (String[] entry : map) {
+        for (String[] entry : categoryMap) {
             String code = entry[0];
             String name = entry[1];
             Category category = new Category();
@@ -62,7 +67,20 @@ public class Init {
             category.setName(name);
             categories.add(category);
         }
-        categoryService.saveCategorys(categories);
+        categoryService.saveCategories(categories);
+
+        List<Region> regions = new ArrayList<>();
+        ArrayHashMap regionMap = new ArrayHashMap("region");
+
+        for (String[] entry : regionMap) {
+            String engName = entry[0];
+            String korName = entry[1];
+            Region region = new Region();
+            region.setEngName(engName);
+            region.setKorName(korName);
+            regions.add(region);
+        }
+        regionService.saveRegions(regions);
 
         Role admin = Role.ADMIN;
         List<Member> members = new ArrayList<>();
@@ -115,8 +133,11 @@ public class Init {
             // if (i > 3) {
             //     member = member2;
             // }
+            Region region = new Region();
+            region.setEngName("seoul");
+            region.setKorName("서울");
             Schedule schedule = new Schedule();
-            schedule.setRegion("제주도");
+            schedule.setRegion(region);
             schedule.setTitle("즐거운 여행 제목");
             schedule.setMemberCount(5);
             schedule.setStartDate(LocalDate.now());

@@ -234,6 +234,7 @@ public class StubData {
                     postDtos.add(postDto);
 
                     Category category = new Category();
+                    category.setCode(categoryCodes[j - 1]);
                     category.setName(categoryNames[j - 1]);
 
                     Place place = new Place();

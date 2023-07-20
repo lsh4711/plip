@@ -1,6 +1,5 @@
 package com.server.domain.schedule.service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
@@ -9,12 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.server.domain.member.entity.Member;
 import com.server.domain.oauth.entity.KakaoToken;
+import com.server.domain.oauth.service.KakaoApiService;
+import com.server.domain.oauth.template.KakaoTemplateConstructor;
+import com.server.domain.oauth.template.KakaoTemplateObject.Feed;
+import com.server.domain.region.entity.Region;
+import com.server.domain.region.repository.RegionRepository;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.repository.ScheduleRepository;
-import com.server.domain.test.auth.KakaoAuth;
-import com.server.domain.test.dto.Body.Content;
-import com.server.domain.test.dto.Body.Feed;
-import com.server.domain.test.dto.Body.Link;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 import com.server.global.utils.CustomBeanUtils;
@@ -27,15 +27,24 @@ import lombok.RequiredArgsConstructor;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
-    private final KakaoAuth kakaoAuth;
+    private final RegionRepository regionRepository;
+
+    private final KakaoApiService kakaoApiService;
+
+    private final KakaoTemplateConstructor kakaoTemplateMapper;
 
     public Schedule saveSchedule(Schedule schedule) {
-        String region = schedule.getRegion();
         String title = schedule.getTitle();
         int memberCount = schedule.getMemberCount();
 
+        Region region = schedule.getRegion();
+        String engName = region.getEngName();
+        Region foundRegion = regionRepository.findByEngName(engName);
+        String korName = foundRegion.getKorName();
+
+        schedule.setRegion(foundRegion);
         if (title == null) {
-            schedule.setTitle(String.format("%s 여행 레츠고!", region));
+            schedule.setTitle(String.format("%s 여행 레츠고!", korName));
         }
         if (memberCount <= 0) {
             schedule.setMemberCount(1);
@@ -48,6 +57,11 @@ public class ScheduleService {
         long scheduleId = schedule.getScheduleId();
         Schedule foundSchedule = findSchedule(scheduleId);
 
+        Region region = schedule.getRegion();
+        String engName = region.getEngName();
+        Region foundRegion = regionRepository.findByEngName(engName);
+
+        schedule.setRegion(foundRegion);
         CustomBeanUtils.copyNonNullProperties(schedule, foundSchedule);
         saveSchedule(foundSchedule);
 
@@ -71,10 +85,6 @@ public class ScheduleService {
         Sort sort = Sort.by("createdAt").descending();
         long memberId = CustomUtil.getAuthId();
         List<Schedule> schedules = scheduleRepository.findAllByMember_memberId(memberId, sort);
-
-        if (schedules == null || schedules.size() == 0) {
-            throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
-        }
 
         return schedules;
     }
@@ -107,48 +117,6 @@ public class ScheduleService {
 
     }
 
-    public Feed getFeedTemplate(Schedule schedule) {
-        // Member
-        Member member = schedule.getMember();
-        long memberId = member.getMemberId();
-        String email = member.getEmail();
-        String nickname = member.getNickname();
-
-        // Schedule
-        long scheduleId = schedule.getScheduleId();
-        String region = schedule.getRegion();
-        LocalDate startDate = schedule.getStartDate();
-        LocalDate endDate = schedule.getEndDate();
-        int period = schedule.getPeriod();
-        String term = period == 1 ? "당일치기" : String.format("%d박 %d일", period - 1, period);
-
-        // Feed
-        String basesUrl = "https://plip.netlify.app/plan/detail";
-        String shareUrl = String.format("%s/%d/share?id=%d&email=%s",
-            basesUrl,
-            scheduleId,
-            memberId,
-            email);
-        Link link = Link.builder()
-                .web_url(shareUrl)
-                .mobile_web_url(shareUrl)
-                .build();
-        Content content = Content.builder()
-                .title(String.format("%s님의 %s 여행 일정입니다.", nickname, region))
-                .description(String.format("기간: %s ~ %s (%s)", startDate, endDate, term))
-                .image_width(600)
-                .image_height(400)
-                .image_url("https://teamdev.shop:8000/files/images?region=" + region)
-                .link(link)
-                .build();
-        Feed feed = Feed.builder()
-                .object_type("feed")
-                .content(content)
-                .build();
-
-        return feed;
-    }
-
     @Async
     public void sendKakaoMessage(Schedule schedule, Member member) {
         KakaoToken kakaoToken = member.getKakaoToken();
@@ -158,8 +126,8 @@ public class ScheduleService {
         }
 
         String accessToken = kakaoToken.getAccessToken();
-        Feed template = getFeedTemplate(schedule);
+        Feed feedTemplate = kakaoTemplateMapper.getFeedTemplate(schedule, member);
 
-        kakaoAuth.sendMessage(template, accessToken);
+        kakaoApiService.sendMessage(feedTemplate, accessToken);
     }
 }

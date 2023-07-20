@@ -40,8 +40,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Authentication authentication) throws IOException {
         OAuthAttributes oAuth2User = (OAuthAttributes)authentication.getPrincipal();
         Member findMember = memberRepository.findByEmail(oAuth2User.getEmail())
-            .orElseThrow(() -> new CustomException(
-                ExceptionCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
 
         OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2TokenUtils.getOAuth2AuthorizedClient(authentication);
         if(oAuth2TokenUtils.getOAuthRegistration(oAuth2AuthorizedClient).equals("kakao")){
