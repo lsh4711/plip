@@ -5,7 +5,7 @@ import { ComponentPropsWithRef, forwardRef, Ref } from 'react';
 const InputVariants = cva(
   `
   py-[14.5px] pl-[17px] placeholder:text-[#BBBBBB] border border-[#BBBBBB] rounded-lg 
-   text-zinc-500 text-sm
+   text-zinc-900 text-sm
 `,
   {
     variants: {
