@@ -12,6 +12,7 @@ import { cn } from '@/utils';
 
 type Props = {
   id: number;
+  type: 'scheduling' | 'recording';
   placeName: string;
   address: string;
   latitude: string;
@@ -25,6 +26,7 @@ type Props = {
 
 const InfoWindow = ({
   id,
+  type,
   placeName,
   address,
   latitude,
@@ -93,7 +95,7 @@ const InfoWindow = ({
           </Paragraph>
         </div>
 
-        <SelectDayButton addSchedule={add} />
+        {type === 'scheduling' && <SelectDayButton addSchedule={add} />}
       </div>
     </div>
   );
