@@ -2,7 +2,6 @@ package com.server.domain.oauth.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,19 +22,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 public class KakaoToken extends BaseEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
-    private Long id;
-    @Column
-    private String accessToken;
-    @Column
-    private String refreshToken;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	private Long id;
+	@Column
+	private String accessToken;
+	@Column
+	private String refreshToken;
 
-    @JoinColumn(name = "memberId")
-    @OneToOne
-    private Member member;
+	@JoinColumn(name = "memberId")
+	@OneToOne
+	private Member member;
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
 }

@@ -28,26 +28,26 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SchedulePlace extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long schedulePlaceId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long schedulePlaceId;
 
-    private Integer days;
-    private Integer orders;
-    private Boolean bookmark;
-    // private LocalDateTime startDate; // 현재 불필요
-    // private LocalDateTime endDate; // 현재 불필요
+	private Integer days;
+	private Integer orders;
+	private Boolean bookmark;
+	// private LocalDateTime startDate; // 현재 불필요
+	// private LocalDateTime endDate; // 현재 불필요
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "scheduleId")
-    private Schedule schedule;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "scheduleId")
+	private Schedule schedule;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "placeId")
-    private Place place;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "placeId")
+	private Place place;
 
-    // 나중에 이미지도 같이 지우는 법을 찾아야함
-    @OrderBy(value = "createdAt DESC")
-    @OneToMany(mappedBy = "schedulePlace", cascade = CascadeType.REMOVE)
-    private List<Record> records;
+	// 나중에 이미지도 같이 지우는 법을 찾아야함
+	@OrderBy(value = "createdAt DESC")
+	@OneToMany(mappedBy = "schedulePlace", cascade = CascadeType.REMOVE)
+	private List<Record> records;
 }

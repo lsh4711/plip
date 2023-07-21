@@ -19,38 +19,38 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class BatchScheduler {
-    private final JobLauncher jobLauncher;
-    private final ChunkConfig chunkConfig;
+	private final JobLauncher jobLauncher;
+	private final ChunkConfig chunkConfig;
 
-    // @Scheduled(cron = "15 47 2 * * *")
-    public void runJobAt21() {
-        LocalDate date = LocalDate.now().plusDays(1);
+	// @Scheduled(cron = "15 47 2 * * *")
+	public void runJobAt21() {
+		LocalDate date = LocalDate.now().plusDays(1);
 
-        runJob(date, 21);
-    }
+		runJob(date, 21);
+	}
 
-    // @Scheduled(cron = "0 4 4 * * *")
-    public void runJobAt7() {
-        LocalDate date = LocalDate.now();
+	// @Scheduled(cron = "0 4 4 * * *")
+	public void runJobAt7() {
+		LocalDate date = LocalDate.now();
 
-        runJob(date, 7);
-    }
+		runJob(date, 7);
+	}
 
-    public void runJob(LocalDate date, long hour) {
-        JobParameters parameters = new JobParametersBuilder()
-                .addString("date", date.toString())
-                .addLong("hour", hour)
-                .toJobParameters();
+	public void runJob(LocalDate date, long hour) {
+		JobParameters parameters = new JobParametersBuilder()
+			.addString("date", date.toString())
+			.addLong("hour", hour)
+			.toJobParameters();
 
-        try {
-            jobLauncher.run(chunkConfig.customJob(), parameters);
-        } catch (JobExecutionAlreadyRunningException
-                | JobRestartException
-                | JobInstanceAlreadyCompleteException
-                | JobParametersInvalidException e) {
-            e.printStackTrace();
-            System.out.println("에러");
-        }
+		try {
+			jobLauncher.run(chunkConfig.customJob(), parameters);
+		} catch (JobExecutionAlreadyRunningException
+				 | JobRestartException
+				 | JobInstanceAlreadyCompleteException
+				 | JobParametersInvalidException e) {
+			e.printStackTrace();
+			System.out.println("에러");
+		}
 
-    }
+	}
 }

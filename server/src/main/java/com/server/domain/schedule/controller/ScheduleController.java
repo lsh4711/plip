@@ -49,152 +49,151 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/schedules")
 public class ScheduleController {
-    private final ScheduleService scheduleService;
-    private final ScheduleMapper scheduleMapper;
+	private final ScheduleService scheduleService;
+	private final ScheduleMapper scheduleMapper;
 
-    private final MemberService memberService;
+	private final MemberService memberService;
 
-    private final PlaceService placeService;
-    private final PlaceMapper placeMapper;
+	private final PlaceService placeService;
+	private final PlaceMapper placeMapper;
 
-    private final SchedulePlaceService schedulePlaceService;
+	private final SchedulePlaceService schedulePlaceService;
 
-    private final RecordMapper recordMapper;
+	private final RecordMapper recordMapper;
 
-    private final MailService mailService;
+	private final MailService mailService;
 
-    @Transactional
-    @PostMapping("/write")
-    public ResponseEntity postSchedule(@Valid @RequestBody ScheduleDto.Post postDto) {
-        // log.debug("test");
-        long memberId = CustomUtil.getAuthId();
-        Member member = memberService.findMember(memberId);
-        Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
-        schedule.setMember(member);
+	@Transactional
+	@PostMapping("/write")
+	public ResponseEntity postSchedule(@Valid @RequestBody ScheduleDto.Post postDto) {
+		// log.debug("test");
+		long memberId = CustomUtil.getAuthId();
+		Member member = memberService.findMember(memberId);
+		Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
+		schedule.setMember(member);
 
-        Schedule savedSchedule = scheduleService.saveSchedule(schedule);
-        List<List<PlaceDto.Post>> placeDtoLists = postDto.getPlaces();
-        List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
+		Schedule savedSchedule = scheduleService.saveSchedule(schedule);
+		List<List<PlaceDto.Post>> placeDtoLists = postDto.getPlaces();
+		List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
 
-        placeService.savePlaceLists(savedSchedule, placeLists);
+		placeService.savePlaceLists(savedSchedule, placeLists);
 
-        URI location = UriCreator.createUri("/api/schedules",
-            savedSchedule.getScheduleId());
+		URI location = UriCreator.createUri("/api/schedules",
+			savedSchedule.getScheduleId());
 
-        //일정 등록 시 카카오 메시지 전송
-        scheduleService.sendKakaoMessage(savedSchedule, member);
+		//일정 등록 시 카카오 메시지 전송
+		scheduleService.sendKakaoMessage(savedSchedule, member);
 
-        //일정 등록 시 이메일 전송
-        mailService.sendScheduleMail(savedSchedule, member);
+		//일정 등록 시 이메일 전송
+		mailService.sendScheduleMail(savedSchedule, member);
 
+		return ResponseEntity.created(location).build();
+	}
 
-        return ResponseEntity.created(location).build();
-    }
+	@Transactional
+	@PatchMapping("/{scheduleId}/edit")
+	public ResponseEntity patchSchedule(@PathVariable long scheduleId,
+		@Valid @RequestBody ScheduleDto.Patch patchDto) {
+		Schedule schedule = scheduleMapper.patchDtoToSchedule(patchDto);
+		schedule.setScheduleId(scheduleId);
 
-    @Transactional
-    @PatchMapping("/{scheduleId}/edit")
-    public ResponseEntity patchSchedule(@PathVariable long scheduleId,
-            @Valid @RequestBody ScheduleDto.Patch patchDto) {
-        Schedule schedule = scheduleMapper.patchDtoToSchedule(patchDto);
-        schedule.setScheduleId(scheduleId);
+		Schedule updatedSchedule = scheduleService.updateSchedule(schedule);
+		List<SchedulePlace> schedulePlaces = updatedSchedule.getSchedulePlaces();
+		List<List<PlaceDto.Post>> placeDtoLists = patchDto.getPlaces();
+		List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
 
-        Schedule updatedSchedule = scheduleService.updateSchedule(schedule);
-        List<SchedulePlace> schedulePlaces = updatedSchedule.getSchedulePlaces();
-        List<List<PlaceDto.Post>> placeDtoLists = patchDto.getPlaces();
-        List<List<Place>> placeLists = placeMapper.postDtoListsToPlaceLists(placeDtoLists);
+		schedulePlaceService.deleteSchedulePlaces(schedulePlaces);
+		schedulePlaces = placeService
+			.savePlaceLists(updatedSchedule, placeLists);
 
-        schedulePlaceService.deleteSchedulePlaces(schedulePlaces);
-        schedulePlaces = placeService
-                .savePlaceLists(updatedSchedule, placeLists);
+		List<List<PlaceResponse>> placeResponseLists = placeMapper
+			.schedulePlacesToPlaceResponseLists(schedulePlaces, updatedSchedule);
+		ScheduleResponse scheduleResponse = scheduleMapper
+			.scheduleToScheduleResponse(updatedSchedule);
+		scheduleResponse.setPlaces(placeResponseLists);
 
-        List<List<PlaceResponse>> placeResponseLists = placeMapper
-                .schedulePlacesToPlaceResponseLists(schedulePlaces, updatedSchedule);
-        ScheduleResponse scheduleResponse = scheduleMapper
-                .scheduleToScheduleResponse(updatedSchedule);
-        scheduleResponse.setPlaces(placeResponseLists);
+		return ResponseEntity.ok(scheduleResponse);
+	}
 
-        return ResponseEntity.ok(scheduleResponse);
-    }
+	@GetMapping("/{scheduleId}")
+	public ResponseEntity getSchedule(@PathVariable long scheduleId) {
+		Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
+		List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
 
-    @GetMapping("/{scheduleId}")
-    public ResponseEntity getSchedule(@PathVariable long scheduleId) {
-        Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
-        List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
+		List<List<PlaceResponse>> placeResponseLists = placeMapper
+			.schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
+		ScheduleResponse scheduleResponse = scheduleMapper
+			.scheduleToScheduleResponse(foundSchedule);
+		scheduleResponse.setPlaces(placeResponseLists);
 
-        List<List<PlaceResponse>> placeResponseLists = placeMapper
-                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
-        ScheduleResponse scheduleResponse = scheduleMapper
-                .scheduleToScheduleResponse(foundSchedule);
-        scheduleResponse.setPlaces(placeResponseLists);
+		return ResponseEntity.ok(scheduleResponse);
+	}
 
-        return ResponseEntity.ok(scheduleResponse);
-    }
+	@GetMapping
+	public ResponseEntity getSchedules() {
+		List<Schedule> foundSchedules = scheduleService.findSchedules();
 
-    @GetMapping
-    public ResponseEntity getSchedules() {
-        List<Schedule> foundSchedules = scheduleService.findSchedules();
+		List<ScheduleResponse> scheduleResponses = new ArrayList<>();
 
-        List<ScheduleResponse> scheduleResponses = new ArrayList<>();
+		for (Schedule schedule : foundSchedules) {
+			List<SchedulePlace> schedulePlaces = schedule.getSchedulePlaces();
+			List<List<PlaceResponse>> placeResponseLists = placeMapper
+				.schedulePlacesToPlaceResponseLists(schedulePlaces, schedule);
+			ScheduleResponse scheduleResponse = scheduleMapper
+				.scheduleToScheduleResponse(schedule);
+			scheduleResponse.setPlaces(placeResponseLists);
+			scheduleResponses.add(scheduleResponse);
+		}
 
-        for (Schedule schedule : foundSchedules) {
-            List<SchedulePlace> schedulePlaces = schedule.getSchedulePlaces();
-            List<List<PlaceResponse>> placeResponseLists = placeMapper
-                    .schedulePlacesToPlaceResponseLists(schedulePlaces, schedule);
-            ScheduleResponse scheduleResponse = scheduleMapper
-                    .scheduleToScheduleResponse(schedule);
-            scheduleResponse.setPlaces(placeResponseLists);
-            scheduleResponses.add(scheduleResponse);
-        }
+		return ResponseEntity.ok(scheduleResponses);
+	}
 
-        return ResponseEntity.ok(scheduleResponses);
-    }
+	// 일정 공유 기능이므로 민감한 정보 노출 금지
+	@GetMapping("/{scheduleId}/share")
+	public ResponseEntity getScheduleByMemberIdAndEmail(@PathVariable long scheduleId,
+		@RequestParam("id") long memberId,
+		@RequestParam String email) {
+		Schedule foundSchedule = scheduleService.findSharedSchedule(scheduleId, memberId, email);
+		List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
 
-    // 일정 공유 기능이므로 민감한 정보 노출 금지
-    @GetMapping("/{scheduleId}/share")
-    public ResponseEntity getScheduleByMemberIdAndEmail(@PathVariable long scheduleId,
-            @RequestParam("id") long memberId,
-            @RequestParam String email) {
-        Schedule foundSchedule = scheduleService.findSharedSchedule(scheduleId, memberId, email);
-        List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
+		List<List<PlaceResponse>> placeResponseLists = placeMapper
+			.schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
+		ScheduleResponse scheduleResponse = scheduleMapper
+			.scheduleToScheduleResponse(foundSchedule);
+		scheduleResponse.setPlaces(placeResponseLists);
 
-        List<List<PlaceResponse>> placeResponseLists = placeMapper
-                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
-        ScheduleResponse scheduleResponse = scheduleMapper
-                .scheduleToScheduleResponse(foundSchedule);
-        scheduleResponse.setPlaces(placeResponseLists);
+		Map<Long, List<RecordDto.Response>> map = new HashMap<>();
 
-        Map<Long, List<RecordDto.Response>> map = new HashMap<>();
+		for (SchedulePlace schedulePlace : schedulePlaces) {
+			long schedulePlaceId = schedulePlace.getSchedulePlaceId();
+			List<Record> records = schedulePlace.getRecords();
+			List<RecordDto.Response> recordResponses = recordMapper
+				.recordsToRecordResponses(records);
+			map.put(schedulePlaceId, recordResponses);
+		}
 
-        for (SchedulePlace schedulePlace : schedulePlaces) {
-            long schedulePlaceId = schedulePlace.getSchedulePlaceId();
-            List<Record> records = schedulePlace.getRecords();
-            List<RecordDto.Response> recordResponses = recordMapper
-                    .recordsToRecordResponses(records);
-            map.put(schedulePlaceId, recordResponses);
-        }
+		SharedScheduleResponse sharedScheduleResponse = SharedScheduleResponse.builder()
+			.schedule(scheduleResponse)
+			.recordsMap(map)
+			.build();
 
-        SharedScheduleResponse sharedScheduleResponse = SharedScheduleResponse.builder()
-                .schedule(scheduleResponse)
-                .recordsMap(map)
-                .build();
+		return ResponseEntity.ok(sharedScheduleResponse);
+	}
 
-        return ResponseEntity.ok(sharedScheduleResponse);
-    }
+	@GetMapping("/{scheduleId}/places")
+	public ResponseEntity getPlacesByScheduleId(@PathVariable long scheduleId) {
+		Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
+		List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
+		List<List<PlaceResponse>> placeResponseLists = placeMapper
+			.schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
 
-    @GetMapping("/{scheduleId}/places")
-    public ResponseEntity getPlacesByScheduleId(@PathVariable long scheduleId) {
-        Schedule foundSchedule = scheduleService.findSchedule(scheduleId);
-        List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
-        List<List<PlaceResponse>> placeResponseLists = placeMapper
-                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
+		return ResponseEntity.ok(placeResponseLists); // size 정보는 없는 상태
+	}
 
-        return ResponseEntity.ok(placeResponseLists); // size 정보는 없는 상태
-    }
+	@DeleteMapping("/{scheduleId}")
+	public ResponseEntity deleteSchedule(@PathVariable long scheduleId) {
+		scheduleService.deleteSchedule(scheduleId);
 
-    @DeleteMapping("/{scheduleId}")
-    public ResponseEntity deleteSchedule(@PathVariable long scheduleId) {
-        scheduleService.deleteSchedule(scheduleId);
-
-        return ResponseEntity.noContent().build();
-    }
+		return ResponseEntity.noContent().build();
+	}
 }

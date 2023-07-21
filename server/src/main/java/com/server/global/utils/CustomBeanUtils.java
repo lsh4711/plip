@@ -9,21 +9,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CustomBeanUtils {
-    public static <T> T copyNonNullProperties(T source, T destination) {
-        if (source == null || destination == null || source.getClass() != destination.getClass()) {
-            return null;
-        }
+	public static <T> T copyNonNullProperties(T source, T destination) {
+		if (source == null || destination == null || source.getClass() != destination.getClass()) {
+			return null;
+		}
 
-        final BeanWrapper src = new BeanWrapperImpl(source);
-        final BeanWrapper dest = new BeanWrapperImpl(destination);
+		final BeanWrapper src = new BeanWrapperImpl(source);
+		final BeanWrapper dest = new BeanWrapperImpl(destination);
 
-        for (final Field property : source.getClass().getDeclaredFields()) {
-            Object sourceProperty = src.getPropertyValue(property.getName());
-            if (sourceProperty != null && !(sourceProperty instanceof Collection<?>)) {
-                dest.setPropertyValue(property.getName(), sourceProperty);
-            }
-        }
+		for (final Field property : source.getClass().getDeclaredFields()) {
+			Object sourceProperty = src.getPropertyValue(property.getName());
+			if (sourceProperty != null && !(sourceProperty instanceof Collection<?>)) {
+				dest.setPropertyValue(property.getName(), sourceProperty);
+			}
+		}
 
-        return destination;
-    }
+		return destination;
+	}
 }

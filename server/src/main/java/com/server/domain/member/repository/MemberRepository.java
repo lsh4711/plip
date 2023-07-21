@@ -7,14 +7,12 @@ import org.springframework.data.repository.query.Param;
 
 import com.server.domain.member.entity.Member;
 
-
-
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    boolean existsByEmail(String email);
+	boolean existsByEmail(String email);
 
-    boolean existsByNickname(String nickname);
+	boolean existsByNickname(String nickname);
 
-    // 테스트 해야함, 지연 로딩으로도 해결 가능한지 확인필요
-    // @Query("select m from Member m left join fetch m.kakaoToken where m.email = :email") // kakaoToken이 없음
-    Optional<Member> findByEmail(@Param("email")String email);
+	// 테스트 해야함, 지연 로딩으로도 해결 가능한지 확인필요
+	// @Query("select m from Member m left join fetch m.kakaoToken where m.email = :email") // kakaoToken이 없음
+	Optional<Member> findByEmail(@Param("email") String email);
 }

@@ -1,5 +1,5 @@
 server:
-  port: 8000
+  port: 8080
 spring:
   config.activate.on-profile: test
   redis:
@@ -85,8 +85,8 @@ springdoc:
     path: /docs/swagger
 
 kakao:
-    redirect-url: asdfasdfasdf
-    api-key: asdfasdfasdfasdf
+  redirect-url: asdfasdfasdf
+  api-key: asdfasdfasdfasdf
 file:
   path: test
 

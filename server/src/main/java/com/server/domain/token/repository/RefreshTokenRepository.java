@@ -9,5 +9,5 @@ import com.server.domain.token.entity.RefreshToken;
 
 @Repository
 public interface RefreshTokenRepository extends CrudRepository<RefreshToken, String> {
-    Optional<RefreshToken> findByAccessToken(String accessToken);
+	Optional<RefreshToken> findByAccessToken(String accessToken);
 }

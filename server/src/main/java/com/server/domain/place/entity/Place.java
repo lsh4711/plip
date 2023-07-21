@@ -23,25 +23,25 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Place extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long placeId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long placeId;
 
-    // @Column(unique = true)
-    private long apiId; // optnioal, default: 0(0 == custom point)
+	// @Column(unique = true)
+	private long apiId; // optnioal, default: 0(0 == custom point)
 
-    private String name; // optional, default: 사용자 지정 장소
-    private String address;
+	private String name; // optional, default: 사용자 지정 장소
+	private String address;
 
-    private String phone;
+	private String phone;
 
-    private String latitude; // 사용자 지정시 같은 좌표가
-    private String longitude; // 중복될 것 같으니 복합키 고려
+	private String latitude; // 사용자 지정시 같은 좌표가
+	private String longitude; // 중복될 것 같으니 복합키 고려
 
-    @Transient
-    private Boolean bookmark;
+	@Transient
+	private Boolean bookmark;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoryId")
-    private Category category;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "categoryId")
+	private Category category;
 }

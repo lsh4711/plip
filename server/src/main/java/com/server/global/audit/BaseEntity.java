@@ -14,20 +14,20 @@ import lombok.Setter;
 @Setter
 @MappedSuperclass
 public abstract class BaseEntity {
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+	@Column(updatable = false)
+	private LocalDateTime createdAt;
 
-    private LocalDateTime modifiedAt;
+	private LocalDateTime modifiedAt;
 
-    @PrePersist
-    public void prePersist() {
-        LocalDateTime now = LocalDateTime.now().withNano(0);
-        createdAt = now;
-        modifiedAt = now;
-    }
+	@PrePersist
+	public void prePersist() {
+		LocalDateTime now = LocalDateTime.now().withNano(0);
+		createdAt = now;
+		modifiedAt = now;
+	}
 
-    @PreUpdate
-    public void preUpdate() {
-        modifiedAt = LocalDateTime.now().withNano(0);
-    }
+	@PreUpdate
+	public void preUpdate() {
+		modifiedAt = LocalDateTime.now().withNano(0);
+	}
 }

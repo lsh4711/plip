@@ -23,34 +23,34 @@ import lombok.SneakyThrows;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private final AuthenticationManager authenticationManager;
-    private final DelegateTokenUtil delegateTokenUtil;
-    private final JwtTokenizer jwtTokenizer;
+	private final AuthenticationManager authenticationManager;
+	private final DelegateTokenUtil delegateTokenUtil;
+	private final JwtTokenizer jwtTokenizer;
 
-    @SneakyThrows
-    @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        LoginDto loginDto = objectMapper.readValue(request.getInputStream(), LoginDto.class);
-        UsernamePasswordAuthenticationToken authenticationToken =
-            new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
+	@SneakyThrows
+	@Override
+	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		LoginDto loginDto = objectMapper.readValue(request.getInputStream(), LoginDto.class);
+		UsernamePasswordAuthenticationToken authenticationToken =
+			new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
 
-        return authenticationManager.authenticate(authenticationToken);
-    }
+		return authenticationManager.authenticate(authenticationToken);
+	}
 
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain chain,
-        Authentication authResult) throws ServletException, IOException {
-        Member member = (Member)authResult.getPrincipal();
+	@Override
+	protected void successfulAuthentication(HttpServletRequest request,
+		HttpServletResponse response,
+		FilterChain chain,
+		Authentication authResult) throws ServletException, IOException {
+		Member member = (Member)authResult.getPrincipal();
 
-        String accessToken = delegateTokenUtil.delegateAccessToken(member);
-        String refreshToken = delegateTokenUtil.delegateRefreshToken(member);
+		String accessToken = delegateTokenUtil.delegateAccessToken(member);
+		String refreshToken = delegateTokenUtil.delegateRefreshToken(member);
 
-        jwtTokenizer.setHeaderAccessToken(response, accessToken);
-        jwtTokenizer.setHeaderRefreshToken(response, refreshToken);
+		jwtTokenizer.setHeaderAccessToken(response, accessToken);
+		jwtTokenizer.setHeaderRefreshToken(response, refreshToken);
 
-        this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
-    }
+		this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
+	}
 }

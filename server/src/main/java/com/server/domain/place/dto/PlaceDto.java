@@ -8,37 +8,37 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class PlaceDto {
-    @Getter
-    @Setter
-    public static class Post {
-        // @NotBlank // optional
-        private long apiId;
+	@Getter
+	@Setter
+	public static class Post {
+		// @NotBlank // optional
+		private long apiId;
 
-        @NotBlank
-        private String name;
+		@NotBlank
+		private String name;
 
-        @NotBlank
-        private String address;
+		@NotBlank
+		private String address;
 
-        @NotNull
-        @Pattern(regexp = "|^\\d{2,5}(-\\d{3,4})?(-\\d{4})?$")
-        private String phone;
+		@NotNull
+		@Pattern(regexp = "|^\\d{2,5}(-\\d{3,4})?(-\\d{4})?$")
+		private String phone;
 
-        @NotBlank
-        private String latitude;
+		@NotBlank
+		private String latitude;
 
-        @NotBlank
-        private String longitude;
+		@NotBlank
+		private String longitude;
 
-        @NotNull
-        private String category;
+		@NotNull
+		private String category;
 
-        @NotNull
-        private Boolean bookmark;
-    }
+		@NotNull
+		private Boolean bookmark;
+	}
 
-    @Getter
-    public static class Patch {
+	@Getter
+	public static class Patch {
 
-    }
+	}
 }

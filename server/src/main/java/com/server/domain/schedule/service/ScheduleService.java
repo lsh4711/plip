@@ -25,109 +25,109 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ScheduleService {
-    private final ScheduleRepository scheduleRepository;
+	private final ScheduleRepository scheduleRepository;
 
-    private final RegionRepository regionRepository;
+	private final RegionRepository regionRepository;
 
-    private final KakaoApiService kakaoApiService;
+	private final KakaoApiService kakaoApiService;
 
-    private final KakaoTemplateConstructor kakaoTemplateMapper;
+	private final KakaoTemplateConstructor kakaoTemplateMapper;
 
-    public Schedule saveSchedule(Schedule schedule) {
-        String title = schedule.getTitle();
-        int memberCount = schedule.getMemberCount();
+	public Schedule saveSchedule(Schedule schedule) {
+		String title = schedule.getTitle();
+		int memberCount = schedule.getMemberCount();
 
-        Region region = schedule.getRegion();
-        String engName = region.getEngName();
-        Region foundRegion = regionRepository.findByEngName(engName);
-        String korName = foundRegion.getKorName();
+		Region region = schedule.getRegion();
+		String engName = region.getEngName();
+		Region foundRegion = regionRepository.findByEngName(engName);
+		String korName = foundRegion.getKorName();
 
-        schedule.setRegion(foundRegion);
-        if (title == null) {
-            schedule.setTitle(String.format("%s 여행 레츠고!", korName));
-        }
-        if (memberCount <= 0) {
-            schedule.setMemberCount(1);
-        }
+		schedule.setRegion(foundRegion);
+		if (title == null) {
+			schedule.setTitle(String.format("%s 여행 레츠고!", korName));
+		}
+		if (memberCount <= 0) {
+			schedule.setMemberCount(1);
+		}
 
-        return scheduleRepository.save(schedule);
-    }
+		return scheduleRepository.save(schedule);
+	}
 
-    public Schedule updateSchedule(Schedule schedule) {
-        long scheduleId = schedule.getScheduleId();
-        Schedule foundSchedule = findSchedule(scheduleId);
+	public Schedule updateSchedule(Schedule schedule) {
+		long scheduleId = schedule.getScheduleId();
+		Schedule foundSchedule = findSchedule(scheduleId);
 
-        Region region = schedule.getRegion();
-        String engName = region.getEngName();
-        Region foundRegion = regionRepository.findByEngName(engName);
+		Region region = schedule.getRegion();
+		String engName = region.getEngName();
+		Region foundRegion = regionRepository.findByEngName(engName);
 
-        schedule.setRegion(foundRegion);
-        CustomBeanUtils.copyNonNullProperties(schedule, foundSchedule);
-        saveSchedule(foundSchedule);
+		schedule.setRegion(foundRegion);
+		CustomBeanUtils.copyNonNullProperties(schedule, foundSchedule);
+		saveSchedule(foundSchedule);
 
-        return foundSchedule;
-    }
+		return foundSchedule;
+	}
 
-    public Schedule findSchedule(long scheduleId) {
-        long memberId = CustomUtil.getAuthId();
-        Schedule schedule = scheduleRepository
-                .findByScheduleIdAndMember_MemberId(scheduleId, memberId);
+	public Schedule findSchedule(long scheduleId) {
+		long memberId = CustomUtil.getAuthId();
+		Schedule schedule = scheduleRepository
+			.findByScheduleIdAndMember_MemberId(scheduleId, memberId);
 
-        if (schedule == null) {
-            throw new CustomException(
-                ExceptionCode.SCHEDULE_NOT_FOUND);
-        }
+		if (schedule == null) {
+			throw new CustomException(
+				ExceptionCode.SCHEDULE_NOT_FOUND);
+		}
 
-        return schedule;
-    }
+		return schedule;
+	}
 
-    public List<Schedule> findSchedules() {
-        Sort sort = Sort.by("createdAt").descending();
-        long memberId = CustomUtil.getAuthId();
-        List<Schedule> schedules = scheduleRepository.findAllByMember_memberId(memberId, sort);
+	public List<Schedule> findSchedules() {
+		Sort sort = Sort.by("createdAt").descending();
+		long memberId = CustomUtil.getAuthId();
+		List<Schedule> schedules = scheduleRepository.findAllByMember_memberId(memberId, sort);
 
-        return schedules;
-    }
+		return schedules;
+	}
 
-    public Schedule findSharedSchedule(long scheduleId, long memberId, String email) {
-        Schedule schedule = scheduleRepository
-                .findByScheduleIdAndMember_MemberIdAndMember_Email(scheduleId, memberId, email);
+	public Schedule findSharedSchedule(long scheduleId, long memberId, String email) {
+		Schedule schedule = scheduleRepository
+			.findByScheduleIdAndMember_MemberIdAndMember_Email(scheduleId, memberId, email);
 
-        if (schedule == null) {
-            throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
-        }
+		if (schedule == null) {
+			throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
+		}
 
-        return schedule;
-    }
+		return schedule;
+	}
 
-    public void deleteSchedule(long scheduleId) {
-        long memberId = CustomUtil.getAuthId();
+	public void deleteSchedule(long scheduleId) {
+		long memberId = CustomUtil.getAuthId();
 
-        verify(scheduleId, memberId);
-        scheduleRepository.deleteById(scheduleId);
-    }
+		verify(scheduleId, memberId);
+		scheduleRepository.deleteById(scheduleId);
+	}
 
-    public void verify(long scheduleId, long memberId) {
-        boolean exists = scheduleRepository
-                .existsByScheduleIdAndMember_MemberId(scheduleId, memberId);
+	public void verify(long scheduleId, long memberId) {
+		boolean exists = scheduleRepository
+			.existsByScheduleIdAndMember_MemberId(scheduleId, memberId);
 
-        if (!exists) {
-            throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
-        }
+		if (!exists) {
+			throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
+		}
 
-    }
+	}
 
-    @Async
-    public void sendKakaoMessage(Schedule schedule, Member member) {
-        KakaoToken kakaoToken = member.getKakaoToken();
+	@Async
+	public void sendKakaoMessage(Schedule schedule, Member member) {
+		KakaoToken kakaoToken = member.getKakaoToken();
 
-        if (kakaoToken == null) {
-            return; // or throw CustomExcepion
-        }
+		if (kakaoToken == null) {
+			return; // or throw CustomExcepion
+		}
 
-        String accessToken = kakaoToken.getAccessToken();
-        Feed feedTemplate = kakaoTemplateMapper.getFeedTemplate(schedule, member);
+		String accessToken = kakaoToken.getAccessToken();
+		Feed feedTemplate = kakaoTemplateMapper.getFeedTemplate(schedule, member);
 
-        kakaoApiService.sendMessage(feedTemplate, accessToken);
-    }
+		kakaoApiService.sendMessage(feedTemplate, accessToken);
+	}
 }

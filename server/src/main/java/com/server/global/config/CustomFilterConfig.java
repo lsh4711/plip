@@ -19,29 +19,29 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Configuration
 public class CustomFilterConfig extends AbstractHttpConfigurer<CustomFilterConfig, HttpSecurity> {
-    private final JwtTokenizer jwtTokenizer;
-    private final DelegateTokenUtil delegateTokenUtil;
-    private final AccessTokenRenewalUtil accessTokenRenewalUtil;
-    private final RedisUtils redisUtils;
+	private final JwtTokenizer jwtTokenizer;
+	private final DelegateTokenUtil delegateTokenUtil;
+	private final AccessTokenRenewalUtil accessTokenRenewalUtil;
+	private final RedisUtils redisUtils;
 
-    @Override
-    public void configure(HttpSecurity builder) {
-        AuthenticationManager authenticationManager = builder
-                .getSharedObject(AuthenticationManager.class);
+	@Override
+	public void configure(HttpSecurity builder) {
+		AuthenticationManager authenticationManager = builder
+			.getSharedObject(AuthenticationManager.class);
 
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(
-            authenticationManager,
-            delegateTokenUtil,
-            jwtTokenizer);
-        jwtAuthenticationFilter.setFilterProcessesUrl("/api/users/login");
-        jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
-        jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
+		JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(
+			authenticationManager,
+			delegateTokenUtil,
+			jwtTokenizer);
+		jwtAuthenticationFilter.setFilterProcessesUrl("/api/users/login");
+		jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
+		jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
 
-        JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, accessTokenRenewalUtil,
-            redisUtils);
+		JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtTokenizer, accessTokenRenewalUtil,
+			redisUtils);
 
-        builder
-                .addFilter(jwtAuthenticationFilter)
-                .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
-    }
+		builder
+			.addFilter(jwtAuthenticationFilter)
+			.addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
+	}
 }

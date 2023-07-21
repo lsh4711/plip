@@ -13,45 +13,45 @@ import lombok.RequiredArgsConstructor;
 // @Configuration
 @RequiredArgsConstructor
 public class TaskletConfig {
-    private final JobBuilderFactory jobBuilderFactory;
-    private final StepBuilderFactory stepBuilderFactory;
+	private final JobBuilderFactory jobBuilderFactory;
+	private final StepBuilderFactory stepBuilderFactory;
 
-    @Bean
-    public Job batchJob() {
-        Job customJob = jobBuilderFactory.get("jobName")
-                .start(batchStep1(1)) // Step 설정
-                .next(batchStep2(2))
-                .next(batchStep3(3))
-                .build();
+	@Bean
+	public Job batchJob() {
+		Job customJob = jobBuilderFactory.get("jobName")
+			.start(batchStep1(1)) // Step 설정
+			.next(batchStep2(2))
+			.next(batchStep3(3))
+			.build();
 
-        return customJob;
-    }
+		return customJob;
+	}
 
-    @Bean
-    public Step batchStep1(int order) {
-        Step customStep1 = stepBuilderFactory.get("stepName1")
-                .tasklet(new BatchTasklet(order)) // Tasklet 설정
-                .build();
+	@Bean
+	public Step batchStep1(int order) {
+		Step customStep1 = stepBuilderFactory.get("stepName1")
+			.tasklet(new BatchTasklet(order)) // Tasklet 설정
+			.build();
 
-        return customStep1;
-    }
+		return customStep1;
+	}
 
-    @Bean
-    public Step batchStep2(int order) {
-        Step customStep2 = stepBuilderFactory.get("stepName2")
-                .tasklet(new BatchTasklet(order)) // Tasklet 설정
-                .build();
+	@Bean
+	public Step batchStep2(int order) {
+		Step customStep2 = stepBuilderFactory.get("stepName2")
+			.tasklet(new BatchTasklet(order)) // Tasklet 설정
+			.build();
 
-        return customStep2;
-    }
+		return customStep2;
+	}
 
-    @Bean
-    public Step batchStep3(int order) {
-        Step customStep3 = stepBuilderFactory.get("stepName3")
-                .tasklet(new BatchTasklet(order)) // Tasklet 설정
-                .build();
+	@Bean
+	public Step batchStep3(int order) {
+		Step customStep3 = stepBuilderFactory.get("stepName3")
+			.tasklet(new BatchTasklet(order)) // Tasklet 설정
+			.build();
 
-        return customStep3;
-    }
+		return customStep3;
+	}
 
 }

@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class DocController {
-    @Value("${kakao.redirect-url}")
-    private String url;
+	@Value("${kakao.redirect-url}")
+	private String url;
 
-    @GetMapping
-    public void getDocs(HttpServletResponse response) throws IOException {
-        response.sendRedirect(url + "/docs/swagger-ui/index.html");
-    }
+	@GetMapping
+	public void getDocs(HttpServletResponse response) throws IOException {
+		response.sendRedirect(url + "/docs/swagger-ui/index.html");
+	}
 }

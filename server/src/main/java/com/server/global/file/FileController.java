@@ -12,27 +12,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/files/images")
 public class FileController {
-    private final FileService fileService;
+	private final FileService fileService;
 
-    // 카카오 api에 제공할 일정 알림 메시지의 기본 배경사진 url
-    @GetMapping
-    public ResponseEntity getImage(@RequestParam String region) {
-        byte[] base64EncodedImage = fileService.getImageByRegion(region);
+	// 카카오 api에 제공할 일정 알림 메시지의 기본 배경사진 url
+	@GetMapping
+	public ResponseEntity getImage(@RequestParam String region) {
+		byte[] base64EncodedImage = fileService.getImageByRegion(region);
 
-        return ResponseEntity.ok()
-                // .contentType(MediaType.IMAGE_JPEG)
-                .header("Content-Type", "image/webp")
-                .body(base64EncodedImage);
-    }
+		return ResponseEntity.ok()
+			// .contentType(MediaType.IMAGE_JPEG)
+			.header("Content-Type", "image/webp")
+			.body(base64EncodedImage);
+	}
 
-    @GetMapping("/test")
-    public ResponseEntity getCustomImage(@RequestParam String name) {
-        String extension = "png";
-        byte[] base64EncodedImage = fileService.getImageByName(name, extension);
+	@GetMapping("/test")
+	public ResponseEntity getCustomImage(@RequestParam String name) {
+		String extension = "png";
+		byte[] base64EncodedImage = fileService.getImageByName(name, extension);
 
-        return ResponseEntity.ok()
-                // .contentType(MediaType.IMAGE_JPEG)
-                .header("Content-Type", "image/" + extension)
-                .body(base64EncodedImage);
-    }
+		return ResponseEntity.ok()
+			// .contentType(MediaType.IMAGE_JPEG)
+			.header("Content-Type", "image/" + extension)
+			.body(base64EncodedImage);
+	}
 }

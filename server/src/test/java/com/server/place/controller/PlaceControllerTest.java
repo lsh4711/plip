@@ -1,15 +1,13 @@
 package com.server.place.controller;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static com.epages.restdocs.apispec.ResourceDocumentation.*;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,116 +44,116 @@ import com.server.helper.StubData;
 @AutoConfigureRestDocs
 public class PlaceControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @Autowired
-    private Gson gson;
+	@Autowired
+	private Gson gson;
 
-    @MockBean
-    private PlaceService service;
+	@MockBean
+	private PlaceService service;
 
-    @MockBean
-    private RecordMapper recordMapper;
+	@MockBean
+	private RecordMapper recordMapper;
 
-    private final static String PLACE_DEFAULT_URL = "/api/places";
+	private final static String PLACE_DEFAULT_URL = "/api/places";
 
-    @Test
-    @Disabled // 소셜 기능 미구현
-    @DisplayName("여행지 식별자로 여행일지를 조회한다.")
-    void getRecordsTest() throws Exception {
-        //given
-        Long placeId = 1L;
+	@Test
+	@Disabled // 소셜 기능 미구현
+	@DisplayName("여행지 식별자로 여행일지를 조회한다.")
+	void getRecordsTest() throws Exception {
+		//given
+		Long placeId = 1L;
 
-        List<RecordDto.Response> responses = StubData.MockRecord.getRequestDatas("recordResponses");
+		List<RecordDto.Response> responses = StubData.MockRecord.getRequestDatas("recordResponses");
 
-        List<Record> records = new ArrayList<>();
-        records.add(new Record());
-        records.add(new Record());
+		List<Record> records = new ArrayList<>();
+		records.add(new Record());
+		records.add(new Record());
 
-        given(service.findRecords(Mockito.anyLong())).willReturn(records);
-        given(recordMapper.recordsToRecordResponses(Mockito.anyList())).willReturn(responses);
+		given(service.findRecords(Mockito.anyLong())).willReturn(records);
+		given(recordMapper.recordsToRecordResponses(Mockito.anyList())).willReturn(responses);
 
-        String page = "1";
-        String size = "10";
-        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        queryParams.add("page", page);
-        queryParams.add("size", size);
+		String page = "1";
+		String size = "10";
+		MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+		queryParams.add("page", page);
+		queryParams.add("size", size);
 
-        //when
-        ResultActions actions = mockMvc.perform(
-            get(PLACE_DEFAULT_URL + "/{place-id}/records", placeId)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .params(queryParams));
+		//when
+		ResultActions actions = mockMvc.perform(
+			get(PLACE_DEFAULT_URL + "/{place-id}/records", placeId)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)
+				.params(queryParams));
 
-        //then
-        actions
-                .andExpect(status().isOk())
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("여행지별 여행 일지 조회",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestParameters(
-                            List.of(
-                                parameterWithName("page").description("Page 번호"),
-                                parameterWithName("size").description("Page Size"))),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .tag("Place")
-                                    .description("여행지별 여행 일지 조회")
-                                    .responseFields(
-                                        List.of(
-                                            fieldWithPath("data").type(
-                                                JsonFieldType.ARRAY)
-                                                    .description(
-                                                        "결과 데이터")
-                                                    .optional(),
-                                            fieldWithPath(
-                                                "data[].recordId").type(
-                                                    JsonFieldType.NUMBER)
-                                                    .description(
-                                                        "일지 식별자"),
-                                            fieldWithPath(
-                                                "data[].content").type(
-                                                    JsonFieldType.STRING)
-                                                    .description(
-                                                        "내용"),
-                                            fieldWithPath(
-                                                "data[].memberId").type(
-                                                    JsonFieldType.NUMBER)
-                                                    .description(
-                                                        "회원 식별자"),
-                                            fieldWithPath(
-                                                "data[].createdAt")
-                                                    .type(JsonFieldType.STRING)
-                                                    .description(
-                                                        "작성 날짜"),
-                                            fieldWithPath(
-                                                "data[].modifiedAt")
-                                                    .type(JsonFieldType.STRING)
-                                                    .description(
-                                                        "수정 날짜"),
-                                            fieldWithPath(
-                                                "totalElements").type(
-                                                    JsonFieldType.NUMBER)
-                                                    .description(
-                                                        "전체 데이터"),
-                                            fieldWithPath(
-                                                "totalPages").type(
-                                                    JsonFieldType.NUMBER)
-                                                    .description(
-                                                        "전체 페이지"),
-                                            fieldWithPath(
-                                                "currentPage").type(
-                                                    JsonFieldType.NUMBER)
-                                                    .description(
-                                                        "현재 페이지"),
-                                            fieldWithPath("pageSize").type(
-                                                JsonFieldType.NUMBER)
-                                                    .description(
-                                                        "페이지 크키")))
-                                    .build())));
-    }
+		//then
+		actions
+			.andExpect(status().isOk())
+			.andDo(
+				MockMvcRestDocumentationWrapper.document("여행지별 여행 일지 조회",
+					preprocessRequest(prettyPrint()),
+					preprocessResponse(prettyPrint()),
+					requestParameters(
+						List.of(
+							parameterWithName("page").description("Page 번호"),
+							parameterWithName("size").description("Page Size"))),
+					resource(
+						ResourceSnippetParameters.builder()
+							.tag("Place")
+							.description("여행지별 여행 일지 조회")
+							.responseFields(
+								List.of(
+									fieldWithPath("data").type(
+											JsonFieldType.ARRAY)
+										.description(
+											"결과 데이터")
+										.optional(),
+									fieldWithPath(
+										"data[].recordId").type(
+											JsonFieldType.NUMBER)
+										.description(
+											"일지 식별자"),
+									fieldWithPath(
+										"data[].content").type(
+											JsonFieldType.STRING)
+										.description(
+											"내용"),
+									fieldWithPath(
+										"data[].memberId").type(
+											JsonFieldType.NUMBER)
+										.description(
+											"회원 식별자"),
+									fieldWithPath(
+										"data[].createdAt")
+										.type(JsonFieldType.STRING)
+										.description(
+											"작성 날짜"),
+									fieldWithPath(
+										"data[].modifiedAt")
+										.type(JsonFieldType.STRING)
+										.description(
+											"수정 날짜"),
+									fieldWithPath(
+										"totalElements").type(
+											JsonFieldType.NUMBER)
+										.description(
+											"전체 데이터"),
+									fieldWithPath(
+										"totalPages").type(
+											JsonFieldType.NUMBER)
+										.description(
+											"전체 페이지"),
+									fieldWithPath(
+										"currentPage").type(
+											JsonFieldType.NUMBER)
+										.description(
+											"현재 페이지"),
+									fieldWithPath("pageSize").type(
+											JsonFieldType.NUMBER)
+										.description(
+											"페이지 크키")))
+							.build())));
+	}
 
 }

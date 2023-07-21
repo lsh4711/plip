@@ -17,24 +17,25 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Component
 public class AccessTokenRenewalUtil {
-    private final MemberRepository memberRepository;
-    private final DelegateTokenUtil delegateTokenUtil;
-    private final JwtTokenizer jwtTokenizer;
+	private final MemberRepository memberRepository;
+	private final DelegateTokenUtil delegateTokenUtil;
+	private final JwtTokenizer jwtTokenizer;
 
-    public Token renewAccessToken(HttpServletRequest request) {
-        try{
-            String refreshToken = jwtTokenizer.getHeaderRefreshToken(request);
-            String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
-            String email = jwtTokenizer.getClaims(refreshToken, base64EncodedSecretKey).getBody().getSubject();
-            Member member = memberRepository.findByEmail(email).orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
-            String newAccessToken = delegateTokenUtil.delegateAccessToken(member);
-            return Token.builder()
-                .accessToken(newAccessToken)
-                .refreshToken(refreshToken)
-                .build();
-        }catch (CustomException | ExpiredJwtException ce){
-            throw ce;
-        }
-    }
+	public Token renewAccessToken(HttpServletRequest request) {
+		try {
+			String refreshToken = jwtTokenizer.getHeaderRefreshToken(request);
+			String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+			String email = jwtTokenizer.getClaims(refreshToken, base64EncodedSecretKey).getBody().getSubject();
+			Member member = memberRepository.findByEmail(email)
+				.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
+			String newAccessToken = delegateTokenUtil.delegateAccessToken(member);
+			return Token.builder()
+				.accessToken(newAccessToken)
+				.refreshToken(refreshToken)
+				.build();
+		} catch (CustomException | ExpiredJwtException ce) {
+			throw ce;
+		}
+	}
 
 }

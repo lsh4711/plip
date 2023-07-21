@@ -10,16 +10,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class CustomJobParameter {
-    private LocalDate date;
-    private int hour;
+	private LocalDate date;
+	private int hour;
 
-    @Value("#{jobParameters[date]}")
-    public void setDate(String date) {
-        this.date = LocalDate.parse(date);
-    }
+	@Value("#{jobParameters[date]}")
+	public void setDate(String date) {
+		this.date = LocalDate.parse(date);
+	}
 
-    @Value("#{jobParameters[hour]}")
-    public void setHour(int hour) {
-        this.hour = hour;
-    }
+	@Value("#{jobParameters[hour]}")
+	public void setHour(int hour) {
+		this.hour = hour;
+	}
 }

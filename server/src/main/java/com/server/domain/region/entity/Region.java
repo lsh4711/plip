@@ -16,14 +16,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Region {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long regionId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long regionId;
 
-    private String engName;
+	private String engName;
 
-    private String korName;
+	private String korName;
 
-    // @OneToMany(mappedBy = "region")
-    // private List<Schedule> schedules;
+	// @OneToMany(mappedBy = "region")
+	// private List<Schedule> schedules;
 }

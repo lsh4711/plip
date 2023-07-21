@@ -13,30 +13,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Component
 public class DelegateTokenUtil { //TODO: JwtAuthenticationFilter에서 delegate~ 를 따로 분리한 이유->필터와 역할과 토큰 생성을 분리하기 위함?
-    private final JwtTokenizer jwtTokenizer;
+	private final JwtTokenizer jwtTokenizer;
 
-    public String delegateAccessToken(Member member) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", member.getEmail());
-        claims.put("memberId", member.getMemberId());
-        claims.put("roles", member.getRole().getRoles());
-        String subject = member.getEmail();
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
+	public String delegateAccessToken(Member member) {
+		Map<String, Object> claims = new HashMap<>();
+		claims.put("email", member.getEmail());
+		claims.put("memberId", member.getMemberId());
+		claims.put("roles", member.getRole().getRoles());
+		String subject = member.getEmail();
+		Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getAccessTokenExpirationMinutes());
 
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+		String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
-        String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
+		String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
 
-        return accessToken;
-    }
+		return accessToken;
+	}
 
-    public String delegateRefreshToken(Member member) {
-        String subject = member.getEmail();
-        Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
-        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+	public String delegateRefreshToken(Member member) {
+		String subject = member.getEmail();
+		Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
+		String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
-        String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
+		String refreshToken = jwtTokenizer.generateRefreshToken(subject, expiration, base64EncodedSecretKey);
 
-        return refreshToken;
-    }
+		return refreshToken;
+	}
 }

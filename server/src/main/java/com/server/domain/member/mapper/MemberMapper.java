@@ -9,24 +9,25 @@ import com.server.global.auth.userdetails.OAuthAttributes;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface MemberMapper {
-    Member memberDtoPostToMember(MemberDto.Post request);
+	Member memberDtoPostToMember(MemberDto.Post request);
 
-    Member memberDtoPatchToMember(MemberDto.Patch request);
-    Member memberDtoPasswordPatchToMember(MemberDto.PasswordPatch request);
+	Member memberDtoPatchToMember(MemberDto.Patch request);
 
-    MemberDto.Response memberToMemberDtoResponse(Member member);
+	Member memberDtoPasswordPatchToMember(MemberDto.PasswordPatch request);
 
-    default Member oauthAttributesToMember(OAuthAttributes oAuthAttributes) {
-        if (oAuthAttributes == null) {
-            return null;
-        }
+	MemberDto.Response memberToMemberDtoResponse(Member member);
 
-        Member.MemberBuilder member = Member.builder();
+	default Member oauthAttributesToMember(OAuthAttributes oAuthAttributes) {
+		if (oAuthAttributes == null) {
+			return null;
+		}
 
-        member.email(oAuthAttributes.getEmail());
-        member.nickname(oAuthAttributes.getNickname());
-        member.role(Member.Role.SOCIAL);
+		Member.MemberBuilder member = Member.builder();
 
-        return member.build();
-    }
+		member.email(oAuthAttributes.getEmail());
+		member.nickname(oAuthAttributes.getNickname());
+		member.role(Member.Role.SOCIAL);
+
+		return member.build();
+	}
 }

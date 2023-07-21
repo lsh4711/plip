@@ -15,23 +15,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class AuthMailCodeService {
-    private final AuthMailCodeRepository authMailCodeRepository;
+	private final AuthMailCodeRepository authMailCodeRepository;
 
-    public void saveOrUpdateAuthCode(String authCode, String email) {
-        Optional<AuthMailCode> authMailCode = authMailCodeRepository.findByEmail(email);
-        authMailCode.ifPresent(authMailCodeRepository::delete);
-        authMailCodeRepository.save(AuthMailCode.builder().authCode(authCode).email(email).build());
-    }
+	public void saveOrUpdateAuthCode(String authCode, String email) {
+		Optional<AuthMailCode> authMailCode = authMailCodeRepository.findByEmail(email);
+		authMailCode.ifPresent(authMailCodeRepository::delete);
+		authMailCodeRepository.save(AuthMailCode.builder().authCode(authCode).email(email).build());
+	}
 
-    @Transactional(readOnly = true)
-    public AuthMailCode getAuthMailCodeByEmail(String email) {
-        AuthMailCode authMailCode = authMailCodeRepository.findByEmail(email)
-            .orElseThrow(() -> new CustomException(ExceptionCode.AUTH_MAIL_CODE_NOT_FOUND));
-        return authMailCode;
-    }
+	@Transactional(readOnly = true)
+	public AuthMailCode getAuthMailCodeByEmail(String email) {
+		AuthMailCode authMailCode = authMailCodeRepository.findByEmail(email)
+			.orElseThrow(() -> new CustomException(ExceptionCode.AUTH_MAIL_CODE_NOT_FOUND));
+		return authMailCode;
+	}
 
-    public void removeAuthCode(String email) {
-        authMailCodeRepository.findByEmail(email)
-            .ifPresent(authMailCodeRepository::delete);
-    }
+	public void removeAuthCode(String email) {
+		authMailCodeRepository.findByEmail(email).ifPresent(authMailCodeRepository::delete);
+	}
 }

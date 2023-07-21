@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-
 import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.auth.utils.AccessTokenRenewalUtil;
 import com.server.global.auth.utils.Token;
@@ -38,45 +37,45 @@ import com.server.helper.StubData;
 @AutoConfigureRestDocs
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TokenControllerTest {
-    private final String TOKEN_DEFULT_URI = "/api/tokens";
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private JwtTokenizer jwtTokenizer;
-    @MockBean
-    AccessTokenRenewalUtil accessTokenRenewalUtil;
+	private final String TOKEN_DEFULT_URI = "/api/tokens";
+	@Autowired
+	private MockMvc mockMvc;
+	@Autowired
+	private JwtTokenizer jwtTokenizer;
+	@MockBean
+	AccessTokenRenewalUtil accessTokenRenewalUtil;
 
-    @Test
-    @DisplayName("리프레쉬 토큰으로 엑세스 토큰을 재발급합니다.")
-    void getToken() throws Exception {
-        //given
-        String refreshToken = StubData.MockSecurity.getValidRefreshToken(jwtTokenizer.getSecretKey());
-        String accessToken = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
-        Token token = Token.builder()
-            .refreshToken(refreshToken)
-            .refreshToken(accessToken)
-            .build();
+	@Test
+	@DisplayName("리프레쉬 토큰으로 엑세스 토큰을 재발급합니다.")
+	void getToken() throws Exception {
+		//given
+		String refreshToken = StubData.MockSecurity.getValidRefreshToken(jwtTokenizer.getSecretKey());
+		String accessToken = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
+		Token token = Token.builder()
+			.refreshToken(refreshToken)
+			.refreshToken(accessToken)
+			.build();
 
-        given(accessTokenRenewalUtil.renewAccessToken(Mockito.any(HttpServletRequest.class))).willReturn(token);
-        //when
-        ResultActions actions = mockMvc.perform(
-                get(TOKEN_DEFULT_URI)
-                    .cookie(new Cookie("Refresh", refreshToken))
-                    .contentType(MediaType.APPLICATION_JSON))
-            //then
-            .andExpect(status().isOk())
-            .andDo(
-                MockMvcRestDocumentationWrapper.document("회원 등록 예제",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    resource(
-                        ResourceSnippetParameters.builder()
-                            .tag("Token")
-                            .description("회원 등록")
-                            .responseHeaders(
-                                headerWithName("Authorization").description("재발급받은 인증 토큰")
-                            )
-                            .build())));
+		given(accessTokenRenewalUtil.renewAccessToken(Mockito.any(HttpServletRequest.class))).willReturn(token);
+		//when
+		ResultActions actions = mockMvc.perform(
+				get(TOKEN_DEFULT_URI)
+					.cookie(new Cookie("Refresh", refreshToken))
+					.contentType(MediaType.APPLICATION_JSON))
+			//then
+			.andExpect(status().isOk())
+			.andDo(
+				MockMvcRestDocumentationWrapper.document("회원 등록 예제",
+					preprocessRequest(prettyPrint()),
+					preprocessResponse(prettyPrint()),
+					resource(
+						ResourceSnippetParameters.builder()
+							.tag("Token")
+							.description("회원 등록")
+							.responseHeaders(
+								headerWithName("Authorization").description("재발급받은 인증 토큰")
+							)
+							.build())));
 
-    }
+	}
 }

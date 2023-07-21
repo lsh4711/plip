@@ -7,17 +7,17 @@ import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
 public class CustomUtil {
-    public static long getAuthId() {
-        Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
+	public static long getAuthId() {
+		Authentication authentication = SecurityContextHolder.getContext()
+			.getAuthentication();
 
-        if (authentication == null) {
-            throw new CustomException(ExceptionCode.UNKNOWN_USER);
-        }
+		if (authentication == null) {
+			throw new CustomException(ExceptionCode.UNKNOWN_USER);
+		}
 
-        long memberId = Long.parseLong(authentication.getCredentials()
-                .toString());
+		long memberId = Long.parseLong(authentication.getCredentials()
+			.toString());
 
-        return memberId;
-    }
+		return memberId;
+	}
 }

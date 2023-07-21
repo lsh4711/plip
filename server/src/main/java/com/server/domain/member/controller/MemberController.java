@@ -29,44 +29,44 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/users")
 @RestController
 public class MemberController {
-    private static final String MEMBER_DEFAULT_URL = "/api/users";
-    private final MemberMapper memberMapper;
-    private final MemberService memberService;
-    private final MailService mailService;
+	private static final String MEMBER_DEFAULT_URL = "/api/users";
+	private final MemberMapper memberMapper;
+	private final MemberService memberService;
+	private final MailService mailService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> postMember(@Valid @RequestBody MemberDto.Post request) {
-        Member createMember = memberService.createMember(memberMapper.memberDtoPostToMember(request));
-        mailService.sendMail(createMember.getEmail(), "welcome");
-        URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, createMember.getMemberId());
-        return ResponseEntity.created(location).build();
-    }
+	@PostMapping("/signup")
+	public ResponseEntity<?> postMember(@Valid @RequestBody MemberDto.Post request) {
+		Member createMember = memberService.createMember(memberMapper.memberDtoPostToMember(request));
+		mailService.sendMail(createMember.getEmail(), "welcome");
+		URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, createMember.getMemberId());
+		return ResponseEntity.created(location).build();
+	}
 
-    @GetMapping
-    public ResponseEntity<?> getMember(Principal principal) {
-        Member member = memberService.findMemberByEmail(principal.getName());
-        return new ResponseEntity<>(
-            new SingleResponseDto<>(memberMapper.memberToMemberDtoResponse(member)), HttpStatus.OK);
-    }
+	@GetMapping
+	public ResponseEntity<?> getMember(Principal principal) {
+		Member member = memberService.findMemberByEmail(principal.getName());
+		return new ResponseEntity<>(new SingleResponseDto<>(memberMapper.memberToMemberDtoResponse(member)),
+			HttpStatus.OK);
+	}
 
-    @PatchMapping
-    public ResponseEntity<?> patchMember(@RequestBody MemberDto.Patch request, Principal principal) {
-        Member updataMember = memberService.updateMember(principal.getName(),
-            memberMapper.memberDtoPatchToMember(request));
-        URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, updataMember.getMemberId());
-        return ResponseEntity.created(location).build();
-    }
+	@PatchMapping
+	public ResponseEntity<?> patchMember(@RequestBody MemberDto.Patch request, Principal principal) {
+		Member updataMember = memberService.updateMember(principal.getName(),
+			memberMapper.memberDtoPatchToMember(request));
+		URI location = UriCreator.createUri(MEMBER_DEFAULT_URL, updataMember.getMemberId());
+		return ResponseEntity.created(location).build();
+	}
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteMember(Principal principal) {
-        memberService.deleteMember(principal.getName());
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping
+	public ResponseEntity<?> deleteMember(Principal principal) {
+		memberService.deleteMember(principal.getName());
+		return ResponseEntity.noContent().build();
+	}
 
-    @PatchMapping("/password") //TODO: password 수정을 따로 분리한 이유? -> 비밀번호 재설정
-    public ResponseEntity<?> patchPasswordMember(@RequestBody @Valid MemberDto.PasswordPatch request) {
-        memberService.updatePassword(memberMapper.memberDtoPasswordPatchToMember(request));
-        return ResponseEntity.ok().build();
-    }
+	@PatchMapping("/password")
+	public ResponseEntity<?> patchPasswordMember(@RequestBody @Valid MemberDto.PasswordPatch request) {
+		memberService.updatePassword(memberMapper.memberDtoPasswordPatchToMember(request));
+		return ResponseEntity.ok().build();
+	}
 
 }
