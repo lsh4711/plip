@@ -25,6 +25,7 @@ env:
   AWS_ACCESS_KEY2: ${{ secrets.AWS_ACCESS_KEY2 }}
   AWS_SECRET_ACCESS_KEY2: ${{ secrets.AWS_SECRET_ACCESS_KEY2 }}
 
+  FILE_LOCATION: ${{ secrets.FILE_LOCATION }}
   
 jobs:
   build:
