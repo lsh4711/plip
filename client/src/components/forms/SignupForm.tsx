@@ -30,6 +30,7 @@ const SignupForm = () => {
   const onSubmit: SubmitHandler<SignupType> = (data) => {
     if (!emailRequestState.isSuccess) return;
     if (!authCodeState.disabled) return;
+    if (signupMutation.status === 'loading') return;
 
     signupMutation
       .mutateAsync(data)
@@ -46,8 +47,8 @@ const SignupForm = () => {
   const emailCredentialRequest = useFirstThrottle(() => {
     if (signupForm.formState.errors.email?.message !== undefined) return;
     if (signupForm.getValues('email') === '') return;
+    if (emailRequestMutation.status === 'loading') return;
 
-    console.log('실행됨?');
     emailRequestMutation
       .mutateAsync(signupForm.getValues('email'))
       .then((res) => {
@@ -56,11 +57,12 @@ const SignupForm = () => {
       .catch(() => {
         setAuthCodeState({ disabled: true, message: '잠시 후 다시 시도해주세요' });
       });
-  }, 5000);
+  }, 3000);
 
   const sendVerificationCodeEmail = useFirstThrottle(() => {
     if (signupForm.getValues('authnumber') === '') return;
     if (signupForm.getValues('authnumber') === undefined) return;
+    if (emailValidationMutation.status === 'loading') return;
 
     emailValidationMutation
       .mutateAsync({
