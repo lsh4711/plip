@@ -1,8 +1,8 @@
-import { FcBookmark } from '@react-icons/all-files/fc/FcBookmark';
-import { FcGlobe } from '@react-icons/all-files/fc/FcGlobe';
-import { FcCalendar } from '@react-icons/all-files/fc/FcCalendar';
-import { FcStackOfPhotos } from '@react-icons/all-files/fc/FcStackOfPhotos';
 import { FcApprove } from '@react-icons/all-files/fc/FcApprove';
+import { FcBookmark } from '@react-icons/all-files/fc/FcBookmark';
+import { FcCalendar } from '@react-icons/all-files/fc/FcCalendar';
+import { FcGlobe } from '@react-icons/all-files/fc/FcGlobe';
+import { FcStackOfPhotos } from '@react-icons/all-files/fc/FcStackOfPhotos';
 
 export type MenuProps = {
   icon: SVGAElement;
@@ -19,14 +19,14 @@ export const menus = [
     route: '/mypage/mytrip',
   },
   {
-    icon: <FcApprove size={20} />,
-    name: '마이페이지',
-    route: '/mypage',
-  },
-  {
     icon: <FcGlobe size={20} />,
     name: '나의 발자취',
     route: '/mypage/footprint',
+  },
+  {
+    icon: <FcStackOfPhotos size={20} />,
+    name: '나의 일지',
+    route: '/mypage/myrecord',
   },
   {
     icon: <FcBookmark size={20} />,
@@ -34,8 +34,8 @@ export const menus = [
     route: '/mypage/bookmark',
   },
   {
-    icon: <FcStackOfPhotos size={20} />,
-    name: '나의 일지',
-    route: '/mypage/myrecord',
+    icon: <FcApprove size={20} />,
+    name: '회원 정보',
+    route: '/mypage/info',
   },
 ];
