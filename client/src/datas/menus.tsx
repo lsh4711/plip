@@ -26,12 +26,12 @@ export const menus = [
   {
     icon: <FcGlobe size={20} />,
     name: '나의 발자취',
-    route: 'mypage/footprint',
+    route: '/mypage/footprint',
   },
   {
     icon: <FcBookmark size={20} />,
     name: '북마크',
-    route: 'mypage/bookmark',
+    route: '/mypage/bookmark',
   },
   {
     icon: <FcStackOfPhotos size={20} />,
