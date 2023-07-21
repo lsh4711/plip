@@ -10,6 +10,7 @@ import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
 import useHoverTimer from '@/hooks/useHoverTimer';
 import { useMapDetailContext } from '@/contexts/MapDetailProvider';
+import { cn } from '@/utils';
 
 interface mapProps {
   type: 'scheduling' | 'recording';
@@ -20,6 +21,7 @@ interface mapProps {
   setMapLevel: React.Dispatch<SetStateAction<number>>;
   schedules: ScheduledPlaceBase[][];
   showPolyline?: boolean;
+  className?: string;
 }
 
 const Map = ({
@@ -31,6 +33,7 @@ const Map = ({
   setMapLevel,
   schedules,
   showPolyline = false,
+  className,
 }: mapProps) => {
   const { searchPlaceResults, selectedPlace } = useSelector((state: RootState) => state.place);
   const dispatch = useDispatch();
@@ -80,7 +83,7 @@ const Map = ({
         lng: centerLng,
       }}
       level={mapLevel} // 지도의 확대 레벨
-      className="h-screen w-screen"
+      className={cn(['h-screen w-screen', className])}
       isPanto
       onClick={() => dispatch(setSelectedPlace(null))}
       onDragEnd={(

@@ -1,21 +1,41 @@
-import { Link } from 'react-router-dom';
 import { menus } from '@/datas/menus';
-import { ReactComponent as LogoutIcon } from '@/assets/icons/logout.svg';
-import useLogoutMutation from '@/queries/auth/useLogoutMutation';
+import { FcUnlock } from '@react-icons/all-files/fc/FcUnlock';
+import { Link } from 'react-router-dom';
 
-const DropDownMenus = () => {
+import useLogoutMutation from '@/queries/auth/useLogoutMutation';
+import { cn } from '@/utils';
+import { VariantProps, cva } from 'class-variance-authority';
+
+const DropDownMenusVariants = cva(
+  `
+  absolute z-50 flex flex-col bg-white shadow-md
+  `,
+  {
+    variants: {
+      variant: {
+        pc: 'w-[200px] right-[-1.25rem] top-9 rounded-lg border',
+        mobile: 'top-[76px] left-0 right-0 rounded-b-lg',
+      },
+    },
+    defaultVariants: {
+      variant: 'pc',
+    },
+  }
+);
+
+interface DropDownMenus extends VariantProps<typeof DropDownMenusVariants> {}
+
+const DropDownMenus = ({ variant }: DropDownMenus) => {
   const logoutMutation = useLogoutMutation();
   return (
-    <div
-      className={`absolute right-[-2.25rem] top-9 z-50 flex w-[200px] flex-col rounded-lg border bg-white shadow-md`}
-    >
+    <div className={cn(DropDownMenusVariants({ variant }))}>
       {menus.map((item, index) => (
         <Link
           key={item.name}
           to={item.route}
-          className="w-full border-b-2 p-4 text-black last:border-b-0"
+          className="border-b-[1.5px] p-4 text-black last:border-b-0"
         >
-          <div key={index} className="flex w-full gap-2 ">
+          <div key={index} className="flex w-full items-center gap-2">
             {item.icon}
             {item.name}
           </div>
@@ -28,17 +48,10 @@ const DropDownMenus = () => {
         }}
       >
         <button className="flex gap-2 text-black">
-          <LogoutIcon />
+          <FcUnlock size={20} />
           로그아웃
         </button>
       </div>
-
-      <Link to={'/signout'} className="w-full border-b-2 p-4 last:border-b-0">
-        <button className="flex gap-2 text-black">
-          <LogoutIcon />
-          회원탈퇴
-        </button>
-      </Link>
     </div>
   );
 };

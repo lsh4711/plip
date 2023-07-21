@@ -1,7 +1,8 @@
-import { MypageSideNav } from '@/components';
-import { Map, ZoomButtons } from '@/components/map';
-import useAuthRedirect from '@/hooks/useAuthRedirect';
 import { useState } from 'react';
+
+import { HeadingParagraph } from '@/components';
+import { Map } from '@/components/map';
+import useAuthRedirect from '@/hooks/useAuthRedirect';
 
 const FootPrintPage = () => {
   const auth = useAuthRedirect();
@@ -11,27 +12,19 @@ const FootPrintPage = () => {
   const center = { lat: 35.81905, lng: 127.8733 }; // 구글어스 대한민국
 
   return (
-    <div className=" flex">
-      <MypageSideNav />
-      <div className="relatvie">
-        <Map
-          type="recording"
-          centerLat={center.lat}
-          centerLng={center.lng}
-          mapLevel={mapLevel}
-          setMapLevel={setMapLevel}
-          schedules={[[]]}
-        />
-        <ZoomButtons
-          onClickZoomIn={() => {
-            setMapLevel(mapLevel - 1);
-          }}
-          onClickZoomOut={() => {
-            setMapLevel(mapLevel + 1);
-          }}
-          className={'absolute bottom-10 right-10 z-50'}
-        />
-      </div>
+    <div className="flex h-full flex-col">
+      <HeadingParagraph variant={'darkgray'} size={'md'} className="mb-4">
+        나의 발자취
+      </HeadingParagraph>
+      <Map
+        type="recording"
+        centerLat={center.lat}
+        centerLng={center.lng}
+        mapLevel={mapLevel}
+        setMapLevel={setMapLevel}
+        schedules={[[]]}
+        className="h-full w-full"
+      />
     </div>
   );
 };

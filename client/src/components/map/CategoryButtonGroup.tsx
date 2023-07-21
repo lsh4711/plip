@@ -4,7 +4,7 @@ type Props = {
 };
 
 const CategoryButtonGroup = ({ className, children }: Props) => {
-  return <div className={`pointer-events-auto flex gap-2 ${className}`}>{children}</div>;
+  return <div className={`pointer-events-auto hidden gap-2 lg:flex ${className}`}>{children}</div>;
 };
 
 export default CategoryButtonGroup;

@@ -36,7 +36,7 @@ const SearchTools = ({ currentLng, currentLat }: Props) => {
 
   return (
     <>
-      <div className="pointer-events-none absolute bottom-20 left-6 top-6 z-50 flex flex-col gap-4">
+      <div className="pointer-events-none absolute bottom-20 left-6 top-6 z-40 flex flex-col gap-4">
         <div className="flex gap-4">
           <Input
             className="pointer-events-auto h-10 w-80 drop-shadow-xl"

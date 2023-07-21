@@ -13,7 +13,9 @@ const ParagraphVariants = cva(
         default: 'text-[1.125rem]',
         sm: 'text-[1.375rem]',
         md: 'text-[1.75rem]',
-        xl: 'text-[3.375rem]',
+        lg: 'text-[2.25rem]',
+        xl: 'text-[2.75rem]',
+        '2xl': 'text-[3.375rem]',
       },
       variant: {
         default: 'text-zinc-400 dark:text-zinc-400',

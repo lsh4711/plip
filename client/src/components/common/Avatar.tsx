@@ -7,7 +7,7 @@ interface AvatarProps {
 
 const Avatar = ({ size = 32, imgSrc }: AvatarProps) => {
   return (
-    <div className={`rounded-full drop-shadow-md`}>
+    <div className={`rounded-full`}>
       <img
         src={imgSrc || DefaultProfile}
         className="object-cover"
