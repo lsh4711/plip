@@ -12,6 +12,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
 import Providers from './components/common/Providers';
 import AxiosProvider from './components/helper/AxiosProvider';
+import PlanSharePage from './pages/PlanSharePage';
 import ErrorFallback from './components/helper/ErrorFallback';
 import ToastContainer from './components/ui/toast/ToastContainer';
 import MypageLayout from './MypageLayout';
@@ -78,6 +79,7 @@ const router = createBrowserRouter([
     ),
   },
   { path: 'oauth', element: <OauthRedirect /> },
+  { path: 'plan/detail/:id/share', element: <PlanSharePage /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

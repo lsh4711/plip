@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect } from 'react';
+import { SetStateAction, useEffect, useRef } from 'react';
 import { CustomOverlayMap, Map as KakaoMap, MapMarker, Polyline } from 'react-kakao-maps-sdk';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -8,6 +8,8 @@ import { setSelectedPlace } from '@/redux/slices/placeSlice';
 import { RootState } from '@/redux/store';
 import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
+import useHoverTimer from '@/hooks/useHoverTimer';
+import { useMapDetailContext } from '@/contexts/MapDetailProvider';
 import { cn } from '@/utils';
 
 interface mapProps {
@@ -36,6 +38,10 @@ const Map = ({
   const { searchPlaceResults, selectedPlace } = useSelector((state: RootState) => state.place);
   const dispatch = useDispatch();
 
+  const mapDetailContextValues = useMapDetailContext();
+
+  const [onHandleOpen, onHandleClose] = useHoverTimer({});
+
   const onClickMarker = (place: ScheduledPlaceBase) => {
     if (type === 'scheduling') {
       dispatch(setSelectedPlace(place));
@@ -46,10 +52,17 @@ const Map = ({
   };
 
   const onHoverMarker = (place: ScheduledPlaceBase) => {
-    if (type === 'recording') {
+    if (type === 'recording' && mapDetailContextValues) {
+      const { setPlaceId } = mapDetailContextValues;
+      onHandleOpen(() => dispatch(setSelectedPlace(place)));
       console.log(place.schedulePlaceId);
-      dispatch(setSelectedPlace(place));
+      setPlaceId(place.schedulePlaceId!);
     }
+  };
+
+  const onHoverOutHandler = () => {
+    onHandleClose(() => dispatch(setSelectedPlace(null)));
+    // setHoveredMarker(null);
   };
 
   useEffect(() => {
@@ -104,6 +117,7 @@ const Map = ({
             }}
             onClick={() => onClickMarker(place)}
             onMouseOver={() => onHoverMarker(place)}
+            onMouseOut={() => onHoverOutHandler()}
           />
         ))
       )}

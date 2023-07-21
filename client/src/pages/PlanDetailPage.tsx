@@ -1,5 +1,5 @@
 import { Button } from '@/components';
-import { Map, MenuButtons, SearchTools, ZoomButtons } from '@/components/map';
+import { Map, MenuButtons, ZoomButtons } from '@/components/map';
 import { usePlanQuery } from '@/queries/plan';
 import { RootState } from '@/redux/store';
 import { useSelector } from 'react-redux';
@@ -11,6 +11,8 @@ import { useState } from 'react';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
 import instance from '@/queries/axiosinstance';
 import NoRecord from '@/components/map/NoRecord';
+import { useMapDetailContext } from '@/contexts/MapDetailProvider';
+import Record from '@/components/common/Record';
 
 interface PlanDetailPageProps {}
 
@@ -21,11 +23,17 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
   const isLogin = useSelector((state: RootState) => state.auth.isLogin);
 
   const [mapLevel, setMapLevel] = useState(8);
+  const { placeId, currentRecord, setRecords } = useMapDetailContext();
 
   useState(() => {
-    instance
-      .get(`/api/schedules/${id}/share?id=5&email=test@naver.com`)
-      .then((res) => console.log(res));
+    instance.get(`/api/schedules/${id}/share?id=3&email=test@naver.com`).then((res) => {
+      console.log(res.data.recordsMap);
+      const records = res.data.recordsMap;
+
+      if (records) {
+        setRecords(records);
+      }
+    });
   });
 
   return (
@@ -46,8 +54,8 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
             showPolyline
           />
           <MenuButtons />
-          <div className="fixed left-6 top-[5%] z-50 flex h-[80%] w-72 flex-col rounded-lg bg-white opacity-80 drop-shadow-2xl hover:opacity-100 2xl:h-[800px] 2xl:w-[340px]">
-            <NoRecord />
+          <div className="fixed left-6 top-[5%] z-50 flex h-[80%] flex-col rounded-lg bg-white opacity-80 drop-shadow-2xl hover:opacity-100 2xl:h-[800px] 2xl:w-[340px]">
+            {currentRecord ? <Record content={currentRecord} /> : <NoRecord id={placeId} />}
           </div>
 
           <SidePanel position={'right'}>
