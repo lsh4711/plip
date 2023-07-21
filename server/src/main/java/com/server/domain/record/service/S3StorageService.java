@@ -23,140 +23,138 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class S3StorageService implements StorageService {
-    private static final String BUCKET_IMAGE_PATH = "record_images";
+	private static final String BUCKET_IMAGE_PATH = "record_images";
+	private final AmazonS3 s3Client;
+	@Value("${application.bucket.name}")
+	private String bucketName;
 
-    @Value("${application.bucket.name}")
-    private String bucketName;
+	//이미지 저장
+	@Override
+	public List<String> store(List<MultipartFile> multipartFiles, long recordId, long userId) {
+		String dirName = BUCKET_IMAGE_PATH + "/" + userId + "/" + recordId;
+		List<String> indexes = new ArrayList<>();
 
-    private final AmazonS3 s3Client;
+		//이미 저장된 이미지가 있을 경우, 가장 마지막에 저장된 index+1로 새로운 index
+		int newIndex = getNewIndex(dirName);
 
-    //이미지 저장
-    @Override
-    public List<String> store(List<MultipartFile> multipartFiles, long recordId, long userId) {
-        String dirName = BUCKET_IMAGE_PATH + "/" + userId + "/" + recordId;
-        List<String> indexs = new ArrayList<>();
+		for (int i = 0; i < multipartFiles.size(); i++) {
+			File fileObj = convertMultiPartFileToFile(multipartFiles.get(i));
 
-        //이미 저장된 이미지가 있을 경우, 가장 마지막에 저장된 index+1로 새로운 index
-        int newIndex = getNewIndex(dirName);
+			//S3에 저장될 파일의 경로 및 이름
+			int index = newIndex + i;
+			String fileName = dirName.concat("/").concat(Integer.toString(index));
+			indexes.add(Integer.toString(index));
 
-        for (int i = 0; i < multipartFiles.size(); i++) {
-            File fileObj = convertMultiPartFileToFile(multipartFiles.get(i));
+			s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+			fileObj.deleteOnExit(); //임시 파일 삭제
+		}
 
-            //S3에 저장될 파일의 경로 및 이름
-            int index = newIndex + i;
-            String fileName = dirName.concat("/").concat(Integer.toString(index));
-            indexs.add(Integer.toString(index));
+		return indexes;
+	}
 
-            s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
-            fileObj.deleteOnExit(); //임시 파일 삭제
-        }
+	//이미지 1개 조회
+	@Override
+	public String getImg(long recordId, long userId, long imgId) {
+		String dirName = BUCKET_IMAGE_PATH + "/" + userId + "/" + recordId + "/" + imgId;
+		URL url = null;
+		if (s3Client.getObject(bucketName, dirName) != null) {
+			url = s3Client.getUrl(bucketName, dirName);
+		}
+		return url.toString();
+	}
 
-        return indexs;
-    }
+	//이미지 여러 개 조회
+	@Override
+	public List<String> getImgs(long recordId, long userId) {
+		String dirName = BUCKET_IMAGE_PATH + "/" + userId + "/" + recordId;
 
-    //이미지 1개 조회
-    @Override
-    public String getImg(long recordId, long userId, long imgId) {
-        String dirName = BUCKET_IMAGE_PATH + "/" + userId + "/" + recordId + "/" + imgId;
-        URL url = null;
-        if (s3Client.getObject(bucketName, dirName) != null) {
-            url = s3Client.getUrl(bucketName, dirName);
-        }
-        return url.toString();
-    }
+		List<String> urls = new ArrayList<>();
 
-    //이미지 여러 개 조회
-    @Override
-    public List<String> getImgs(long recordId, long userId) {
-        String dirName = BUCKET_IMAGE_PATH + "/" + userId + "/" + recordId;
+		ListObjectsV2Request listObjectsRequest = new ListObjectsV2Request();
+		listObjectsRequest.setBucketName(bucketName);
+		listObjectsRequest.setPrefix(dirName);
 
-        List<String> urls = new ArrayList<>();
+		//prefix밑에 있는 객체들
+		ListObjectsV2Result listObjectsResult;
 
-        ListObjectsV2Request listObjectsRequest = new ListObjectsV2Request();
-        listObjectsRequest.setBucketName(bucketName);
-        listObjectsRequest.setPrefix(dirName);
+		do {
+			listObjectsResult = s3Client.listObjectsV2(listObjectsRequest);
 
-        //prefix밑에 있는 객체들
-        ListObjectsV2Result listObjectsResult;
+			for (S3ObjectSummary objectSummary : listObjectsResult.getObjectSummaries()) {
+				String key = objectSummary.getKey();
+				URL url = s3Client.getUrl(bucketName, key);
+				urls.add(url.toString());
+			}
 
-        do {
-            listObjectsResult = s3Client.listObjectsV2(listObjectsRequest);
+			listObjectsRequest.setContinuationToken(listObjectsResult.getNextContinuationToken());
+		} while (listObjectsResult.isTruncated());
 
-            for (S3ObjectSummary objectSummary : listObjectsResult.getObjectSummaries()) {
-                String key = objectSummary.getKey();
-                URL url = s3Client.getUrl(bucketName, key);
-                urls.add(url.toString());
-            }
+		return urls;
+	}
 
-            listObjectsRequest.setContinuationToken(listObjectsResult.getNextContinuationToken());
-        } while (listObjectsResult.isTruncated());
+	@Override
+	public void deleteImg(long recordId, long userId, long imgId) {
+		String dirName = BUCKET_IMAGE_PATH + "/" + userId + "/" + recordId + "/" + imgId;
 
-        return urls;
-    }
+		s3Client.deleteObject(bucketName, dirName);
+	}
 
-    @Override
-    public void deleteImg(long recordId, long userId, long imgId) {
-        String dirName = BUCKET_IMAGE_PATH + "/" + userId + "/" + recordId + "/" + imgId;
+	@Override
+	public void deleteImgs(long recordId, long userId) {
+		String dirName = BUCKET_IMAGE_PATH + "/" + userId + "/" + recordId + "/";
 
-        s3Client.deleteObject(bucketName, dirName);
-    }
+		ListObjectsV2Request listObjectsRequest = new ListObjectsV2Request();
+		listObjectsRequest.setBucketName(bucketName);
+		listObjectsRequest.setPrefix(dirName);
 
-    @Override
-    public void deleteImgs(long recordId, long userId) {
-        String dirName = BUCKET_IMAGE_PATH + "/" + userId + "/" + recordId + "/";
+		//prefix밑에 있는 객체들
+		ListObjectsV2Result listObjectsResult;
 
-        ListObjectsV2Request listObjectsRequest = new ListObjectsV2Request();
-        listObjectsRequest.setBucketName(bucketName);
-        listObjectsRequest.setPrefix(dirName);
+		do {
+			listObjectsResult = s3Client.listObjectsV2(listObjectsRequest);
 
-        //prefix밑에 있는 객체들
-        ListObjectsV2Result listObjectsResult;
+			for (S3ObjectSummary objectSummary : listObjectsResult.getObjectSummaries()) {
+				String[] parts = objectSummary.getKey().split("/");
+				String imgId = parts[parts.length - 1];
+				String newDirName = dirName + imgId;
+				s3Client.deleteObject(bucketName, newDirName);
+			}
 
-        do {
-            listObjectsResult = s3Client.listObjectsV2(listObjectsRequest);
+			listObjectsRequest.setContinuationToken(listObjectsResult.getNextContinuationToken());
+		} while (listObjectsResult.isTruncated());
 
-            for (S3ObjectSummary objectSummary : listObjectsResult.getObjectSummaries()) {
-                String[] parts = objectSummary.getKey().split("/");
-                String imgId = parts[parts.length - 1];
-                String newDirName = dirName + imgId;
-                s3Client.deleteObject(bucketName, newDirName);
-            }
+	}
 
-            listObjectsRequest.setContinuationToken(listObjectsResult.getNextContinuationToken());
-        } while (listObjectsResult.isTruncated());
+	private int getNewIndex(String dirName) {
+		ListObjectsV2Result result = s3Client.listObjectsV2(bucketName, dirName);
+		List<S3ObjectSummary> objectSummaries = result.getObjectSummaries();
 
-    }
+		int maxIndex = 0;
 
-    private int getNewIndex(String dirName) {
-        ListObjectsV2Result result = s3Client.listObjectsV2(bucketName, dirName);
-        List<S3ObjectSummary> objectSummaries = result.getObjectSummaries();
+		if (objectSummaries.size() == 0) {
+			return maxIndex;
+		} else {
+			for (S3ObjectSummary objectSummary : objectSummaries) {
+				String key = objectSummary.getKey();
+				String[] parts = key.split("/");
+				if (parts.length > 1) {
+					int index = Integer.parseInt(parts[parts.length - 1]);
+					maxIndex = Math.max(maxIndex, index);
+				}
+			}
+		}
 
-        int maxIndex = 0;
+		return maxIndex + 1;
+	}
 
-        if (objectSummaries.size() == 0) {
-            return maxIndex;
-        } else {
-            for (S3ObjectSummary objectSummary : objectSummaries) {
-                String key = objectSummary.getKey();
-                String[] parts = key.split("/");
-                if (parts.length > 1) {
-                    int index = Integer.parseInt(parts[parts.length - 1]);
-                    maxIndex = Math.max(maxIndex, index);
-                }
-            }
-        }
-
-        return maxIndex + 1;
-    }
-
-    private File convertMultiPartFileToFile(MultipartFile multipartFile) {
-        try {
-            File convertedFile = File.createTempFile("temp", null);
-            multipartFile.transferTo(convertedFile);
-            return convertedFile;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to convert MultipartFile to File", e);
-        }
-    }
+	private File convertMultiPartFileToFile(MultipartFile multipartFile) {
+		try {
+			File convertedFile = File.createTempFile("temp", null);
+			multipartFile.transferTo(convertedFile);
+			return convertedFile;
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to convert MultipartFile to File", e);
+		}
+	}
 
 }

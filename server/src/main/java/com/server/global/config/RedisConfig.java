@@ -11,7 +11,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 //RedisRepository 활성화, RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP으로 보안 안 키의 만료 이벤트를 수신하고 처리하는 데 사용되는 리스너(KeyExpirationEventMessageListener를 시작 시 초기화
-@EnableRedisRepositories(enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)//TODO key의 만료 시간을 위한 설정?
+@EnableRedisRepositories(enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)
 @Configuration
 public class RedisConfig {
     @Value("${spring.redis.host}")

@@ -11,13 +11,13 @@ import com.server.domain.record.entity.Record;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface RecordMapper {
-    Record recordPostToRecord(RecordDto.Post requestBody);
+	Record recordPostToRecord(RecordDto.Post requestBody);
 
-    Record recordPatchToRecord(RecordDto.Patch requestBody);
+	Record recordPatchToRecord(RecordDto.Patch requestBody);
 
-    @Mapping(target = "memberId", source = "record.member.memberId")
-    RecordDto.Response recordToRecordResponse(Record record);
+	@Mapping(target = "memberId", source = "record.member.memberId")
+	RecordDto.Response recordToRecordResponse(Record record);
 
-    List<RecordDto.Response> recordsToRecordResponses(List<Record> records);
+	List<RecordDto.Response> recordsToRecordResponses(List<Record> records);
 
 }
