@@ -115,6 +115,8 @@ public class StubData {
 
         public static MemberDto.Response getSingleResponseBody() {
             return MemberDto.Response.builder()
+                    .memberId(1L)
+                    .email("testtest@naver.com")
                     .nickname("테스트수정계정")
                     .build();
         }
