@@ -37,6 +37,10 @@ public class TokenController {
             log.error("### 리프레쉬 토큰을 찾을 수 없음");
             jwtTokenizer.resetHeaderRefreshToken(response);
             throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
+        } catch (CustomException ce){
+            log.error("### 해당 회원을 찾을 수 없음");
+            jwtTokenizer.resetHeaderRefreshToken(response);
+            throw new CustomException(ExceptionCode.MEMBER_NOT_FOUND);
         }
     }
 }
