@@ -78,13 +78,13 @@ public class JwtTokenizer {
 
     public Jws<Claims> getClaims(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
-        try{
+        try {
             Jws<Claims> claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(jws);
             return claims;
-        } catch (ExpiredJwtException eje){
+        } catch (ExpiredJwtException eje) {
             throw eje;
         }
 
@@ -111,9 +111,10 @@ public class JwtTokenizer {
 
     public String getHeaderRefreshToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        if(cookies == null)  throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
-        for(Cookie cookie : cookies){
-            if(cookie.getName().equals("Refresh"))
+        if (cookies == null)
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("Refresh"))
                 return cookie.getValue();
         }
         throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
@@ -150,7 +151,6 @@ public class JwtTokenizer {
             .build();
         response.setHeader("Set-Cookie", cookie.toString());
     }
-
 
     public Map<String, Object> verifyJws(String jws) {
         String base64EncodedSecretKey = encodeBase64SecretKey(getSecretKey());

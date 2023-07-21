@@ -37,10 +37,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-            Authentication authentication) throws IOException {
+        Authentication authentication) throws IOException {
         OAuthAttributes oAuth2User = (OAuthAttributes)authentication.getPrincipal();
         Member findMember = memberRepository.findByEmail(oAuth2User.getEmail())
-                .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
 
         OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2TokenUtils.getOAuth2AuthorizedClient(authentication);
         if (oAuth2TokenUtils.getOAuthRegistration(oAuth2AuthorizedClient).equals("kakao")) {
@@ -67,12 +67,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         queryParams.add("access_token", accessToken);
         queryParams.add("refresh_token", refreshToken);
         return UriComponentsBuilder
-                .newInstance()
-                .scheme("https")
-                .host("plip.netlify.app") // 리다이렉트 시킬 클라이언트 주소
-                .path("/oauth")
-                .queryParams(queryParams)
-                .build()
-                .toUri();
+            .newInstance()
+            .scheme("https")
+            .host("plip.netlify.app") // 리다이렉트 시킬 클라이언트 주소
+            .path("/oauth")
+            .queryParams(queryParams)
+            .build()
+            .toUri();
     }
 }

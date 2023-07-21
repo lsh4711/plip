@@ -28,34 +28,34 @@ public class KakaoApiService {
         String body = gson.toJson(template);
 
         String result = WebClient.create(messageApiUrl)
-                .post()
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .header("Authorization", "Bearer " + accessToken)
-                .body(BodyInserters.fromFormData("template_object", body))
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+            .post()
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .header("Authorization", "Bearer " + accessToken)
+            .body(BodyInserters.fromFormData("template_object", body))
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
     }
 
     // test
     public String sendTextMessage(String accessToken, String message) {
         KakaoTemplateObject.Text bodyBuilder = KakaoTemplateObject.Text.builder()
-                .object_type("text")
-                .text(message)
-                .link(new Link())
-                .build();
+            .object_type("text")
+            .text(message)
+            .link(new Link())
+            .build();
         String body = gson.toJson(bodyBuilder);
 
         String result = WebClient.create(messageApiUrl)
-                .post()
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .header("Authorization", "Bearer " + accessToken)
-                .body(BodyInserters.fromFormData("template_object", body))
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+            .post()
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .header("Authorization", "Bearer " + accessToken)
+            .body(BodyInserters.fromFormData("template_object", body))
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
 
         return message;
     }

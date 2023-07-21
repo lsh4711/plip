@@ -24,12 +24,12 @@ public class MailController {
     private final AuthMailCodeMapper authMailCodeMapper;
 
     @PostMapping()
-    public ResponseEntity<?> postSignupSendEmail(@RequestParam("type")String type, @Valid @RequestBody MailDto.Post request) {
-        mailService.verificationEmail(request.getEmail(),type);
-        mailService.sendMail(request.getEmail(),type);
+    public ResponseEntity<?> postSignupSendEmail(@RequestParam("type") String type,
+        @Valid @RequestBody MailDto.Post request) {
+        mailService.verificationEmail(request.getEmail(), type);
+        mailService.sendMail(request.getEmail(), type);
         return ResponseEntity.ok().build();
     }
-
 
     @PostMapping("/auth")
     public ResponseEntity<?> postAuthEmail(@RequestBody AuthMailCodeDto.Post request) {
