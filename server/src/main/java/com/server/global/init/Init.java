@@ -14,7 +14,6 @@ import com.server.domain.category.service.CategoryService;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.entity.Member.Role;
 import com.server.domain.member.service.MemberService;
-import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.oauth.service.KakaoTokenOauthService;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.service.PlaceService;
@@ -104,14 +103,6 @@ public class Init {
             member.setRole(admin);
             memberService.createMember(member);
         }
-        Member testMember = Member.builder()
-                .memberId(1L)
-                .build();
-        KakaoToken kakaoToken = KakaoToken.builder()
-                .accessToken("tOY0hmN6A9H8RpiX2nkDCmOZECpCN-QqpNMCMqknCisNHgAAAYln0WhQ")
-                .member(testMember)
-                .build();
-        kakaoTokenOauthService.saveTestToken(kakaoToken);
 
         Member member = Member.builder()
                 .memberId(1L)
