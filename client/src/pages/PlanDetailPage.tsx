@@ -20,7 +20,6 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
   const { id } = useParams();
   const { data, isLoading, error } = usePlanQuery(id!);
   const { schedules } = useSelector((state: RootState) => state.schedule);
-  const isLogin = useSelector((state: RootState) => state.auth.isLogin);
 
   const [mapLevel, setMapLevel] = useState(8);
   const { placeId, currentRecord, setRecords } = useMapDetailContext();
@@ -67,13 +66,11 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
             />
             <TripSchedule startDate={data?.startDate!} places={schedules} />
 
-            {isLogin && (
-              <Link to={`/plan/map/${id}`}>
-                <Button variant={'primary'} className="absolute -left-1/2 top-6" onClick={() => {}}>
-                  일정 수정하기
-                </Button>
-              </Link>
-            )}
+            <Link to={`/plan/map/${id}`}>
+              <Button variant={'primary'} className="absolute -left-1/2 top-6" onClick={() => {}}>
+                일정 수정하기
+              </Button>
+            </Link>
 
             <ZoomButtons
               onClickZoomIn={() => {

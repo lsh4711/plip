@@ -7,10 +7,14 @@ import { ReactComponent as ProfileIcon } from '@/assets/icons/profile.svg';
 import useModal from '@/hooks/useModal';
 import Confirm from '../common/Confirm';
 import RoundButton from '../common/RoundButton';
+import { useState } from 'react';
+import SharesButtons from '../common/SharesButtons';
 
 const MenuButtons = () => {
   const navigate = useNavigate();
   const [openModal] = useModal();
+
+  const [isClickedShare, setIsClickedShare] = useState(false);
 
   return (
     <div className="absolute bottom-6 left-6 z-50 flex gap-2">
@@ -58,9 +62,12 @@ const MenuButtons = () => {
       >
         <MdHome size={24} color="#bbb" />
       </RoundButton>
-      <RoundButton>
-        <GiShare size={24} color="#bbb" />
-      </RoundButton>
+      <div>
+        {isClickedShare && <>{/* <SharesButtons /> */}</>}
+        <RoundButton onClick={() => setIsClickedShare(!isClickedShare)}>
+          <GiShare size={24} color="#bbb" />
+        </RoundButton>
+      </div>
       <RoundButton>
         <MdAddLocation size={24} color="#bbb" />
       </RoundButton>

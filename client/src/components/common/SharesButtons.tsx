@@ -4,26 +4,29 @@ import Button from '../atom/Button';
 import { ReactComponent as KakaoIcon } from '@/assets/icons/kakaoauth.svg';
 import { ReactComponent as ShareIcon } from '@/assets/icons/share-link.svg';
 import useToast from '@/hooks/useToast';
+import instance from '@/queries/axiosinstance';
 import { UserGetRequest } from '@/types/api/users-types';
 
-const SharesButtons = ({
-  scheduleId,
-  userInfo,
-}: {
-  scheduleId: number;
-  userInfo: UserGetRequest;
-}) => {
+const SharesButtons = ({ scheduleId }: { scheduleId: number }) => {
   const [shareLink, setShareLink] = useState('');
+  const [userInfo, setUserInfo] = useState<UserGetRequest>();
   const toast = useToast();
 
   useEffect(() => {
-    const { memberId, email } = userInfo;
+    const getUserInfo = async () => {
+      await instance.get('/api/users').then((res) => {
+        const { memberId, email } = res.data.data;
+
+        setShareLink(
+          // `https://plip.netlify.app/plan/detail/${scheduleId}/share?id=${memberId}&email=${email}`
+          `http://localhost:5173/plan/detail/${scheduleId}/share?id=${memberId}&email=${email}`
+        );
+      });
+    };
+
+    getUserInfo();
 
     // 이후 배포주소로 변경 필요
-    setShareLink(
-      `https://plip.netlify.app/plan/detail/${scheduleId}/share?id=${memberId}&email=${email}`
-      // `http://localhost:5173/plan/detail/${scheduleId}/share?id=${memberId}&email=${email}`
-    );
   }, []);
 
   return (
