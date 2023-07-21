@@ -37,10 +37,10 @@ public class TestController {
                 .setNotification(Notification.builder()
                         .setTitle("제목")
                         .setBody("내용")
-                        .setImage("https://teamdev.shop:8000/files/images/test?name=test")
+                        .setImage("https://teamdev.shop/files/images/test?name=test")
                         .build())
                 .setWebpushConfig(WebpushConfig.builder()
-                        .setFcmOptions(WebpushFcmOptions.withLink("https://teamdev.shop:8000/"))
+                        .setFcmOptions(WebpushFcmOptions.withLink("https://teamdev.shop/"))
                         .build())
                 .build();
 

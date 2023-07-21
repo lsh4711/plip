@@ -51,7 +51,7 @@ public class KakaoTemplateConstructor {
                 .description("PliP과 함께 여행 일정을 작성하러 가볼까요?")
                 .image_width(600)
                 .image_height(400)
-                .image_url("https://teamdev.shop:8000/files/images?region=" + region)
+                .image_url("https://teamdev.shop/files/images?region=" + region)
                 .link(link)
                 .build();
         Feed feed = Feed.builder()
@@ -97,7 +97,7 @@ public class KakaoTemplateConstructor {
                 .description(String.format("기간: %s \n~ %s (%s)", startDate, endDate, term))
                 .image_width(600)
                 .image_height(400)
-                .image_url("https://teamdev.shop:8000/files/images?region=" + engName)
+                .image_url("https://teamdev.shop/files/images?region=" + engName)
                 .link(link)
                 .build();
         Feed feed = Feed.builder()
