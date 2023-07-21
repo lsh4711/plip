@@ -1,24 +1,25 @@
-import { Button, HeadingParagraph, Input, Paragraph } from '@/components';
-import { SIGNOUT_VALIDATION_STRING } from '@/datas/constants';
 import { Link } from 'react-router-dom';
+
+import { Button, HeadingParagraph, Paragraph } from '@/components';
 import SignoutForm from '@/components/forms/SignoutForm';
+import { SIGNOUT_VALIDATION_STRING } from '@/datas/constants';
 
 const SignOutPage = () => {
   return (
-    <main className=" mx-auto flex max-w-[1024px] flex-col">
-      <div className=" mt-12 flex flex-col items-center justify-center">
-        <HeadingParagraph variant={'darkgray'} size={'lg'}>
-          회원탈퇴
-        </HeadingParagraph>
-        <Paragraph className=" mb-3 mt-6">
-          회원탈퇴를 원하시면 아래 문장을 똑같이 작성해주세요
-        </Paragraph>
+    <div className="flex flex-col">
+      <HeadingParagraph variant={'darkgray'} size={'md'}>
+        회원탈퇴
+      </HeadingParagraph>
+      <Paragraph className=" mb-3 mt-6">
+        회원탈퇴를 원하시면 아래 문장을 똑같이 작성해주세요.
+      </Paragraph>
+      <div className="flex h-full w-full flex-col items-center pt-8">
         <Paragraph variant={'red'} weight={'bold'} className=" my-4">
           {SIGNOUT_VALIDATION_STRING}
         </Paragraph>
 
         <SignoutForm />
-        
+
         <div className=" mt-6 flex w-[460px] flex-col">
           <Button
             className=" bg-zinc-400 text-white"
@@ -30,7 +31,7 @@ const SignOutPage = () => {
           </Button>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 

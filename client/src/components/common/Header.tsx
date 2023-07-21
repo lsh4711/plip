@@ -1,14 +1,12 @@
+import { CgMenu } from '@react-icons/all-files/cg/CgMenu';
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 
 import { useCloseDropdown } from '@/hooks/useCloseDropdown';
 import useInquireUsersQuery from '@/queries/auth/useInquireUsersQuery';
-import instance from '@/queries/axiosinstance';
 import { RootState } from '@/redux/store';
 import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
-import { ReactComponent as MypageIcon } from '../../assets/icons/mypage.svg';
-import { ReactComponent as NotifyIcon } from '../../assets/icons/notification.svg';
 import { ReactComponent as LogoIcon } from '../../assets/logo.svg';
 import Button from '../atom/Button';
 import LoadingSpinner from '../atom/LoadingSpinner';
@@ -48,17 +46,19 @@ const AfterLogin = ({ isHome }: AfterHeaderProps) => {
   const inquireQuery = useInquireUsersQuery();
   return (
     <>
-      <Link to="/mypage/mytrip">
+      {/* <Link to="/mypage/mytrip">
         <MypageIcon />
       </Link>
       <Link to="#">
         <NotifyIcon />
-      </Link>
+      </Link> */}
       <Link to="/mypage">
         <Avatar />
       </Link>
       <div
-        className={`flex cursor-pointer select-none items-center text-sm ${isHome && 'text-white'}`}
+        className={`hidden cursor-pointer select-none items-center text-sm md:flex ${
+          isHome && 'text-white'
+        }`}
         ref={ref}
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -76,15 +76,16 @@ const Header = () => {
 
   return (
     <header
-      className={`left-0 top-0 z-40 h-[76px] w-full px-10 ${
-        isHome ? ' fixed' : 'stikcy border-b-2 bg-white'
+      className={`left-0 top-0 z-40 h-[76px] w-full px-8 ${
+        isHome ? ' fixed' : 'fixed border-b-2 bg-white'
       }`}
     >
       <nav className="m-auto flex h-full items-center justify-between">
+        {!isHome && <CgMenu size={25} color="#343539" className="md:hidden" />}
         <Link to="/">
           <div className="flex items-center gap-2">
             <LogoIcon width={35} height={35} />
-            <span className="gradient-text text-xl font-bold">PliP</span>
+            <span className="gradient-text hidden text-xl font-bold md:block">PliP</span>
           </div>
         </Link>
         <React.Suspense fallback={<LoadingSpinner />}>

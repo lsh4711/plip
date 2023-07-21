@@ -1,23 +1,23 @@
-import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import App from './App';
-import Providers from './components/common/Providers';
-import store from '@/redux/store';
 import ModalProvider from '@/contexts/modal/ModalProvider';
+import store from '@/redux/store';
 import '@/styles/animation.css';
 import '@/styles/global.css';
 import '@/styles/index.css';
-import { lazy, Suspense } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { Provider } from 'react-redux';
-import LoadingSpinner from './components/atom/LoadingSpinner';
-import NotFound from './pages/NotFound';
+import { lazy, Suspense } from 'react';
+import ReactDOM from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';
-import ErrorFallback from './components/helper/ErrorFallback';
-import LoadingPage from './pages/LoadingPage';
-import ToastContainer from './components/ui/toast/ToastContainer';
-import OauthRedirect from './pages/OauthRedirect';
+import { Provider } from 'react-redux';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import App from './App';
+import Providers from './components/common/Providers';
 import AxiosProvider from './components/helper/AxiosProvider';
+import ErrorFallback from './components/helper/ErrorFallback';
+import ToastContainer from './components/ui/toast/ToastContainer';
+import MypageLayout from './MypageLayout';
+import LoadingPage from './pages/LoadingPage';
+import NotFound from './pages/NotFound';
+import OauthRedirect from './pages/OauthRedirect';
 
 const Home = lazy(() => import('./pages/Home'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
@@ -44,12 +44,19 @@ const router = createBrowserRouter([
       { path: 'signout', element: <SignOutPage /> },
       { path: 'login/password', element: <ResetPasswordPage /> },
       { path: 'plan', element: <PlanPage /> },
-      { path: 'mypage', element: <MyPage /> },
-      { path: 'mypage/mytrip', element: <MyTripPage /> },
-      { path: 'mypage/myrecord', element: <MyRecordPage /> },
-      { path: 'mypage/footprint', element: <FootPrintPage /> },
-      { path: 'mypage/bookmark', element: <Bookmark /> },
       { path: 'loading', element: <LoadingPage /> },
+      {
+        path: 'mypage/',
+        element: <MypageLayout />,
+        children: [
+          { path: 'info', element: <MyPage /> },
+          { path: 'mytrip', element: <MyTripPage /> },
+          { path: 'myrecord', element: <MyRecordPage /> },
+          { path: 'footprint', element: <FootPrintPage /> },
+          { path: 'signout', element: <SignOutPage /> },
+          { path: 'bookmark', element: <Bookmark /> },
+        ],
+      },
     ],
   },
   {
