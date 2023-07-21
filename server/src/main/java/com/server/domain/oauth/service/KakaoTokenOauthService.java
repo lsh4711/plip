@@ -19,10 +19,10 @@ public class KakaoTokenOauthService {
 
     public void saveToken(String accessToken, String refreshToken, Member member) {
         KakaoToken token = KakaoToken.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .member(member)
-                .build();
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .member(member)
+            .build();
         Optional<KakaoToken> findToken = kakaoTokenRepository.findByMember_MemberId(member.getMemberId());
         if (findToken.isEmpty())
             kakaoTokenRepository.save(token);

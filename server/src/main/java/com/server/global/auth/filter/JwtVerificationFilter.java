@@ -36,7 +36,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
         FilterChain filterChain) throws ServletException, IOException {
         try {
             String jws = jwtTokenizer.getHeaderAccessToken(request);
-            if(redisUtils.hasKeyBlackList(jws))
+            if (redisUtils.hasKeyBlackList(jws))
                 throw new CustomException(ExceptionCode.LOGOUT_USER);
 
             Map<String, Object> claims = jwtTokenizer.verifyJws(jws);
@@ -59,12 +59,13 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException je) {
                 log.error("### 리프레쉬 토큰을 찾을 수 없음");
                 jwtTokenizer.resetHeaderRefreshToken(response);
-                AuthenticationError.sendErrorResponse(response, new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND));
+                AuthenticationError.sendErrorResponse(response,
+                    new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND));
             }
         } catch (MalformedJwtException mje) {
             log.error("### 올바르지 않은 토큰 형식입니다.");
             AuthenticationError.sendErrorResponse(response, new CustomException(ExceptionCode.TOKEN_FORMAT_INVALID));
-        } catch (SignatureException se){
+        } catch (SignatureException se) {
             log.error("### 토큰의 서명이 잘못 됐습니다. 변조 데이터일 가능성이 있습니다.");
             AuthenticationError.sendErrorResponse(response, new CustomException(ExceptionCode.SIGNATURE_INVALID));
         }

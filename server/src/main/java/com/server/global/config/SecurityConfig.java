@@ -56,7 +56,7 @@ public class SecurityConfig {
             .and()
             .logout()
             .logoutUrl("/api/users/logout")
-            .deleteCookies("Refresh") //TODO
+            .deleteCookies("Refresh")
             .addLogoutHandler(new MemberLogoutHandler(redisUtils, jwtTokenizer))
             .logoutSuccessHandler(new MemberLogoutSuccessHandler())
             .and()

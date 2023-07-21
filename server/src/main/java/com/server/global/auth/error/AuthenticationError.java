@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import com.google.gson.Gson;
 import com.server.global.exception.CustomException;
 
-
 public class AuthenticationError {
     public static void sendErrorResponse(HttpServletResponse response, Exception exception) throws IOException {
         Gson gson = new Gson();
@@ -19,17 +18,18 @@ public class AuthenticationError {
         response.setStatus(getErrorStatus(exception).value());
         response.getWriter().write(gson.toJson(getErrorMessage(exception)));
     }
-    public static HttpStatus getErrorStatus(Exception exception){
-        if(exception.getClass().equals(CustomException.class))
+
+    public static HttpStatus getErrorStatus(Exception exception) {
+        if (exception.getClass().equals(CustomException.class))
             return ((CustomException)exception).getStatus();
         else
             return HttpStatus.UNAUTHORIZED;
     }
-    public static String getErrorMessage(Exception exception){
-        if(exception.getClass().equals(CustomException.class)){
+
+    public static String getErrorMessage(Exception exception) {
+        if (exception.getClass().equals(CustomException.class)) {
             return exception.getMessage();
-        }
-        else{
+        } else {
             return "권한이 없는 사용자입니다.";
         }
     }

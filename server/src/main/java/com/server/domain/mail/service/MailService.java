@@ -44,7 +44,7 @@ public class MailService {
 
             mimeMessageHelper.setTo(email);
             mimeMessageHelper.setText(setContext(authCode, type), true);
-            if(type.equals("signup") || type.equals("pw")){
+            if (type.equals("signup") || type.equals("pw")) {
                 //이메일 인증 코드를 update
                 authMailCodeService.saveOrUpdateAuthCode(authCode, email);
             }
@@ -61,10 +61,10 @@ public class MailService {
     public void verificationEmail(String email, String type) {
         Optional<Member> findMember = memberRepository.findByEmail(email);
         //비밀번호를 찾을 때 이메일 인증을 하는 경우
-        if(type.equals("pw") && findMember.isEmpty())
+        if (type.equals("pw") && findMember.isEmpty())
             throw new CustomException(ExceptionCode.MEMBER_NOT_FOUND);
         //회원 가입에서 이메일 인증을 하는 경우
-        else if(type.equals("signup") && findMember.isPresent())
+        else if (type.equals("signup") && findMember.isPresent())
             throw new CustomException(ExceptionCode.EMAIL_EXISTS);
     }
 

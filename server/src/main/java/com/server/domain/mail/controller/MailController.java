@@ -24,13 +24,13 @@ public class MailController {
     private final AuthMailCodeMapper authMailCodeMapper;
 
     //회원가입시 이메일 인증
-    @PostMapping
-    public ResponseEntity<?> postSignupSendEmail(@RequestParam("type")String type, @Valid @RequestBody MailDto.Post request) {
-        mailService.verificationEmail(request.getEmail(),type);
-        mailService.sendMail(request.getEmail(),type);
+    @PostMapping()
+    public ResponseEntity<?> postSignupSendEmail(@RequestParam("type") String type,
+        @Valid @RequestBody MailDto.Post request) {
+        mailService.verificationEmail(request.getEmail(), type);
+        mailService.sendMail(request.getEmail(), type);
         return ResponseEntity.ok().build();
     }
-
 
     //이메일 인증 여부 코드로 확인
     @PostMapping("/auth")

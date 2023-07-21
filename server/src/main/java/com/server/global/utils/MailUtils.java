@@ -38,19 +38,21 @@ public class MailUtils {
         return key.toString();
     }
 
-    public String getMailTitle(Schedule schedule, Member member){
+    public String getMailTitle(Schedule schedule, Member member) {
         int period = schedule.getPeriod();
         String term = period == 1 ? "당일치기" : String.format("%d박 %d일", period - 1, period);
-        return String.format("[PliP] %s 님의 %s %s 여행 일정이 도착했습니다.", member.getNickname(), schedule.getRegion().getKorName(), term);
+        return String.format("[PliP] %s 님의 %s %s 여행 일정이 도착했습니다.", member.getNickname(),
+            schedule.getRegion().getKorName(), term);
     }
 
-    public String getContent(Schedule schedule, Member member){
+    public String getContent(Schedule schedule, Member member) {
         int period = schedule.getPeriod();
         String term = period == 1 ? "당일치기" : String.format("%d박 %d일", period - 1, period);
-        return String.format("%s 님! %s 로 %s 여행을 계획하셨습니다!", member.getNickname(), schedule.getRegion().getKorName(), term);
+        return String.format("%s 님! %s 로 %s 여행을 계획하셨습니다!", member.getNickname(), schedule.getRegion().getKorName(),
+            term);
     }
 
-    public String getUri(Schedule schedule, Member member){
+    public String getUri(Schedule schedule, Member member) {
         return String.format(
             "https://plip.netlify.app/plan/detail/%d/share?id=%d&email=%s", schedule.getScheduleId(),
             member.getMemberId(), member.getEmail());
