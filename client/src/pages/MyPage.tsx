@@ -245,6 +245,11 @@ const MyPage = ({}: MyPageProps) => {
               완료
             </Button>
           </div>
+          <div className="flex justify-end">
+            <Link to="/mypage/signout" className="text-sm text-[#bbb]">
+              회원 탈퇴하기
+            </Link>
+          </div>
         </form>
       </div>
     </div>
