@@ -79,7 +79,7 @@ const PlanPage = ({}: PlanPageProps) => {
 
   return (
     <Wrapper>
-      <main className="smooth relative flex h-full w-full max-w-7xl flex-col px-12 py-12 transition-all duration-300 ">
+      <main className="smooth relative flex h-full w-full max-w-7xl flex-col px-8 py-12 transition-all duration-300 ">
         <div className="flex justify-between">
           <HeadingParagraph
             size={'md'}
@@ -88,7 +88,7 @@ const PlanPage = ({}: PlanPageProps) => {
           >
             계획 중이신 여행에 대해 알려주세요.
           </HeadingParagraph>
-          <div className="fixed bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-white from-60% to-white/0 px-12 pb-6 pt-3 md:static md:w-auto md:p-0">
+          <div className="fixed bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-white from-60% to-white/0 px-8 pb-6 pt-3 md:static md:w-auto md:p-0">
             <Button
               variant={'primary'}
               activecolor={'active'}
