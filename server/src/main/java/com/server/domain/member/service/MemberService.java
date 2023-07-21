@@ -27,7 +27,7 @@ public class MemberService {
 
 		String encryptedPassword = passwordEncoder.encode(member.getPassword());
 		member.setPassword(encryptedPassword);
-		if (member.getRole() == null) {
+		if (member.getRole() == null) { //TODO:로직
 			member.setRole(Role.USER);
 		}
 		return memberRepository.save(member);
@@ -54,7 +54,8 @@ public class MemberService {
 	public Member findMember(long memberId) {
 		Optional<Member> optionalMember = memberRepository.findById(memberId);
 
-		return optionalMember.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
+		return optionalMember.orElseThrow(
+			() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
 	}
 
 	//회원이메일로 등록된 회원인지 검증
@@ -69,7 +70,8 @@ public class MemberService {
 
 		Optional.ofNullable(patchMember.getPassword())
 			.ifPresent(password -> member.setPassword(passwordEncoder.encode(password)));
-		Optional.ofNullable(patchMember.getNickname()).ifPresent(member::setNickname);
+		Optional.ofNullable(patchMember.getNickname())
+			.ifPresent(member::setNickname);
 		return member;
 	}
 

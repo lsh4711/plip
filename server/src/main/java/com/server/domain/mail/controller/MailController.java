@@ -24,7 +24,7 @@ public class MailController {
 	private final AuthMailCodeMapper authMailCodeMapper;
 
 	//회원가입시 이메일 인증
-	@PostMapping
+	@PostMapping()
 	public ResponseEntity<?> postSignupSendEmail(@RequestParam("type") String type,
 		@Valid @RequestBody MailDto.Post request) {
 		mailService.verificationEmail(request.getEmail(), type);
@@ -38,4 +38,5 @@ public class MailController {
 		mailService.authenticationMailCode(authMailCodeMapper.authMailCodeDtoPostToAuthMailCode(request));
 		return ResponseEntity.ok().build();
 	}
+
 }

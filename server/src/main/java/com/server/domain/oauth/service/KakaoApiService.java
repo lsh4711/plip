@@ -16,10 +16,12 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class KakaoApiService {
-	private final Gson gson;
 	@Value("${kakao.api-key}")
 	private String apiKey;
+
 	private final String messageApiUrl = "https://kapi.kakao.com/v2/api/talk/memo/default/send";
+
+	private final Gson gson;
 
 	@Async
 	public void sendMessage(Object template, String accessToken) {

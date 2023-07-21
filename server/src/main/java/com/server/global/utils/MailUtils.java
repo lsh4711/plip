@@ -54,7 +54,9 @@ public class MailUtils {
 	}
 
 	public String getUri(Schedule schedule, Member member) {
-		return String.format("https://plip.netlify.app/plan/detail/%d/share?id=%d&email=%s", schedule.getScheduleId(),
+		return String.format(
+			"https://plip.netlify.app/plan/detail/%d/share?id=%d&email=%s", schedule.getScheduleId(),
 			member.getMemberId(), member.getEmail());
 	}
+
 }

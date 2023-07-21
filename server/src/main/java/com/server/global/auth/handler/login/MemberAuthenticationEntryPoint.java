@@ -2,7 +2,6 @@ package com.server.global.auth.handler.login;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberAuthenticationEntryPoint implements AuthenticationEntryPoint {
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
-		AuthenticationException authException) throws IOException, ServletException {
+		AuthenticationException authException) throws IOException {
 		log.error("### MemberAuthenticationEntryPoint Error!! : " + authException.getMessage());
 		AuthenticationError.sendErrorResponse(response, authException);
 	}

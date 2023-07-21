@@ -3,6 +3,7 @@ package com.server.domain.member.controller;
 import java.net.URI;
 import java.security.Principal;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import com.server.domain.member.dto.MemberDto;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.mapper.MemberMapper;
 import com.server.domain.member.service.MemberService;
+import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.dto.SingleResponseDto;
 import com.server.global.utils.UriCreator;
 
@@ -33,6 +35,7 @@ public class MemberController {
 	private final MemberMapper memberMapper;
 	private final MemberService memberService;
 	private final MailService mailService;
+	private final JwtTokenizer jwtTokenizer;
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> postMember(@Valid @RequestBody MemberDto.Post request) {
@@ -45,8 +48,8 @@ public class MemberController {
 	@GetMapping
 	public ResponseEntity<?> getMember(Principal principal) {
 		Member member = memberService.findMemberByEmail(principal.getName());
-		return new ResponseEntity<>(new SingleResponseDto<>(memberMapper.memberToMemberDtoResponse(member)),
-			HttpStatus.OK);
+		return new ResponseEntity<>(
+			new SingleResponseDto<>(memberMapper.memberToMemberDtoResponse(member)), HttpStatus.OK);
 	}
 
 	@PatchMapping
@@ -58,12 +61,13 @@ public class MemberController {
 	}
 
 	@DeleteMapping
-	public ResponseEntity<?> deleteMember(Principal principal) {
+	public ResponseEntity<?> deleteMember(HttpServletResponse response, Principal principal) {
 		memberService.deleteMember(principal.getName());
+		jwtTokenizer.resetHeaderRefreshToken(response);
 		return ResponseEntity.noContent().build();
 	}
 
-	@PatchMapping("/password")
+	@PatchMapping("/password") //TODO: password 수정을 따로 분리한 이유? -> 비밀번호 재설정
 	public ResponseEntity<?> patchPasswordMember(@RequestBody @Valid MemberDto.PasswordPatch request) {
 		memberService.updatePassword(memberMapper.memberDtoPasswordPatchToMember(request));
 		return ResponseEntity.ok().build();

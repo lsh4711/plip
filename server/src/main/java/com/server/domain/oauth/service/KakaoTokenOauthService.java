@@ -24,11 +24,10 @@ public class KakaoTokenOauthService {
 			.member(member)
 			.build();
 		Optional<KakaoToken> findToken = kakaoTokenRepository.findByMember_MemberId(member.getMemberId());
-		if (findToken.isEmpty()) {
+		if (findToken.isEmpty())
 			kakaoTokenRepository.save(token);
-		} else {
+		else
 			findToken.get().setAccessToken(accessToken);
-		}
 	}
 
 	public void saveTestToken(KakaoToken kakaoToken) {

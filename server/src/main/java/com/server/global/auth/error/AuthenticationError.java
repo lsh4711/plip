@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.server.global.exception.CustomException;
 
 public class AuthenticationError {
+
 	public static void sendErrorResponse(HttpServletResponse response, Exception exception) throws IOException {
 		Gson gson = new Gson();
 		response.setCharacterEncoding("UTF-8");
@@ -33,4 +34,5 @@ public class AuthenticationError {
 			return "권한이 없는 사용자입니다.";
 		}
 	}
+
 }
