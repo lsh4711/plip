@@ -9,7 +9,8 @@ const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
       <HeadingParagraph variant={'darkgray'} size={'xl'} className="text-center">
         {error.message}
       </HeadingParagraph>
-      <Button onClick={() => resetErrorBoundary()}>reset</Button>
+      <Button onClick={() => resetErrorBoundary()}>재시도하기</Button>
+      <Button onClick={() => location.reload()}>강력새로고침</Button>
       <Paragraph className=" mt-4">
         <strong className=" text-sky-400">잠시</strong> 기다려주세요
       </Paragraph>
