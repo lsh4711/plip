@@ -16,12 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 public class FirebaseConfig {
-    @Value("${spring.servlet.multipart.location}")
+    @Value("${file.path}")
     private String basePath;
 
     @PostConstruct
     public void initFirebase() {
-        String path = basePath.substring(0, 35) + "/firebase.json";
+        String path = basePath + "/firebase.json";
 
         try {
             FileInputStream serviceAccount = new FileInputStream(path);

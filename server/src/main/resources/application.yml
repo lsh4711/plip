@@ -98,8 +98,11 @@ springdoc:
     path: /docs/swagger
   
 kakao:
-    redirect-url: ${REDIRECT_URL8000}
-    api-key: ${API_KEY}
+  redirect-url: ${REDIRECT_URL8000}
+  api-key: ${API_KEY}
+file:
+  path: ${FILE_LOCATION}
+
 
 cloud:
   aws:
