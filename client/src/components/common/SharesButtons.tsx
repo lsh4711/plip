@@ -6,6 +6,7 @@ import { ReactComponent as ShareIcon } from '@/assets/icons/share-link.svg';
 import useToast from '@/hooks/useToast';
 import instance from '@/queries/axiosinstance';
 import { UserGetRequest } from '@/types/api/users-types';
+import RoundButton from './RoundButton';
 
 const SharesButtons = ({ scheduleId }: { scheduleId: number }) => {
   const [shareLink, setShareLink] = useState('');
@@ -35,21 +36,14 @@ const SharesButtons = ({ scheduleId }: { scheduleId: number }) => {
         text={shareLink}
         onCopy={() => toast({ content: '링크 복사 완료!', type: 'success' })}
       >
-        <Button
-          hovercolor={'default'}
-          variant={'ring'}
-          className="h-[50px] w-[50px] rounded-[100%] hover:scale-110 hover:transition-all"
-        >
+        <RoundButton>
           <ShareIcon fill="#4568DC" />
-        </Button>
+        </RoundButton>
       </CopyToClipboard>
 
-      <Button
-        hovercolor={'default'}
-        className="h-[50px] w-[50px] p-0 hover:scale-110 hover:transition-all"
-      >
+      <RoundButton>
         <KakaoIcon />
-      </Button>
+      </RoundButton>
     </>
   );
 };

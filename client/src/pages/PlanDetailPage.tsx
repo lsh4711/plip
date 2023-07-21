@@ -10,9 +10,10 @@ import { TripInfo, TripSchedule } from '@/components/schedule';
 import { useState } from 'react';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
 import instance from '@/queries/axiosinstance';
-import NoRecord from '@/components/map/NoRecord';
+import NoRecord from '@/components/page-components/plan-detail/NoRecord';
 import { useMapDetailContext } from '@/contexts/MapDetailProvider';
-import Record from '@/components/common/Record';
+import Record from '@/components/page-components/plan-detail/Record';
+import RecordPanel from '@/components/page-components/plan-detail/RecordPanel';
 
 interface PlanDetailPageProps {}
 
@@ -22,11 +23,10 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
   const { schedules } = useSelector((state: RootState) => state.schedule);
 
   const [mapLevel, setMapLevel] = useState(8);
-  const { placeId, currentRecord, setRecords } = useMapDetailContext();
+  const { setRecords } = useMapDetailContext();
 
   useState(() => {
     instance.get(`/api/schedules/${id}/share?id=3&email=test@naver.com`).then((res) => {
-      console.log(res.data.recordsMap);
       const records = res.data.recordsMap;
 
       if (records) {
@@ -53,9 +53,7 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
             showPolyline
           />
           <MenuButtons />
-          <div className="fixed left-6 top-[5%] z-50 flex h-[80%] flex-col rounded-lg bg-white opacity-80 drop-shadow-2xl hover:opacity-100 2xl:h-[800px] 2xl:w-[340px]">
-            {currentRecord ? <Record content={currentRecord} /> : <NoRecord id={placeId} />}
-          </div>
+          <RecordPanel />
 
           <SidePanel position={'right'}>
             <TripInfo

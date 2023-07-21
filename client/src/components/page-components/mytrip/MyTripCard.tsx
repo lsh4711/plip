@@ -32,7 +32,6 @@ const MyTripCard = ({
 }: MyTripTypes) => {
   const [endTrip, setEndTrip] = useState(isEnd);
   const [isClickedShare, setIsClickedShare] = useState(false);
-  const [userInfo, setUserInfo] = useState<UserGetRequest>();
 
   const [openModal] = useModal();
   const removeTripMutation = useRemoveTripMutation();
