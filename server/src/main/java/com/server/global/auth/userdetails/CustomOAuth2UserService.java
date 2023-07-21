@@ -12,6 +12,9 @@ import com.server.domain.mail.service.MailService;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.mapper.MemberMapper;
 import com.server.domain.member.repository.MemberRepository;
+import com.server.domain.oauth.service.KakaoApiService;
+import com.server.domain.oauth.template.KakaoTemplateConstructor;
+import com.server.domain.oauth.template.KakaoTemplateObject.Feed;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,21 +25,31 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final MemberMapper memberMapper;
     private final MailService mailService;
 
-    //OAuth2 프로바이더로부터 인증 정보를 가져와서 사용자 정보를 로드
+    private final KakaoApiService kakaoApiService;
+    private final KakaoTemplateConstructor kakaoTemplateConstructor;
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, oAuth2User.getAttributes());
-        validateOAuth2User(attributes);
+        String accessToken = userRequest.getAccessToken().getTokenValue();
+
+        validateOAuth2User(attributes, accessToken);
+
         return attributes;
     }
 
-    private void validateOAuth2User(OAuthAttributes attributes) {
+    private void validateOAuth2User(OAuthAttributes attributes, String accessToken) {
         Optional<Member> optionalMember = memberRepository.findByEmail(attributes.getEmail());
-        if(optionalMember.isEmpty()) {
-            mailService.sendMail(attributes.getEmail(), "welcome");
-            memberRepository.save(memberMapper.oauthAttributesToMember(attributes));
+        if (optionalMember.isEmpty()) {
+            Member member = memberMapper.oauthAttributesToMember(attributes);
+            memberRepository.save(member);
+
+            // 비동기 알림 전송
+            Feed feedTemplate = kakaoTemplateConstructor.getWelcomeTemplate(member);
+            kakaoApiService.sendMessage(feedTemplate, accessToken); // 카카오 메시지
+            mailService.sendMail(attributes.getEmail(), "welcome"); // 메일
         }
     }
 }

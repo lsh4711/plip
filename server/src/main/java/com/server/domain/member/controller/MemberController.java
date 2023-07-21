@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/users")
 @RestController
 public class MemberController {
-    private final String MEMBER_DEFAULT_URL = "/api/users";
+    private static final String MEMBER_DEFAULT_URL = "/api/users";
     private final MemberMapper memberMapper;
     private final MemberService memberService;
     private final MailService mailService;

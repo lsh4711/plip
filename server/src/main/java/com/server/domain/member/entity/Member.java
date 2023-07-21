@@ -67,7 +67,8 @@ public class Member extends BaseEntity {
     public enum Role {
         ADMIN("ROLE_ADMIN", "ROLE_USER"),
         USER("ROLE_USER"),
-        SOCIAL("ROLE_SOCIAL");
+        SOCIAL("ROLE_USER");
+        // SOCIAL("ROLE_USER", "ROLE_SOCIAL");
 
         private final String[] roles;
 

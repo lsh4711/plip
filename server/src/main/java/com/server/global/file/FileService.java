@@ -32,4 +32,23 @@ public class FileService {
 
         return image;
     }
+
+    public byte[] getImageByName(String name, String extension) {
+        byte[] image = null;
+        String fullPath = String.format("%s/%s.%s",
+            basePath,
+            name,
+            extension);
+        File file = new File(fullPath);
+
+        if (file.exists()) {
+            try {
+                image = FileUtils.readFileToByteArray(file);
+            } catch (IOException e) {
+                throw new CustomException(ExceptionCode.IMAGE_NOT_FOUND);
+            }
+        }
+
+        return image;
+    }
 }
