@@ -1,11 +1,11 @@
 import { HeadingParagraph } from '@/components';
-import OauthUI from '@/components/helper/OauthUI';
 import SignupForm from '@/components/forms/SignupForm';
+import OauthUI from '@/components/helper/OauthUI';
 
 const SignUpPage = () => {
   return (
-    <main className="mx-auto flex max-w-[1024px] flex-col  ">
-      <div className=" mt-12 flex flex-col items-center justify-center">
+    <main className="mx-auto mt-40 flex max-w-[1024px] flex-col  ">
+      <div className="flex flex-col items-center justify-center">
         <div className="mb-10">
           <HeadingParagraph variant={'darkgray'} size="lg" className=" text-center">
             <span className="gradient-text">PliP</span>에 가입하여

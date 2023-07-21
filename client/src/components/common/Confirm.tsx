@@ -25,7 +25,11 @@ function Confirm({
   onClose,
 }: ConfirmProps) {
   return (
-    <DialogContainer isOpen={isOpen} className="w-2/3 rounded-lg bg-white p-6 md:w-[540px]">
+    <DialogContainer
+      isOpen={isOpen}
+      className="w-2/3 rounded-lg bg-white p-6 md:w-[540px]"
+      onClose={onClose}
+    >
       <HeadingParagraph variant={type === 'default' ? 'blue' : 'red'} size={'sm'}>
         {title}
       </HeadingParagraph>

@@ -133,6 +133,9 @@ const PlanMapPage = () => {
           </SidePanel>
         </>
       )}
+      <div className="fixed bottom-0 left-0 right-0 z-[99] flex h-10 items-center justify-center bg-[#4568DC] font-medium text-white md:hidden">
+        더 편리한 계획 작성을 위해 데스크탑🖥️으로 접속해 주세요.
+      </div>
     </div>
   );
 };

@@ -1,7 +1,5 @@
-import { MypageSideNav } from '@/components';
 import Preparing from '@/components/common/Preparing';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
-import React from 'react';
 
 interface BookmarkProps {}
 
@@ -10,8 +8,7 @@ const Bookmark = ({}: BookmarkProps) => {
   if (auth.isRedirect) return auth.naviComponent;
 
   return (
-    <div className=" flex">
-      <MypageSideNav />
+    <div className="flex grow">
       <Preparing />
     </div>
   );

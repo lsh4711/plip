@@ -1,19 +1,17 @@
-import React, { useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
-import { ReactComponent as MypageIcon } from '../../assets/icons/mypage.svg';
-import { ReactComponent as NotifyIcon } from '../../assets/icons/notification.svg';
-import { ReactComponent as LogoIcon } from '../../assets/logo.svg';
-
-import Button from '../atom/Button';
-import DropDownMenus from './DropDownMenus';
-import { useCloseDropdown } from '@/hooks/useCloseDropdown';
-import Avatar from './Avatar';
+import { CgMenu } from '@react-icons/all-files/cg/CgMenu';
+import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
-import instance from '@/queries/axiosinstance';
+import { Link, useLocation } from 'react-router-dom';
+
+import { useCloseDropdown } from '@/hooks/useCloseDropdown';
 import useInquireUsersQuery from '@/queries/auth/useInquireUsersQuery';
+import { RootState } from '@/redux/store';
+import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
+import { ReactComponent as LogoIcon } from '../../assets/logo.svg';
+import Button from '../atom/Button';
 import LoadingSpinner from '../atom/LoadingSpinner';
+import Avatar from './Avatar';
+import DropDownMenus from './DropDownMenus';
 
 interface HeaderProps {
   isHome?: boolean;
@@ -26,12 +24,18 @@ interface AfterHeaderProps extends HeaderProps {
 const BeforeLogin = ({ isHome }: HeaderProps) => {
   return (
     <>
-      <Link to="/login">
-        <Button className={isHome ? 'text-white' : ''}>Sign in</Button>
-      </Link>
-      <Link to="/signup">
-        <Button variant={'primary'}>Sign up</Button>
-      </Link>
+      {/* <Button className={isHome ? 'text-white' : ''} onClick={onMasterLogin}>
+        <Link to="#">Master</Link>
+      </Button> */}
+      <Button
+        hovercolor={'default'}
+        className={`hover:text-[#4568DC] ${isHome ? 'text-white' : 'hover:bg-[#4568DC]/10'}`}
+      >
+        <Link to="/login">Sign in</Link>
+      </Button>
+      <Button variant={'primary'}>
+        <Link to="/signup">Sign up</Link>
+      </Button>
     </>
   );
 };
@@ -42,17 +46,13 @@ const AfterLogin = ({ isHome }: AfterHeaderProps) => {
   const inquireQuery = useInquireUsersQuery();
   return (
     <>
-      <Link to="/mypage/mytrip">
-        <MypageIcon />
-      </Link>
-      <Link to="#">
-        <NotifyIcon />
-      </Link>
-      <Link to="/mypage">
+      <Link to="/mypage/info">
         <Avatar />
       </Link>
       <div
-        className={`flex cursor-pointer select-none items-center text-sm ${isHome && 'text-white'}`}
+        className={`hidden cursor-pointer select-none items-center text-sm md:flex ${
+          isHome && 'text-white'
+        }`}
         ref={ref}
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -67,18 +67,26 @@ const AfterLogin = ({ isHome }: AfterHeaderProps) => {
 const Header = () => {
   const isHome = useLocation().pathname === '/';
   const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+  const ref = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useCloseDropdown(ref, false);
 
   return (
     <header
-      className={`left-0 top-0 z-40 h-[80px] w-full px-12 ${
-        isHome ? ' fixed' : 'stikcy border border-b-2 bg-white'
+      className={`left-0 top-0 z-40 h-[76px] w-full px-8 ${
+        isHome ? ' fixed' : 'fixed border-b-2 bg-white'
       }`}
     >
       <nav className="m-auto flex h-full items-center justify-between">
+        {!isHome && (
+          <span ref={ref} className="cursor-pointer md:hidden" onClick={() => setIsOpen(!isOpen)}>
+            <CgMenu size={25} color="#343539" />
+            {isOpen && <DropDownMenus variant={'mobile'} />}
+          </span>
+        )}
         <Link to="/">
           <div className="flex items-center gap-2">
             <LogoIcon width={35} height={35} />
-            <span className="gradient-text text-xl font-bold">PliP</span>
+            <span className="gradient-text hidden text-xl font-bold md:block">PliP</span>
           </div>
         </Link>
         <React.Suspense fallback={<LoadingSpinner />}>

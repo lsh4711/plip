@@ -31,12 +31,12 @@
   }
 }
 
-.randing {
-  animation: randing 10s infinite;
+.landing {
+  animation: landing 10s infinite;
   animation-direction: alternate;
 }
 
-@keyframes randing {
+@keyframes landing {
   25% {
     background-image: url('/src/assets/imgs/gyeonggi.webp');
   }

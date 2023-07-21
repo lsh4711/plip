@@ -1,9 +1,9 @@
-import { Button, Image, MyrecordImg, Paragraph, SortingToolbar } from '@/components';
-import MypageSideNav from '@/components/helper/MypageSideNav';
+import { useEffect } from 'react';
+
+import { HeadingParagraph, MyrecordImg, SortingToolbar } from '@/components';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import instance from '@/queries/axiosinstance';
 import { Record } from '@/types/api/records-types';
-import { useEffect } from 'react';
 
 interface MyRecordPageProps {}
 
@@ -16,17 +16,17 @@ const MyRecordPage = ({}: MyRecordPageProps) => {
   }, []);
 
   return (
-    <main className=" flex">
-      <MypageSideNav />
-      <div className=" flex flex-col px-8 pt-12">
-        <SortingToolbar />
-        <div className=" mt-6 grid cursor-pointer grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3  xl:grid-cols-5 xl:gap-6">
-          {mockdata.map((item, idx) => (
-            <MyrecordImg key={`img${idx}`} record={item} />
-          ))}
-        </div>
+    <div className=" flex flex-col">
+      <HeadingParagraph variant={'darkgray'} size={'md'} className="mb-4">
+        나의 일지
+      </HeadingParagraph>
+      <SortingToolbar />
+      <div className=" mt-6 grid cursor-pointer grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3  xl:grid-cols-5 xl:gap-6">
+        {mockdata.map((item, idx) => (
+          <MyrecordImg key={`img${idx}`} record={item} />
+        ))}
       </div>
-    </main>
+    </div>
   );
 };
 
