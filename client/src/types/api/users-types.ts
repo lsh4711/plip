@@ -19,6 +19,8 @@ export interface UserLoginRequest {
 
 //GET : /users/{user-id}
 export interface UserGetRequest {
+  memberId: number;
+  email: string;
   nickname: string;
 }
 

@@ -18,7 +18,8 @@
     "types": ["node", "kakao.maps.d.ts"],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "declaration": true
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

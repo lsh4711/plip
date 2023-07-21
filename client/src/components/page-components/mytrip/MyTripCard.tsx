@@ -11,13 +11,14 @@ import { getFormatDateString } from '@/utils/date';
 import GridItem from './GridItem';
 import Button from '@/components/atom/Button';
 import Stamp from './Stamp';
-import useToast from '@/hooks/useToast';
 import getDday from '@/utils/date/getDday';
 import useModal from '@/hooks/useModal';
 import Confirm from '@/components/common/Confirm';
 import useRemoveTripMutation from '@/queries/mytrip/useRemoveTripMutation';
 import LoadingSpinner from '@/components/atom/LoadingSpinner';
 import SharesButtons from '@/components/common/SharesButtons';
+import instance from '@/queries/axiosinstance';
+import { UserGetRequest } from '@/types/api/users-types';
 
 const MyTripCard = ({
   scheduleId,
@@ -32,10 +33,17 @@ const MyTripCard = ({
 }: MyTripTypes) => {
   const [endTrip, setEndTrip] = useState(isEnd);
   const [isClickedShare, setIsClickedShare] = useState(false);
+  const [userInfo, setUserInfo] = useState<UserGetRequest>();
 
-  const toats = useToast();
   const [openModal] = useModal();
   const removeTripMutation = useRemoveTripMutation();
+
+  const onClickShareButtons = async () => {
+    await instance.get('/api/users').then((res) => {
+      setUserInfo(res.data.data);
+    });
+    setIsClickedShare(!isClickedShare);
+  };
 
   const onToggleEndTripHandler = () => {
     setEndTrip(!endTrip);
@@ -146,11 +154,11 @@ const MyTripCard = ({
               variant={'ring'}
               hovercolor={'default'}
               className="h-[50px] w-[120px] text-sm text-zinc-900"
-              onClick={() => setIsClickedShare(!isClickedShare)}
+              onClick={onClickShareButtons}
             >
               일정 공유
             </Button>
-            {isClickedShare && <SharesButtons scheduleId={scheduleId} />}
+            {isClickedShare && <SharesButtons scheduleId={scheduleId} userInfo={userInfo!} />}
           </div>
         </div>
       </div>

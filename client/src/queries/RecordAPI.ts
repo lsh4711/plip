@@ -47,6 +47,8 @@ export default class RecordAPI {
     });
   }
 
+  async onGetRecord({}) {}
+
   async onDeleteRecord() {}
 
   async onEditRecord() {}

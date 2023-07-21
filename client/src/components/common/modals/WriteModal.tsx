@@ -33,12 +33,11 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
   const inputImageRef = useRef<HTMLInputElement>(document.createElement('input'));
 
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  const [test, setTest] = useState<File[]>([]); // 원본 이미지를 서버에 전송하기 위한 임시변수 추후 삭제 예정
   const [preViewImgSrcs, setPreViewImgSrcs] = useState<string[]>([]);
   const [text, setText] = useState('');
 
-  const onInputText = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputText = e.target.innerHTML;
+  const onInputText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const inputText = e.target.value;
 
     // if (inputText.length > 300) {
     //   alert(`일지의 내용은 ${maxRecordCharacters}자를 초과할 수 없습니다.`);
@@ -90,7 +89,6 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
       relativeImageUrls.push(currentImageUrl);
     }
 
-    setTest(files);
     setUploadedImages(resizedImages);
     setPreViewImgSrcs(relativeImageUrls);
   };
@@ -165,12 +163,14 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
             <span>{`${preViewImgSrcs.length} / ${maxImages}`}</span>
           </div>
         </div>
-        <div
-          className="md: flex-1 text-xs outline-none md:text-base"
-          contentEditable={true}
-          placeholder="구체적인 계획 혹은 다녀온 장소에 대한 추억을 남겨보세요!"
-          onInput={onInputText}
-        ></div>
+        <div className="w-full flex-1 px-4">
+          <textarea
+            className="h-full w-full outline-none"
+            value={text}
+            onChange={(e) => onInputText(e)}
+            placeholder="구체적인 계획 혹은 다녀온 장소에 대한 추억을 남겨보세요!"
+          ></textarea>
+        </div>
         <span className="self-end p-4 text-sm text-slate-400">{`( ${text.length} / ${maxRecordCharacters} )`}</span>
         <DialogButtonGroup>
           <Button

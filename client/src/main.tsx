@@ -18,6 +18,7 @@ import LoadingPage from './pages/LoadingPage';
 import ToastContainer from './components/ui/toast/ToastContainer';
 import OauthRedirect from './pages/OauthRedirect';
 import AxiosProvider from './components/helper/AxiosProvider';
+import PlanSharePage from './pages/PlanSharePage';
 
 const Home = lazy(() => import('./pages/Home'));
 const SignUpPage = lazy(() => import('./pages/SignUpPage'));
@@ -71,6 +72,7 @@ const router = createBrowserRouter([
     ),
   },
   { path: 'oauth', element: <OauthRedirect /> },
+  { path: 'plan/detail/:id/share', element: <PlanSharePage /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

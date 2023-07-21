@@ -3,15 +3,13 @@ import Button from '../atom/Button';
 import Paragraph from '../atom/Paragraph';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-circle.svg';
 import WriteModal from '../common/modals/WriteModal';
-import { useParams } from 'react-router-dom';
 
-const NoRecord = () => {
+const NoRecord = ({ id }: { id: number }) => {
   const [openModal] = useModal();
-  const { id } = useParams();
 
   const onClickHandler = () => {
     openModal(({ isOpen, close }) => (
-      <WriteModal id={Number(id)} type={'default'} isOpen={isOpen} onClose={close} />
+      <WriteModal id={id} type={'default'} isOpen={isOpen} onClose={close} />
     ));
   };
 

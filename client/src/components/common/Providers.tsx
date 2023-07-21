@@ -1,5 +1,6 @@
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import useError from '@/hooks/useError';
+import MapDetailProvider from '@/contexts/MapDetailProvider';
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -22,7 +23,11 @@ const Providers = ({ children }: ProvidersProps) => {
     }),
   });
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <MapDetailProvider>{children}</MapDetailProvider>
+    </QueryClientProvider>
+  );
 };
 
 export default Providers;
