@@ -60,9 +60,13 @@ public class RecordService {
 	@Transactional(readOnly = true)
 	public Record findRecord(long recordId) {
 		Optional<Record> optionalRecord = recordRepository.findById(recordId);
-		Record findRecord = optionalRecord.orElseThrow(() -> new CustomException(ExceptionCode.RECORD_NOT_FOUND));
+		Record foundRecord = optionalRecord.orElseThrow(() -> new CustomException(ExceptionCode.RECORD_NOT_FOUND));
 
-		return findRecord;
+		if (!authenticationMember().getMemberId().equals(foundRecord.getMember().getMemberId())) {
+			throw new CustomException(ExceptionCode.CANNOT_ACCESS_RECORD);
+		}
+
+		return foundRecord;
 	}
 
 	//회원 아이디로 전체 여행일지 조회

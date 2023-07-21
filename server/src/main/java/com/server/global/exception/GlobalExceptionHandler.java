@@ -29,7 +29,8 @@ public class GlobalExceptionHandler {
         Map<String, String> errorResponses = new HashMap<>();
         List<FieldError> errors = e.getBindingResult().getFieldErrors();
 
-        errors.stream().forEach(error -> errorResponses.put(error.getField(), error.getDefaultMessage()));
+        //stream 사용하지 않아도 되서 수정
+        errors.forEach(error -> errorResponses.put(error.getField(), error.getDefaultMessage()));
 
         return ResponseEntity.badRequest().body(errorResponses);
     }
