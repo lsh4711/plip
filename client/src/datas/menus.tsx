@@ -1,5 +1,6 @@
 import { FcApprove } from '@react-icons/all-files/fc/FcApprove';
 import { FcBookmark } from '@react-icons/all-files/fc/FcBookmark';
+import { FcBriefcase } from '@react-icons/all-files/fc/FcBriefcase';
 import { FcCalendar } from '@react-icons/all-files/fc/FcCalendar';
 import { FcGlobe } from '@react-icons/all-files/fc/FcGlobe';
 import { FcStackOfPhotos } from '@react-icons/all-files/fc/FcStackOfPhotos';
@@ -13,6 +14,11 @@ export type MenuProps = {
 // '나의 일정', '마이페이지', '나의 발자취', '북마크', '나의 일지', '로그아웃';
 
 export const menus = [
+  {
+    icon: <FcBriefcase size={20} />,
+    name: '계획 작성',
+    route: '/plan',
+  },
   {
     icon: <FcCalendar size={20} />,
     name: '나의 일정',

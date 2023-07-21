@@ -11,8 +11,8 @@ const MypageSideNav = ({}: MypageSideNavProps) => {
   return (
     <nav className="fixed left-0 top-[76px] hidden h-screen w-56 shrink-0 flex-col gap-2 border-r-2 px-2 pt-8 md:flex">
       <span className="px-4 text-sm text-zinc-400">마이페이지</span>
-      {menus.map((menu) => {
-        if (menu.name === '마이페이지') return;
+      {menus.map((menu, idx) => {
+        if (idx === 0) return;
         return (
           <NavLink to={menu.route}>
             {({ isActive }) => (
