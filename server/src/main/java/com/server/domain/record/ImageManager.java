@@ -17,6 +17,7 @@ import com.server.global.exception.ExceptionCode;
 import com.server.global.utils.CustomUtil;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -36,7 +37,7 @@ public class ImageManager {
 
         short result = -1;
 
-        List<String> indexs = new ArrayList<>();
+        List<String> indexes = new ArrayList<>();
 
         try {
             File folder = new File(dirName);
@@ -50,7 +51,7 @@ public class ImageManager {
                     File destination = new File(dirName + File.separator + fileName);
                     image.transferTo(destination);
                     result++;
-                    indexs.add(String.valueOf(i));
+                    indexes.add(String.valueOf(i));
                 }
             } else { //이미 저장된 사진이 있는 경우
                 File[] existingFiles = folder.listFiles();
@@ -86,7 +87,7 @@ public class ImageManager {
                     File destination = new File(dirName + File.separator + fileName);
                     image.transferTo(destination);
                     result++;
-                    indexs.add(String.valueOf(index));
+                    indexes.add(String.valueOf(index));
                 }
 
                 existingFiles = folder.listFiles();
@@ -100,7 +101,7 @@ public class ImageManager {
         if (result == -1 || result < images.size() - 1) {
             return null;
         } else if (result == images.size() - 1) {
-            return indexs;
+            return indexes;
         } else {
             return null;
         }
@@ -160,6 +161,9 @@ public class ImageManager {
     //이미지 파일 확장자 리턴하는 메서드
     private static String getFileExtension(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null) {
+            throw new NullPointerException("File original filename is null");
+        }
         String[] parts = originalFilename.split("\\.");
         if (parts.length > 1) {
             return "." + parts[parts.length - 1].toLowerCase();
