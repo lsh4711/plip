@@ -6,15 +6,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.server.global.exception.CustomException;
 
-import io.jsonwebtoken.ExpiredJwtException;
 
 public class AuthenticationError {
     public static void sendErrorResponse(HttpServletResponse response, Exception exception) throws IOException {

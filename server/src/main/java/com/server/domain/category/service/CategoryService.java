@@ -18,7 +18,7 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public List<Category> saveCategorys(List<Category> categorys) {
-        return categoryRepository.saveAll(categorys);
+    public List<Category> saveCategories(List<Category> categories) {
+        return categoryRepository.saveAll(categories);
     }
 }

@@ -32,11 +32,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final DelegateTokenUtil delegateTokenUtil;
     private final JwtTokenizer jwtTokenizer;
 
-    @SneakyThrows
+    @SneakyThrows //메서드 내에서 발생하는 체크 예외를 명시적인 try-catch 없이 던지고자 할 때
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         ObjectMapper objectMapper = new ObjectMapper();
-        LoginDto loginDto = objectMapper.readValue(request.getInputStream(), LoginDto.class);
+        //클라이언트에서 전송한 Usernamer과 Password를 DTO 클래스로 역직렬화(Deserialization)
+        LoginDto loginDto = objectMapper.readValue(request.getInputStream(), LoginDto.class);//IOException
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
 
@@ -55,7 +56,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         jwtTokenizer.setHeaderAccessToken(response, accessToken);
         jwtTokenizer.setHeaderRefreshToken(response, refreshToken);
-        // TODO: 우선 레디스에 저장 안함. 검증할 때 사용할지 추후에 생각...
+
+        //TODO: 우선 레디스에 저장 안함. 검증할 때 사용할지 추후에 생각...
         //refreshTokenService.saveTokenInfo(member.getMemberId(), refreshToken, accessToken);
         this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
     }

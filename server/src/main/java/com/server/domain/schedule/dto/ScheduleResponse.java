@@ -16,6 +16,7 @@ public class ScheduleResponse {
 
     private Long scheduleId;
     private String region;
+    private String korRegion;
     private String title;
     private Integer memberCount;
 
@@ -23,7 +24,7 @@ public class ScheduleResponse {
     // private LocalDate startDate;
     // private LocalDate endDate;
 
-    // 클라이언트 요청사항
+    // 클라이언트 요청사항: 응답 시 LocalDate -> LocalDateTime
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private Integer period;

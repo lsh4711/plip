@@ -22,6 +22,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final MemberMapper memberMapper;
     private final MailService mailService;
 
+    //OAuth2 프로바이더로부터 인증 정보를 가져와서 사용자 정보를 로드
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);

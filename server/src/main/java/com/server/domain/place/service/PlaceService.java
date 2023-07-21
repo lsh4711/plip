@@ -8,13 +8,11 @@ import org.springframework.stereotype.Service;
 import com.server.domain.category.entity.Category;
 import com.server.domain.category.repository.CategoryRepository;
 import com.server.domain.place.entity.Place;
-import com.server.domain.place.mapper.PlaceMapper;
 import com.server.domain.place.repository.PlaceRepository;
 import com.server.domain.record.entity.Record;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.repository.SchedulePlaceRepository;
-import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
@@ -24,9 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PlaceService {
     private final PlaceRepository placeRepository;
-    private final PlaceMapper placeMapper;
 
-    private final SchedulePlaceService schedulePlaceService;
     private final SchedulePlaceRepository schedulePlaceRepository;
 
     private final CategoryRepository categoryRepository;
@@ -77,10 +73,7 @@ public class PlaceService {
         return schedulePlaces;
     }
 
-    public Object getPlacesByCategory(int size, int page, String category) {
-        return null;
-    }
-
+    // 소셜 확장 시 사용됨, 현재 PlaceController에서 숨김
     public List<Record> findRecords(Long placeId) {
         List<Record> foundRecords = new ArrayList<>();
         List<SchedulePlace> schedulePlaceList = schedulePlaceRepository

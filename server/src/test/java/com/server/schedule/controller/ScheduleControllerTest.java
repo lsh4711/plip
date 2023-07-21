@@ -46,6 +46,7 @@ import com.server.domain.place.dto.PlaceDto;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.mapper.PlaceMapper;
 import com.server.domain.place.service.PlaceService;
+import com.server.domain.region.entity.Region;
 import com.server.domain.schedule.dto.ScheduleDto;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
@@ -174,8 +175,14 @@ public class ScheduleControllerTest {
         postDto.setPlaces(placeDtoLists);
 
         List<SchedulePlace> schedulePlaces = StubData.MockPlace.schedulePlaces;
+
+        Region region = new Region();
+        region.setEngName("seoul");
+        region.setKorName("서울");
+
         Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
         schedule.setScheduleId(1L);
+        schedule.setRegion(region);
         schedule.setPeriod(3);
         schedule.setSchedulePlaces(schedulePlaces);
         schedule.setMember(member);
@@ -224,8 +231,14 @@ public class ScheduleControllerTest {
 
         ScheduleDto.Post postDto = StubData.MockSchedule.postDto;
         List<SchedulePlace> schedulePlaces = StubData.MockPlace.schedulePlaces;
+
+        Region region = new Region();
+        region.setEngName("seoul");
+        region.setKorName("서울");
+
         Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
         schedule.setScheduleId(1L);
+        schedule.setRegion(region);
         schedule.setPeriod(3);
         schedule.setSchedulePlaces(schedulePlaces);
         schedule.setMember(member);

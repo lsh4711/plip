@@ -53,7 +53,7 @@ public class RecordController {
     //여행일지 등록
     @PostMapping("/{schedule-place-id}")
     public ResponseEntity<?> postRecord(@PathVariable("schedule-place-id") @Positive Long schedulePlaceId,
-            @Valid @RequestBody RecordDto.Post requestBody) {
+        @Valid @RequestBody RecordDto.Post requestBody) {
         Record record = mapper.recordPostToRecord(requestBody);
 
         Record createdRecord = recordService.createRecord(record, schedulePlaceId);
@@ -66,7 +66,7 @@ public class RecordController {
     //여행일지 수정
     @PatchMapping("/{record-id}")
     public ResponseEntity<?> patchRecord(@PathVariable("record-id") @Positive long recordId,
-            @Valid @RequestBody RecordDto.Patch requestBody) {
+        @Valid @RequestBody RecordDto.Patch requestBody) {
         requestBody.setRecordId(recordId);
 
         Record record = mapper.recordPatchToRecord(requestBody);
@@ -82,20 +82,16 @@ public class RecordController {
     public ResponseEntity<?> getRecord(@PathVariable("record-id") @Positive long recordId) {
         Record record = recordService.findRecord(recordId);
 
-        return new ResponseEntity<>(
-            new SingleResponseDto<>(mapper.recordToRecordResponse(record)), HttpStatus.OK);
+        return new ResponseEntity<>(new SingleResponseDto<>(mapper.recordToRecordResponse(record)), HttpStatus.OK);
     }
 
     //memberId로 여행일지 조회
     @GetMapping
-    public ResponseEntity<?> getRecordsByMemberId(@RequestParam @Positive int page,
-            @RequestParam @Positive int size) {
+    public ResponseEntity<?> getRecordsByMemberId(@RequestParam @Positive int page, @RequestParam @Positive int size) {
         Page<Record> pageRecords = recordService.findAllRecords(page - 1, size);
         List<Record> records = pageRecords.getContent();
 
-        return new ResponseEntity<>(
-            new MultiResponseDto<>(
-                mapper.recordsToRecordResponses(records), pageRecords),
+        return new ResponseEntity<>(new MultiResponseDto<>(mapper.recordsToRecordResponses(records), pageRecords),
             HttpStatus.OK);
     }
 
@@ -112,7 +108,7 @@ public class RecordController {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while deleting images: " + e.getMessage());
+                .body("Error occurred while deleting images: " + e.getMessage());
         }
 
     }
@@ -120,7 +116,7 @@ public class RecordController {
     //이미지 업로드
     @PostMapping("/{record-id}/img")
     public ResponseEntity<?> uploadRecordImg(@PathVariable("record-id") long recordId,
-            @RequestPart("images") List<MultipartFile> images) {
+        @RequestPart("images") List<MultipartFile> images) {
         long userId = CustomUtil.getAuthId();
 
         recordService.verify(recordId, userId);
@@ -130,7 +126,7 @@ public class RecordController {
             return new ResponseEntity<>(new SingleResponseDto<>(indexs), HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while uploading images: " + e.getMessage());
+                .body("Error occurred while uploading images: " + e.getMessage());
         }
 
     }
@@ -138,7 +134,7 @@ public class RecordController {
     // 이미지 1개 조회 (대표 이미지)
     @GetMapping("/{record-id}/img/{img-id}")
     public ResponseEntity<?> getRecordImg(@PathVariable("record-id") long recordId,
-            @PathVariable("img-id") long imgId) {
+        @PathVariable("img-id") long imgId) {
         long userId = CustomUtil.getAuthId();
 
         recordService.verify(recordId, userId);
@@ -148,7 +144,7 @@ public class RecordController {
             return new ResponseEntity<>(new SingleResponseDto<>(urlText), HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while loading image: " + e.getMessage());
+                .body("Error occurred while loading image: " + e.getMessage());
         }
 
     }
@@ -162,12 +158,14 @@ public class RecordController {
 
         try {
             List<String> urlTexts = storageService.getImgs(recordId, userId);
-            ImageResponseDto imageResponseDto = ImageResponseDto.builder().size(urlTexts.size()).images(urlTexts)
-                    .build();
+            ImageResponseDto imageResponseDto = ImageResponseDto.builder()
+                .size(urlTexts.size())
+                .images(urlTexts)
+                .build();
             return new ResponseEntity<>(imageResponseDto, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while loading images: " + e.getMessage());
+                .body("Error occurred while loading images: " + e.getMessage());
         }
 
     }
@@ -175,7 +173,7 @@ public class RecordController {
     //이미지 삭제
     @DeleteMapping("/{record-id}/img/{img-id}")
     public ResponseEntity<?> deleteRecordImg(@PathVariable("record-id") long recordId,
-            @PathVariable("img-id") long imgId) {
+        @PathVariable("img-id") long imgId) {
         long userId = CustomUtil.getAuthId();
 
         recordService.verify(recordId, userId);
@@ -185,7 +183,7 @@ public class RecordController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while deleting image: " + e.getMessage());
+                .body("Error occurred while deleting image: " + e.getMessage());
         }
 
     }
@@ -201,7 +199,7 @@ public class RecordController {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while deleting image: " + e.getMessage());
+                .body("Error occurred while deleting image: " + e.getMessage());
         }
 
     }

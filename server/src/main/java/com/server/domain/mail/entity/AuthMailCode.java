@@ -11,7 +11,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 @Getter
-@RedisHash(value = "authMailCode", timeToLive = 60 * 10) //TODO:
+@RedisHash(value = "authMailCode", timeToLive = 60 * 10)
 /*
      Redis 해시 키의 이름을 authMailCode로 정하고,
      edis 해시 키의 TTL(Time-To-Live)을 10분 동안으로 정한다.

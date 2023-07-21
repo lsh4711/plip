@@ -63,7 +63,7 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/password")
+    @PatchMapping("/password") //TODO: password 수정을 따로 분리한 이유? -> 비밀번호 재설정
     public ResponseEntity<?> patchPasswordMember(@RequestBody @Valid MemberDto.PasswordPatch request) {
         memberService.updatePassword(memberMapper.memberDtoPasswordPatchToMember(request));
         return ResponseEntity.ok().build();
