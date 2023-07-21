@@ -35,6 +35,7 @@ public class TokenController {
             return ResponseEntity.ok().build();
         } catch (ExpiredJwtException je) {
             log.error("### 리프레쉬 토큰을 찾을 수 없음");
+            jwtTokenizer.resetHeaderRefreshToken(response);
             throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
         }
     }

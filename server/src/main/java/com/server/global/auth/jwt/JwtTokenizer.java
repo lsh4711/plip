@@ -140,6 +140,17 @@ public class JwtTokenizer {
         response.setHeader("Set-Cookie", cookie.toString());
     }
 
+    public void resetHeaderRefreshToken(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from("Refresh", null)
+            .maxAge(0)
+            .secure(true)
+            .sameSite("None")
+            .path("/")
+            .httpOnly(true)
+            .build();
+        response.setHeader("Set-Cookie", cookie.toString());
+    }
+
 
     public Map<String, Object> verifyJws(String jws) {
         String base64EncodedSecretKey = encodeBase64SecretKey(getSecretKey());
