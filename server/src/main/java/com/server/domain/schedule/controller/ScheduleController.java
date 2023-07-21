@@ -44,6 +44,7 @@ import com.server.global.utils.UriCreator;
 
 import lombok.RequiredArgsConstructor;
 
+// @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/schedules")
@@ -65,6 +66,7 @@ public class ScheduleController {
     @Transactional
     @PostMapping("/write")
     public ResponseEntity postSchedule(@Valid @RequestBody ScheduleDto.Post postDto) {
+        // log.debug("test");
         long memberId = CustomUtil.getAuthId();
         Member member = memberService.findMember(memberId);
         Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);

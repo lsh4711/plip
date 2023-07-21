@@ -1,6 +1,7 @@
 package com.server.domain.oauth.template;
 
 import java.time.LocalDate;
+import java.util.Random;
 
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,13 @@ import com.server.domain.schedule.entity.Schedule;
 
 @Component
 public class KakaoTemplateConstructor {
+    private static final String[] REGION_LIST = { // 임시
+        "busan", "chungbuk", "chungnam", "daegu", "daejeon",
+        "gangwon", "gwangju", "gyeongbuk", "gyeonggi", "gyeongnam",
+        "incheon", "jeju", "jeonbuk", "jeonnam", "seoul",
+        "ulsan"
+    };
+
     public Feed getWelcomeTemplate(Member member) {
         // Member
         long memberId = member.getMemberId();
@@ -27,6 +35,10 @@ public class KakaoTemplateConstructor {
         //     token);
 
         // test
+        Random random = new Random();
+        int idx = random.nextInt(16);
+        String region = REGION_LIST[idx];
+
         String shareUrl = "https://plip.netlify.app/";
         Link link = Link.builder()
                 .web_url(shareUrl)
@@ -38,7 +50,7 @@ public class KakaoTemplateConstructor {
                 .description("PliP과 함께 여행 일정을 작성하러 가볼까요?")
                 .image_width(100)
                 .image_height(100)
-                .image_url("https://teamdev.shop:8000/files/images/test?name=test")
+                .image_url("https://teamdev.shop:8000/files/images?region=" + region)
                 .link(link)
                 .build();
         Feed feed = Feed.builder()

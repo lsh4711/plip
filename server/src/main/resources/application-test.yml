@@ -87,6 +87,8 @@ springdoc:
 kakao:
     redirect-url: asdfasdfasdf
     api-key: asdfasdfasdfasdf
+file:
+  path: test
 
 cloud:
   aws:
