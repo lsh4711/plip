@@ -1,7 +1,5 @@
 package com.server.domain.oauth.service;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,13 +19,12 @@ public class KakaoTokenOauthService {
         KakaoToken token = KakaoToken.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .member(member)
                 .build();
-        Optional<KakaoToken> findToken = kakaoTokenRepository.findByMember_MemberId(member.getMemberId());
-        if (findToken.isEmpty())
+        KakaoToken findToken = member.getKakaoToken();
+        if (findToken == null)
             kakaoTokenRepository.save(token);
         else
-            findToken.get().setAccessToken(accessToken);
+            findToken.setAccessToken(accessToken);
     }
 
     public void saveTestToken(KakaoToken kakaoToken) {
