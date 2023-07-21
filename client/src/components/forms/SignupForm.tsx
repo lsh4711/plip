@@ -1,4 +1,3 @@
-import useDebounce from '@/hooks/useDebounce';
 import useEmailValidation from '@/hooks/useEmailValidation';
 import { useEmailRequestMutation, useEmailValidationMutation, useSignupMutation } from '@/queries';
 import { SignupType, signupSchema } from '@/schema/signupSchema';
@@ -9,6 +8,7 @@ import Paragraph from '../atom/Paragraph';
 import Button from '../atom/Button';
 import LoadingSpinner from '../atom/LoadingSpinner';
 import Input from '../atom/Input';
+import useFirstThrottle from '@/hooks/useFirstThrottle';
 
 const SignupForm = () => {
   const emailRequestMutation = useEmailRequestMutation('signup');
@@ -41,10 +41,13 @@ const SignupForm = () => {
       });
   };
 
-  const emailCredentialRequest = useDebounce(() => {
+  const wrappedOnSubmit = useFirstThrottle(onSubmit, 5000);
+
+  const emailCredentialRequest = useFirstThrottle(() => {
     if (signupForm.formState.errors.email?.message !== undefined) return;
     if (signupForm.getValues('email') === '') return;
 
+    console.log('실행됨?');
     emailRequestMutation
       .mutateAsync(signupForm.getValues('email'))
       .then((res) => {
@@ -53,9 +56,9 @@ const SignupForm = () => {
       .catch(() => {
         setAuthCodeState({ disabled: true, message: '잠시 후 다시 시도해주세요' });
       });
-  }, 500);
+  }, 5000);
 
-  const sendVerificationCodeEmail = useDebounce(() => {
+  const sendVerificationCodeEmail = useFirstThrottle(() => {
     if (signupForm.getValues('authnumber') === '') return;
     if (signupForm.getValues('authnumber') === undefined) return;
 
@@ -72,10 +75,13 @@ const SignupForm = () => {
         setEmailRequestState({ isSuccess: false, message: '인증번호가 맞지 않습니다.' });
         setAuthCodeState({ disabled: false, message: '다시 인증을 시도하세요' });
       });
-  }, 500);
+  }, 5000);
 
   return (
-    <form className=" flex w-[460px] flex-col gap-y-6" onSubmit={signupForm.handleSubmit(onSubmit)}>
+    <form
+      className=" flex w-[460px] flex-col gap-y-6"
+      onSubmit={signupForm.handleSubmit(wrappedOnSubmit)}
+    >
       <div className="">
         <div className="flex justify-between gap-6">
           <Input
