@@ -33,13 +33,6 @@ const DropDownMenus = () => {
           로그아웃
         </button>
       </div>
-
-      {/* <Link to={'/signout'} className="w-full border-b-2 p-4 last:border-b-0">
-        <button className="flex gap-2 text-black">
-          <LogoutIcon />
-          회원탈퇴
-        </button>
-      </Link> */}
     </div>
   );
 };
