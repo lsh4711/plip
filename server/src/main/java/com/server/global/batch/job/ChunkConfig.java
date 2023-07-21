@@ -22,6 +22,8 @@ import org.springframework.context.annotation.Configuration;
 import com.server.domain.member.entity.Member;
 import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.oauth.service.KakaoApiService;
+import com.server.domain.oauth.template.KakaoTemplateConstructor;
+import com.server.domain.oauth.template.KakaoTemplateObject.Text;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.global.batch.parameter.CustomJobParameter;
 
@@ -43,6 +45,7 @@ public class ChunkConfig {
     private final CustomJobParameter customJobParameter;
 
     private final KakaoApiService kakaoAuth;
+    private final KakaoTemplateConstructor kakaoTemplateConstructor;
 
     // @Bean(JOB_NAME + "Parameter")
     @Bean
@@ -105,18 +108,13 @@ public class ChunkConfig {
 
         return schedule -> {
             Member member = schedule.getMember();
-            long memberId = member.getMemberId();
             KakaoToken kakaoToken = member.getKakaoToken();
             String accessToken = kakaoToken.getAccessToken();
-            if (hour == 7) {
-                String message = "오늘은 설레는 여행날이네요.";
-                kakaoAuth.sendMessage(accessToken, message);
-            } else if (hour == 21) {
-                String message = "내일은 설레는 여행날이네요.";
-                kakaoAuth.sendMessage(accessToken, message);
-            }
+            Text textTemplate = kakaoTemplateConstructor.getStartTemplate(member, schedule, hour);
 
-            return null;
+            kakaoAuth.sendMessage(textTemplate, accessToken);
+
+            return schedule;
         };
     }
 
@@ -129,20 +127,21 @@ public class ChunkConfig {
         //         .build();
 
         // return writer;
-        return list -> {
-            for (Schedule schedule : list) {
-                long test = schedule.getScheduleId();
-                for (int i = 0; i < 3; i++) {
-                    if (test > 11 && test < 15) {
-                        System.out.println("에러: " + test);
-                        continue;
-                    }
-                    // System.out.println(customJobParameter.getDate());
-                    System.out.printf("scheduleId: %d\n", schedule.getScheduleId());
-                    break;
-                }
-            }
+        // return list -> {
+        //     for (Schedule schedule : list) {
+        //         long test = schedule.getScheduleId();
+        //         for (int i = 0; i < 3; i++) {
+        //             if (test > 11 && test < 15) {
+        //                 System.out.println("에러: " + test);
+        //                 continue;
+        //             }
+        //             // System.out.println(customJobParameter.getDate());
+        //             System.out.printf("scheduleId: %d\n", schedule.getScheduleId());
+        //             break;
+        //         }
+        //     }
+        // };
+        return schedule -> {
         };
-
     }
 }

@@ -126,7 +126,7 @@ public class ScheduleService {
         }
 
         String accessToken = kakaoToken.getAccessToken();
-        Feed feedTemplate = kakaoTemplateMapper.getFeedTemplate(schedule, member);
+        Feed feedTemplate = kakaoTemplateMapper.getPostTemplate(schedule, member);
 
         kakaoApiService.sendMessage(feedTemplate, accessToken);
     }
