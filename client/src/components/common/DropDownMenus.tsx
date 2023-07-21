@@ -1,15 +1,34 @@
-import { Link } from 'react-router-dom';
 import { menus } from '@/datas/menus';
 import { FcUnlock } from '@react-icons/all-files/fc/FcUnlock';
+import { Link } from 'react-router-dom';
 
 import useLogoutMutation from '@/queries/auth/useLogoutMutation';
+import { cn } from '@/utils';
+import { VariantProps, cva } from 'class-variance-authority';
 
-const DropDownMenus = () => {
+const DropDownMenusVariants = cva(
+  `
+  absolute z-50 flex flex-col bg-white shadow-md
+  `,
+  {
+    variants: {
+      variant: {
+        pc: 'w-[200px] right-[-1.25rem] top-9 rounded-lg border',
+        mobile: 'top-[76px] left-0 right-0 rounded-b-lg',
+      },
+    },
+    defaultVariants: {
+      variant: 'pc',
+    },
+  }
+);
+
+interface DropDownMenus extends VariantProps<typeof DropDownMenusVariants> {}
+
+const DropDownMenus = ({ variant }: DropDownMenus) => {
   const logoutMutation = useLogoutMutation();
   return (
-    <div
-      className={`absolute right-[-2.25rem] top-9 z-50 flex w-[200px] flex-col rounded-lg border bg-white shadow-md`}
-    >
+    <div className={cn(DropDownMenusVariants({ variant }))}>
       {menus.map((item, index) => (
         <Link
           key={item.name}

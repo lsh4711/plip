@@ -46,13 +46,7 @@ const AfterLogin = ({ isHome }: AfterHeaderProps) => {
   const inquireQuery = useInquireUsersQuery();
   return (
     <>
-      {/* <Link to="/mypage/mytrip">
-        <MypageIcon />
-      </Link>
-      <Link to="#">
-        <NotifyIcon />
-      </Link> */}
-      <Link to="/mypage">
+      <Link to="/mypage/info">
         <Avatar />
       </Link>
       <div
@@ -73,6 +67,8 @@ const AfterLogin = ({ isHome }: AfterHeaderProps) => {
 const Header = () => {
   const isHome = useLocation().pathname === '/';
   const isLogin = useSelector((state: RootState) => state.auth.isLogin);
+  const ref = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useCloseDropdown(ref, false);
 
   return (
     <header
@@ -81,7 +77,12 @@ const Header = () => {
       }`}
     >
       <nav className="m-auto flex h-full items-center justify-between">
-        {!isHome && <CgMenu size={25} color="#343539" className="md:hidden" />}
+        {!isHome && (
+          <span ref={ref} className="cursor-pointer md:hidden" onClick={() => setIsOpen(!isOpen)}>
+            <CgMenu size={25} color="#343539" />
+            {isOpen && <DropDownMenus variant={'mobile'} />}
+          </span>
+        )}
         <Link to="/">
           <div className="flex items-center gap-2">
             <LogoIcon width={35} height={35} />
