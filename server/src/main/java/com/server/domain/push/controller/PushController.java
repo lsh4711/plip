@@ -25,7 +25,7 @@ public class PushController {
     private final PushService pushService;
     private final PushMapper pushMapper;
 
-    @PostMapping
+    @PostMapping("/write")
     public ResponseEntity postPush(@RequestBody PushDto.Post postdto) {
         long memberId = CustomUtil.getAuthId();
         Member member = Member.builder()
@@ -33,7 +33,6 @@ public class PushController {
                 .build();
 
         Push push = pushMapper.postDtoToPush(postdto);
-
         Push savedPush = pushService.savePush(push);
         URI location = UriCreator.createUri("/api/pushs",
             savedPush.getPushId());
