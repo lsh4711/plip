@@ -26,81 +26,79 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RecordService {
 
-    private final RecordRepository recordRepository;
+	private final RecordRepository recordRepository;
 
-    private final MemberService memberService;
+	private final MemberService memberService;
 
-    //여행일지 등록
-    public Record createRecord(Record record, Long schedulePlaceId) {
-        Member member = authenticationMember();
-        record.setMember(member);
-        SchedulePlace schedulePlace = new SchedulePlace();
-        schedulePlace.setSchedulePlaceId(schedulePlaceId);
+	//여행일지 등록
+	public Record createRecord(Record record, Long schedulePlaceId) {
+		Member member = authenticationMember();
+		record.setMember(member);
 
-        record.setSchedulePlace(schedulePlace);
+		SchedulePlace schedulePlace = new SchedulePlace();
+		schedulePlace.setSchedulePlaceId(schedulePlaceId);
 
-        return recordRepository.save(record);
-    }
+		record.setSchedulePlace(schedulePlace);
 
-    //여행일지 수정
-    public Record updateRecord(Record record) {
-        Record foundRecord = findRecord(record.getRecordId());
+		return recordRepository.save(record);
+	}
 
-        if (authenticationMember().getMemberId() != foundRecord.getMember().getMemberId()) {
-            throw new CustomException(ExceptionCode.CANNOT_CHANGE_RECORD);
-        }
+	//여행일지 수정
+	public Record updateRecord(Record record) {
+		Record foundRecord = findRecord(record.getRecordId());
 
-        // static 메소드로 바꿨사와요
-        Record updatedRecord = CustomBeanUtils.copyNonNullProperties(record, foundRecord);
+		if (authenticationMember().getMemberId() != foundRecord.getMember().getMemberId()) {
+			throw new CustomException(ExceptionCode.CANNOT_CHANGE_RECORD);
+		}
 
-        return recordRepository.save(updatedRecord);
-    }
+		Record updatedRecord = CustomBeanUtils.copyNonNullProperties(record, foundRecord);
 
-    //여행일지 아이디로 여행일지 하나 조회(상세 페이지)
-    @Transactional(readOnly = true)
-    public Record findRecord(long recordId) {
-        Optional<Record> optionalReecord = recordRepository.findById(recordId);
-        Record findRecord = optionalReecord.orElseThrow(
-            () -> new CustomException(ExceptionCode.RECORD_NOT_FOUND));
+		return recordRepository.save(updatedRecord);
+	}
 
-        return findRecord;
-    }
+	//여행일지 아이디로 여행일지 하나 조회(상세 페이지)
+	@Transactional(readOnly = true)
+	public Record findRecord(long recordId) {
+		Optional<Record> optionalRecord = recordRepository.findById(recordId);
+		Record findRecord = optionalRecord.orElseThrow(() -> new CustomException(ExceptionCode.RECORD_NOT_FOUND));
 
-    //회원 아이디로 전체 여행일지 조회
-    @Transactional(readOnly = true)
-    public Page<Record> findAllRecords(int page, int size) {
-        Member member = authenticationMember();
-        Long memberId = member.getMemberId();
-        return recordRepository.findByMemberMemberId(PageRequest.of(page, size, Sort.Direction.DESC, "modifiedAt"),
-            memberId);
-    }
+		return findRecord;
+	}
 
-    //여행일지 삭제
-    public void deleteRecord(long recordId) {
-        Record foundRecord = findRecord(recordId);
+	//회원 아이디로 전체 여행일지 조회
+	@Transactional(readOnly = true)
+	public Page<Record> findAllRecords(int page, int size) {
+		Member member = authenticationMember();
+		Long memberId = member.getMemberId();
+		return recordRepository.findByMemberMemberId(PageRequest.of(page, size, Sort.Direction.DESC, "modifiedAt"),
+			memberId);
+	}
 
-        if (authenticationMember().getMemberId() != foundRecord.getMember().getMemberId()) {
-            throw new CustomException(ExceptionCode.CANNOT_CHANGE_RECORD);
-        }
+	//여행일지 삭제
+	public void deleteRecord(long recordId) {
+		Record foundRecord = findRecord(recordId);
 
-        recordRepository.delete(foundRecord);
-    }
+		if (!authenticationMember().getMemberId().equals(foundRecord.getMember().getMemberId())) {
+			throw new CustomException(ExceptionCode.CANNOT_CHANGE_RECORD);
+		}
 
-    //등록된 사용자인지 확인
-    private Member authenticationMember() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //현재 로그인한 사용자 이메일
-        String username = (String)authentication.getPrincipal();
+		recordRepository.delete(foundRecord);
+	}
 
-        // 로그인한 ID(이매일)로 Member를 찾아서 반환
-        return memberService.findMemberByEmail(username);
-    }
+	//등록된 사용자인지 확인
+	private Member authenticationMember() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		//현재 로그인한 사용자 이메일
+		String username = (String)authentication.getPrincipal();
 
-    public void verify(long recordId, long memberId) {
-        boolean exists = recordRepository
-            .existsByRecordIdAndMember_MemberId(recordId, memberId);
-        if (!exists) {
-            throw new CustomException(ExceptionCode.RECORD_NOT_FOUND);
-        }
-    }
+		// 로그인한 ID(이매일)로 Member를 찾아서 반환
+		return memberService.findMemberByEmail(username);
+	}
+
+	public void verify(long recordId, long memberId) {
+		boolean exists = recordRepository.existsByRecordIdAndMember_MemberId(recordId, memberId);
+		if (!exists) {
+			throw new CustomException(ExceptionCode.RECORD_NOT_FOUND);
+		}
+	}
 }

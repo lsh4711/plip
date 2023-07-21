@@ -23,26 +23,26 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Record extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long recordId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long recordId;
 
-    @Column(nullable = false)
-    private String content;
+	@Column(nullable = false)
+	private String content;
 
-    //연관관계 매핑 Record:Member -> N:1
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
-    private Member member;
+	//연관관계 매핑 Record:Member -> N:1
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "memberId")
+	private Member member;
 
-    //연관관계 매핑 Record:SchedulePlace -> N:1
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedulePlaceId")
-    private SchedulePlace schedulePlace;
+	//연관관계 매핑 Record:SchedulePlace -> N:1
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "schedulePlaceId")
+	private SchedulePlace schedulePlace;
 
-    @Builder
-    public Record(Long recordId, String content) {
-        this.recordId = recordId;
-        this.content = content;
-    }
+	@Builder
+	public Record(Long recordId, String content) {
+		this.recordId = recordId;
+		this.content = content;
+	}
 }
