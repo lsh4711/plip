@@ -2,6 +2,7 @@ package com.server.domain.oauth.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,6 +30,7 @@ public class KakaoToken extends BaseEntity {
     private String accessToken;
     @Column
     private String refreshToken;
+
     @JoinColumn(name = "memberId")
     @OneToOne
     private Member member;

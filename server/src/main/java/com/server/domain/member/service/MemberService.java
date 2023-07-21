@@ -27,13 +27,13 @@ public class MemberService {
 
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);
-        if (member.getRole() == null) {
+        if (member.getRole() == null) { //TODO:로직
             member.setRole(Role.USER);
         }
         return memberRepository.save(member);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) //JPA의 세션 플러시 모드를 MANUAL(트랜잭션 내에서 사용자가 수동으로 flush하지 않으면 flush가 자동으로 수행되지 않는 모드)로 설정.
     public void checkExistNickname(Member member) {
         if (memberRepository.existsByNickname(member.getNickname()))
             throw new CustomException(ExceptionCode.NICKNAME_EXISTS);

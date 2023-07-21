@@ -27,7 +27,6 @@ public class Record extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long recordId;
 
-
     @Column(nullable = false)
     private String content;
 

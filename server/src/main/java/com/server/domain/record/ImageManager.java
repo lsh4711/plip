@@ -8,8 +8,6 @@ import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -83,7 +81,7 @@ public class ImageManager {
                 for (int i = 0; i < images.size(); i++) {
                     MultipartFile image = images.get(i);
                     String fileExtension = getFileExtension(image);
-                    int index=lastIndex+i;
+                    int index = lastIndex + i;
                     String fileName = index + fileExtension;
                     File destination = new File(dirName + File.separator + fileName);
                     image.transferTo(destination);

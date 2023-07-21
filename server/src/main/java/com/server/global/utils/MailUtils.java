@@ -19,6 +19,7 @@ public class MailUtils {
 
     public String createCode() {
         Random random = new Random();
+        //TODO: StringBuffer를 사용하신 이유와 인증 코드
         StringBuffer key = new StringBuffer();
 
         for (int i = 0; i < 8; i++) {

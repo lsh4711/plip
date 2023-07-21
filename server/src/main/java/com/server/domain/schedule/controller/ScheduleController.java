@@ -81,9 +81,12 @@ public class ScheduleController {
         URI location = UriCreator.createUri("/api/schedules",
             savedSchedule.getScheduleId());
 
-        // 비동기 알림 전송
-        scheduleService.sendKakaoMessage(savedSchedule, member); // 카카오 메시지
-        mailService.sendScheduleMail(savedSchedule, member); // 이메일
+        //일정 등록 시 카카오 메시지 전송
+        scheduleService.sendKakaoMessage(savedSchedule, member);
+
+        //일정 등록 시 이메일 전송
+        mailService.sendScheduleMail(savedSchedule, member);
+
 
         return ResponseEntity.created(location).build();
     }

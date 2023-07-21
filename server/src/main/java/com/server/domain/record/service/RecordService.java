@@ -18,11 +18,11 @@ import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 import com.server.global.utils.CustomBeanUtils;
-import com.server.global.utils.CustomUtil;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class RecordService {
 
@@ -31,7 +31,6 @@ public class RecordService {
     private final MemberService memberService;
 
     //여행일지 등록
-    @Transactional
     public Record createRecord(Record record, Long schedulePlaceId) {
         Member member = authenticationMember();
         record.setMember(member);
@@ -44,7 +43,6 @@ public class RecordService {
     }
 
     //여행일지 수정
-    @Transactional
     public Record updateRecord(Record record) {
         Record foundRecord = findRecord(record.getRecordId());
 
@@ -59,6 +57,7 @@ public class RecordService {
     }
 
     //여행일지 아이디로 여행일지 하나 조회(상세 페이지)
+    @Transactional(readOnly = true)
     public Record findRecord(long recordId) {
         Optional<Record> optionalReecord = recordRepository.findById(recordId);
         Record findRecord = optionalReecord.orElseThrow(
@@ -68,6 +67,7 @@ public class RecordService {
     }
 
     //회원 아이디로 전체 여행일지 조회
+    @Transactional(readOnly = true)
     public Page<Record> findAllRecords(int page, int size) {
         Member member = authenticationMember();
         Long memberId = member.getMemberId();
@@ -98,7 +98,7 @@ public class RecordService {
 
     public void verify(long recordId, long memberId) {
         boolean exists = recordRepository
-                .existsByRecordIdAndMember_MemberId(recordId, memberId);
+            .existsByRecordIdAndMember_MemberId(recordId, memberId);
         if (!exists) {
             throw new CustomException(ExceptionCode.RECORD_NOT_FOUND);
         }

@@ -39,6 +39,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException {
         OAuthAttributes oAuth2User = (OAuthAttributes)authentication.getPrincipal();
+        //OAuthAttributes 객체로 부터 Resource Owner의 이메일 주소를 얻어 회원이 존재하는지 확인
         Member findMember = memberRepository.findByEmail(oAuth2User.getEmail())
             .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
 

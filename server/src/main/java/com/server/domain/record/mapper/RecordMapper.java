@@ -18,7 +18,6 @@ public interface RecordMapper {
     @Mapping(target = "memberId", source = "record.member.memberId")
     RecordDto.Response recordToRecordResponse(Record record);
 
-    // @Mapping(target = "memberId", source = "record.member.memberId") // 없어도 됨
     List<RecordDto.Response> recordsToRecordResponses(List<Record> records);
 
 }
