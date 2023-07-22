@@ -1,8 +1,10 @@
 import Resizer from 'react-image-file-resizer';
+// @ts-expect-error https://github.com/onurzorluer/react-image-file-resizer/issues/68
+const resizer: typeof Resizer = Resizer.default || Resizer;
 
 export const resizeFile = (file: File) => {
   return new Promise((resolve) => {
-    Resizer.imageFileResizer(
+    resizer.imageFileResizer(
       file,
       300,
       300,
