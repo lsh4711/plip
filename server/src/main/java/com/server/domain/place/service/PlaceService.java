@@ -16,6 +16,10 @@ import lombok.RequiredArgsConstructor;
 public class PlaceService {
     private final PlaceRepository placeRepository;
 
+    public Place savePlace(Place place) {
+        return placeRepository.save(place);
+    }
+
     public List<Place> savePlaces(List<Place> places) {
         return placeRepository.saveAll(places);
     }

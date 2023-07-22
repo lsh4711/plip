@@ -22,6 +22,10 @@ import lombok.RequiredArgsConstructor;
 public class SchedulePlaceService {
     private final SchedulePlaceRepository schedulePlaceRepository;
 
+    public void saveSchedulePlace(SchedulePlace schedulePlace) {
+        schedulePlaceRepository.save(schedulePlace);
+    }
+
     public void saveSchedulePlaces(List<SchedulePlace> schedulePlaces) {
         schedulePlaceRepository.saveAll(schedulePlaces);
     }

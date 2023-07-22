@@ -5,7 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
+import com.server.domain.member.entity.Member;
 import com.server.global.audit.BaseEntity;
 
 import lombok.AllArgsConstructor;
@@ -26,6 +29,10 @@ public class KakaoToken extends BaseEntity {
     private String accessToken;
     @Column
     private String refreshToken;
+
+    @OneToOne
+    @JoinColumn(name = "memberId")
+    private Member member;
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;

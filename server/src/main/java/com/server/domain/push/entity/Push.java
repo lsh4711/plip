@@ -4,6 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+import com.server.domain.member.entity.Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,4 +25,8 @@ public class Push {
     private Long pushId;
 
     private String pushToken;
+
+    @OneToOne
+    @JoinColumn(name = "memberId")
+    private Member member;
 }

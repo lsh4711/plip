@@ -10,7 +10,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -51,12 +50,10 @@ public class Member extends BaseEntity {
 
     // 전이 용도, 작동하는지 확인 필요
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "kakaoTokenId")
+    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
     private KakaoToken kakaoToken;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "pushId")
+    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
     private Push push;
 
     // 여행일지와 연관관계 설정
