@@ -22,22 +22,26 @@ const FootPrintPage = () => {
       <HeadingParagraph variant={'darkgray'} size={'md'} className="mb-4">
         나의 발자취
       </HeadingParagraph>
-      <div className="relative h-full w-full">
-        <Map
-          type="clustering"
-          centerLat={center.lat}
-          centerLng={center.lng}
-          mapLevel={mapLevel}
-          setMapLevel={setMapLevel}
-          schedules={places}
-          className="h-full w-full"
-        />
-        {!places.length && (
-          <div className="absolute bottom-0 left-0 right-0 top-0 z-10 flex items-center justify-center bg-white/70 text-lg font-bold text-[#4568DC]">
-            아직 다녀온 여행이 없어요. 여행을 떠나볼까요?
-          </div>
-        )}
-      </div>
+      {isError ? (
+        <div>에러</div> // TODO fallback 넣기
+      ) : (
+        <div className="relative h-full w-full">
+          <Map
+            type="clustering"
+            centerLat={center.lat}
+            centerLng={center.lng}
+            mapLevel={mapLevel}
+            setMapLevel={setMapLevel}
+            schedules={places}
+            className="h-full w-full"
+          />
+          {!places.length && (
+            <div className="absolute bottom-0 left-0 right-0 top-0 z-10 flex items-center justify-center bg-white/70 text-lg font-bold text-[#4568DC]">
+              아직 다녀온 여행이 없어요. 여행을 떠나볼까요?
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
