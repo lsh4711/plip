@@ -73,7 +73,7 @@ public class PlaceControllerTest {
         records.add(new Record());
         records.add(new Record());
 
-        given(service.findRecords(Mockito.anyLong())).willReturn(records);
+        // given(service.findRecords(Mockito.anyLong())).willReturn(records);
         given(recordMapper.recordsToRecordResponses(Mockito.anyList())).willReturn(responses);
 
         String page = "1";
