@@ -1,7 +1,7 @@
 import { Button } from '@/components';
 import { DialogButtonGroup, DialogContainer } from '@/components/common/Dialog';
 import { ReactComponent as PlusCircleIcon } from '@/assets/icons/plus-circle.svg';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ReactComponent as CloseIcon } from '@/assets/icons/close.svg';
 import { maxImages, maxRecordCharacters } from '@/datas/constants';
 import { resizeFile } from '@/utils/file/resizeFile';
@@ -31,13 +31,6 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
   const SCHEDULE_PLACE_ID = id; // 테스트를 위한 임시 변수입니다. 요청 주소의 param으로 사용됩니다.
 
   const inputImageRef = useRef<HTMLInputElement>(document.createElement('input'));
-  const scrollRef = useRef<HTMLDivElement>(null);
-  console.log(scrollRef.current);
-  console.log(
-    scrollRef.current?.offsetWidth,
-    scrollRef.current?.scrollWidth,
-    scrollRef.current?.clientWidth
-  );
 
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [preViewImgSrcs, setPreViewImgSrcs] = useState<string[]>([]);
@@ -145,8 +138,8 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
           onChange={onUploadImageHandler}
         />
         <div
-          ref={scrollRef}
-          className="plip-scrollbar mb-8 flex h-[200px] w-full flex-nowrap gap-4 overflow-x-hidden px-4 pt-4 hover:overflow-x-scroll "
+          className={` plip-scrollbar mb-8 flex h-[200px] w-full flex-nowrap gap-4 overflow-x-scroll px-4
+          pt-4 `}
         >
           {preViewImgSrcs.map((image, id) => (
             <div
