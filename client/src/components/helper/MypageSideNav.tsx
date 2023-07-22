@@ -14,7 +14,7 @@ const MypageSideNav = ({}: MypageSideNavProps) => {
       {menus.map((menu, idx) => {
         if (idx === 0) return;
         return (
-          <NavLink to={menu.route}>
+          <NavLink to={menu.route} key={idx}>
             {({ isActive }) => (
               <div
                 className="flex w-full gap-2 rounded-lg px-4 py-2"

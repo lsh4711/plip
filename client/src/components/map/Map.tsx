@@ -3,22 +3,23 @@ import {
   CustomOverlayMap,
   Map as KakaoMap,
   MapMarker,
-  MapMarkerProps,
+  MarkerClusterer,
   Polyline,
 } from 'react-kakao-maps-sdk';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { InfoWindow } from '@/components/map/InfoWindow';
+import { useMapDetailContext } from '@/contexts/MapDetailProvider';
 import { COLORS } from '@/datas/map-constants';
+import useHoverTimer from '@/hooks/useHoverTimer';
 import { setSelectedPlace } from '@/redux/slices/placeSlice';
 import { RootState } from '@/redux/store';
 import { ScheduledPlaceBase } from '@/types/api/schedules-types';
-import useHoverTimer from '@/hooks/useHoverTimer';
-import { useMapDetailContext } from '@/contexts/MapDetailProvider';
+import { CategoryGroupCode } from '@/types/mapApi/place-types';
 import { cn } from '@/utils';
 
 interface mapProps {
-  type: 'scheduling' | 'recording';
+  type: 'scheduling' | 'recording' | 'clustering';
   centerLat: number;
   centerLng: number;
   mapLevel: number;
@@ -48,15 +49,6 @@ const Map = ({
   const [onHandleOpen, onHandleClose] = useHoverTimer({});
 
   const hoverMarkerTimer = useRef(0);
-
-  const onClickMarker = (place: ScheduledPlaceBase) => {
-    if (type === 'scheduling') {
-      dispatch(setSelectedPlace(place));
-    }
-    if (type === 'recording') {
-      // TODO : open editor modal
-    }
-  };
 
   const onHoverMarker = (place: ScheduledPlaceBase) => {
     if (type === 'recording' && mapDetailContextValues) {
@@ -109,29 +101,76 @@ const Map = ({
       onZoomChanged={(map) => setMapLevel(map.getLevel())}
       zoomable={!selectedPlace}
     >
-      {schedules.map((marker, dayNumber) =>
-        marker.map((place, visitNumber) => (
+      {type !== 'clustering' &&
+        schedules.map((marker, dayNumber) =>
+          marker.map((place, visitNumber) => (
+            <MapMarker
+              key={place.apiId}
+              position={{
+                lat: parseFloat(place.latitude),
+                lng: parseFloat(place.longitude),
+              }}
+              image={{
+                src: `/markers/marker${dayNumber % COLORS.length}/marker-${
+                  dayNumber % COLORS.length
+                }-${visitNumber + 1}.svg`,
+                size: {
+                  width: 32,
+                  height: 32,
+                },
+              }}
+              onClick={() => dispatch(setSelectedPlace(place))}
+              onMouseOver={() => onHoverMarker(place)}
+              onMouseOut={() => onHoverOutHandler()}
+            />
+          ))
+        )}
+
+      {!!searchPlaceResults.length &&
+        searchPlaceResults.map((result, idx) => (
           <MapMarker
-            key={place.apiId}
+            key={result.id}
             position={{
-              lat: parseFloat(place.latitude),
-              lng: parseFloat(place.longitude),
+              lat: parseFloat(result.y),
+              lng: parseFloat(result.x),
             }}
+            onClick={() =>
+              dispatch(
+                setSelectedPlace({
+                  apiId: parseInt(result.id),
+                  name: result.place_name,
+                  address: result.address_name,
+                  latitude: result.y,
+                  longitude: result.x,
+                  phone: result.phone,
+                  category: result.category_group_code as CategoryGroupCode,
+                  bookmark: false,
+                })
+              )
+            }
             image={{
-              src: `/markers/marker${dayNumber % COLORS.length}/marker-${
-                dayNumber % COLORS.length
-              }-${visitNumber + 1}.svg`,
+              src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png',
               size: {
-                width: 32,
-                height: 32,
+                width: 48,
+                height: 48,
+              },
+              options: {
+                spriteSize: {
+                  width: 36,
+                  height: 691,
+                },
+                spriteOrigin: {
+                  x: 0,
+                  y: idx * 46,
+                },
+                offset: {
+                  x: 13,
+                  y: 37,
+                },
               },
             }}
-            onClick={() => onClickMarker(place)}
-            onMouseOver={() => onHoverMarker(place)}
-            onMouseOut={() => onHoverOutHandler()}
           />
-        ))
-      )}
+        ))}
 
       {selectedPlace && (
         <CustomOverlayMap
@@ -173,6 +212,33 @@ const Map = ({
             strokeColor={COLORS[dayNumber % COLORS.length]}
           />
         ))}
+
+      {type === 'clustering' && (
+        <MarkerClusterer
+          averageCenter={true} // 클러스터에 포함된 마커들의 평균 위치를 클러스터 마커 위치로 설정
+          minLevel={10} // 클러스터 할 최소 지도 레벨
+        >
+          {schedules.map((places) =>
+            places.map((place) => (
+              <MapMarker
+                key={place.apiId}
+                position={{
+                  lat: parseFloat(place.latitude),
+                  lng: parseFloat(place.longitude),
+                }}
+                onClick={() => dispatch(setSelectedPlace(place))}
+                image={{
+                  src: '/markers/marker.svg',
+                  size: {
+                    width: 30,
+                    height: 30,
+                  },
+                }}
+              />
+            ))
+          )}
+        </MarkerClusterer>
+      )}
     </KakaoMap>
   );
 };
