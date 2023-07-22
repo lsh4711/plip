@@ -17,6 +17,7 @@ public class KakaoTokenOauthService {
 
     public void saveToken(String accessToken, String refreshToken, Member member) {
         KakaoToken token = KakaoToken.builder()
+                .member(member)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
