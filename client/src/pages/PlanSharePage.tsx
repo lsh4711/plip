@@ -31,7 +31,7 @@ const PlanSharePage = () => {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}api/schedules/${id}/share?id=3&email=test@naver.com`)
+      .get(`${BASE_URL}/api/schedules/${id}/share?id=3&email=test@naver.com`)
       .then((res) => console.log(res));
   }, []);
 

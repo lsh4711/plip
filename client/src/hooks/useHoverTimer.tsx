@@ -1,4 +1,5 @@
-import { useRef } from 'react';
+import { clear } from 'console';
+import { useEffect, useRef } from 'react';
 
 type Props = {
   openDelay?: number;
@@ -8,6 +9,11 @@ type Props = {
 const useHoverTimer = ({ openDelay = 500, closeDelay = 300 }: Props) => {
   const openTimerRef = useRef(0);
   const closeTimerRef = useRef(0);
+
+  useEffect(() => {
+    clearTimeout(openTimerRef.current);
+    clearTimeout(closeTimerRef.current);
+  }, []);
 
   const onHandleOpen = (callback: (...params: any) => void) => {
     clearTimeout(openTimerRef.current);

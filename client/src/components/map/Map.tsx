@@ -1,5 +1,11 @@
 import { SetStateAction, useEffect, useRef } from 'react';
-import { CustomOverlayMap, Map as KakaoMap, MapMarker, Polyline } from 'react-kakao-maps-sdk';
+import {
+  CustomOverlayMap,
+  Map as KakaoMap,
+  MapMarker,
+  MapMarkerProps,
+  Polyline,
+} from 'react-kakao-maps-sdk';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { InfoWindow } from '@/components/map/InfoWindow';
@@ -42,6 +48,8 @@ const Map = ({
 
   const [onHandleOpen, onHandleClose] = useHoverTimer({});
 
+  const hoverMarkerTimer = useRef(0);
+
   const onClickMarker = (place: ScheduledPlaceBase) => {
     if (type === 'scheduling') {
       dispatch(setSelectedPlace(place));
@@ -53,16 +61,18 @@ const Map = ({
 
   const onHoverMarker = (place: ScheduledPlaceBase) => {
     if (type === 'recording' && mapDetailContextValues) {
-      const { setPlaceId } = mapDetailContextValues;
-      onHandleOpen(() => dispatch(setSelectedPlace(place)));
-      console.log(place.schedulePlaceId);
-      setPlaceId(place.schedulePlaceId!);
+      hoverMarkerTimer.current = window.setTimeout(() => {
+        const { setPlaceId } = mapDetailContextValues;
+        onHandleOpen(() => dispatch(setSelectedPlace(place)));
+        // console.log(place.schedulePlaceId);
+        setPlaceId(place.schedulePlaceId!);
+      }, 100);
     }
   };
 
   const onHoverOutHandler = () => {
+    clearTimeout(hoverMarkerTimer.current);
     onHandleClose(() => dispatch(setSelectedPlace(null)));
-    // setHoveredMarker(null);
   };
 
   useEffect(() => {

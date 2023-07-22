@@ -165,7 +165,7 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
         </div>
         <div className="w-full flex-1 px-4">
           <textarea
-            className="h-full w-full outline-none"
+            className="h-full w-full resize-none outline-none"
             value={text}
             onChange={(e) => onInputText(e)}
             placeholder="구체적인 계획 혹은 다녀온 장소에 대한 추억을 남겨보세요!"

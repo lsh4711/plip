@@ -17,7 +17,6 @@ import Confirm from '@/components/common/Confirm';
 import useRemoveTripMutation from '@/queries/mytrip/useRemoveTripMutation';
 import LoadingSpinner from '@/components/atom/LoadingSpinner';
 import SharesButtons from '@/components/common/SharesButtons';
-import instance from '@/queries/axiosinstance';
 import { UserGetRequest } from '@/types/api/users-types';
 
 const MyTripCard = ({
@@ -33,15 +32,11 @@ const MyTripCard = ({
 }: MyTripTypes) => {
   const [endTrip, setEndTrip] = useState(isEnd);
   const [isClickedShare, setIsClickedShare] = useState(false);
-  const [userInfo, setUserInfo] = useState<UserGetRequest>();
 
   const [openModal] = useModal();
   const removeTripMutation = useRemoveTripMutation();
 
   const onClickShareButtons = async () => {
-    await instance.get('/api/users').then((res) => {
-      setUserInfo(res.data.data);
-    });
     setIsClickedShare(!isClickedShare);
   };
 
@@ -158,7 +153,7 @@ const MyTripCard = ({
             >
               일정 공유
             </Button>
-            {isClickedShare && <SharesButtons scheduleId={scheduleId} userInfo={userInfo!} />}
+            {isClickedShare && <SharesButtons scheduleId={scheduleId} />}
           </div>
         </div>
       </div>
