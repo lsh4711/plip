@@ -37,6 +37,13 @@ public class BatchScheduler {
         runJob(date, 7);
     }
 
+    @Scheduled(cron = "0 0 22 * * *")
+    public void runJobAt22() {
+        LocalDate date = LocalDate.now();
+
+        runJob(date, 22);
+    }
+
     public void runJob(LocalDate date, long hour) {
         JobParameters parameters = new JobParametersBuilder()
                 .addString("date", date.toString())

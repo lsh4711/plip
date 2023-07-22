@@ -1,6 +1,5 @@
 package com.server.helper;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -189,31 +188,39 @@ public class StubData {
     }
 
     public static class MockSchedule {
+        public static Schedule schedule = new Schedule();
+
         public static ScheduleDto.Post postDto = new ScheduleDto.Post();
+
+        public static ScheduleDto.Patch patchDto = new ScheduleDto.Patch();
 
         // public static Schedule schedule;
 
         static {
-            postDto.setTitle("제목");
-            postDto.setMemberCount(1);
-            postDto.setRegion("제주도");
-            postDto.setStartDate(LocalDate.now());
-            postDto.setEndDate(LocalDate.now().plusDays(2));
+            // Member member = Member.builder()
+            //         .memberId(1L)
+            //         .build();
+            schedule.setScheduleId(1L);
+            // schedule.setMember(member);
 
-            // schedule.setScheduleId(1L);
-            // schedule.setRegion("제주도");
-            // schedule.setTitle("제목");
-            // schedule.setContent("일정에 대한 메모");
-            // schedule.setMemberCount(1);
-            // schedule.setStartDate(LocalDateTime.now());
-            // schedule.setEndDate(LocalDateTime.now());
-            // schedule.setMember(null);
-            // schedule.setSchedulePlaces(null);
+            // postDto.setEngRegion("seoul"); //
+            // postDto.setStartDate(LocalDate.now()); //
+            // postDto.setEndDate(LocalDate.now().plusDays(2)); //
+
+            // patchDto.setScheduleId(1L);
+            // patchDto.setRegion("제주도");
+            // patchDto.setTitle("제목");
+            // patchDto.setContent("일정에 대한 메모");
+            // patchDto.setMemberCount(1);
+            // patchDto.setStartDate(LocalDateTime.now());
+            // patchDto.setEndDate(LocalDateTime.now());
+            // patchDto.setMember(null);
+            // patchDto.setSchedulePlaces(null);
         }
     }
 
     public static class MockPlace {
-        public static List<List<PlaceDto.Post>> postDtoLists = new ArrayList<>();
+        public static List<List<PlaceDto.Patch>> postDtoLists = new ArrayList<>();
         public static List<SchedulePlace> schedulePlaces = new ArrayList<>();
 
         static {
@@ -222,18 +229,18 @@ public class StubData {
             String[] categoryNames = {"대형마트", "편의점", "어린이집, 유치원"};
 
             for (int i = 1; i <= 2; i++) {
-                List<PlaceDto.Post> postDtos = new ArrayList<>();
+                List<PlaceDto.Patch> patchDtos = new ArrayList<>();
                 for (int j = 1; j <= 3; j++) {
-                    PlaceDto.Post postDto = new PlaceDto.Post();
-                    postDto.setApiId(j * 10 + j);
-                    postDto.setName(placeNames[j - 1]);
-                    postDto.setAddress("제주도 무슨동 무슨길" + j);
-                    postDto.setPhone("010-0000-0000");
-                    postDto.setLatitude(String.format("%d.%d", j * 205 + j * 17 + j * 8, j * 27));
-                    postDto.setLongitude(String.format("%d.%d", j * 121 + j * 23 + j * 3, j * 31));
-                    postDto.setCategory(categoryCodes[j - 1]);
-                    postDto.setBookmark(false);
-                    postDtos.add(postDto);
+                    PlaceDto.Patch patchDto = new PlaceDto.Patch();
+                    patchDto.setApiId(j * 10L + j);
+                    patchDto.setName(placeNames[j - 1]);
+                    patchDto.setAddress("제주도 무슨동 무슨길" + j);
+                    patchDto.setPhone("010-0000-0000");
+                    patchDto.setLatitude(String.format("%d.%d", j * 205 + j * 17 + j * 8, j * 27));
+                    patchDto.setLongitude(String.format("%d.%d", j * 121 + j * 23 + j * 3, j * 31));
+                    // patchDto.setCategory(categoryCodes[j - 1]);
+                    // patchDto.setBookmark(false);
+                    patchDtos.add(patchDto);
 
                     Category category = new Category();
                     category.setCode(categoryCodes[j - 1]);
@@ -241,7 +248,7 @@ public class StubData {
 
                     Place place = new Place();
                     place.setPlaceId((long)j);
-                    place.setApiId(j * 10 + j);
+                    place.setApiId(j * 10L + j);
                     place.setName(placeNames[j - 1]);
                     place.setAddress("제주도 무슨동 무슨길" + j);
                     place.setPhone("010-0000-0000");
@@ -258,10 +265,10 @@ public class StubData {
                     schedulePlace.setPlace(place);
                     schedulePlace.setDays(i);
                     schedulePlace.setOrders(j);
-                    schedulePlace.setBookmark(false);
+                    // schedulePlace.setBookmark(false);
                     schedulePlaces.add(schedulePlace);
                 }
-                postDtoLists.add(postDtos);
+                postDtoLists.add(patchDtos);
             }
 
         }

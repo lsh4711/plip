@@ -8,15 +8,13 @@ import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.server.domain.member.service.MemberService;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
-import com.server.global.utils.CustomUtil;
+import com.server.global.utils.AuthUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -200,7 +198,7 @@ public class ImageManager {
 
     // 일지의 모든 이미지 삭제
     public void deleteImgs(long recordId) {
-        Long userId = CustomUtil.getAuthId();
+        Long userId = AuthUtil.getMemberId();
         String dirName = String.format("%s/%d/%d",
             location,
             userId,

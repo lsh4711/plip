@@ -40,5 +40,8 @@ public class RecordDto {
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
 
+        // 클라이언트 요청
+        private String placeName;
+        private Integer days;
     }
 }

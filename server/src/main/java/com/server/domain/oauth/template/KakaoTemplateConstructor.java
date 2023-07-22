@@ -57,7 +57,7 @@ public class KakaoTemplateConstructor {
         Feed feed = Feed.builder()
                 .object_type("feed")
                 .content(content)
-                .button_title("PilP 자동 로그인")
+                .button_title("PilP으로 이동")
                 .build();
 
         return feed;
@@ -120,13 +120,21 @@ public class KakaoTemplateConstructor {
         // Region
         Region region = schedule.getRegion();
         String korRegion = region.getKorName();
+        String message;
+        String button_title = null;
 
         // Text
-        String prefix = hour == 7 ? "오늘" : "내일";
-        String message = String.format("%s님! %s은 설레는 %s 여행날이에요!",
-            nickname,
-            prefix,
-            korRegion);
+        if (hour == 22) {
+            message = String.format("%s님! 여행은 즐거우셨나요?!", nickname);
+            button_title = "일지 작성하러 가기";
+        } else {
+            String prefix = hour == 7 ? "오늘" : "내일";
+            message = String.format("%s님! %s은 설레는 %s 여행날이에요!",
+                nickname,
+                prefix,
+                korRegion);
+        }
+
         String basesUrl = "https://plip.netlify.app/plan/detail";
         String shareUrl = String.format("%s/%d/share?id=%d&email=%s",
             basesUrl,

@@ -16,9 +16,9 @@ public interface RecordMapper {
     Record recordPatchToRecord(RecordDto.Patch requestBody);
 
     @Mapping(target = "memberId", source = "record.member.memberId")
+    @Mapping(source = "schedulePlace.place.name", target = "placeName") // 클라이언트 요청
+    @Mapping(source = "schedulePlace.days", target = "days") // 클라이언트 요청
     RecordDto.Response recordToRecordResponse(Record record);
 
-    // @Mapping(target = "memberId", source = "record.member.memberId") // 없어도 됨
     List<RecordDto.Response> recordsToRecordResponses(List<Record> records);
-
 }

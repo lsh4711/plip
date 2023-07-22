@@ -30,7 +30,7 @@ import com.server.domain.record.service.RecordService;
 import com.server.domain.record.service.StorageService;
 import com.server.global.dto.MultiResponseDto;
 import com.server.global.dto.SingleResponseDto;
-import com.server.global.utils.CustomUtil;
+import com.server.global.utils.AuthUtil;
 import com.server.global.utils.UriCreator;
 
 import lombok.RequiredArgsConstructor;
@@ -102,7 +102,7 @@ public class RecordController {
     //여행일지 삭제
     @DeleteMapping("/{record-id}")
     public ResponseEntity deleteRecord(@PathVariable("record-id") @Positive long recordId) {
-        long userId = CustomUtil.getAuthId();
+        long userId = AuthUtil.getMemberId();
 
         recordService.verify(recordId, userId);
         recordService.deleteRecord(recordId);
@@ -121,7 +121,7 @@ public class RecordController {
     @PostMapping("/{record-id}/img")
     public ResponseEntity<?> uploadRecordImg(@PathVariable("record-id") long recordId,
             @RequestPart("images") List<MultipartFile> images) {
-        long userId = CustomUtil.getAuthId();
+        long userId = AuthUtil.getMemberId();
 
         recordService.verify(recordId, userId);
 
@@ -139,7 +139,7 @@ public class RecordController {
     @GetMapping("/{record-id}/img/{img-id}")
     public ResponseEntity<?> getRecordImg(@PathVariable("record-id") long recordId,
             @PathVariable("img-id") long imgId) {
-        long userId = CustomUtil.getAuthId();
+        long userId = AuthUtil.getMemberId();
 
         recordService.verify(recordId, userId);
 
@@ -156,7 +156,7 @@ public class RecordController {
     //이미지 전체 조회 - base64 인코딩된 걸 리턴
     @GetMapping("/{record-id}/img")
     public ResponseEntity<?> getRecordAllImg(@PathVariable("record-id") long recordId) {
-        long userId = CustomUtil.getAuthId();
+        long userId = AuthUtil.getMemberId();
 
         recordService.verify(recordId, userId);
 
@@ -176,7 +176,7 @@ public class RecordController {
     @DeleteMapping("/{record-id}/img/{img-id}")
     public ResponseEntity<?> deleteRecordImg(@PathVariable("record-id") long recordId,
             @PathVariable("img-id") long imgId) {
-        long userId = CustomUtil.getAuthId();
+        long userId = AuthUtil.getMemberId();
 
         recordService.verify(recordId, userId);
 
@@ -192,7 +192,7 @@ public class RecordController {
 
     @DeleteMapping("/{record-id}/img/")
     public ResponseEntity<?> deleteRecordImgs(@PathVariable("record-id") long recordId) {
-        long userId = CustomUtil.getAuthId();
+        long userId = AuthUtil.getMemberId();
 
         recordService.verify(recordId, userId);
 

@@ -17,11 +17,11 @@ public class PlaceResponse {
     private String phone;
     private String latitude;
     private String longitude;
-    private String category;
+    private String categoryCode;
     private String categoryName;
 
     // SchedulePlace
     private Integer days;
     private Integer orders;
-    private Boolean bookmark;
+    // private Boolean bookmark;
 }

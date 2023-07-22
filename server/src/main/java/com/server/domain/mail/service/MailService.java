@@ -42,7 +42,7 @@ public class MailService {
 
             mimeMessageHelper.setTo(email);
             mimeMessageHelper.setText(setContext(authCode, type), true);
-            if(type.equals("signup") || type.equals("pw")){
+            if (type.equals("signup") || type.equals("pw")) {
                 authMailCodeService.saveOrUpdateAuthCode(authCode, email);
             }
             mimeMessageHelper.setSubject(mailUtils.setSubject(type));
@@ -55,9 +55,9 @@ public class MailService {
 
     public void verificationEmail(String email, String type) {
         Optional<Member> findMember = memberRepository.findByEmail(email);
-        if(type.equals("pw") && findMember.isEmpty())
+        if (type.equals("pw") && findMember.isEmpty())
             throw new CustomException(ExceptionCode.MEMBER_NOT_FOUND);
-        else if(type.equals("signup") && findMember.isPresent())
+        else if (type.equals("signup") && findMember.isPresent())
             throw new CustomException(ExceptionCode.EMAIL_EXISTS);
     }
 
@@ -77,7 +77,8 @@ public class MailService {
     }
 
     @Async
-    public void sendScheduleMail(Schedule schedule, Member member) {
+    public void sendScheduleMail(Schedule schedule) {
+        Member member = schedule.getMember();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");

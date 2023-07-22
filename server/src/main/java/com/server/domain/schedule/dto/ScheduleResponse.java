@@ -15,7 +15,7 @@ public class ScheduleResponse {
     private String nickname;
 
     private Long scheduleId;
-    private String region;
+    private String engRegion;
     private String korRegion;
     private String title;
     private Integer memberCount;

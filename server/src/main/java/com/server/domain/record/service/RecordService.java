@@ -18,7 +18,6 @@ import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 import com.server.global.utils.CustomBeanUtils;
-import com.server.global.utils.CustomUtil;
 
 import lombok.RequiredArgsConstructor;
 

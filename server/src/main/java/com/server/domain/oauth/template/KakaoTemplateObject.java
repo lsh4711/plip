@@ -24,6 +24,7 @@ public class KakaoTemplateObject {
         private String object_type;
         private String text;
         private Link link;
+        private String button_title;
     }
 
     public static class Location {

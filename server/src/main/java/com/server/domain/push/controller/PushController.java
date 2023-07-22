@@ -13,7 +13,7 @@ import com.server.domain.push.dto.PushDto;
 import com.server.domain.push.entity.Push;
 import com.server.domain.push.mapper.PushMapper;
 import com.server.domain.push.service.PushService;
-import com.server.global.utils.CustomUtil;
+import com.server.global.utils.AuthUtil;
 import com.server.global.utils.UriCreator;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,8 @@ public class PushController {
 
     @PostMapping("/write")
     public ResponseEntity postPush(@RequestBody PushDto.Post postdto) {
-        long memberId = CustomUtil.getAuthId();
+        // one to one 양방향 해야함
+        long memberId = AuthUtil.getMemberId();
         Member member = Member.builder()
                 .memberId(memberId)
                 .build();
