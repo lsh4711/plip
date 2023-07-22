@@ -1,36 +1,36 @@
 package com.server.domain.schedule.mapper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.server.domain.place.dto.PlaceResponse;
 import com.server.domain.place.entity.Place;
+import com.server.domain.record.dto.RecordDto;
+import com.server.domain.record.entity.Record;
+import com.server.domain.record.mapper.RecordMapper;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
 
 @Mapper(componentModel = "spring")
-public interface SchedulePlaceMapper {
-    // 'SchedulePlace'가 아닌 'Place'의 Response로 분류
-    @Mapping(source = "schedulePlace.schedule.scheduleId", target = "scheduleId")
-    // @Mapping(source = "place.placeId", target = "placeId")
-    // @Mapping(source = "place.apiId", target = "apiId")
-    // @Mapping(source = "place.name", target = "name")
-    // @Mapping(source = "place.address", target = "address")
-    // @Mapping(source = "place.latitude", target = "latitude")
-    // @Mapping(source = "place.longitude", target = "longitude")
+public abstract class SchedulePlaceMapper {
+    @Autowired
+    RecordMapper recordMapper;
 
-    // @Mapping(source = "place.phone", target = "phone")
-    @Mapping(source = "place.category.code", target = "categoryCode")
+    @Mapping(source = "schedulePlace.schedule.scheduleId", target = "scheduleId")
+    @Mapping(source = "place.category.code", target = "category")
     @Mapping(source = "place.category.name", target = "categoryName")
     @Mapping(source = "place.days", target = "days", ignore = true)
     @Mapping(source = "place.orders", target = "orders", ignore = true)
     @Mapping(source = "place.schedulePlaceId", target = "schedulePlaceId", ignore = true)
     public abstract PlaceResponse schedulePlaceToPlaceResponse(SchedulePlace schedulePlace, Place place);
 
-    default List<List<PlaceResponse>> schedulePlacesToPlaceResponseLists(List<SchedulePlace> schedulePlaces,
+    public List<List<PlaceResponse>> schedulePlacesToPlaceResponseLists(List<SchedulePlace> schedulePlaces,
             Schedule schedule) {
         int period = schedule.getPeriod();
         List<List<PlaceResponse>> placeResponseLists = new ArrayList<>();
@@ -50,5 +50,20 @@ public interface SchedulePlaceMapper {
         }
 
         return placeResponseLists;
+    }
+
+    public Map<Long, List<RecordDto.Response>> toRecordResponseMap(
+            List<SchedulePlace> schedulePlaces) {
+        Map<Long, List<RecordDto.Response>> map = new HashMap<>();
+
+        for (SchedulePlace schedulePlace : schedulePlaces) {
+            long schedulePlaceId = schedulePlace.getSchedulePlaceId();
+            List<Record> records = schedulePlace.getRecords();
+            List<RecordDto.Response> recordResponses = recordMapper
+                    .recordsToRecordResponses(records);
+            map.put(schedulePlaceId, recordResponses);
+        }
+
+        return map;
     }
 }

@@ -2,7 +2,6 @@ package com.server.domain.schedule.controller;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +26,6 @@ import com.server.domain.place.entity.Place;
 import com.server.domain.place.mapper.PlaceMapper;
 import com.server.domain.place.service.PlaceService;
 import com.server.domain.record.dto.RecordDto;
-import com.server.domain.record.entity.Record;
 import com.server.domain.record.mapper.RecordMapper;
 import com.server.domain.schedule.dto.ScheduleDto;
 import com.server.domain.schedule.dto.ScheduleResponse;
@@ -119,22 +117,16 @@ public class ScheduleController {
                 .scheduleToScheduleResponse(foundSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
 
-        Map<Long, List<RecordDto.Response>> map = new HashMap<>();
-
-        for (SchedulePlace schedulePlace : schedulePlaces) {
-            long schedulePlaceId = schedulePlace.getSchedulePlaceId();
-            List<Record> records = schedulePlace.getRecords();
-            List<RecordDto.Response> recordResponses = recordMapper
-                    .recordsToRecordResponses(records);
-            map.put(schedulePlaceId, recordResponses);
-        }
+        Map<Long, List<RecordDto.Response>> map = schedulePlaceMapper
+                .toRecordResponseMap(schedulePlaces);
 
         ScheduleResponseWithRecord sharedScheduleResponse = ScheduleResponseWithRecord.builder()
                 .schedule(scheduleResponse)
                 .recordsMap(map)
                 .build();
 
-        return ResponseEntity.ok(sharedScheduleResponse);
+        // return ResponseEntity.ok(sharedScheduleResponse);
+        return ResponseEntity.ok(scheduleResponse); // 임시 배포용
     }
 
     @GetMapping

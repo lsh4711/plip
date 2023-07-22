@@ -34,13 +34,13 @@ public abstract class ScheduleMapper {
     @Mapping(target = "member", expression = "java(memberRepository.findById(AuthUtil.getMemberId()).get())")
     @Mapping(target = "memberCount", expression = "java(1)")
     @Mapping(target = "period", expression = "java((int)ChronoUnit.DAYS.between(postDto.getStartDate(), postDto.getEndDate()) + 1)")
-    @Mapping(target = "region", expression = "java(regionRepository.findByEngName(postDto.getEngRegion()))")
+    @Mapping(target = "region", expression = "java(regionRepository.findByEngName(postDto.getRegion()))")
     @Mapping(target = "title", expression = "java(String.format(\"%s 여행 레츠고!\", schedule.getRegion().getKorName()))")
     public abstract Schedule postDtoToSchedule(ScheduleDto.Post postDto);
 
     @Mapping(target = "memberCount", expression = "java(toMemberCount(patchDto.getMemberCount()))")
     @Mapping(target = "period", expression = "java((int)ChronoUnit.DAYS.between(patchDto.getStartDate(), patchDto.getEndDate()) + 1)")
-    @Mapping(target = "region", expression = "java(regionRepository.findByEngName(patchDto.getEngRegion()))")
+    @Mapping(target = "region", expression = "java(regionRepository.findByEngName(patchDto.getRegion()))")
     @Mapping(target = "title", expression = "java(toTitle(patchDto.getTitle(), schedule.getRegion()))")
     // @Mapping(target = "tmpSchedulePlaces", expression = "java(toTmpSchedulePlaces())")
     public abstract Schedule patchDtoToSchedule(ScheduleDto.Patch patchDto, long scheduleId);
@@ -64,7 +64,7 @@ public abstract class ScheduleMapper {
 
     @Mapping(source = "member.memberId", target = "memberId")
     @Mapping(source = "member.nickname", target = "nickname")
-    @Mapping(source = "region.engName", target = "engRegion")
+    @Mapping(source = "region.engName", target = "region")
     @Mapping(source = "region.korName", target = "korRegion")
     @Mapping(target = "startDate", expression = "java(toLocalDateTime(schedule.getStartDate()))")
     @Mapping(target = "endDate", expression = "java(toLocalDateTime(schedule.getEndDate()))")

@@ -18,7 +18,7 @@ public abstract class PlaceMapper {
     @Autowired
     CategoryRepository categoryRepository;
 
-    @Mapping(target = "category", expression = "java(categoryRepository.findByCode(patchDto.getCategoryCode()))")
+    @Mapping(target = "category", expression = "java(categoryRepository.findByCode(patchDto.getCategory()))")
     public abstract Place patchDtoToPlace(PlaceDto.Patch patchDto);
 
     public abstract List<Place> patchDtosToPlaces(List<PlaceDto.Patch> patchDtos);

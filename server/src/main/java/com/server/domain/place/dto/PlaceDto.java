@@ -34,7 +34,7 @@ public class PlaceDto {
         private String longitude;
 
         @NotNull
-        private String categoryCode; // 빈 문자열로도 옴
+        private String category; // 빈 문자열로도 옴
 
         // @NotNull
         // private Boolean bookmark;

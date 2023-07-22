@@ -17,12 +17,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,27 +37,33 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.server.domain.mail.service.MailService;
-import com.server.domain.member.entity.Member;
 import com.server.domain.member.service.MemberService;
 import com.server.domain.place.dto.PlaceDto;
+import com.server.domain.place.dto.PlaceResponse;
+import com.server.domain.place.entity.Place;
 import com.server.domain.place.mapper.PlaceMapper;
 import com.server.domain.place.service.PlaceService;
-import com.server.domain.region.entity.Region;
+import com.server.domain.record.dto.RecordDto;
 import com.server.domain.schedule.dto.ScheduleDto;
+import com.server.domain.schedule.dto.ScheduleResponse;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.entity.SchedulePlace;
 import com.server.domain.schedule.mapper.ScheduleMapper;
+import com.server.domain.schedule.mapper.SchedulePlaceMapper;
 import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.domain.schedule.service.ScheduleService;
 import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.helper.LocalDateAdapter;
 import com.server.helper.StubData;
 import com.server.helper.StubData.MockPlace;
+import com.server.helper.StubData.MockRecord;
 import com.server.helper.StubData.MockSchedule;
 
 @ActiveProfiles("test")
@@ -68,9 +76,6 @@ public class ScheduleControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private PlaceMapper placeMapper;
 
     @Autowired
     private JwtTokenizer jwtTokenizer;
@@ -97,7 +102,13 @@ public class ScheduleControllerTest {
     private PlaceService placeService;
 
     @MockBean
+    private PlaceMapper placeMapper;
+
+    @MockBean
     private SchedulePlaceService schedulePlaceService;
+
+    @MockBean
+    private SchedulePlaceMapper schedulePlaceMapper;
 
     private String token;
 
@@ -113,8 +124,7 @@ public class ScheduleControllerTest {
         now = LocalDateTime.now().withNano(0);
     }
 
-    // @Test
-    @Disabled
+    @Test
     @DisplayName("비어있는 여행 일정 등록")
     void postScheduleTest() throws Exception {
         // given
@@ -147,47 +157,48 @@ public class ScheduleControllerTest {
                         resource(
                             ResourceSnippetParameters.builder()
                                     .tag("Schedule")
-                                    // .description("여행 일정 등록")
+                                    .description("비어있는 여행 일정 등록")
                                     // .requestFields(List.of())
                                     // .responseFields(List.of())
                                     .build())));
     }
 
-    // @Test
-    @Disabled
+    @Test
     @DisplayName("여행 일정 수정")
     void patchScheduleTest() throws Exception {
         // given
-        Member member = Member.builder()
-                .memberId(1L)
-                .nickname("관리자")
-                .build();
+        List<List<PlaceDto.Patch>> placeDtoLists = MockPlace.patchDtoLists;
+        ScheduleDto.Patch patchDto = MockSchedule.patchDto;
+        patchDto.setPlaces(placeDtoLists);
 
-        List<List<PlaceDto.Patch>> placeDtoLists = MockPlace.postDtoLists;
-        ScheduleDto.Post postDto = StubData.MockSchedule.postDto;
-        // postDto.setPlaces(placeDtoLists);
+        String requestBody = gson.toJson(patchDto);
 
-        List<SchedulePlace> schedulePlaces = StubData.MockPlace.schedulePlaces;
+        // Schedule
+        Schedule schedule = MockSchedule.schedule;
 
-        Region region = new Region();
-        region.setEngName("seoul");
-        region.setKorName("서울");
-
-        Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
-        schedule.setScheduleId(1L);
-        schedule.setRegion(region);
-        schedule.setPeriod(3);
-        schedule.setSchedulePlaces(schedulePlaces);
-        schedule.setMember(member);
-        schedule.setCreatedAt(now);
-        schedule.setModifiedAt(now);
-
-        String requestBody = gson.toJson(postDto);
-
+        given(scheduleMapper.patchDtoToSchedule(Mockito.any(ScheduleDto.Patch.class),
+            Mockito.anyLong())).willReturn(new Schedule());
         given(scheduleService.updateSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
-        doNothing().when(scheduleService).deleteSchedule(1);
-        // given(placeService.savePlaceLists(Mockito.any(Schedule.class), Mockito.<List<Place>>anyList()))
-                // .willReturn(schedulePlaces);
+
+        // Place
+        given(placeMapper.patchDtoListsToPlaceLists(Mockito.<List<PlaceDto.Patch>>anyList()))
+                .willReturn(new ArrayList<>());
+        given(placeService.savePlaceLists(Mockito.<List<Place>>anyList())).willReturn(new ArrayList<>());
+
+        // SchedulePlace
+        given(placeMapper.placesToSchedulePlaces(Mockito.<Place>anyList(),
+            Mockito.any(Schedule.class))).willReturn(new ArrayList<>());
+        given(schedulePlaceService.updateSchedulePlaces(Mockito.<SchedulePlace>anyList(),
+            Mockito.<SchedulePlace>anyList())).willReturn(new ArrayList<>());
+
+        // ScheduleResponse
+        ScheduleResponse scheduleResponse = MockSchedule.scheduleResponse;
+        List<List<PlaceResponse>> placeResponseLists = MockPlace.placeResponseLists;
+
+        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.<SchedulePlace>anyList(),
+            Mockito.any(Schedule.class))).willReturn(placeResponseLists);
+        given(scheduleMapper.scheduleToScheduleResponse(Mockito.any(Schedule.class)))
+                .willReturn(scheduleResponse);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -213,33 +224,29 @@ public class ScheduleControllerTest {
                                     .build())));
     }
 
-    // @Test
-    @Disabled
+    @Test
     @DisplayName("여행 일정 조회")
     void getScheduleTest() throws Exception {
         // given
-        Member member = Member.builder()
-                .memberId(1L)
-                .nickname("관리자")
-                .build();
-
-        ScheduleDto.Post postDto = StubData.MockSchedule.postDto;
-        List<SchedulePlace> schedulePlaces = StubData.MockPlace.schedulePlaces;
-
-        Region region = new Region();
-        region.setEngName("seoul");
-        region.setKorName("서울");
-
-        Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
-        schedule.setScheduleId(1L);
-        schedule.setRegion(region);
-        schedule.setPeriod(3);
-        schedule.setSchedulePlaces(schedulePlaces);
-        schedule.setMember(member);
-        schedule.setCreatedAt(now);
-        schedule.setModifiedAt(now);
+        // Schedule
+        Schedule schedule = MockSchedule.schedule;
 
         given(scheduleService.findScheduleOfAuthMember(Mockito.anyLong())).willReturn(schedule);
+
+        // ScheduleResponse
+        ScheduleResponse scheduleResponse = MockSchedule.scheduleResponse;
+        List<List<PlaceResponse>> placeResponseLists = MockPlace.placeResponseLists;
+
+        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.<SchedulePlace>anyList(),
+            Mockito.any(Schedule.class))).willReturn(placeResponseLists);
+        given(scheduleMapper.scheduleToScheduleResponse(Mockito.any(Schedule.class)))
+                .willReturn(scheduleResponse);
+
+        // RecordResponseMap
+        Map<Long, List<RecordDto.Response>> map = MockRecord.recordResponseMap;
+
+        given(schedulePlaceMapper.toRecordResponseMap(Mockito.<SchedulePlace>anyList()))
+                .willReturn(map);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -263,19 +270,106 @@ public class ScheduleControllerTest {
                                     .build())));
     }
 
-    // @Test
-    @Disabled
+    @Test
+    @DisplayName("회원의 모든 일정 조회")
+    void getSchedulesTest() throws Exception {
+        // given
+        // Schedule
+        List<Schedule> schedules = MockSchedule.schedules;
+
+        given(scheduleService.findSchedulesOfAuthMember()).willReturn(schedules);
+
+        // ScheduleResponse
+        ScheduleResponse scheduleResponse = MockSchedule.scheduleResponse;
+        List<List<PlaceResponse>> placeResponseLists = MockPlace.placeResponseLists;
+
+        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.<SchedulePlace>anyList(),
+            Mockito.any(Schedule.class))).willReturn(placeResponseLists);
+        given(scheduleMapper.scheduleToScheduleResponse(Mockito.any(Schedule.class)))
+                .willReturn(scheduleResponse);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+            get(BASE_URL)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                    document("회원의 모든 일정 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                    .tag("Schedule")
+                                    .description("회원의 모든 일정 조회")
+                                    // .requestFields(List.of())
+                                    // .responseFields(List.of())
+                                    .build())));
+    }
+
+    @Test
+    @DisplayName("공유된 일정 조회")
+    void getScheduleByMemberIdAndEmailTest() throws Exception {
+        // given
+        // Schedule
+        Schedule schedule = MockSchedule.schedule;
+
+        given(scheduleService.findSharedSchedule(Mockito.anyLong(),
+            Mockito.anyLong(), Mockito.anyString())).willReturn(schedule);
+
+        // ScheduleResponse
+        ScheduleResponse scheduleResponse = MockSchedule.scheduleResponse;
+        List<List<PlaceResponse>> placeResponseLists = MockPlace.placeResponseLists;
+
+        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.<SchedulePlace>anyList(),
+            Mockito.any(Schedule.class))).willReturn(placeResponseLists);
+        given(scheduleMapper.scheduleToScheduleResponse(Mockito.any(Schedule.class)))
+                .willReturn(scheduleResponse);
+
+        // when
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("id", "1");
+        queryParams.add("email", "admin@naver.com");
+
+        ResultActions actions = mockMvc.perform(
+            get(BASE_URL + "/{scheduleId}/share", 1)
+                    .queryParams(queryParams)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .accept(MediaType.APPLICATION_JSON));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andDo(
+                    document("공유된 일정 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                    .tag("Schedule")
+                                    .description("공유된 일정 조회")
+                                    // .requestFields(List.of())
+                                    // .responseFields(List.of())
+                                    .build())));
+    }
+
+    @Test
     @DisplayName("여행 일정의 여행지 조회")
     void getPlacesByScheduleIdTest() throws Exception {
         // given
-        ScheduleDto.Post postDto = StubData.MockSchedule.postDto;
-        List<SchedulePlace> schedulePlaces = StubData.MockPlace.schedulePlaces;
-        Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
-        schedule.setScheduleId(1L);
-        schedule.setPeriod(3);
-        schedule.setSchedulePlaces(schedulePlaces);
+        // Schedule
+        Schedule schedule = MockSchedule.schedule;
 
         given(scheduleService.findScheduleOfAuthMember(Mockito.anyLong())).willReturn(schedule);
+
+        // ScheduleResponse
+        List<List<PlaceResponse>> placeResponseLists = MockPlace.placeResponseLists;
+
+        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.<SchedulePlace>anyList(),
+            Mockito.any(Schedule.class))).willReturn(placeResponseLists);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -299,8 +393,7 @@ public class ScheduleControllerTest {
                                     .build())));
     }
 
-    // @Test
-    @Disabled
+    @Test
     @DisplayName("여행 일정 삭제")
     void deleteScheduleTest() throws Exception {
         // given
@@ -321,7 +414,7 @@ public class ScheduleControllerTest {
                         resource(
                             ResourceSnippetParameters.builder()
                                     .tag("Schedule")
-                                    .description("일정 삭제")
+                                    .description("여행 일정 삭제")
                                     // .requestFields(List.of())
                                     // .responseFields(List.of())
                                     .build())));

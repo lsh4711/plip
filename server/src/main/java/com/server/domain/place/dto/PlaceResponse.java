@@ -17,7 +17,7 @@ public class PlaceResponse {
     private String phone;
     private String latitude;
     private String longitude;
-    private String categoryCode;
+    private String category;
     private String categoryName;
 
     // SchedulePlace
