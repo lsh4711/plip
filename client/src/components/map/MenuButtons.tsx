@@ -1,16 +1,21 @@
 import { GiShare } from '@react-icons/all-files/gi/GiShare';
 import { MdAddLocation } from '@react-icons/all-files/md/MdAddLocation';
 import { MdHome } from '@react-icons/all-files/md/MdHome';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { ReactComponent as ProfileIcon } from '@/assets/icons/profile.svg';
 import useModal from '@/hooks/useModal';
 import Confirm from '../common/Confirm';
 import RoundButton from '../common/RoundButton';
+import { useState } from 'react';
+import SharesButtons from '../common/SharesButtons';
 
 const MenuButtons = () => {
   const navigate = useNavigate();
   const [openModal] = useModal();
+  const { id } = useParams();
+
+  const [isClickedShare, setIsClickedShare] = useState(false);
 
   return (
     <div className="absolute bottom-6 left-6 z-50 flex gap-2">
@@ -58,9 +63,10 @@ const MenuButtons = () => {
       >
         <MdHome size={24} color="#bbb" />
       </RoundButton>
-      <RoundButton>
+      <RoundButton onClick={() => setIsClickedShare(!isClickedShare)}>
         <GiShare size={24} color="#bbb" />
       </RoundButton>
+      {isClickedShare && <SharesButtons scheduleId={Number(id)} />}
       <RoundButton>
         <MdAddLocation size={24} color="#bbb" />
       </RoundButton>

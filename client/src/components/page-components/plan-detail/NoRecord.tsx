@@ -1,8 +1,8 @@
 import useModal from '@/hooks/useModal';
-import Button from '../atom/Button';
-import Paragraph from '../atom/Paragraph';
+import Button from '../../atom/Button';
+import Paragraph from '../../atom/Paragraph';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-circle.svg';
-import WriteModal from '../common/modals/WriteModal';
+import WriteModal from '../../common/modals/WriteModal';
 
 const NoRecord = ({ id }: { id: number }) => {
   const [openModal] = useModal();

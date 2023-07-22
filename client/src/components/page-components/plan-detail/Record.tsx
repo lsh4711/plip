@@ -3,7 +3,7 @@ import instance from '@/queries/axiosinstance';
 import { Record as RecordType } from '@/types/api/records-types';
 import { useEffect, useState } from 'react';
 
-import ImageSlider from './ImageSlider';
+import ImageSlider from '../../common/ImageSlider';
 
 type Props = {
   content: RecordType;
