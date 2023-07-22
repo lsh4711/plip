@@ -172,6 +172,50 @@ const Map = ({
           />
         ))}
 
+      {!!searchPlaceResults.length &&
+        searchPlaceResults.map((result, idx) => (
+          <MapMarker
+            key={result.id}
+            position={{
+              lat: parseFloat(result.y),
+              lng: parseFloat(result.x),
+            }}
+            onClick={() =>
+              setSelectedPlace({
+                apiId: parseInt(result.id),
+                name: result.place_name,
+                address: result.address_name,
+                latitude: result.y,
+                longitude: result.x,
+                phone: result.phone,
+                category: result.category_group_code as CategoryGroupCode,
+                bookmark: false,
+              })
+            }
+            image={{
+              src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png',
+              size: {
+                width: 48,
+                height: 48,
+              },
+              options: {
+                spriteSize: {
+                  width: 36,
+                  height: 691,
+                },
+                spriteOrigin: {
+                  x: 0,
+                  y: idx * 46,
+                },
+                offset: {
+                  x: 13,
+                  y: 37,
+                },
+              },
+            }}
+          />
+        ))}
+
       {selectedPlace && (
         <CustomOverlayMap
           position={{
