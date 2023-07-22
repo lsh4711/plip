@@ -15,8 +15,6 @@ import useHoverTimer from '@/hooks/useHoverTimer';
 import { setSelectedPlace } from '@/redux/slices/placeSlice';
 import { RootState } from '@/redux/store';
 import { ScheduledPlaceBase } from '@/types/api/schedules-types';
-import useHoverTimer from '@/hooks/useHoverTimer';
-import { useMapDetailContext } from '@/contexts/MapDetailProvider';
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
 import { cn } from '@/utils';
 
@@ -128,7 +126,7 @@ const Map = ({
           ))
         )}
 
-      {searchPlaceResults.length &&
+      {!!searchPlaceResults.length &&
         searchPlaceResults.map((result, idx) => (
           <MapMarker
             key={result.id}
