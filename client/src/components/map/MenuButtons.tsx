@@ -5,9 +5,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { ReactComponent as ProfileIcon } from '@/assets/icons/profile.svg';
 import useModal from '@/hooks/useModal';
+import { useState } from 'react';
 import Confirm from '../common/Confirm';
 import RoundButton from '../common/RoundButton';
-import { useState } from 'react';
 import SharesButtons from '../common/SharesButtons';
 
 const MenuButtons = () => {
