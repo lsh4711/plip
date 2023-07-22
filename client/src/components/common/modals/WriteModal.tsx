@@ -31,6 +31,13 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
   const SCHEDULE_PLACE_ID = id; // 테스트를 위한 임시 변수입니다. 요청 주소의 param으로 사용됩니다.
 
   const inputImageRef = useRef<HTMLInputElement>(document.createElement('input'));
+  const scrollRef = useRef<HTMLDivElement>(null);
+  console.log(scrollRef.current);
+  console.log(
+    scrollRef.current?.offsetWidth,
+    scrollRef.current?.scrollWidth,
+    scrollRef.current?.clientWidth
+  );
 
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
   const [preViewImgSrcs, setPreViewImgSrcs] = useState<string[]>([]);
@@ -39,11 +46,11 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
   const onInputText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputText = e.target.value;
 
-    // if (inputText.length > 300) {
-    //   alert(`일지의 내용은 ${maxRecordCharacters}자를 초과할 수 없습니다.`);
-    //   e.target.innerHTML = text;
-    //   return;
-    // }
+    if (inputText.length > maxRecordCharacters) {
+      alert(`일지의 내용은 ${maxRecordCharacters}자를 초과할 수 없습니다.`);
+      e.target.innerHTML = text;
+      return;
+    }
     setText(inputText);
   };
 
@@ -137,7 +144,10 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
           className="hidden"
           onChange={onUploadImageHandler}
         />
-        <div className="plip-scrollbar mb-8 flex h-[200px] w-full flex-nowrap gap-4 overflow-x-hidden px-4 pt-4 hover:overflow-x-scroll ">
+        <div
+          ref={scrollRef}
+          className="plip-scrollbar mb-8 flex h-[200px] w-full flex-nowrap gap-4 overflow-x-hidden px-4 pt-4 hover:overflow-x-scroll "
+        >
           {preViewImgSrcs.map((image, id) => (
             <div
               key={`${image}-${id}`}
