@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.server.domain.member.repository.MemberRepository;
@@ -38,12 +40,28 @@ public abstract class ScheduleMapper {
     @Mapping(target = "title", expression = "java(String.format(\"%s 여행 레츠고!\", schedule.getRegion().getKorName()))")
     public abstract Schedule postDtoToSchedule(ScheduleDto.Post postDto);
 
-    @Mapping(target = "memberCount", expression = "java(toMemberCount(patchDto.getMemberCount()))")
-    @Mapping(target = "period", expression = "java((int)ChronoUnit.DAYS.between(patchDto.getStartDate(), patchDto.getEndDate()) + 1)")
-    @Mapping(target = "region", expression = "java(regionRepository.findByEngName(patchDto.getRegion()))")
-    @Mapping(target = "title", expression = "java(toTitle(patchDto.getTitle(), schedule.getRegion()))")
-    // @Mapping(target = "tmpSchedulePlaces", expression = "java(toTmpSchedulePlaces())")
+    // 확장시 쓰임
+    // @Mapping(target = "memberCount", expression = "java(toMemberCount(patchDto.getMemberCount()))")
+    // @Mapping(target = "period", expression = "java((int)ChronoUnit.DAYS.between(patchDto.getStartDate(), patchDto.getEndDate()) + 1)")
+    // @Mapping(target = "region", expression = "java(regionRepository.findByEngName(patchDto.getRegion()))")
+    // @Mapping(target = "title", expression = "java(toTitle(patchDto.getTitle(), schedule.getRegion()))")
+    // // @Mapping(target = "tmpSchedulePlaces", expression = "java(toTmpSchedulePlaces())")
+    // public abstract Schedule patchDtoToSchedule(ScheduleDto.Patch patchDto, long scheduleId);
+
+    @Mapping(target = "memberCount", ignore = true)
+    @Mapping(target = "region", ignore = true)
+    @Mapping(target = "startDate", ignore = true)
+    @Mapping(target = "endDate", ignore = true)
     public abstract Schedule patchDtoToSchedule(ScheduleDto.Patch patchDto, long scheduleId);
+
+    @AfterMapping
+    void checkTitle(@MappingTarget Schedule schedule) {
+        String title = schedule.getTitle();
+        if (title != null && title.length() == 0) {
+            schedule.setTitle(null);
+        }
+
+    }
 
     int toMemberCount(int memberCount) {
         if (memberCount > 0) {
@@ -54,6 +72,9 @@ public abstract class ScheduleMapper {
     }
 
     String toTitle(String title, Region region) {
+        if (title == null) {
+            return null;
+        }
         if (title.length() > 0) {
             return title;
         }

@@ -5,10 +5,10 @@ import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import com.server.domain.place.dto.PlaceDto;
 import com.server.global.validator.DateValid;
+import com.server.global.validator.OptionalDateValid;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,19 +33,21 @@ public class ScheduleDto {
     @Getter
     @Setter
     public static class Patch { // 보내준 일정을 수정해서 요청하는 경우를 가정
-        @NotBlank
+        // @NotBlank
         private String title;
 
-        @NotNull
+        // @NotNull
         private Integer memberCount;
 
-        @NotBlank
+        // @NotBlank
         private String region;
 
-        @DateValid
+        // @DateValid
+        @OptionalDateValid
         private LocalDate startDate;
 
-        @DateValid
+        // @DateValid
+        @OptionalDateValid
         private LocalDate endDate;
 
         private List<List<PlaceDto.@Valid Patch>> places; // 마이페이지에서 수정하는 경우는 값이 없을 수도 있음
