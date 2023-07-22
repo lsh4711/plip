@@ -12,7 +12,7 @@ import { cn } from '@/utils';
 
 type Props = {
   id: number;
-  type: 'scheduling' | 'recording';
+  type: 'scheduling' | 'recording' | 'clustering';
   placeName: string;
   address: string;
   latitude: string;
