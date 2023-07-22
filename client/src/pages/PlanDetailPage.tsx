@@ -9,10 +9,7 @@ import SidePanel from '@/components/common/SidePanel';
 import { TripInfo, TripSchedule } from '@/components/schedule';
 import { useState } from 'react';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
-import instance from '@/queries/axiosinstance';
-import NoRecord from '@/components/page-components/plan-detail/NoRecord';
-import { useMapDetailContext } from '@/contexts/MapDetailProvider';
-import Record from '@/components/page-components/plan-detail/Record';
+
 import RecordPanel from '@/components/page-components/plan-detail/RecordPanel';
 
 interface PlanDetailPageProps {}
@@ -23,17 +20,6 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
   const { schedules } = useSelector((state: RootState) => state.schedule);
 
   const [mapLevel, setMapLevel] = useState(8);
-  const { setRecords } = useMapDetailContext();
-
-  useState(() => {
-    instance.get(`/api/schedules/${id}/share?id=3&email=test@naver.com`).then((res) => {
-      const records = res.data.recordsMap;
-
-      if (records) {
-        setRecords(records);
-      }
-    });
-  });
 
   return (
     <div className="relative h-full w-full">

@@ -13,7 +13,7 @@ export type RequestShareProps = {
 
 const getPlan = ({ planId, userId, userEmail }: RequestShareProps) => {
   return axios
-    .get(`${BASE_URL}api/schedules/${planId}/share?id=${userId}&email=${userEmail}`)
+    .get(`${BASE_URL}/api/schedules/${planId}/share?id=${userId}&email=${userEmail}`)
     .then((res) => res.data);
 };
 
@@ -24,7 +24,7 @@ const useSharePlanQuery = ({ planId, userId, userEmail }: RequestShareProps) => 
     queryKey: ['/schedule/share', planId, userId, userEmail],
     queryFn: () =>
       getPlan({ planId, userId, userEmail }).then((data) => {
-        console.log(data.schedule.places);
+        // console.log(data.schedule.places);
         dispatch(setSchedule(data.schedule.places));
         return data.schedule;
       }),
