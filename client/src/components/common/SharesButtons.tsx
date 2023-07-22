@@ -7,6 +7,7 @@ import useToast from '@/hooks/useToast';
 import instance from '@/queries/axiosinstance';
 import { UserGetRequest } from '@/types/api/users-types';
 import RoundButton from './RoundButton';
+import { BASE_URL } from '@/queries';
 
 const SharesButtons = ({ scheduleId }: { scheduleId: number }) => {
   const [shareLink, setShareLink] = useState('');
@@ -19,8 +20,8 @@ const SharesButtons = ({ scheduleId }: { scheduleId: number }) => {
         const { memberId, email } = res.data.data;
 
         setShareLink(
-          // `https://plip.netlify.app/plan/detail/${scheduleId}/share?id=${memberId}&email=${email}`
-          `http://localhost:5173/plan/detail/${scheduleId}/share?id=${memberId}&email=${email}`
+          `${BASE_URL}plan/detail/${scheduleId}/share?id=${memberId}&email=${email}`
+          // `http://localhost:5173/plan/detail/${scheduleId}/share?id=${memberId}&email=${email}`
         );
       });
     };

@@ -9,8 +9,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams, useSearchParams } from 'react-router-dom';
-
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { BASE_URL } from '@/queries';
 
 const PlanSharePage = () => {
   const { id } = useParams();
