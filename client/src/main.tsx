@@ -74,7 +74,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <ToastContainer />
-        <PlanDetailPage />,
+        <PlanDetailPage />
       </>
     ),
   },
