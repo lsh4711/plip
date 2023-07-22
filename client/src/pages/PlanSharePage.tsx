@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { BASE_URL } from '@/queries';
+import instance from '@/queries/axiosinstance';
 
 const PlanSharePage = () => {
   const { id } = useParams();
@@ -27,12 +28,6 @@ const PlanSharePage = () => {
   const { schedules } = useSelector((state: RootState) => state.schedule);
 
   const [mapLevel, setMapLevel] = useState(8);
-
-  useEffect(() => {
-    axios
-      .get(`${BASE_URL}/api/schedules/${id}/share?id=3&email=test@naver.com`)
-      .then((res) => console.log(res));
-  }, []);
 
   return (
     <div className="relative h-full w-full">

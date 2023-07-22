@@ -25,15 +25,15 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
   const [mapLevel, setMapLevel] = useState(8);
   const { setRecords } = useMapDetailContext();
 
-  useState(() => {
-    instance.get(`/api/schedules/${id}/share?id=3&email=test@naver.com`).then((res) => {
-      const records = res.data.recordsMap;
+  // useState(() => {
+  //   instance.get(`/api/schedules/${id}`).then((res) => {
+  //     const records = res.data.recordsMap;
 
-      if (records) {
-        setRecords(records);
-      }
-    });
-  });
+  //     if (records) {
+  //       setRecords(records);
+  //     }
+  //   });
+  // });
 
   return (
     <div className="relative h-full w-full">
