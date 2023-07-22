@@ -20,7 +20,7 @@ function TripSchedule({ startDate, places }: Props) {
   const { schedules } = useSelector((state: RootState) => state.schedule);
   const [isEditMode, setIsEditMode] = useState(false);
   const isPlanningPage = useMatch('/plan/map/:id');
-  console.log(isPlanningPage);
+  // console.log(isPlanningPage);
 
   const toast = useToast();
   const mutation = useEditPlanMutation(id!);
