@@ -25,7 +25,11 @@ env:
   AWS_ACCESS_KEY2: ${{ secrets.AWS_ACCESS_KEY2 }}
   AWS_SECRET_ACCESS_KEY2: ${{ secrets.AWS_SECRET_ACCESS_KEY2 }}
 
+  # firebase
   FILE_LOCATION: ${{ secrets.FILE_LOCATION }}
+
+  # share
+  SHARE_SECRET_KEY: ${{ secrets.SHARE_SECRET_KEY }}
   
 jobs:
   build:

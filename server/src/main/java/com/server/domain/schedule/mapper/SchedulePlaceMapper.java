@@ -25,8 +25,8 @@ public abstract class SchedulePlaceMapper {
     @Mapping(source = "schedulePlace.schedule.scheduleId", target = "scheduleId")
     @Mapping(source = "place.category.code", target = "category")
     @Mapping(source = "place.category.name", target = "categoryName")
-    @Mapping(source = "place.days", target = "days")
-    @Mapping(source = "place.orders", target = "orders")
+    @Mapping(source = "schedulePlace.days", target = "days")
+    @Mapping(source = "schedulePlace.orders", target = "orders")
     @Mapping(source = "schedulePlace.schedulePlaceId", target = "schedulePlaceId")
     public abstract PlaceResponse schedulePlaceToPlaceResponse(SchedulePlace schedulePlace, Place place);
 

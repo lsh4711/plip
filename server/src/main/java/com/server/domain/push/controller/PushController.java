@@ -34,6 +34,7 @@ public class PushController {
                 .build();
 
         Push push = pushMapper.postDtoToPush(postdto);
+        push.setMember(member);
         Push savedPush = pushService.savePush(push);
         URI location = UriCreator.createUri("/api/pushs",
             savedPush.getPushId());

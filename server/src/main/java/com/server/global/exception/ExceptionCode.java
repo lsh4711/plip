@@ -46,6 +46,10 @@ public enum ExceptionCode {
     // 알림
     TASK_NOT_FOUND("예약된 작업이 없습니다.", 404),
     TASK_EXISTS("해당 id로 예약된 작업이 있습니다.", 409),
+    PUSH_FAILD("푸시 전송에 실패했습니다.", 500),
+
+    // 공유
+    SHARE_CODE_INVALID("코드가 일치하지 않습니다.", 400),
 
     END("마무리", 200);
 
