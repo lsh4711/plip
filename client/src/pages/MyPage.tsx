@@ -141,7 +141,7 @@ const MyPage = ({}: MyPageProps) => {
               </div>
               <div className="flex justify-end">
                 <Paragraph variant={'red'} size="xs" className=" mt-1">
-                  <p>{editForm.formState.errors.checkpassword?.message}</p>
+                  {editForm.formState.errors.checkpassword?.message}
                 </Paragraph>
               </div>
             </div>
