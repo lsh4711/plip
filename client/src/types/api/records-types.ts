@@ -15,7 +15,7 @@ export interface Record {
   memberId: number | string;
   createdAt: string | Date;
   modifiedAt: string | Date;
-  days: number;
+  days?: number;
   placeName: string;
 }
 
