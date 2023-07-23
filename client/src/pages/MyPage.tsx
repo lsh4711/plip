@@ -23,7 +23,7 @@ const MyPage = ({}: MyPageProps) => {
   });
 
   const onSubmit: SubmitHandler<EditProfileTypes> = (data) => {
-    console.log(data);
+    // console.log(data);
   };
 
   // is edit?
@@ -133,7 +133,7 @@ const MyPage = ({}: MyPageProps) => {
                   onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
                     const nowdata = editForm.getValues('email');
                     setUserEmail(nowdata);
-                    console.log(nowdata);
+                    // console.log(nowdata);
                   },
                 })}
               />

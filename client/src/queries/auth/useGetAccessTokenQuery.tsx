@@ -12,8 +12,6 @@ import useToast from '@/hooks/useToast';
 import { setLogout } from '@/redux/slices/authSlice';
 
 const getAccessTokenAxios = async () => {
-  console.log('실행되나요?');
-
   const response = await instance.get('/api/tokens', { withCredentials: true });
   const ACCESS_TOKEN = response.headers['authorization'];
   setAccessTokenToHeader(ACCESS_TOKEN);

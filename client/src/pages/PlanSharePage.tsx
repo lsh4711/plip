@@ -19,11 +19,7 @@ const PlanSharePage = () => {
     userEmail: userEmail!,
   });
 
-  console.log(data);
-
   const { schedules } = useSelector((state: RootState) => state.schedule);
-
-  console.log(schedules);
 
   const [mapLevel, setMapLevel] = useState(8);
 

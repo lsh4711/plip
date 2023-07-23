@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getMessaging, onMessage } from 'firebase/messaging';
+import { getMessaging } from 'firebase/messaging';
 
 const config = {
   apiKey: import.meta.env.VITE_FB_API_KEY,
@@ -13,10 +13,3 @@ const config = {
 
 const app = initializeApp(config);
 export const messaging = getMessaging();
-
-onMessage(messaging, (payload) => {
-  const title = payload.notification?.title;
-  const body = payload.notification?.body;
-  console.log('Message received. ', payload);
-  alert('[Push 알림]\n제목: ' + title + '\n내용: ' + body);
-});

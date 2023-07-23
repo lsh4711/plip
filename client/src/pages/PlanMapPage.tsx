@@ -31,8 +31,6 @@ const PlanMapPage = () => {
     lng: getRegionCenterLng(data?.region!),
   });
 
-  console.log(schedules);
-
   const dispatch = useDispatch();
   const mutation = useEditPlanMutation(id!);
   const patchSchedule = (noticeType: 'toast' | 'confirm') =>

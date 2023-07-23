@@ -27,7 +27,6 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
 
   useEffect(() => {
     instance.get(`/api/schedules/${id}`).then((res) => {
-      console.log(res.data);
       const schedule = res.data.schedule;
       const records = res.data.recordsMap;
 
@@ -39,7 +38,7 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
         setScheduleInfo(schedule);
       }
     });
-  }, []);
+  }, [data]);
 
   return (
     <div className="relative h-full w-full">
