@@ -16,10 +16,7 @@ const SharesButtons = ({ scheduleId }: { scheduleId: number }) => {
     const getHashedShareLink = async () => {
       await instance.get(`/api/schedules/${scheduleId}/share/link `).then((res) => {
         console.log(res.data);
-
-        // setShareLink();
-        // `https://plip.netlify.app/plan/detail/${scheduleId}/share?id=${memberId}&code=${email}`
-        // `http://localhost:5173/plan/detail/${scheduleId}/share?id=${memberId}&email=${email}`
+        setShareLink(res.data);
       });
     };
 
