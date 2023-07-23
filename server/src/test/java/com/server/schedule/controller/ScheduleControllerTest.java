@@ -312,7 +312,7 @@ public class ScheduleControllerTest {
 
     @Test
     @DisplayName("공유된 일정 조회")
-    void getScheduleByMemberIdAndEmailTest() throws Exception {
+    void getSharedScheduleTest() throws Exception {
         // given
         // Schedule
         Schedule schedule = MockSchedule.schedule;
@@ -332,7 +332,7 @@ public class ScheduleControllerTest {
         // when
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("id", "1");
-        queryParams.add("email", "admin@naver.com");
+        queryParams.add("code", "codecodecodecode ");
 
         ResultActions actions = mockMvc.perform(
             get(BASE_URL + "/{scheduleId}/share", 1)
