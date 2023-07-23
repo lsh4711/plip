@@ -148,6 +148,8 @@ public class StubData {
                     .memberId(1L)
                     .createdAt(LocalDateTime.now().withNano(0))
                     .modifiedAt(LocalDateTime.now().withNano(0))
+                    .placeName("해운대")
+                    .days(1)
                     .build();
             stubRequestBody.put("recordResponse", response);
 
@@ -157,6 +159,8 @@ public class StubData {
                     .memberId(1L)
                     .createdAt(LocalDateTime.now().withNano(0))
                     .modifiedAt(LocalDateTime.now().withNano(0))
+                    .placeName("해운대")
+                    .days(1)
                     .build();
             stubRequestBody.put("recordPatchResponse", patchResponse);
 
@@ -167,6 +171,8 @@ public class StubData {
                         .memberId(1L)
                         .createdAt(LocalDateTime.now().withNano(0))
                         .modifiedAt(LocalDateTime.now().withNano(0))
+                        .placeName("해운대")
+                        .days(1)
                         .build(),
 
                 RecordDto.Response.builder()
@@ -175,6 +181,8 @@ public class StubData {
                         .memberId(1L)
                         .createdAt(LocalDateTime.now().withNano(0))
                         .modifiedAt(LocalDateTime.now().withNano(0))
+                        .placeName("해운대")
+                        .days(1)
                         .build());
 
             stubDatas.put("recordResponses", responses);
