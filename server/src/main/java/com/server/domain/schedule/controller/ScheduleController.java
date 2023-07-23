@@ -162,7 +162,7 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleResponse);
     }
 
-    // 공유 링크 생성
+    // 공유 링크 생성, 테스트 코드 작성해야함
     @GetMapping("/{scheduleId}/share/link")
     public ResponseEntity getShareUrl(@PathVariable long scheduleId) {
         String shareLink = scheduleService.createShareUrl(scheduleId);

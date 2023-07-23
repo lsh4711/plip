@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/test")
 public class TestController {
-
     @GetMapping
     public ModelAndView getTest() {
         return new ModelAndView("test.html");

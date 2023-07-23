@@ -14,7 +14,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.server.domain.oauth.entity.KakaoToken;
-import com.server.domain.push.entity.Push;
 import com.server.domain.record.entity.Record;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.global.audit.BaseEntity;
@@ -52,8 +51,8 @@ public class Member extends BaseEntity {
     @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
     private KakaoToken kakaoToken;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
-    private Push push;
+    // @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
+    // private Push push;
 
     // 여행일지와 연관관계 설정
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
