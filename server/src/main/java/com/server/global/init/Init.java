@@ -138,7 +138,7 @@ public class Init {
 
         for (int i = 1; i <= 3; i++) {
             Category category = new Category();
-            category.setCategoryId((long)i);
+            category.setCategoryId((long)i + 1);
             Place place = new Place();
             place.setApiId(i * 10L + i);
             place.setName(placeNames[i - 1]);
