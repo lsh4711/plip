@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.server.domain.member.entity.Member;
+import com.server.domain.member.service.MemberService;
 import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.oauth.service.KakaoApiService;
 import com.server.domain.oauth.template.KakaoTemplateConstructor;
@@ -27,10 +28,15 @@ import lombok.RequiredArgsConstructor;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
+    private final MemberService memberService;
+
     private final KakaoApiService kakaoApiService;
     private final KakaoTemplateConstructor kakaoTemplateConstructor;
 
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${kakao.redirect-url}")
+    private String baseUrl;
 
     @Value("${share.key}")
     private String shareSecretKey;
@@ -90,6 +96,30 @@ public class ScheduleService {
         }
 
         return schedule;
+    }
+
+    public String createShareUrl(long scheduleId) {
+        long memberId = AuthUtil.getMemberId();
+
+        verify(scheduleId, memberId);
+
+        Member member = memberService.findMember(memberId);
+        String email = member.getEmail();
+
+        String raw = String.format("%d/%s/%s",
+            memberId,
+            email,
+            shareSecretKey);
+        String code = passwordEncoder.encode(raw)
+                .replace("{bcrypt}$2a$10$", "");
+
+        String shareUrl = String.format("%s/api/schedules/%d/share?id=%d&code=%s",
+            baseUrl,
+            scheduleId,
+            memberId,
+            code);
+
+        return shareUrl;
     }
 
     public void deleteSchedule(long scheduleId) {

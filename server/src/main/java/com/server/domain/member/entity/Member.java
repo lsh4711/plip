@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Member extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
     @Column(nullable = false)
     private String email;
@@ -49,7 +49,6 @@ public class Member extends BaseEntity {
     private List<Schedule> schedules;
 
     // 전이 용도, 작동하는지 확인 필요
-
     @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
     private KakaoToken kakaoToken;
 
