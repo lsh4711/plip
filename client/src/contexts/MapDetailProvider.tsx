@@ -15,17 +15,20 @@ type ContextProps = {
   placeId: number;
   currentRecord: Record | undefined;
   scheduleInfo: Schedule;
+  records: RecordMapProps;
   setPlaceId: React.Dispatch<React.SetStateAction<number>>;
-  setRecords: React.Dispatch<React.SetStateAction<RecordMapProps | undefined>>;
+  setRecords: React.Dispatch<React.SetStateAction<RecordMapProps>>;
   setScheduleInfo: React.Dispatch<React.SetStateAction<Schedule>>;
 };
 
 const initScheduleInfo = {} as Schedule;
+const initRecords = {} as RecordMapProps;
 
 const MapDetailContext = createContext<ContextProps>({
   placeId: 0,
   currentRecord: undefined,
   scheduleInfo: initScheduleInfo,
+  records: initRecords,
   setPlaceId: () => {},
   setRecords: () => {},
   setScheduleInfo: () => {},
@@ -43,7 +46,7 @@ const MapDetailProvider = ({ children }: Props) => {
   const [scheduleInfo, setScheduleInfo] = useState<Schedule>(initScheduleInfo);
 
   // 일정의 일지들 저장
-  const [records, setRecords] = useState<RecordMapProps>();
+  const [records, setRecords] = useState<RecordMapProps>(initRecords);
 
   // 현재 일지 정보
   const [currentRecord, setCurrentRecord] = useState<Record>();
@@ -53,13 +56,21 @@ const MapDetailProvider = ({ children }: Props) => {
       setCurrentRecord(records[placeId][0]);
     } else {
       setCurrentRecord(undefined);
-      setPlaceId(0);
+      // setPlaceId(-1);
     }
-  }, []);
+  }, [placeId]);
 
   return (
     <MapDetailContext.Provider
-      value={{ placeId, currentRecord, scheduleInfo, setPlaceId, setRecords, setScheduleInfo }}
+      value={{
+        placeId,
+        currentRecord,
+        scheduleInfo,
+        records,
+        setPlaceId,
+        setRecords,
+        setScheduleInfo,
+      }}
     >
       {children}
     </MapDetailContext.Provider>

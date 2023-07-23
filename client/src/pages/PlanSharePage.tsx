@@ -12,7 +12,7 @@ const PlanSharePage = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const userId = searchParams.get('id');
-  const userEmail = searchParams.get('email');
+  const userEmail = searchParams.get('code');
   const { data, isLoading, error } = useSharePlanQuery({
     planId: id!,
     userId: userId!,
