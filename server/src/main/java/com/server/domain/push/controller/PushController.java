@@ -27,7 +27,6 @@ public class PushController {
 
     @PostMapping("/write")
     public ResponseEntity postPush(@RequestBody PushDto.Post postdto) {
-        // one to one 양방향 해야함
         long memberId = AuthUtil.getMemberId();
         Member member = Member.builder()
                 .memberId(memberId)
