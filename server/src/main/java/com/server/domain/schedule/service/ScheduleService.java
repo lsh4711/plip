@@ -35,9 +35,6 @@ public class ScheduleService {
 
     private final PasswordEncoder passwordEncoder;
 
-    @Value("${kakao.redirect-url}")
-    private String baseUrl;
-
     @Value("${share.key}")
     private String shareSecretKey;
 
@@ -113,8 +110,7 @@ public class ScheduleService {
         String code = passwordEncoder.encode(raw)
                 .replace("{bcrypt}$2a$10$", "");
 
-        String shareUrl = String.format("%s/api/schedules/%d/share?id=%d&code=%s",
-            baseUrl,
+        String shareUrl = String.format("https://plip.netlify.app/plan/detail/%d/share?id=%d&code=%s",
             scheduleId,
             memberId,
             code);
