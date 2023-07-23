@@ -17,21 +17,33 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushFcmOptions;
+import com.server.domain.record.service.S3StorageService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/test")
 public class TestController {
+    private final S3StorageService s3StorageService;
+
     @GetMapping
     public ModelAndView getTest() {
         return new ModelAndView("test.html");
     }
 
-    @GetMapping("/code")
+    @GetMapping("/delete")
     public ResponseEntity test(@RequestParam String code) {
-        return ResponseEntity.ok("asd");
+        for (int i = 0; i <= 15; i++) {
+            for (int j = 0; j <= 15; j++) {
+                s3StorageService.deleteImgs(j, i);
+                System.out.println(i + ", " + j);
+            }
+        }
+
+        return ResponseEntity.ok("삭제 완료");
     }
 
     @PostMapping("/push")
