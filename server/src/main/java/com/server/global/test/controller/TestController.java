@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -35,7 +34,7 @@ public class TestController {
     }
 
     @GetMapping("/delete")
-    public ResponseEntity test(@RequestParam String code) {
+    public ResponseEntity test() {
         for (int i = 0; i <= 15; i++) {
             for (int j = 0; j <= 15; j++) {
                 s3StorageService.deleteImgs(j, i);
