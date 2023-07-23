@@ -16,7 +16,7 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushFcmOptions;
-import com.server.domain.record.service.S3StorageService;
+import com.server.domain.record.service.StorageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RequestMapping("/test")
 public class TestController {
-    private final S3StorageService s3StorageService;
+    private final StorageService StorageService;
 
     @GetMapping
     public ModelAndView getTest() {
@@ -37,7 +37,7 @@ public class TestController {
     public ResponseEntity test() {
         for (int i = 0; i <= 15; i++) {
             for (int j = 0; j <= 15; j++) {
-                s3StorageService.deleteImgs(j, i);
+                StorageService.deleteImgs(j, i);
             }
         }
 
