@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import instance from '../axiosinstance';
 
 interface User {
-  data: { nickname: string };
+  data: { email: string; nickname: string };
 }
 
 const useInquireUsersQuery = () => {
