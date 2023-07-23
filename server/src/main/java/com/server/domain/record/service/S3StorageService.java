@@ -66,7 +66,10 @@ public class S3StorageService implements StorageService {
     //이미지 여러 개 조회
     @Override
     public List<String> getImgs(long recordId, long userId) {
-        String dirName = BUCKET_IMAGE_PATH + "/" + userId + "/" + recordId;
+        String dirName = String.format("%s/%d/%d/",
+            BUCKET_IMAGE_PATH,
+            userId,
+            recordId);
 
         List<String> urls = new ArrayList<>();
 
