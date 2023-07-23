@@ -167,6 +167,7 @@ public class ScheduleService {
         // Schedule
         long scheduleId = schedule.getScheduleId();
         Region region = schedule.getRegion();
+        String engName = region.getEngName();
         String korName = region.getKorName();
         LocalDate startDate = schedule.getStartDate();
         LocalDate endDate = schedule.getEndDate();
@@ -183,7 +184,7 @@ public class ScheduleService {
                 .token(token)
                 .title(title)
                 .body(body)
-                .region(korName)
+                .region(engName)
                 // .imageUrl(null)
                 .url(shareUrl)
                 .build();
