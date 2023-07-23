@@ -13,7 +13,7 @@ export type RequestShareProps = {
 
 const getPlan = ({ planId, userId, userEmail }: RequestShareProps) => {
   return axios
-    .get(`${BASE_URL}/api/schedules/${planId}/share?id=${userId}&email=${userEmail}`)
+    .get(`${BASE_URL}/api/schedules/${planId}/share?id=${userId}&code=${userEmail}`)
     .then((res) => res.data);
 };
 

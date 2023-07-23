@@ -37,7 +37,7 @@ export default class RecordAPI {
         throw Error('일지 작성에 실패하였습니다.');
       }
 
-      if (formData) {
+      if (formData?.has('images')) {
         return this.#postImages(recordUrl, formData!)
           .then((res) => {
             if (res.status >= 400) {

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import Button from '../atom/Button';
 import { ReactComponent as KakaoIcon } from '@/assets/icons/kakaoauth.svg';
 import { ReactComponent as ShareIcon } from '@/assets/icons/share-link.svg';
 import useToast from '@/hooks/useToast';
@@ -14,18 +13,17 @@ const SharesButtons = ({ scheduleId }: { scheduleId: number }) => {
   const toast = useToast();
 
   useEffect(() => {
-    const getUserInfo = async () => {
-      await instance.get('/api/users').then((res) => {
-        const { memberId, email } = res.data.data;
+    const getHashedShareLink = async () => {
+      await instance.get(`/api/schedules/${scheduleId}/share/link `).then((res) => {
+        console.log(res.data);
 
-        setShareLink(
-          `https://plip.netlify.app/plan/detail/${scheduleId}/share?id=${memberId}&email=${email}`
-          // `http://localhost:5173/plan/detail/${scheduleId}/share?id=${memberId}&email=${email}`
-        );
+        // setShareLink();
+        // `https://plip.netlify.app/plan/detail/${scheduleId}/share?id=${memberId}&code=${email}`
+        // `http://localhost:5173/plan/detail/${scheduleId}/share?id=${memberId}&email=${email}`
       });
     };
 
-    getUserInfo();
+    getHashedShareLink();
 
     // 이후 배포주소로 변경 필요
   }, []);
@@ -41,7 +39,7 @@ const SharesButtons = ({ scheduleId }: { scheduleId: number }) => {
         </RoundButton>
       </CopyToClipboard>
 
-      <RoundButton>
+      <RoundButton onClick={() => alert('준비중입니당!!!')}>
         <KakaoIcon />
       </RoundButton>
     </>

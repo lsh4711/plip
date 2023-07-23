@@ -2,6 +2,7 @@ import instance from '@/queries/axiosinstance';
 
 import { Record as RecordType } from '@/types/api/records-types';
 import { useEffect, useState } from 'react';
+import { ReactComponent as MapMarker } from '@/assets/icons/map-marker.svg';
 
 import ImageSlider from '../../common/ImageSlider';
 import { useMapDetailContext } from '@/contexts/MapDetailProvider';
@@ -30,7 +31,7 @@ const Record = ({ content }: Props) => {
 
   return (
     <div>
-      <div className=" h-min-[300px] w-full">
+      <div className="h-min-[300px] mb-4 w-full">
         {imgs.length > 0 ? (
           <>
             <ImageSlider imgs={imgs} />
@@ -40,11 +41,12 @@ const Record = ({ content }: Props) => {
         )}
       </div>
       <div className="flex justify-between px-4">
-        <span>
-          {korRegion}, {recordId}
+        <span className="flex items-center text-sm font-semibold text-[#4568DC]">
+          <MapMarker width={12} height={12} fill="#4568DC" />
+          {korRegion}, {content.placeName}
         </span>
 
-        <span>{getFromNow(createdAt as Date)}</span>
+        <span className="text-xs text-slate-400">{getFromNow(createdAt as Date)}</span>
       </div>
       <TextContent content={content.content} styles={'p-4'} />
     </div>

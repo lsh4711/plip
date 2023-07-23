@@ -17,6 +17,7 @@ import { RootState } from '@/redux/store';
 import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
 import { cn } from '@/utils';
+import usePreventZoom from '@/hooks/usePreventZoom';
 
 interface mapProps {
   type: 'scheduling' | 'recording' | 'clustering';
@@ -41,6 +42,8 @@ const Map = ({
   showPolyline = false,
   className,
 }: mapProps) => {
+  usePreventZoom();
+
   const { searchPlaceResults, selectedPlace } = useSelector((state: RootState) => state.place);
   const dispatch = useDispatch();
 
@@ -52,6 +55,7 @@ const Map = ({
 
   const onHoverMarker = (place: ScheduledPlaceBase) => {
     if (type === 'recording') {
+      console.log(place);
       hoverMarkerTimer.current = window.setTimeout(() => {
         onHandleOpen(() => dispatch(setSelectedPlace(place)));
         setPlaceId(place.schedulePlaceId!);

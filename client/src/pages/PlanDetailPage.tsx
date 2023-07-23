@@ -30,6 +30,8 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
       const schedule = res.data.schedule;
       const records = res.data.recordsMap;
 
+      console.log(records);
+
       if (records) {
         setRecords(records);
       }
@@ -38,7 +40,7 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
         setScheduleInfo(schedule);
       }
 
-      setPlaceId(0);
+      setPlaceId(-1);
     });
   }, []);
 
