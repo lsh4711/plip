@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.repository.PlaceRepository;
-import com.server.global.utils.CustomBeanUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,12 +38,13 @@ public class PlaceService {
                 long apiId = place.getApiId();
                 Place foundPlace = placeRepository.findByApiId(apiId);
                 if (foundPlace != null) {
-                    place = CustomBeanUtils.copyNonNullProperties(place, foundPlace);
+                    long placeId = foundPlace.getPlaceId();
+                    place.setPlaceId(placeId);
                 }
-                Place savedPlace = placeRepository.save(place);
-                savedPlace.setDays(i + 1);
-                savedPlace.setOrders(j + 1);
-                newPlaces.add(savedPlace);
+                place.setDays(i + 1);
+                place.setOrders(j + 1);
+                newPlaces.add(place);
+                placeRepository.save(place);
             }
         }
 

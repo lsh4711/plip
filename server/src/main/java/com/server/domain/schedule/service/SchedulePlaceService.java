@@ -47,8 +47,8 @@ public class SchedulePlaceService {
             SchedulePlace foundSchedulePlace = schedulePlaceRepository
                     .findById(schedulePlaceId).get();
             CustomBeanUtils.copyNonNullProperties(schedulePlace, foundSchedulePlace);
-            schedulePlaceRepository.save(foundSchedulePlace);
             updatedSchedulePlaces.add(foundSchedulePlace);
+            schedulePlaceRepository.save(foundSchedulePlace);
             map.remove(schedulePlaceId);
         }
         for (Entry<Long, SchedulePlace> entry : map.entrySet()) {
