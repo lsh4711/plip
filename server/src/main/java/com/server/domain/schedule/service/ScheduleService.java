@@ -11,14 +11,13 @@ import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.oauth.service.KakaoApiService;
 import com.server.domain.oauth.template.KakaoTemplateConstructor;
 import com.server.domain.oauth.template.KakaoTemplateObject.Feed;
-import com.server.domain.region.entity.Region;
 import com.server.domain.region.repository.RegionRepository;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.repository.ScheduleRepository;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
+import com.server.global.utils.AuthUtil;
 import com.server.global.utils.CustomBeanUtils;
-import com.server.global.utils.CustomUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,42 +33,20 @@ public class ScheduleService {
     private final KakaoTemplateConstructor kakaoTemplateMapper;
 
     public Schedule saveSchedule(Schedule schedule) {
-        String title = schedule.getTitle();
-        int memberCount = schedule.getMemberCount();
-
-        Region region = schedule.getRegion();
-        String engName = region.getEngName();
-        Region foundRegion = regionRepository.findByEngName(engName);
-        String korName = foundRegion.getKorName();
-
-        schedule.setRegion(foundRegion);
-        if (title == null) {
-            schedule.setTitle(String.format("%s 여행 레츠고!", korName));
-        }
-        if (memberCount <= 0) {
-            schedule.setMemberCount(1);
-        }
-
         return scheduleRepository.save(schedule);
     }
 
     public Schedule updateSchedule(Schedule schedule) {
         long scheduleId = schedule.getScheduleId();
-        Schedule foundSchedule = findSchedule(scheduleId);
+        Schedule foundSchedule = findScheduleOfAuthMember(scheduleId);
 
-        Region region = schedule.getRegion();
-        String engName = region.getEngName();
-        Region foundRegion = regionRepository.findByEngName(engName);
-
-        schedule.setRegion(foundRegion);
         CustomBeanUtils.copyNonNullProperties(schedule, foundSchedule);
-        saveSchedule(foundSchedule);
 
-        return foundSchedule;
+        return scheduleRepository.save(foundSchedule);
     }
 
-    public Schedule findSchedule(long scheduleId) {
-        long memberId = CustomUtil.getAuthId();
+    public Schedule findScheduleOfAuthMember(long scheduleId) {
+        long memberId = AuthUtil.getMemberId();
         Schedule schedule = scheduleRepository
             .findByScheduleIdAndMember_MemberId(scheduleId, memberId);
 
@@ -81,9 +58,9 @@ public class ScheduleService {
         return schedule;
     }
 
-    public List<Schedule> findSchedules() {
+    public List<Schedule> findSchedulesOfAuthMember() {
         Sort sort = Sort.by("createdAt").descending();
-        long memberId = CustomUtil.getAuthId();
+        long memberId = AuthUtil.getMemberId();
         List<Schedule> schedules = scheduleRepository.findAllByMember_memberId(memberId, sort);
 
         return schedules;
@@ -101,7 +78,7 @@ public class ScheduleService {
     }
 
     public void deleteSchedule(long scheduleId) {
-        long memberId = CustomUtil.getAuthId();
+        long memberId = AuthUtil.getMemberId();
 
         verify(scheduleId, memberId);
         scheduleRepository.deleteById(scheduleId);
@@ -118,7 +95,8 @@ public class ScheduleService {
     }
 
     @Async
-    public void sendKakaoMessage(Schedule schedule, Member member) {
+    public void sendKakaoMessage(Schedule schedule) {
+        Member member = schedule.getMember();
         KakaoToken kakaoToken = member.getKakaoToken();
 
         if (kakaoToken == null) {
@@ -126,7 +104,7 @@ public class ScheduleService {
         }
 
         String accessToken = kakaoToken.getAccessToken();
-        Feed feedTemplate = kakaoTemplateMapper.getFeedTemplate(schedule, member);
+        Feed feedTemplate = kakaoTemplateMapper.getPostTemplate(schedule, member);
 
         kakaoApiService.sendMessage(feedTemplate, accessToken);
     }

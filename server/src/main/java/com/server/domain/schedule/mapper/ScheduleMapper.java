@@ -3,104 +3,96 @@ package com.server.domain.schedule.mapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.server.domain.member.entity.Member;
+import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.region.entity.Region;
+import com.server.domain.region.repository.RegionRepository;
 import com.server.domain.schedule.dto.ScheduleDto;
 import com.server.domain.schedule.dto.ScheduleResponse;
 import com.server.domain.schedule.entity.Schedule;
-import com.server.domain.schedule.entity.SchedulePlace;
+import com.server.global.utils.AuthUtil;
 
-@Mapper(componentModel = "spring")
-public interface ScheduleMapper {
-    default Schedule postDtoToSchedule(ScheduleDto.Post postDto) {
-        if (postDto == null) {
-            return null;
+@Mapper(componentModel = "spring", imports = {AuthUtil.class, ChronoUnit.class})
+public abstract class ScheduleMapper {
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    RegionRepository regionRepository;
+
+    // @AfterMapping
+    // 필드 따로 추가가능
+    // defaultValue, defaultExpression
+    // ignore로 제외 가능
+    // 메소드 지정 가능
+    // void로 이미 생성된 인스턴스에 맵핑 가능
+    // 이터러블 맵핑으로 컬렉션의 타입 변환 가능
+    @Mapping(target = "member", expression = "java(memberRepository.findById(AuthUtil.getMemberId()).get())")
+    @Mapping(target = "memberCount", expression = "java(1)")
+    @Mapping(target = "period", expression = "java((int)ChronoUnit.DAYS.between(postDto.getStartDate(), postDto.getEndDate()) + 1)")
+    @Mapping(target = "region", expression = "java(regionRepository.findByEngName(postDto.getRegion()))")
+    @Mapping(target = "title", expression = "java(String.format(\"%s 여행 레츠고!\", schedule.getRegion().getKorName()))")
+    public abstract Schedule postDtoToSchedule(ScheduleDto.Post postDto);
+
+    // 확장시 쓰임
+    // @Mapping(target = "memberCount", expression = "java(toMemberCount(patchDto.getMemberCount()))")
+    // @Mapping(target = "period", expression = "java((int)ChronoUnit.DAYS.between(patchDto.getStartDate(), patchDto.getEndDate()) + 1)")
+    // @Mapping(target = "region", expression = "java(regionRepository.findByEngName(patchDto.getRegion()))")
+    // @Mapping(target = "title", expression = "java(toTitle(patchDto.getTitle(), schedule.getRegion()))")
+    // // @Mapping(target = "tmpSchedulePlaces", expression = "java(toTmpSchedulePlaces())")
+    // public abstract Schedule patchDtoToSchedule(ScheduleDto.Patch patchDto, long scheduleId);
+
+    @Mapping(target = "memberCount", ignore = true)
+    @Mapping(target = "region", ignore = true)
+    @Mapping(target = "startDate", ignore = true)
+    @Mapping(target = "endDate", ignore = true)
+    public abstract Schedule patchDtoToSchedule(ScheduleDto.Patch patchDto, long scheduleId);
+
+    @AfterMapping
+    void checkTitle(@MappingTarget Schedule schedule) {
+        String title = schedule.getTitle();
+        if (title != null && title.length() == 0) {
+            schedule.setTitle(null);
         }
 
-        String engName = postDto.getRegion();
-        Region region = new Region();
-        region.setEngName(engName);
-
-        Schedule schedule = new Schedule();
-        LocalDate startDate = postDto.getStartDate();
-        LocalDate endDate = postDto.getEndDate();
-        int period = (int)ChronoUnit.DAYS.between(startDate, endDate);
-
-        schedule.setEndDate(endDate);
-        schedule.setMemberCount(postDto.getMemberCount());
-        schedule.setRegion(region);
-        schedule.setStartDate(startDate);
-        schedule.setTitle(postDto.getTitle());
-        schedule.setPeriod(period + 1);
-
-        return schedule;
     }
 
-    default Schedule patchDtoToSchedule(ScheduleDto.Patch patchDto) {
-        if (patchDto == null) {
-            return null;
+    int toMemberCount(int memberCount) {
+        if (memberCount > 0) {
+            return memberCount;
         }
 
-        String engName = patchDto.getRegion();
-        Region region = new Region();
-        region.setEngName(engName);
-
-        Schedule schedule = new Schedule();
-        LocalDate startDate = patchDto.getStartDate();
-        LocalDate endDate = patchDto.getEndDate();
-
-        if (startDate != null && endDate != null) {
-            int period = (int)ChronoUnit.DAYS.between(startDate, endDate);
-            schedule.setPeriod(period + 1);
-        }
-        schedule.setEndDate(endDate);
-        schedule.setMemberCount(patchDto.getMemberCount());
-        schedule.setRegion(region);
-        schedule.setStartDate(startDate);
-        schedule.setTitle(patchDto.getTitle());
-
-        return schedule;
+        return 1;
     }
 
-    // @Mapping(source = "member.memberId", target = "memberId")
-    // @Mapping(source = "member.nickname", target = "nickname")
-    default ScheduleResponse scheduleToScheduleResponse(Schedule schedule) {
-        if (schedule == null) {
+    String toTitle(String title, Region region) {
+        if (title == null) {
             return null;
         }
-        Region region = schedule.getRegion();
-        String engName = region.getEngName();
+        if (title.length() > 0) {
+            return title;
+        }
         String korName = region.getKorName();
 
-        Member member = schedule.getMember();
-        LocalDateTime startDate = schedule.getStartDate().atStartOfDay();
-        LocalDateTime endDate = schedule.getEndDate().atStartOfDay();
+        return String.format("", korName);
+    }
 
-        List<SchedulePlace> schedulePlaces = schedule.getSchedulePlaces();
-        int placeSize = schedulePlaces.size();
+    @Mapping(source = "member.memberId", target = "memberId")
+    @Mapping(source = "member.nickname", target = "nickname")
+    @Mapping(source = "region.engName", target = "region")
+    @Mapping(source = "region.korName", target = "korRegion")
+    @Mapping(target = "startDate", expression = "java(toLocalDateTime(schedule.getStartDate()))")
+    @Mapping(target = "endDate", expression = "java(toLocalDateTime(schedule.getEndDate()))")
+    @Mapping(target = "placeSize", expression = "java(schedule.getSchedulePlaces().size())")
+    public abstract ScheduleResponse scheduleToScheduleResponse(Schedule schedule);
 
-        ScheduleResponse scheduleResponse = new ScheduleResponse();
-
-        if (member != null) {
-            scheduleResponse.setMemberId(member.getMemberId());
-            scheduleResponse.setNickname(member.getNickname());
-        }
-        scheduleResponse.setStartDate(startDate);
-        scheduleResponse.setEndDate(endDate);
-        scheduleResponse.setCreatedAt(schedule.getCreatedAt());
-        scheduleResponse.setMemberCount(schedule.getMemberCount());
-        scheduleResponse.setModifiedAt(schedule.getModifiedAt());
-        scheduleResponse.setPeriod(schedule.getPeriod());
-        scheduleResponse.setRegion(engName);
-        scheduleResponse.setKorRegion(korName);
-        scheduleResponse.setScheduleId(schedule.getScheduleId());
-        scheduleResponse.setTitle(schedule.getTitle());
-        scheduleResponse.setPlaceSize(placeSize);
-
-        return scheduleResponse;
+    LocalDateTime toLocalDateTime(LocalDate localDate) {
+        return localDate.atStartOfDay();
     }
 }

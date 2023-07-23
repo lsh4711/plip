@@ -86,7 +86,8 @@ public class MailService {
 
     //일정에 관한 이메일 전송
     @Async
-    public void sendScheduleMail(Schedule schedule, Member member) {
+    public void sendScheduleMail(Schedule schedule) {
+        Member member = schedule.getMember();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");

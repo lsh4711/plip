@@ -28,18 +28,27 @@ public class Place extends BaseEntity {
     private Long placeId;
 
     // @Column(unique = true)
-    private long apiId; // optnioal, default: 0(0 == custom point)
+    private Long apiId; // optnioal, default: 0(0 == custom point)
 
     private String name; // optional, default: 사용자 지정 장소
     private String address;
 
     private String phone;
 
-    private String latitude; // 사용자 지정시 같은 좌표가
-    private String longitude; // 중복될 것 같으니 복합키 고려
+    private String latitude;
+    private String longitude;
 
     @Transient
-    private Boolean bookmark;
+    private Long schedulePlaceId;
+
+    @Transient
+    private Integer days;
+
+    @Transient
+    private Integer orders;
+
+    // @Transient
+    // private Boolean bookmark;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryId")

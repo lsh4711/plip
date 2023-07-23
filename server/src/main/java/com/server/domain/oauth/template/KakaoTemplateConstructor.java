@@ -9,6 +9,7 @@ import com.server.domain.member.entity.Member;
 import com.server.domain.oauth.template.KakaoTemplateObject.Content;
 import com.server.domain.oauth.template.KakaoTemplateObject.Feed;
 import com.server.domain.oauth.template.KakaoTemplateObject.Link;
+import com.server.domain.oauth.template.KakaoTemplateObject.Text;
 import com.server.domain.region.entity.Region;
 import com.server.domain.schedule.entity.Schedule;
 
@@ -36,23 +37,30 @@ public class KakaoTemplateConstructor {
         int idx = random.nextInt(16);
         String region = REGION_LIST[idx];
 
-        String shareUrl = "https://plip.netlify.app/";
-        Link link = Link.builder().web_url(shareUrl).mobile_web_url(shareUrl).build();
+        String baseUrl = "https://plip.netlify.app/";
+        Link link = Link.builder()
+                .web_url(baseUrl)
+                .mobile_web_url(baseUrl)
+                .build();
         Content content = Content.builder()
-            .title(String.format("%s님의 가입을 환영합니다!", nickname))
-            // .description("PliP과 함께 여행 일정을 작성하러 가볼까요?\n*이 메시지는 타인에게 공유하지 마세요!*")
-            .description("PliP과 함께 여행 일정을 작성하러 가볼까요?")
-            .image_width(100)
-            .image_height(100)
-            .image_url("https://teamdev.shop/files/images?region=" + region)
-            .link(link)
-            .build();
-        Feed feed = Feed.builder().object_type("feed").content(content).button_title("PilP 자동 로그인").build();
+                .title(String.format("%s님의 가입을 환영합니다!", nickname))
+                // .description("PliP과 함께 여행 일정을 작성하러 가볼까요?\n*이 메시지는 타인에게 공유하지 마세요!*")
+                .description("PliP과 함께 여행 일정을 작성하러 가볼까요?")
+                .image_width(600)
+                .image_height(400)
+                .image_url("https://teamdev.shop/files/images?region=" + region)
+                .link(link)
+                .build();
+        Feed feed = Feed.builder()
+                .object_type("feed")
+                .content(content)
+                .button_title("PilP으로 이동")
+                .build();
 
         return feed;
     }
 
-    public Feed getFeedTemplate(Schedule schedule, Member member) {
+    public Feed getPostTemplate(Schedule schedule, Member member) {
         // Member
         long memberId = member.getMemberId();
         String email = member.getEmail();
@@ -75,15 +83,64 @@ public class KakaoTemplateConstructor {
         String shareUrl = String.format("%s/%d/share?id=%d&email=%s", basesUrl, scheduleId, memberId, email);
         Link link = Link.builder().web_url(shareUrl).mobile_web_url(shareUrl).build();
         Content content = Content.builder()
-            .title(String.format("%s님의 %s 여행 일정입니다.", nickname, korName))
-            .description(String.format("기간: %s \n~ %s (%s)", startDate, endDate, term))
-            .image_width(600)
-            .image_height(400)
-            .image_url("https://teamdev.shop/files/images?region=" + engName)
-            .link(link)
-            .build();
-        Feed feed = Feed.builder().object_type("feed").content(content).build();
+                .title(String.format("%s님의 %s 여행 일정입니다.", nickname, korName))
+                .description(String.format("기간: %s \n~ %s (%s)", startDate, endDate, term))
+                .image_width(600)
+                .image_height(400)
+                .image_url("https://teamdev.shop/files/images?region=" + engName)
+                .link(link)
+                .build();
+        Feed feed = Feed.builder()
+                .object_type("feed")
+                .content(content)
+                .build();
 
         return feed;
+    }
+
+    public Text getStartTemplate(Member member, Schedule schedule, int hour) {
+        // Member
+        long memberId = member.getMemberId();
+        String email = member.getEmail();
+        String nickname = member.getNickname();
+
+        // Schedule
+        long scheduleId = schedule.getScheduleId();
+
+        // Region
+        Region region = schedule.getRegion();
+        String korRegion = region.getKorName();
+        String message;
+        String button_title = null;
+
+        // Text
+        if (hour == 22) {
+            message = String.format("%s님! 여행은 즐거우셨나요?!", nickname);
+            button_title = "일지 작성하러 가기";
+        } else {
+            String prefix = hour == 7 ? "오늘" : "내일";
+            message = String.format("%s님! %s은 설레는 %s 여행날이에요!",
+                nickname,
+                prefix,
+                korRegion);
+        }
+
+        String basesUrl = "https://plip.netlify.app/plan/detail";
+        String shareUrl = String.format("%s/%d/share?id=%d&email=%s",
+            basesUrl,
+            scheduleId,
+            memberId,
+            email);
+        Link link = Link.builder()
+                .web_url(shareUrl)
+                .mobile_web_url(shareUrl)
+                .build();
+        Text textTemplate = Text.builder()
+                .object_type("text")
+                .text(message)
+                .link(link)
+                .build();
+
+        return textTemplate;
     }
 }

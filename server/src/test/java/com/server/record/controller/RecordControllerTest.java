@@ -1,17 +1,29 @@
 package com.server.record.controller;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.*;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 
@@ -179,7 +191,9 @@ public class RecordControllerTest {
                                     fieldWithPath("data.createdAt").type(JsonFieldType.STRING)
                                         .description("작성 날짜"),
                                     fieldWithPath("data.modifiedAt").type(JsonFieldType.STRING)
-                                        .description("수정 날짜")))
+                                        .description("수정 날짜"),
+                                    fieldWithPath("data.placeName").type(JsonFieldType.STRING).description("장소 이름"),
+                                    fieldWithPath("data.days").type(JsonFieldType.NUMBER).description("몇일째 여행인지")))
                             .build()
 
                     )));
@@ -225,7 +239,9 @@ public class RecordControllerTest {
                                     fieldWithPath("data.createdAt").type(JsonFieldType.STRING)
                                         .description("작성 날짜"),
                                     fieldWithPath("data.modifiedAt").type(JsonFieldType.STRING)
-                                        .description("수정 날짜")))
+                                        .description("수정 날짜"),
+                                    fieldWithPath("data.placeName").type(JsonFieldType.STRING).description("장소 이름"),
+                                    fieldWithPath("data.days").type(JsonFieldType.NUMBER).description("몇일째 여행인지")))
                             .build())));
 
     }
@@ -307,7 +323,9 @@ public class RecordControllerTest {
                                     fieldWithPath("pageInfo.totalElements").type(JsonFieldType.NUMBER)
                                         .description("전체 건 수"),
                                     fieldWithPath("pageInfo.totalPages").type(JsonFieldType.NUMBER)
-                                        .description("전체 페이지 수")))
+                                        .description("전체 페이지 수"),
+                                    fieldWithPath("data[].placeName").type(JsonFieldType.STRING).description("장소 이름"),
+                                    fieldWithPath("data[].days").type(JsonFieldType.NUMBER).description("몇일째 여행인지")))
                             .build())));
 
     }

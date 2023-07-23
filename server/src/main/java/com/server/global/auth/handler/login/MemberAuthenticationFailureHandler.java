@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberAuthenticationFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-        AuthenticationException exception) throws IOException {
+            AuthenticationException exception) throws IOException {
         log.error("### Authentication failed: {}", exception.getMessage());
         log.error("### Authentication failed: {}", exception.getClass().getName());
         AuthenticationError.sendErrorResponse(response, getCustomException(exception));

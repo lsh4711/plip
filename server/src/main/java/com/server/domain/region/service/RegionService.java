@@ -21,4 +21,12 @@ public class RegionService {
     public List<Region> saveRegions(List<Region> regions) {
         return regionRepository.saveAll(regions);
     }
+
+    public Region findRegionByEngName(String engName) {
+        if (engName == null) {
+            return null;
+        }
+
+        return regionRepository.findByEngName(engName);
+    }
 }

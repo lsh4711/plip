@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.server.domain.oauth.entity.KakaoToken;
+import com.server.domain.push.entity.Push;
 import com.server.domain.record.entity.Record;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.global.audit.BaseEntity;
@@ -31,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Member extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long memberId;
     @Column(nullable = false)
     private String email;
@@ -48,8 +49,12 @@ public class Member extends BaseEntity {
     private List<Schedule> schedules;
 
     // 전이 용도, 작동하는지 확인 필요
+
     @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
     private KakaoToken kakaoToken;
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private Push push;
 
     // 여행일지와 연관관계 설정
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
@@ -63,6 +68,20 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
     }
 
+    @Getter
+    public enum Role {
+        ADMIN("ROLE_ADMIN", "ROLE_USER"),
+        USER("ROLE_USER"),
+        SOCIAL("ROLE_USER");
+        // SOCIAL("ROLE_USER", "ROLE_SOCIAL");
+
+        private final String[] roles;
+
+        Role(String... roles) {
+            this.roles = roles;
+        }
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -73,17 +92,5 @@ public class Member extends BaseEntity {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    @Getter
-    public enum Role {
-        ADMIN("ROLE_ADMIN", "ROLE_USER"), USER("ROLE_USER"), SOCIAL("ROLE_USER");
-        // SOCIAL("ROLE_USER", "ROLE_SOCIAL");
-
-        private final String[] roles;
-
-        Role(String... roles) {
-            this.roles = roles;
-        }
     }
 }

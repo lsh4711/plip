@@ -23,5 +23,5 @@ public class PlaceResponse {
     // SchedulePlace
     private Integer days;
     private Integer orders;
-    private Boolean bookmark;
+    // private Boolean bookmark;
 }

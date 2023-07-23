@@ -33,16 +33,16 @@ public class TestController {
         String registrationToken = body.get("token");
 
         Message message = Message.builder()
-            .setToken(registrationToken)
-            .setNotification(Notification.builder()
-                .setTitle("제목")
-                .setBody("내용")
-                .setImage("https://teamdev.shop/files/images/test?name=test")
-                .build())
-            .setWebpushConfig(WebpushConfig.builder()
-                .setFcmOptions(WebpushFcmOptions.withLink("https://teamdev.shop/"))
-                .build())
-            .build();
+                .setToken(registrationToken)
+                .setNotification(Notification.builder()
+                        .setTitle("제목")
+                        .setBody("내용")
+                        .setImage("https://teamdev.shop/files/images/test?name=test")
+                        .build())
+                .setWebpushConfig(WebpushConfig.builder()
+                        .setFcmOptions(WebpushFcmOptions.withLink("https://teamdev.shop/"))
+                        .build())
+                .build();
 
         try {
             String response = FirebaseMessaging.getInstance().send(message);

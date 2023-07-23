@@ -17,8 +17,8 @@ public class ScheduleDto {
     @Getter
     @Setter
     public static class Post {
-        private String title; // optional, default: "{region} 여행 레츠고!"
-        private int memberCount; // optional, default: 1
+        // private String title; // optional, default: "{korRegion} 여행 레츠고!"
+        // private int memberCount; // optional, default: 1
 
         @NotBlank
         private String region;
@@ -28,25 +28,28 @@ public class ScheduleDto {
 
         @DateValid
         private LocalDate endDate;
-
-        // @NotNull
-        // @Size(min = 1)
-        private List<List<PlaceDto.@Valid Post>> places;
     }
 
     @Getter
     @Setter
-    public static class Patch {
+    public static class Patch { // 보내준 일정을 수정해서 요청하는 경우를 가정
+        // @NotBlank
         private String title;
+
+        // @NotNull
         private Integer memberCount;
+
+        // @NotBlank
         private String region;
 
+        // @DateValid
         @OptionalDateValid
         private LocalDate startDate;
 
+        // @DateValid
         @OptionalDateValid
         private LocalDate endDate;
 
-        private List<List<PlaceDto.@Valid Post>> places;
+        private List<List<PlaceDto.@Valid Patch>> places; // 마이페이지에서 수정하는 경우는 값이 없을 수도 있음
     }
 }
