@@ -48,7 +48,7 @@ public class ScheduleService {
     public Schedule findScheduleOfAuthMember(long scheduleId) {
         long memberId = AuthUtil.getMemberId();
         Schedule schedule = scheduleRepository
-                .findByScheduleIdAndMember_MemberId(scheduleId, memberId);
+            .findByScheduleIdAndMember_MemberId(scheduleId, memberId);
 
         if (schedule == null) {
             throw new CustomException(
@@ -68,7 +68,7 @@ public class ScheduleService {
 
     public Schedule findSharedSchedule(long scheduleId, long memberId, String email) {
         Schedule schedule = scheduleRepository
-                .findByScheduleIdAndMember_MemberIdAndMember_Email(scheduleId, memberId, email);
+            .findByScheduleIdAndMember_MemberIdAndMember_Email(scheduleId, memberId, email);
 
         if (schedule == null) {
             throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
@@ -86,7 +86,7 @@ public class ScheduleService {
 
     public void verify(long scheduleId, long memberId) {
         boolean exists = scheduleRepository
-                .existsByScheduleIdAndMember_MemberId(scheduleId, memberId);
+            .existsByScheduleIdAndMember_MemberId(scheduleId, memberId);
 
         if (!exists) {
             throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);

@@ -28,6 +28,7 @@ public class MemberLogoutHandler implements LogoutHandler {
             String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
             Date expiration = jwtTokenizer.getClaims(accessToken, base64EncodedSecretKey).getBody().getExpiration();
             Long now = new Date().getTime();
+            //TODO : 유효 시간
             redisUtils.setBlackList(accessToken, "accessToken", expiration.getTime() - now);
         } catch (ExpiredJwtException eje) {
             log.error("### 토큰이 만료되었습니다. 그대로 로그아웃합니다.");

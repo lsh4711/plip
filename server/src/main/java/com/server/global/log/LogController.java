@@ -21,7 +21,7 @@ public class LogController {
     private String location;
 
     @GetMapping
-    public ResponseEntity getLog() throws IOException {
+    public ResponseEntity<StringBuilder> getLog() throws IOException { //리턴 타입 맞춰줌.
         location = location.substring(0, 15);
         location += "/spring.log";
 

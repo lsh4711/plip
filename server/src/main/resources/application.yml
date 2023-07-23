@@ -96,7 +96,7 @@ springdoc:
   swagger-ui:
     url: /docs/open-api-3.0.1.json
     path: /docs/swagger
-  
+
 kakao:
   redirect-url: ${REDIRECT_URL8000}
   api-key: ${API_KEY}

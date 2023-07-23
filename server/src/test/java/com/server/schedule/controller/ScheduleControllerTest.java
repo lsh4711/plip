@@ -81,10 +81,10 @@ public class ScheduleControllerTest {
     private JwtTokenizer jwtTokenizer;
 
     // @Autowired
-    private Gson gson = new GsonBuilder()
-            // .setPrettyPrinting()
-            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-            .create();
+    private final Gson gson = new GsonBuilder()
+        // .setPrettyPrinting()
+        .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+        .create();
 
     @MockBean
     private MemberService memberService;
@@ -141,9 +141,9 @@ public class ScheduleControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
             post(BASE_URL + "/write")
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .content(requestBody)
-                    .contentType(MediaType.APPLICATION_JSON));
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON));
 
         // then
         actions
@@ -203,25 +203,25 @@ public class ScheduleControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
             patch(BASE_URL + "/{scheduleId}/edit", 1)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .content(requestBody)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON));
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
 
         // then
         actions
-                .andExpect(status().isOk())
-                .andDo(
-                    document("여행 일정 수정",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .tag("Schedule")
-                                    .description("여행 일정 수정")
-                                    // .requestFields(List.of())
-                                    // .responseFields(List.of())
-                                    .build())));
+            .andExpect(status().isOk())
+            .andDo(
+                document("여행 일정 수정",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Schedule")
+                            .description("여행 일정 수정")
+                            // .requestFields(List.of())
+                            // .responseFields(List.of())
+                            .build())));
     }
 
     @Test
@@ -251,23 +251,23 @@ public class ScheduleControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
             get(BASE_URL + "/{scheduleId}", 1)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .accept(MediaType.APPLICATION_JSON));
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .accept(MediaType.APPLICATION_JSON));
 
         // then
         actions
-                .andExpect(status().isOk())
-                .andDo(
-                    document("여행 일정 조회",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .tag("Schedule")
-                                    .description("여행 일정 조회")
-                                    // .requestFields(List.of())
-                                    // .responseFields(List.of())
-                                    .build())));
+            .andExpect(status().isOk())
+            .andDo(
+                document("여행 일정 조회",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Schedule")
+                            .description("여행 일정 조회")
+                            // .requestFields(List.of())
+                            // .responseFields(List.of())
+                            .build())));
     }
 
     @Test
@@ -374,23 +374,23 @@ public class ScheduleControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
             get(BASE_URL + "/{scheduleId}/places", 1)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .accept(MediaType.APPLICATION_JSON));
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .accept(MediaType.APPLICATION_JSON));
 
         // then
         actions
-                .andExpect(status().isOk())
-                .andDo(
-                    document("여행 일정의 여행지 조회",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .tag("Schedule")
-                                    .description("여행 일정의 여행지 조회")
-                                    // .requestFields(List.of())
-                                    // .responseFields(List.of())
-                                    .build())));
+            .andExpect(status().isOk())
+            .andDo(
+                document("여행 일정의 여행지 조회",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Schedule")
+                            .description("여행 일정의 여행지 조회")
+                            // .requestFields(List.of())
+                            // .responseFields(List.of())
+                            .build())));
     }
 
     @Test
@@ -402,7 +402,7 @@ public class ScheduleControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
             delete(BASE_URL + "/{scheduleId}", 1)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
 
         // then
         actions

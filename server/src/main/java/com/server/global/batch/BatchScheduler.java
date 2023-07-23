@@ -46,16 +46,16 @@ public class BatchScheduler {
 
     public void runJob(LocalDate date, long hour) {
         JobParameters parameters = new JobParametersBuilder()
-                .addString("date", date.toString())
-                .addLong("hour", hour)
-                .toJobParameters();
+            .addString("date", date.toString())
+            .addLong("hour", hour)
+            .toJobParameters();
 
         try {
             jobLauncher.run(chunkConfig.customJob(), parameters);
         } catch (JobExecutionAlreadyRunningException
-                | JobRestartException
-                | JobInstanceAlreadyCompleteException
-                | JobParametersInvalidException e) {
+                 | JobRestartException
+                 | JobInstanceAlreadyCompleteException
+                 | JobParametersInvalidException e) {
             e.printStackTrace();
             System.out.println("에러");
         }

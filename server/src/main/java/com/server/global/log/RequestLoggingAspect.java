@@ -6,9 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.logging.log4j.Logger;
-
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -27,38 +26,45 @@ public class RequestLoggingAspect {
     private static final Logger logger = LogManager.getLogger(RequestLoggingAspect.class);
 
     @Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
-    public void restControllerClassMethods() {}
+    public void restControllerClassMethods() {
+    }
 
     @Before("restControllerClassMethods()")
     public void logRequestBody(JoinPoint joinPoint) {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
+        ServletRequestAttributes attributes = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
 
-        // URL
-        String url = request.getRequestURL().toString();
+        if (attributes != null) {
+            HttpServletRequest request = attributes.getRequest();
 
-        // Header
-        Enumeration<String> headerNames = request.getHeaderNames();
-        Map<String, String> headers = new HashMap<>();
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            String headerValue = request.getHeader(headerName);
-            headers.put(headerName, headerValue);
-        }
+            // URL
+            String url = request.getRequestURL().toString();
 
-        Object[] args = joinPoint.getArgs();
-
-        if (args.length > 0) {
-            Object requestBody = args[0];
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
-                String requestBodyJson = objectMapper.writeValueAsString(requestBody);
-                logger.debug("URL: {}", url);
-                logger.debug("Headers: {}", headers);
-                logger.debug("Request body: {}", requestBodyJson);
-            } catch (JsonProcessingException e) {
-                logger.error("Failed to convert request body to JSON", e);
+            // Header
+            Enumeration<String> headerNames = request.getHeaderNames();
+            Map<String, String> headers = new HashMap<>();
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement();
+                String headerValue = request.getHeader(headerName);
+                headers.put(headerName, headerValue);
             }
+
+            Object[] args = joinPoint.getArgs();
+
+            if (args.length > 0) {
+                Object requestBody = args[0];
+                ObjectMapper objectMapper = new ObjectMapper();
+                try {
+                    String requestBodyJson = objectMapper.writeValueAsString(requestBody);
+                    logger.debug("URL: {}", url);
+                    logger.debug("Headers: {}", headers);
+                    logger.debug("Request body: {}", requestBodyJson);
+                } catch (JsonProcessingException e) {
+                    logger.error("Failed to convert request body to JSON", e);
+                }
+            }
+        } else {
+            log.error("Request context is not available");
         }
+
     }
 }

@@ -10,7 +10,7 @@ import com.server.global.log.RequestLoggingAspect;
 @EnableAspectJAutoProxy
 public class AspectConfig {
     @Bean
-    public RequestLoggingAspect requestLoggingAspect(){
+    public RequestLoggingAspect requestLoggingAspect() {
         return new RequestLoggingAspect();
     }
 }

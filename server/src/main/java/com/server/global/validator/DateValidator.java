@@ -7,12 +7,6 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class DateValidator implements ConstraintValidator<DateValid, LocalDate> {
-
-    @Override
-    public void initialize(DateValid constraintAnnotation) {
-
-    }
-
     @Override
     public boolean isValid(LocalDate value, ConstraintValidatorContext context) {
         if (value == null) {

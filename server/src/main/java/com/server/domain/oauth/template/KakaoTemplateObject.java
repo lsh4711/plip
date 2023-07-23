@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class KakaoTemplateObject {
     @Builder
     public static class Feed {
+        @Builder.Default //초기화 표현식을 기본값으로 설정 추가
         private String object_type = "feed";
         // private Object item_content;
         private Content content;
@@ -52,7 +53,10 @@ public class KakaoTemplateObject {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Link {
+        @Builder.Default
         private String web_url = "https://plip.netlify.app/";
+
+        @Builder.Default
         private String mobile_web_url = "https://plip.netlify.app/";
         // private String android_execution_params = "";
         // private String ios_execution_params = "";

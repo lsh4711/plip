@@ -50,10 +50,10 @@ public enum ExceptionCode {
     END("마무리", 200);
 
     @Getter
-    private String message;
+    private final String message;
 
     @Getter
-    private int statusCode;
+    private final int statusCode;
 
     ExceptionCode(String message, int statusCode) {
         this.message = message;

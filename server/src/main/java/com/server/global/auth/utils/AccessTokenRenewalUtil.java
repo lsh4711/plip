@@ -22,17 +22,18 @@ public class AccessTokenRenewalUtil {
     private final JwtTokenizer jwtTokenizer;
 
     public Token renewAccessToken(HttpServletRequest request) {
-        try{
+        try {
             String refreshToken = jwtTokenizer.getHeaderRefreshToken(request);
             String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
             String email = jwtTokenizer.getClaims(refreshToken, base64EncodedSecretKey).getBody().getSubject();
-            Member member = memberRepository.findByEmail(email).orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
+            Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
             String newAccessToken = delegateTokenUtil.delegateAccessToken(member);
             return Token.builder()
                 .accessToken(newAccessToken)
                 .refreshToken(refreshToken)
                 .build();
-        }catch (CustomException | ExpiredJwtException ce){
+        } catch (CustomException | ExpiredJwtException ce) {
             throw ce;
         }
     }

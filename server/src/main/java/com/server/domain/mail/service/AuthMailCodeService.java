@@ -31,7 +31,6 @@ public class AuthMailCodeService {
     }
 
     public void removeAuthCode(String email) {
-        authMailCodeRepository.findByEmail(email)
-            .ifPresent(authMailCodeRepository::delete);
+        authMailCodeRepository.findByEmail(email).ifPresent(authMailCodeRepository::delete);
     }
 }

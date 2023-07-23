@@ -26,8 +26,8 @@ public class FirebaseConfig {
         try {
             FileInputStream serviceAccount = new FileInputStream(path);
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .build();
             FirebaseApp.initializeApp(options);
         } catch (Exception e) {
             log.error("### Firebase Config Error: ", e.getMessage());

@@ -20,9 +20,9 @@ public class FileController {
         byte[] base64EncodedImage = fileService.getImageByRegion(region);
 
         return ResponseEntity.ok()
-                // .contentType(MediaType.IMAGE_JPEG)
-                .header("Content-Type", "image/webp")
-                .body(base64EncodedImage);
+            // .contentType(MediaType.IMAGE_JPEG)
+            .header("Content-Type", "image/webp")
+            .body(base64EncodedImage);
     }
 
     @GetMapping("/test")
@@ -31,8 +31,8 @@ public class FileController {
         byte[] base64EncodedImage = fileService.getImageByName(name, extension);
 
         return ResponseEntity.ok()
-                // .contentType(MediaType.IMAGE_JPEG)
-                .header("Content-Type", "image/" + extension)
-                .body(base64EncodedImage);
+            // .contentType(MediaType.IMAGE_JPEG)
+            .header("Content-Type", "image/" + extension)
+            .body(base64EncodedImage);
     }
 }

@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class CustomException extends RuntimeException {
-    private HttpStatus status;
+    private final HttpStatus status;
 
     public CustomException(ExceptionCode exceptionCode) {
         super(exceptionCode.getMessage());

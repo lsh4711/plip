@@ -53,7 +53,7 @@ public class RecordController {
     //여행일지 등록
     @PostMapping("/{schedule-place-id}")
     public ResponseEntity<?> postRecord(@PathVariable("schedule-place-id") @Positive Long schedulePlaceId,
-            @Valid @RequestBody RecordDto.Post requestBody) {
+        @Valid @RequestBody RecordDto.Post requestBody) {
         Record record = mapper.recordPostToRecord(requestBody);
 
         Record createdRecord = recordService.createRecord(record, schedulePlaceId);
@@ -66,15 +66,15 @@ public class RecordController {
     //여행일지 수정
     @PatchMapping("/{record-id}")
     public ResponseEntity<?> patchRecord(@PathVariable("record-id") @Positive long recordId,
-            @Valid @RequestBody RecordDto.Patch requestBody) {
+        @Valid @RequestBody RecordDto.Patch requestBody) {
         requestBody.setRecordId(recordId);
 
         Record record = mapper.recordPatchToRecord(requestBody);
 
         Record updatedRecord = recordService.updateRecord(record);
 
-        return new ResponseEntity<>(new SingleResponseDto<>(mapper.recordToRecordResponse(updatedRecord)),
-            HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new SingleResponseDto<>(mapper.recordToRecordResponse(updatedRecord)));
     }
 
     //recordId로 여행일지 조회
@@ -82,21 +82,18 @@ public class RecordController {
     public ResponseEntity<?> getRecord(@PathVariable("record-id") @Positive long recordId) {
         Record record = recordService.findRecord(recordId);
 
-        return new ResponseEntity<>(
-            new SingleResponseDto<>(mapper.recordToRecordResponse(record)), HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new SingleResponseDto<>(mapper.recordToRecordResponse(record)));
     }
 
     //memberId로 여행일지 조회
     @GetMapping
-    public ResponseEntity<?> getRecordsByMemberId(@RequestParam @Positive int page,
-            @RequestParam @Positive int size) {
+    public ResponseEntity<?> getRecordsByMemberId(@RequestParam @Positive int page, @RequestParam @Positive int size) {
         Page<Record> pageRecords = recordService.findAllRecords(page - 1, size);
         List<Record> records = pageRecords.getContent();
 
-        return new ResponseEntity<>(
-            new MultiResponseDto<>(
-                mapper.recordsToRecordResponses(records), pageRecords),
-            HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(new MultiResponseDto<>(mapper.recordsToRecordResponses(records), pageRecords));
     }
 
     //여행일지 삭제
@@ -109,10 +106,10 @@ public class RecordController {
 
         try {
             storageService.deleteImgs(recordId, userId);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while deleting images: " + e.getMessage());
+                .body("Error occurred while deleting images: " + e.getMessage());
         }
 
     }
@@ -126,11 +123,11 @@ public class RecordController {
         recordService.verify(recordId, userId);
 
         try {
-            List<String> indexs = storageService.store(images, recordId, userId);
-            return new ResponseEntity<>(new SingleResponseDto<>(indexs), HttpStatus.CREATED);
+            List<String> indexes = storageService.store(images, recordId, userId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new SingleResponseDto<>(indexes));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while uploading images: " + e.getMessage());
+                .body("Error occurred while uploading images: " + e.getMessage());
         }
 
     }
@@ -145,10 +142,10 @@ public class RecordController {
 
         try {
             String urlText = storageService.getImg(recordId, userId, imgId);
-            return new ResponseEntity<>(new SingleResponseDto<>(urlText), HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.OK).body(new SingleResponseDto<>(urlText));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while loading image: " + e.getMessage());
+                .body("Error occurred while loading image: " + e.getMessage());
         }
 
     }
@@ -162,12 +159,14 @@ public class RecordController {
 
         try {
             List<String> urlTexts = storageService.getImgs(recordId, userId);
-            ImageResponseDto imageResponseDto = ImageResponseDto.builder().size(urlTexts.size()).images(urlTexts)
-                    .build();
-            return new ResponseEntity<>(imageResponseDto, HttpStatus.OK);
+            ImageResponseDto imageResponseDto = ImageResponseDto.builder()
+                .size(urlTexts.size())
+                .images(urlTexts)
+                .build();
+            return ResponseEntity.status(HttpStatus.OK).body(imageResponseDto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while loading images: " + e.getMessage());
+                .body("Error occurred while loading images: " + e.getMessage());
         }
 
     }
@@ -182,10 +181,10 @@ public class RecordController {
 
         try {
             storageService.deleteImg(recordId, userId, imgId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while deleting image: " + e.getMessage());
+                .body("Error occurred while deleting image: " + e.getMessage());
         }
 
     }
@@ -198,10 +197,10 @@ public class RecordController {
 
         try {
             storageService.deleteImgs(recordId, userId);
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred while deleting image: " + e.getMessage());
+                .body("Error occurred while deleting image: " + e.getMessage());
         }
 
     }

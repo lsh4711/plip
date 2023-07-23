@@ -11,14 +11,14 @@ import com.server.global.exception.ExceptionCode;
 public class AuthUtil {
     public static long getMemberId() {
         Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
+            .getAuthentication();
 
         if (authentication == null) {
             throw new CustomException(ExceptionCode.UNKNOWN_USER);
         }
 
         long memberId = Long.parseLong(authentication.getCredentials()
-                .toString());
+            .toString());
 
         return memberId;
     }

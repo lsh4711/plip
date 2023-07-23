@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class ChunkConfig {
-    private int chunkSize = 10;
+    private final int chunkSize = 10;
 
     private static final String JOB_NAME = "customJob";
 
@@ -57,8 +57,8 @@ public class ChunkConfig {
     @Bean
     public Job customJob() {
         Job customJob = jobBuilderFactory.get(JOB_NAME)
-                .start(customStep())
-                .build();
+            .start(customStep())
+            .build();
 
         return customJob;
     }
@@ -67,15 +67,15 @@ public class ChunkConfig {
     @JobScope
     public Step customStep() {
         Step customStep = stepBuilderFactory.get(JOB_NAME + "Step")
-                .<Schedule, Schedule>chunk(chunkSize)
-                .reader(customReader())
-                .processor(customProcessor())
-                .writer(customWriter())
-                // .faultTolerant()
-                // .retry(Exception.class) // 알림 전송 실패 시
-                // .noRollback(Exception.class) // test
-                // .retryLimit(2) // 3번까지 시도(청크의 처음부터 시작), 보냈던 알림이 다시 전송된다.
-                .build();
+            .<Schedule, Schedule>chunk(chunkSize)
+            .reader(customReader())
+            .processor(customProcessor())
+            .writer(customWriter())
+            // .faultTolerant()
+            // .retry(Exception.class) // 알림 전송 실패 시
+            // .noRollback(Exception.class) // test
+            // .retryLimit(2) // 3번까지 시도(청크의 처음부터 시작), 보냈던 알림이 다시 전송된다.
+            .build();
 
         return customStep;
     }
@@ -89,13 +89,13 @@ public class ChunkConfig {
         parameters.put("date", date);
 
         JpaPagingItemReader<Schedule> reader = new JpaPagingItemReaderBuilder<Schedule>()
-                .name(JOB_NAME + "Reader")
-                .entityManagerFactory(entityManagerFactory)
-                .pageSize(chunkSize)
-                .queryString(
-                    "SELECT s FROM Schedule s WHERE s.startDate = :date AND s.member.kakaoToken IS NOT NULL ORDER BY id") // 정렬 필수
-                .parameterValues(parameters)
-                .build();
+            .name(JOB_NAME + "Reader")
+            .entityManagerFactory(entityManagerFactory)
+            .pageSize(chunkSize)
+            .queryString(
+                "SELECT s FROM Schedule s WHERE s.startDate = :date AND s.member.kakaoToken IS NOT NULL ORDER BY id") // 정렬 필수
+            .parameterValues(parameters)
+            .build();
 
         return reader;
     }

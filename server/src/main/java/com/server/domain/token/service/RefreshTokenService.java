@@ -27,7 +27,8 @@ public class RefreshTokenService {
 
     @Transactional(readOnly = true)
     public RefreshToken getTokenByAccessToken(String accessToken) {
-        return refreshTokenRepository.findByAccessToken(accessToken).orElseThrow(() -> new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND));
+        return refreshTokenRepository.findByAccessToken(accessToken)
+            .orElseThrow(() -> new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND));
     }
 
 }

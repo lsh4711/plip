@@ -9,11 +9,6 @@ import javax.validation.ConstraintValidatorContext;
 public class OptionalDateValidator implements ConstraintValidator<OptionalDateValid, LocalDate> {
 
     @Override
-    public void initialize(OptionalDateValid constraintAnnotation) {
-
-    }
-
-    @Override
     public boolean isValid(LocalDate value, ConstraintValidatorContext context) {
         if (value == null) {
             return true;

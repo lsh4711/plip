@@ -100,7 +100,7 @@ public class ScheduleController {
         List<List<PlaceResponse>> placeResponseLists = schedulePlaceMapper
                 .schedulePlacesToPlaceResponseLists(updatedSchedulePlaces, updatedSchedule);
         ScheduleResponse scheduleResponse = scheduleMapper
-                .scheduleToScheduleResponse(updatedSchedule);
+            .scheduleToScheduleResponse(updatedSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
 
         return ResponseEntity.ok(scheduleResponse);
@@ -114,7 +114,7 @@ public class ScheduleController {
         List<List<PlaceResponse>> placeResponseLists = schedulePlaceMapper
                 .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
         ScheduleResponse scheduleResponse = scheduleMapper
-                .scheduleToScheduleResponse(foundSchedule);
+            .scheduleToScheduleResponse(foundSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
 
         Map<Long, List<RecordDto.Response>> map = schedulePlaceMapper
@@ -140,7 +140,7 @@ public class ScheduleController {
             List<List<PlaceResponse>> placeResponseLists = schedulePlaceMapper
                     .schedulePlacesToPlaceResponseLists(schedulePlaces, schedule);
             ScheduleResponse scheduleResponse = scheduleMapper
-                    .scheduleToScheduleResponse(schedule);
+                .scheduleToScheduleResponse(schedule);
             scheduleResponse.setPlaces(placeResponseLists);
             scheduleResponses.add(scheduleResponse);
         }
@@ -151,15 +151,15 @@ public class ScheduleController {
     // 일정 공유 기능이므로 민감한 정보 노출 금지
     @GetMapping("/{scheduleId}/share")
     public ResponseEntity getScheduleByMemberIdAndEmail(@PathVariable long scheduleId,
-            @RequestParam("id") long memberId,
-            @RequestParam String email) {
+        @RequestParam("id") long memberId,
+        @RequestParam String email) {
         Schedule foundSchedule = scheduleService.findSharedSchedule(scheduleId, memberId, email);
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
 
         List<List<PlaceResponse>> placeResponseLists = schedulePlaceMapper
                 .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
         ScheduleResponse scheduleResponse = scheduleMapper
-                .scheduleToScheduleResponse(foundSchedule);
+            .scheduleToScheduleResponse(foundSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
 
         return ResponseEntity.ok(scheduleResponse);

@@ -11,9 +11,9 @@ import lombok.Getter;
 
 @Getter
 public class ArrayHashMap implements Iterable<String[]> {
-    private ArrayList<String> keys = new ArrayList<>();
-    private ArrayList<String> values = new ArrayList<>();
-    private HashSet<String> set = new HashSet<>();
+    private final ArrayList<String> keys = new ArrayList<>();
+    private final ArrayList<String> values = new ArrayList<>();
+    private final HashSet<String> set = new HashSet<>();
 
     public ArrayHashMap(String entity) {
         if (entity.equalsIgnoreCase("category")) {

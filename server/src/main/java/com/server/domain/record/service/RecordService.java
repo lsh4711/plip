@@ -22,6 +22,7 @@ import com.server.global.utils.CustomBeanUtils;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class RecordService {
 
@@ -30,10 +31,10 @@ public class RecordService {
     private final MemberService memberService;
 
     //여행일지 등록
-    @Transactional
     public Record createRecord(Record record, Long schedulePlaceId) {
         Member member = authenticationMember();
         record.setMember(member);
+
         SchedulePlace schedulePlace = new SchedulePlace();
         schedulePlace.setSchedulePlaceId(schedulePlaceId);
 
@@ -43,7 +44,6 @@ public class RecordService {
     }
 
     //여행일지 수정
-    @Transactional
     public Record updateRecord(Record record) {
         Record foundRecord = findRecord(record.getRecordId());
 
@@ -51,22 +51,26 @@ public class RecordService {
             throw new CustomException(ExceptionCode.CANNOT_CHANGE_RECORD);
         }
 
-        // static 메소드로 바꿨사와요
         Record updatedRecord = CustomBeanUtils.copyNonNullProperties(record, foundRecord);
 
         return recordRepository.save(updatedRecord);
     }
 
     //여행일지 아이디로 여행일지 하나 조회(상세 페이지)
+    @Transactional(readOnly = true)
     public Record findRecord(long recordId) {
-        Optional<Record> optionalReecord = recordRepository.findById(recordId);
-        Record findRecord = optionalReecord.orElseThrow(
-            () -> new CustomException(ExceptionCode.RECORD_NOT_FOUND));
+        Optional<Record> optionalRecord = recordRepository.findById(recordId);
+        Record foundRecord = optionalRecord.orElseThrow(() -> new CustomException(ExceptionCode.RECORD_NOT_FOUND));
 
-        return findRecord;
+        if (!authenticationMember().getMemberId().equals(foundRecord.getMember().getMemberId())) {
+            throw new CustomException(ExceptionCode.CANNOT_ACCESS_RECORD);
+        }
+
+        return foundRecord;
     }
 
     //회원 아이디로 전체 여행일지 조회
+    @Transactional(readOnly = true)
     public Page<Record> findAllRecords(int page, int size) {
         Member member = authenticationMember();
         Long memberId = member.getMemberId();
@@ -78,7 +82,7 @@ public class RecordService {
     public void deleteRecord(long recordId) {
         Record foundRecord = findRecord(recordId);
 
-        if (authenticationMember().getMemberId() != foundRecord.getMember().getMemberId()) {
+        if (!authenticationMember().getMemberId().equals(foundRecord.getMember().getMemberId())) {
             throw new CustomException(ExceptionCode.CANNOT_CHANGE_RECORD);
         }
 
@@ -96,8 +100,7 @@ public class RecordService {
     }
 
     public void verify(long recordId, long memberId) {
-        boolean exists = recordRepository
-                .existsByRecordIdAndMember_MemberId(recordId, memberId);
+        boolean exists = recordRepository.existsByRecordIdAndMember_MemberId(recordId, memberId);
         if (!exists) {
             throw new CustomException(ExceptionCode.RECORD_NOT_FOUND);
         }

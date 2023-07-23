@@ -68,20 +68,6 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
     }
 
-    @Getter
-    public enum Role {
-        ADMIN("ROLE_ADMIN", "ROLE_USER"),
-        USER("ROLE_USER"),
-        SOCIAL("ROLE_USER");
-        // SOCIAL("ROLE_USER", "ROLE_SOCIAL");
-
-        private final String[] roles;
-
-        Role(String... roles) {
-            this.roles = roles;
-        }
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -92,5 +78,17 @@ public class Member extends BaseEntity {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    @Getter
+    public enum Role {
+        ADMIN("ROLE_ADMIN", "ROLE_USER"), USER("ROLE_USER"), SOCIAL("ROLE_USER");
+        // SOCIAL("ROLE_USER", "ROLE_SOCIAL");
+
+        private final String[] roles;
+
+        Role(String... roles) {
+            this.roles = roles;
+        }
     }
 }

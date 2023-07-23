@@ -63,8 +63,8 @@ public class SchedulePlaceService {
     // 추가
     public SchedulePlace findSchedulePlaceById(Long schedulePlaceId) {
         return schedulePlaceRepository.findById(schedulePlaceId)
-                .orElseThrow(() -> new CustomException(
-                    ExceptionCode.SCHEDULE_PLACE_NOT_FOUND));
+            .orElseThrow(() -> new CustomException(
+                ExceptionCode.SCHEDULE_PLACE_NOT_FOUND));
     }
 
     // 변경 장소에 없는 장소만 삭제

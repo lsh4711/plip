@@ -78,30 +78,30 @@ public class StubData {
     }
 
     public static class MockMember {
-        private static Map<String, Object> stubRequestBody;
+        private static final Map<String, Object> stubRequestBody;
 
         static {
             stubRequestBody = new HashMap<>();
             MemberDto.Post memberPost = MemberDto.Post.builder()
-                    .email("test123@naver.com")
-                    .password("q12345678!")
-                    .nickname("테스트계정")
-                    .build();
+                .email("test123@naver.com")
+                .password("q12345678!")
+                .nickname("테스트계정")
+                .build();
 
             LoginDto loginDto = LoginDto.builder()
-                    .username("admin")
-                    .password("admin")
-                    .build();
+                .username("admin")
+                .password("admin")
+                .build();
 
             MemberDto.Patch memberPatch = MemberDto.Patch.builder()
-                    .nickname("테스트수정테스트")
-                    .password("12345678!a")
-                    .build();
+                .nickname("테스트수정테스트")
+                .password("12345678!a")
+                .build();
 
             MemberDto.PasswordPatch memberPwPatch = MemberDto.PasswordPatch.builder()
-                    .email("test123@naver.com")
-                    .password("12345678a!")
-                    .build();
+                .email("test123@naver.com")
+                .password("12345678a!")
+                .build();
 
             stubRequestBody.put("memberPost", memberPost);
             stubRequestBody.put("loginDto", loginDto);
@@ -123,8 +123,8 @@ public class StubData {
     }
 
     public static class MockRecord {
-        private static Map<String, Object> stubRequestBody;
-        private static Map<String, List<RecordDto.Response>> stubDatas;
+        private static final Map<String, Object> stubRequestBody;
+        private static final Map<String, List<RecordDto.Response>> stubDatas;
 
         public static Map<Long, List<RecordDto.Response>> recordResponseMap;
 
@@ -133,13 +133,13 @@ public class StubData {
             stubDatas = new HashMap<>();
 
             RecordDto.Post post = RecordDto.Post.builder()
-                    .content("롯데월드에서는..")
-                    .build();
+                .content("롯데월드에서는..")
+                .build();
             stubRequestBody.put("recordPost", post);
 
             RecordDto.Patch patch = RecordDto.Patch.builder()
-                    .content("남산에서는..")
-                    .build();
+                .content("남산에서는..")
+                .build();
             stubRequestBody.put("recordPatch", patch);
 
             RecordDto.Response response = RecordDto.Response.builder()

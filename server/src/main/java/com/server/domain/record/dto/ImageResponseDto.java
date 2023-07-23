@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+//이미지 조회 시 사용
 @Getter
 @Setter
 @Builder

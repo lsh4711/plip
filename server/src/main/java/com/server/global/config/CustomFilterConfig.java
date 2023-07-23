@@ -27,7 +27,7 @@ public class CustomFilterConfig extends AbstractHttpConfigurer<CustomFilterConfi
     @Override
     public void configure(HttpSecurity builder) {
         AuthenticationManager authenticationManager = builder
-                .getSharedObject(AuthenticationManager.class);
+            .getSharedObject(AuthenticationManager.class);
 
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(
             authenticationManager,
@@ -41,7 +41,7 @@ public class CustomFilterConfig extends AbstractHttpConfigurer<CustomFilterConfi
             redisUtils);
 
         builder
-                .addFilter(jwtAuthenticationFilter)
-                .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
+            .addFilter(jwtAuthenticationFilter)
+            .addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
     }
 }

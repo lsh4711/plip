@@ -12,6 +12,7 @@ public interface MemberMapper {
     Member memberDtoPostToMember(MemberDto.Post request);
 
     Member memberDtoPatchToMember(MemberDto.Patch request);
+
     Member memberDtoPasswordPatchToMember(MemberDto.PasswordPatch request);
 
     MemberDto.Response memberToMemberDtoResponse(Member member);

@@ -24,17 +24,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class S3StorageService implements StorageService {
     private static final String BUCKET_IMAGE_PATH = "record_images";
-
+    private final AmazonS3 s3Client;
     @Value("${application.bucket.name}")
     private String bucketName;
-
-    private final AmazonS3 s3Client;
 
     //이미지 저장
     @Override
     public List<String> store(List<MultipartFile> multipartFiles, long recordId, long userId) {
         String dirName = BUCKET_IMAGE_PATH + "/" + userId + "/" + recordId;
-        List<String> indexs = new ArrayList<>();
+        List<String> indexes = new ArrayList<>();
 
         //이미 저장된 이미지가 있을 경우, 가장 마지막에 저장된 index+1로 새로운 index
         int newIndex = getNewIndex(dirName);
@@ -45,13 +43,13 @@ public class S3StorageService implements StorageService {
             //S3에 저장될 파일의 경로 및 이름
             int index = newIndex + i;
             String fileName = dirName.concat("/").concat(Integer.toString(index));
-            indexs.add(Integer.toString(index));
+            indexes.add(Integer.toString(index));
 
             s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
             fileObj.deleteOnExit(); //임시 파일 삭제
         }
 
-        return indexs;
+        return indexes;
     }
 
     //이미지 1개 조회

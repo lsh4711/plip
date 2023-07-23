@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
-
 import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.auth.utils.AccessTokenRenewalUtil;
 import com.server.global.auth.utils.Token;

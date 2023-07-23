@@ -19,6 +19,6 @@ public class MultiResponseDtoWithPage<T> {
         this.totalElements = totalElements;
         this.currentPage = currentPage;
         this.pageSize = pageSize;
-        this.totalPages = (int) Math.ceil((double) totalElements / pageSize);
+        this.totalPages = (int)Math.ceil((double)totalElements / pageSize);
     }
 }

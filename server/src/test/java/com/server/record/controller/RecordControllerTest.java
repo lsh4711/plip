@@ -337,7 +337,7 @@ public class RecordControllerTest {
         long recordId = 1L;
 
         doNothing().when(service).deleteRecord(recordId);
-        doNothing().when(storageService).deleteImgs(anyLong(),anyLong());
+        doNothing().when(storageService).deleteImgs(anyLong(), anyLong());
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -379,8 +379,7 @@ public class RecordControllerTest {
 
         List<String> indexs = List.of("0", "1", "2");
 
-        given(storageService.store(anyList(), anyLong(),anyLong())).willReturn(indexs);
-
+        given(storageService.store(anyList(), anyLong(), anyLong())).willReturn(indexs);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -509,8 +508,7 @@ public class RecordControllerTest {
         long recordId = 1;
         long imgId = 1;
 
-        doNothing().when(storageService).deleteImg(anyLong(),anyLong(),anyLong());
-
+        doNothing().when(storageService).deleteImg(anyLong(), anyLong(), anyLong());
 
         //when
         ResultActions actions = mockMvc.perform(

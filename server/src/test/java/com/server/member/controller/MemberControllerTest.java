@@ -88,25 +88,25 @@ public class MemberControllerTest {
         given(service.createMember(Mockito.any(Member.class))).willReturn(Member.builder().memberId(1L).build());
         //when
         ResultActions actions = mockMvc.perform(
-            post(MEMBER_DEFULT_URI + "/signup")
+                post(MEMBER_DEFULT_URI + "/signup")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(jsonData))
-                //then
-                .andExpect(status().isCreated())
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("회원 등록 예제",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .tag("Member")
-                                    .description("회원 등록")
-                                    .requestFields(
-                                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
-                                        fieldWithPath("password").type(JsonFieldType.STRING).description("비밀 번호"),
-                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"))
-                                    .responseFields()
-                                    .build())));
+            //then
+            .andExpect(status().isCreated())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("회원 등록 예제",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Member")
+                            .description("회원 등록")
+                            .requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀 번호"),
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임"))
+                            .responseFields()
+                            .build())));
     }
 
     @Test
@@ -117,33 +117,33 @@ public class MemberControllerTest {
         String jsonData = gson.toJson(request);
 
         Member member = Member.builder()
-                .memberId(1L)
-                .email("admin")
-                .password(passwordEncoder.encode("admin"))
-                .nickname("관리자")
-                .role(Role.USER)
-                .build();
+            .memberId(1L)
+            .email("admin")
+            .password(passwordEncoder.encode("admin"))
+            .nickname("관리자")
+            .role(Role.USER)
+            .build();
 
         repository.save(member);
         //when
         ResultActions actions = mockMvc.perform(
-            post(MEMBER_DEFULT_URI + "/login")
+                post(MEMBER_DEFULT_URI + "/login")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(jsonData))
-                //then
-                .andExpect(status().isOk())
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("회원 로그인 예제",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .tag("Member")
-                                    .description("회원 로그인")
-                                    .responseHeaders(
-                                        headerWithName("Authorization").description("발급받은 인증 토큰"))
-                                    .responseFields()
-                                    .build())));
+            //then
+            .andExpect(status().isOk())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("회원 로그인 예제",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Member")
+                            .description("회원 로그인")
+                            .responseHeaders(
+                                headerWithName("Authorization").description("발급받은 인증 토큰"))
+                            .responseFields()
+                            .build())));
     }
 
     @Test
@@ -159,26 +159,26 @@ public class MemberControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-            patch(MEMBER_DEFULT_URI)
+                patch(MEMBER_DEFULT_URI)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
                     .content(jsonData))
-                //then
-                .andExpect(status().isCreated())
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("회원 수정 예제",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .tag("Member")
-                                    .description("회원 수정")
-                                    .requestHeaders(
-                                        headerWithName("Authorization").description("발급받은 인증 토큰"))
-                                    .requestFields(
-                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("수정할 닉네임"),
-                                        fieldWithPath("password").type(JsonFieldType.STRING).description("수정할 비밀 번호"))
-                                    .build())));
+            //then
+            .andExpect(status().isCreated())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("회원 수정 예제",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Member")
+                            .description("회원 수정")
+                            .requestHeaders(
+                                headerWithName("Authorization").description("발급받은 인증 토큰"))
+                            .requestFields(
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("수정할 닉네임"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("수정할 비밀 번호"))
+                            .build())));
     }
 
     @Test
@@ -192,27 +192,25 @@ public class MemberControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-            get(MEMBER_DEFULT_URI)
+                get(MEMBER_DEFULT_URI)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser))
-                //then
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.nickname").value(response.getNickname()))
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("회원 조회 예제",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .tag("Member")
-                                    .description("회원 조회")
-                                    .requestHeaders(
-                                        headerWithName("Authorization").description("발급받은 인증 토큰"))
-                                    .responseFields(
-                                        fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
-                                        fieldWithPath("data.email").type(JsonFieldType.STRING).description("회원 이메일"),
-                                        fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("회원 닉네임"))
-                                    .build())));
+            //then
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.nickname").value(response.getNickname()))
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("회원 조회 예제",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Member")
+                            .description("회원 조회")
+                            .requestHeaders(
+                                headerWithName("Authorization").description("발급받은 인증 토큰"))
+                            .responseFields(
+                                fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("회원 닉네임"))
+                            .build())));
     }
 
     @Test
@@ -222,23 +220,23 @@ public class MemberControllerTest {
         doNothing().when(service).deleteMember(Mockito.anyString());
         //when
         ResultActions actions = mockMvc.perform(
-            delete(MEMBER_DEFULT_URI)
+                delete(MEMBER_DEFULT_URI)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenForUser)
                     .contentType(MediaType.APPLICATION_JSON))
-                //then
-                .andExpect(status().isNoContent())
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("회원 삭제 예제",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .tag("Member")
-                                    .description("회원 삭제")
-                                    .requestHeaders(
-                                        headerWithName("Authorization").description("발급받은 인증 토큰"))
-                                    .responseFields()
-                                    .build())));
+            //then
+            .andExpect(status().isNoContent())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("회원 삭제 예제",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Member")
+                            .description("회원 삭제")
+                            .requestHeaders(
+                                headerWithName("Authorization").description("발급받은 인증 토큰"))
+                            .responseFields()
+                            .build())));
     }
 
     @Test
@@ -248,21 +246,21 @@ public class MemberControllerTest {
         String logoutAccessToken = StubData.MockSecurity.getLogoutValidAccessToken(jwtTokenizer.getSecretKey());
         //when
         ResultActions actions = mockMvc.perform(
-            get(MEMBER_DEFULT_URI + "/logout")
+                get(MEMBER_DEFULT_URI + "/logout")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + logoutAccessToken))
-                //then
-                .andExpect(status().isOk())
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("회원 로그아웃 예제",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .tag("Member")
-                                    .description("회원 로그아웃")
-                                    .requestHeaders(
-                                        headerWithName("Authorization").description("발급받은 인증 토큰"))
-                                    .build())));
+            //then
+            .andExpect(status().isOk())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("회원 로그아웃 예제",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Member")
+                            .description("회원 로그아웃")
+                            .requestHeaders(
+                                headerWithName("Authorization").description("발급받은 인증 토큰"))
+                            .build())));
     }
 
     @Test
@@ -279,23 +277,23 @@ public class MemberControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-            patch(MEMBER_DEFULT_URI + "/password")
+                patch(MEMBER_DEFULT_URI + "/password")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(jsonData))
-                //then
-                .andExpect(status().isOk())
-                .andDo(
-                    MockMvcRestDocumentationWrapper.document("비밀번호 재설정 예제",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(
-                            ResourceSnippetParameters.builder()
-                                    .tag("Member")
-                                    .description("비밀번호 재설정")
-                                    .requestFields(
-                                        fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
-                                        fieldWithPath("password").type(JsonFieldType.STRING).description("수정할 비밀 번호"))
-                                    .build())));
+            //then
+            .andExpect(status().isOk())
+            .andDo(
+                MockMvcRestDocumentationWrapper.document("비밀번호 재설정 예제",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Member")
+                            .description("비밀번호 재설정")
+                            .requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("수정할 비밀 번호"))
+                            .build())));
     }
 
 }
