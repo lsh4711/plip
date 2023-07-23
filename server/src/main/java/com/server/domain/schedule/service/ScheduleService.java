@@ -83,7 +83,7 @@ public class ScheduleService {
             memberId,
             email,
             shareSecretKey);
-        String encoded = "{bcrypt}$" + code;
+        String encoded = "{bcrypt}$2a$10$" + code;
 
         if (!passwordEncoder.matches(raw, encoded)) {
             throw new CustomException(ExceptionCode.SHARE_CODE_INVALID);

@@ -87,7 +87,8 @@ public class KakaoTemplateConstructor {
         String code = String.format("%d/%s/%s",
             memberId,
             email,
-            shareSecretKey);
+            shareSecretKey)
+            .replace("{bcrypt}$2a$10$", "");
         String shareUrl = String.format("%s/%d/share?id=%d&code=%s", basesUrl, scheduleId, memberId, code);
         Link link = Link.builder().web_url(shareUrl).mobile_web_url(shareUrl).build();
         Content content = Content.builder()
