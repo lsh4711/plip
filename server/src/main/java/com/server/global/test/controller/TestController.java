@@ -38,7 +38,6 @@ public class TestController {
         for (int i = 0; i <= 15; i++) {
             for (int j = 0; j <= 15; j++) {
                 s3StorageService.deleteImgs(j, i);
-                System.out.println(i + ", " + j);
             }
         }
 
