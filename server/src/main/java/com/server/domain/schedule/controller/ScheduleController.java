@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.server.domain.mail.service.MailService;
+import com.server.domain.member.entity.Member;
+import com.server.domain.member.service.MemberService;
 import com.server.domain.place.dto.PlaceDto;
 import com.server.domain.place.dto.PlaceResponse;
 import com.server.domain.place.entity.Place;
@@ -35,6 +37,7 @@ import com.server.domain.schedule.mapper.ScheduleMapper;
 import com.server.domain.schedule.mapper.SchedulePlaceMapper;
 import com.server.domain.schedule.service.SchedulePlaceService;
 import com.server.domain.schedule.service.ScheduleService;
+import com.server.global.utils.AuthUtil;
 import com.server.global.utils.UriCreator;
 
 import lombok.RequiredArgsConstructor;
@@ -47,6 +50,8 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
     private final ScheduleMapper scheduleMapper;
 
+    private final MemberService memberService;
+
     private final PlaceService placeService;
     private final PlaceMapper placeMapper;
 
@@ -56,7 +61,7 @@ public class ScheduleController {
     private final MailService mailService;
 
     // 비어있는 일정 생성 용도
-    @Transactional
+    // @Transactional
     @PostMapping("/write")
     public ResponseEntity postSchedule(@Valid @RequestBody ScheduleDto.Post postDto) {
         Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
@@ -65,8 +70,10 @@ public class ScheduleController {
         URI location = UriCreator.createUri("/api/schedules", scheduleId);
 
         // 비동기 알림 전송
+        scheduleService.sendPushMessage(savedSchedule); // 웹 푸시
         scheduleService.sendKakaoMessage(savedSchedule); // 카카오 메시지
         mailService.sendScheduleMail(savedSchedule); // 이메일
+
 
         return ResponseEntity.created(location).build();
     }
@@ -165,7 +172,9 @@ public class ScheduleController {
     // 공유 링크 생성, 테스트 코드 작성해야함
     @GetMapping("/{scheduleId}/share/link")
     public ResponseEntity getShareUrl(@PathVariable long scheduleId) {
-        String shareLink = scheduleService.createShareUrl(scheduleId);
+        Member member = AuthUtil.getMember(memberService);
+
+        String shareLink = scheduleService.createShareUrl(scheduleId, member);
 
         return ResponseEntity.ok(shareLink);
     }

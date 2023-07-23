@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.server.domain.member.entity.Member;
@@ -15,21 +14,23 @@ import com.server.domain.oauth.template.KakaoTemplateObject.Link;
 import com.server.domain.oauth.template.KakaoTemplateObject.Text;
 import com.server.domain.region.entity.Region;
 import com.server.domain.schedule.entity.Schedule;
+import com.server.domain.schedule.service.ScheduleService;
 import com.server.global.utils.CustomRandom;
 
 @Component
 public class KakaoTemplateConstructor {
     @Lazy
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private ScheduleService scheduleService;
 
     @Value("${share.key}")
     private String shareSecretKey;
 
+    private String baseUrl = "https://plip.netlify.app/";
+
     public Feed getWelcomeTemplate(Member member) {
         String nickname = member.getNickname();
         String region = CustomRandom.getRandomRegion();
-        String baseUrl = "https://plip.netlify.app/";
 
         Link link = Link.builder()
                 .web_url(baseUrl)
@@ -57,8 +58,6 @@ public class KakaoTemplateConstructor {
 
     public Feed getPostTemplate(Schedule schedule, Member member) {
         // Member
-        long memberId = member.getMemberId();
-        String email = member.getEmail();
         String nickname = member.getNickname();
 
         // Schedule
@@ -74,19 +73,11 @@ public class KakaoTemplateConstructor {
         String korName = region.getKorName();
 
         // Link
-        String basesUrl = "https://plip.netlify.app/plan/detail";
-        String code = String.format("%d/%s/%s",
-            memberId,
-            email,
-            shareSecretKey);
-        String encodedCode = passwordEncoder.encode(code)
-                .replace("{bcrypt}$2a$10$", "");
-        String shareUrl = String.format("%s/%d/share?id=%d&code=%s",
-            basesUrl,
-            scheduleId,
-            memberId,
-            encodedCode);
-        Link link = Link.builder().web_url(shareUrl).mobile_web_url(shareUrl).build();
+        String shareUrl = scheduleService.createShareUrl(scheduleId, member);
+        Link link = Link.builder()
+                .web_url(shareUrl)
+                .mobile_web_url(shareUrl)
+                .build();
 
         Content content = Content.builder()
                 .title(String.format("%s님의 %s 여행 일정입니다.", nickname, korName))
@@ -105,10 +96,8 @@ public class KakaoTemplateConstructor {
         return feed;
     }
 
-    public Text getStartTemplate(Member member, Schedule schedule, int hour) {
+    public Text getScheduledTemplate(Member member, Schedule schedule, int hour) {
         // Member
-        long memberId = member.getMemberId();
-        String email = member.getEmail();
         String nickname = member.getNickname();
 
         // Schedule
@@ -116,28 +105,27 @@ public class KakaoTemplateConstructor {
 
         // Region
         Region region = schedule.getRegion();
-        String korRegion = region.getKorName();
+        String korName = region.getKorName();
         String message;
         String button_title = null;
 
+        String shareUrl = baseUrl;
+
         if (hour == 22) {
-            message = String.format("%s님! 여행은 즐거우셨나요?!", nickname);
+            message = String.format("%s님! %s 여행은 즐거우셨나요?!",
+                nickname,
+                korName);
             button_title = "일지 작성하러 가기";
         } else {
             String prefix = hour == 7 ? "오늘" : "내일";
             message = String.format("%s님! %s은 설레는 %s 여행날이에요!",
                 nickname,
                 prefix,
-                korRegion);
+                korName);
+            shareUrl = scheduleService.createShareUrl(scheduleId, member);
         }
 
         // Link
-        String basesUrl = "https://plip.netlify.app/plan/detail";
-        String shareUrl = String.format("%s/%d/share?id=%d&email=%s",
-            basesUrl,
-            scheduleId,
-            memberId,
-            email);
         Link link = Link.builder()
                 .web_url(shareUrl)
                 .mobile_web_url(shareUrl)
@@ -146,6 +134,7 @@ public class KakaoTemplateConstructor {
         Text textTemplate = Text.builder()
                 .object_type("text")
                 .text(message)
+                .button_title(button_title)
                 .link(link)
                 .build();
 

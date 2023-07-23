@@ -1,5 +1,6 @@
 package com.server.domain.schedule.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -9,11 +10,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.server.domain.member.entity.Member;
-import com.server.domain.member.service.MemberService;
 import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.oauth.service.KakaoApiService;
 import com.server.domain.oauth.template.KakaoTemplateConstructor;
 import com.server.domain.oauth.template.KakaoTemplateObject.Feed;
+import com.server.domain.push.entity.Push;
+import com.server.domain.push.entity.PushMessage;
+import com.server.domain.push.service.PushService;
+import com.server.domain.region.entity.Region;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.repository.ScheduleRepository;
 import com.server.global.exception.CustomException;
@@ -28,10 +32,10 @@ import lombok.RequiredArgsConstructor;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
-    private final MemberService memberService;
-
     private final KakaoApiService kakaoApiService;
     private final KakaoTemplateConstructor kakaoTemplateConstructor;
+
+    private final PushService pushService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -95,13 +99,11 @@ public class ScheduleService {
         return schedule;
     }
 
-    public String createShareUrl(long scheduleId) {
-        long memberId = AuthUtil.getMemberId();
+    public String createShareUrl(long scheduleId, Member member) {
+        long memberId = member.getMemberId();
+        String email = member.getEmail();
 
         verify(scheduleId, memberId);
-
-        Member member = memberService.findMember(memberId);
-        String email = member.getEmail();
 
         String raw = String.format("%d/%s/%s",
             memberId,
@@ -149,5 +151,43 @@ public class ScheduleService {
                 .getPostTemplate(schedule, member);
 
         kakaoApiService.sendMessage(feedTemplate, accessToken);
+    }
+
+    @Async
+    public void sendPushMessage(Schedule schedule) {
+        // Member
+        Member member = schedule.getMember();
+        String nickname = member.getNickname();
+        Push push = member.getPush();
+
+        if (push == null) {
+            return;
+        }
+
+        // Schedule
+        long scheduleId = schedule.getScheduleId();
+        Region region = schedule.getRegion();
+        String korName = region.getKorName();
+        LocalDate startDate = schedule.getStartDate();
+        LocalDate endDate = schedule.getEndDate();
+        int period = schedule.getPeriod();
+        String term = period == 1 ? "당일치기" : String.format("%d박 %d일", period - 1, period);
+
+        // PushMessage
+        String token = push.getPushToken();
+        String title = String.format("%s님의 %s 여행 일정입니다.", nickname, korName);
+        String body = String.format("기간: %s \n~ %s (%s)", startDate, endDate, term);
+        String shareUrl = createShareUrl(scheduleId, member);
+
+        PushMessage pushMessage = PushMessage.builder()
+                .token(token)
+                .title(title)
+                .body(body)
+                .region(korName)
+                // .imageUrl(null)
+                .url(shareUrl)
+                .build();
+
+        pushService.sendPush(pushMessage);
     }
 }

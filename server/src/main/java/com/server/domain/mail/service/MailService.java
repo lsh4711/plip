@@ -5,6 +5,8 @@ import java.util.Optional;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -16,6 +18,7 @@ import com.server.domain.mail.entity.AuthMailCode;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.schedule.entity.Schedule;
+import com.server.domain.schedule.service.ScheduleService;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 import com.server.global.utils.MailUtils;
@@ -32,6 +35,10 @@ public class MailService {
     private final AuthMailCodeService authMailCodeService;
     private final MemberRepository memberRepository;
     private final MailUtils mailUtils;
+
+    @Lazy
+    @Autowired
+    private ScheduleService scheduleService;
 
     //이메일 전송
     @Async
@@ -62,7 +69,7 @@ public class MailService {
         //비밀번호를 찾을 때 이메일 인증을 하는 경우
         if (type.equals("pw") && findMember.isEmpty())
             throw new CustomException(ExceptionCode.MEMBER_NOT_FOUND);
-            //회원 가입에서 이메일 인증을 하는 경우
+        //회원 가입에서 이메일 인증을 하는 경우
         else if (type.equals("signup") && findMember.isPresent())
             throw new CustomException(ExceptionCode.EMAIL_EXISTS);
     }
@@ -87,6 +94,7 @@ public class MailService {
     //일정에 관한 이메일 전송
     @Async
     public void sendScheduleMail(Schedule schedule) {
+        long scheduleId = schedule.getScheduleId();
         Member member = schedule.getMember();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
@@ -95,11 +103,10 @@ public class MailService {
             mimeMessageHelper.setTo(member.getEmail());
             Context context = new Context();
             context.setVariable("content", mailUtils.getContent(schedule, member));
-            context.setVariable("uri", mailUtils.getUri(schedule, member));
+            context.setVariable("uri", scheduleService.createShareUrl(scheduleId, member));
             mimeMessageHelper.setText(templateEngine.process("schedule", context), true);
             mimeMessageHelper.setSubject(mailUtils.getMailTitle(schedule, member));
             javaMailSender.send(mimeMessage);
-
         } catch (MessagingException e) {
             log.info("##" + member.getEmail() + " 메일 보내기 실패!! 에러 메시지: " + e);
         }
