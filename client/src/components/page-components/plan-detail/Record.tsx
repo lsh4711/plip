@@ -44,7 +44,7 @@ const Record = ({ content }: Props) => {
           {korRegion}, {recordId}
         </span>
 
-        <span>작성일 {getFromNow(createdAt)}</span>
+        <span>{getFromNow(createdAt as Date)}</span>
       </div>
       <TextContent content={content.content} styles={'p-4'} />
     </div>
