@@ -85,20 +85,30 @@ public class Init {
         Role admin = Role.ADMIN;
         List<Member> members = new ArrayList<>();
         members.add(Member.builder()
-            .email("admin@naver.com")
-            .password("admin1234!")
-            .nickname("관리자")
-            .build());
+                .email("admin@naver.com")
+                .password("admin1234!")
+                .nickname("관리자")
+                .build());
         members.add(Member.builder()
-            .email("lsh@naver.com")
-            .password("lsh")
-            .nickname("음악")
-            .build());
+                .email("lsh@naver.com")
+                .password("lsh")
+                .nickname("음악")
+                .build());
         members.add(Member.builder()
-            .email("test@naver.com")
-            .password("test1234!")
-            .nickname("테스트")
-            .build());
+                .email("test-1@naver.com")
+                .password("test1234!")
+                .nickname("테스트-1")
+                .build());
+        members.add(Member.builder()
+                .email("test-2@naver.com")
+                .password("test1234!")
+                .nickname("테스트-2")
+                .build());
+        members.add(Member.builder()
+                .email("test@naver.com")
+                .password("test1234!")
+                .nickname("테스트")
+                .build());
 
         for (Member member : members) {
             member.setRole(admin);
