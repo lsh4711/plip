@@ -1,9 +1,10 @@
-import useToast from '@/hooks/useToast';
-import { EditProfileTypes } from '@/pages/MyPage';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import useToast from '@/hooks/useToast';
+import { EditUserType } from '@/schema/editUserSchema';
 import instance from '../axiosinstance';
 
-const patchUserInfo = ({ nickname, password }: Pick<EditProfileTypes, 'nickname' | 'password'>) => {
+const patchUserInfo = ({ nickname, password }: Pick<EditUserType, 'nickname' | 'password'>) => {
   return instance.patch('/api/users', {
     nickname,
     password,
@@ -20,7 +21,7 @@ const useEditUserMutation = () => {
       toast({
         content: '회원 정보가 변경되었습니다.',
       });
-      queryClient.invalidateQueries(['users']);
+      // queryClient.invalidateQueries(['users']);
     },
     onError: () => {
       toast({
