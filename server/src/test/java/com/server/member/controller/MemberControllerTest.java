@@ -209,7 +209,9 @@ public class MemberControllerTest {
                             .requestHeaders(
                                 headerWithName("Authorization").description("발급받은 인증 토큰"))
                             .responseFields(
-                                fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("회원 닉네임"))
+                                fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("회원 닉네임"),
+                                fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                fieldWithPath("data.email").type(JsonFieldType.STRING).description("회원 이메일"))
                             .build())));
     }
 
