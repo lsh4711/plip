@@ -52,6 +52,7 @@ const Map = ({
 
   const onHoverMarker = (place: ScheduledPlaceBase) => {
     if (type === 'recording') {
+      console.log(place);
       hoverMarkerTimer.current = window.setTimeout(() => {
         onHandleOpen(() => dispatch(setSelectedPlace(place)));
         setPlaceId(place.schedulePlaceId!);

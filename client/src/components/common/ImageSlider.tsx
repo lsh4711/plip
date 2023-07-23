@@ -52,7 +52,7 @@ const ImageSlider = ({ imgs }: Props) => {
           <RecordImage key={index} imgSrc={img} />
         ))}
       </Slider>
-      <div className="mt-4 flex justify-center gap-4 text-center ">
+      <div className="my-4 flex justify-center gap-4 text-center ">
         <Button variant={'primary'} onClick={previous} className=" h-[24px] w-[24px] p-0">
           <ArrowLeft />
         </Button>

@@ -2,7 +2,7 @@ import { ReactComponent as ProfileIcon } from '@/assets/icons/profile.svg';
 import HeadingParagraph from '@/components/atom/HeadingParagraph';
 import Paragraph from '@/components/atom/Paragraph';
 import { regionInfos } from '@/datas/regions';
-import { GetScheduleResponse } from '@/types/api/schedules-types';
+import { Schedule } from '@/types/api/schedules-types';
 import { getFormatDateString, getTripPeriod, getTripTitleWithRegion } from '@/utils/date';
 
 function TripInfo({
@@ -10,7 +10,7 @@ function TripInfo({
   region,
   startDate,
   endDate,
-}: Pick<GetScheduleResponse, 'title' | 'region' | 'startDate' | 'endDate'>) {
+}: Pick<Schedule, 'title' | 'region' | 'startDate' | 'endDate'>) {
   return (
     <>
       <div

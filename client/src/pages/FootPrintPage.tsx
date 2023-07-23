@@ -4,15 +4,13 @@ import { HeadingParagraph } from '@/components';
 import { Map } from '@/components/map';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import useVisitedPlacesQuery from '@/queries/mytrip/useVisitedPlacesQuery';
-import { GetScheduleResponse, ScheduledPlaceBase } from '@/types/api/schedules-types';
+import { ScheduledPlaceBase, Schedule } from '@/types/api/schedules-types';
 
 const FootPrintPage = () => {
   const auth = useAuthRedirect();
   if (auth.isRedirect) return auth.naviComponent;
   const { data, isError } = useVisitedPlacesQuery();
-  const places: ScheduledPlaceBase[][] = data.map((item: GetScheduleResponse) =>
-    item.places.flat()
-  );
+  const places: ScheduledPlaceBase[][] = data.map((item: Schedule) => item.places.flat());
 
   const [mapLevel, setMapLevel] = useState(13);
   const center = { lat: 35.81905, lng: 127.8733 }; // 구글어스 대한민국

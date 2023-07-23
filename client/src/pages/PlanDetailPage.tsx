@@ -26,7 +26,7 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
   const { setRecords, setScheduleInfo } = useMapDetailContext();
 
   useEffect(() => {
-    instance.get(`/api/schedules/${id}/share?id=3&email=test@naver.com`).then((res) => {
+    instance.get(`/api/schedules/${id}`).then((res) => {
       console.log(res.data);
       const schedule = res.data.schedule;
       const records = res.data.recordsMap;

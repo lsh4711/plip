@@ -1,5 +1,5 @@
 import { Record } from '@/types/api/records-types';
-import { GetScheduleResponse } from '@/types/api/schedules-types';
+import { Schedule } from '@/types/api/schedules-types';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { createContext } from 'react';
 
@@ -14,13 +14,13 @@ type RecordMapProps = {
 type ContextProps = {
   placeId: number;
   currentRecord: Record | undefined;
-  scheduleInfo: GetScheduleResponse;
+  scheduleInfo: Schedule;
   setPlaceId: React.Dispatch<React.SetStateAction<number>>;
   setRecords: React.Dispatch<React.SetStateAction<RecordMapProps | undefined>>;
-  setScheduleInfo: React.Dispatch<React.SetStateAction<GetScheduleResponse>>;
+  setScheduleInfo: React.Dispatch<React.SetStateAction<Schedule>>;
 };
 
-const initScheduleInfo = {} as GetScheduleResponse;
+const initScheduleInfo = {} as Schedule;
 
 const MapDetailContext = createContext<ContextProps>({
   placeId: 0,
@@ -40,7 +40,7 @@ const MapDetailProvider = ({ children }: Props) => {
   const [placeId, setPlaceId] = useState(0);
 
   // 현재 일정의 정보
-  const [scheduleInfo, setScheduleInfo] = useState<GetScheduleResponse>(initScheduleInfo);
+  const [scheduleInfo, setScheduleInfo] = useState<Schedule>(initScheduleInfo);
 
   // 일정의 일지들 저장
   const [records, setRecords] = useState<RecordMapProps>();
@@ -50,7 +50,7 @@ const MapDetailProvider = ({ children }: Props) => {
 
   useEffect(() => {
     console.log(records);
-    if (records && placeId > 0) {
+    if (records && placeId > 0 && records[placeId][0]) {
       setCurrentRecord(records[placeId][0]);
     } else {
       setCurrentRecord(undefined);

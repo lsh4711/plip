@@ -1,16 +1,12 @@
 import SidePanel from '@/components/common/SidePanel';
-import { Map, MenuButtons, ZoomButtons } from '@/components/map';
+import { Map, ZoomButtons } from '@/components/map';
 import { TripInfo, TripSchedule } from '@/components/schedule';
-import { usePlanQuery } from '@/queries/plan';
 import useSharePlanQuery from '@/queries/plan/useSharePlanQuery';
 import { RootState } from '@/redux/store';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { BASE_URL } from '@/queries';
-import instance from '@/queries/axiosinstance';
 
 const PlanSharePage = () => {
   const { id } = useParams();
@@ -26,6 +22,8 @@ const PlanSharePage = () => {
   console.log(data);
 
   const { schedules } = useSelector((state: RootState) => state.schedule);
+
+  console.log(schedules);
 
   const [mapLevel, setMapLevel] = useState(8);
 

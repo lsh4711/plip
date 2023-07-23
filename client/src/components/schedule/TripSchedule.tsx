@@ -8,10 +8,10 @@ import { ScheduleAccordion } from '@/components/schedule';
 import useToast from '@/hooks/useToast';
 import { useEditPlanMutation } from '@/queries/plan';
 import { RootState } from '@/redux/store';
-import { GetScheduleResponse, ScheduledPlaceBase } from '@/types/api/schedules-types';
+import { ScheduledPlaceBase, Schedule } from '@/types/api/schedules-types';
 
 type Props = {
-  startDate: GetScheduleResponse['startDate'];
+  startDate: Schedule['startDate'];
   places: ScheduledPlaceBase[][];
 };
 
