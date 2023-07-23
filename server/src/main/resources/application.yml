@@ -90,6 +90,9 @@ jwt:
   access-token-expiration-minutes: ${ACCESS_EXPIRATION_MINUTES}
   refresh-token-expiration-minutes: ${REFRESH_EXPIRATION_MINUTES}
 
+share: 
+  key: ${SHARE_SECRET_KEY}
+
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8

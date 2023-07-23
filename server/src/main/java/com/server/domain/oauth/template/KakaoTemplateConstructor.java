@@ -3,6 +3,7 @@ package com.server.domain.oauth.template;
 import java.time.LocalDate;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.server.domain.member.entity.Member;
@@ -15,6 +16,9 @@ import com.server.domain.schedule.entity.Schedule;
 
 @Component
 public class KakaoTemplateConstructor {
+    @Value("${share.key}")
+    private String shareSecretKey;
+
     private static final String[] REGION_LIST = { // 임시
         "busan", "chungbuk", "chungnam", "daegu", "daejeon", "gangwon", "gwangju", "gyeongbuk", "gyeonggi", "gyeongnam",
         "incheon", "jeju", "jeonbuk", "jeonnam", "seoul", "ulsan"};
@@ -80,7 +84,11 @@ public class KakaoTemplateConstructor {
 
         // Feed
         String basesUrl = "https://plip.netlify.app/plan/detail";
-        String shareUrl = String.format("%s/%d/share?id=%d&email=%s", basesUrl, scheduleId, memberId, email);
+        String code = String.format("%d/%s/%s",
+            memberId,
+            email,
+            shareSecretKey);
+        String shareUrl = String.format("%s/%d/share?id=%d&code=%s", basesUrl, scheduleId, memberId, code);
         Link link = Link.builder().web_url(shareUrl).mobile_web_url(shareUrl).build();
         Content content = Content.builder()
                 .title(String.format("%s님의 %s 여행 일정입니다.", nickname, korName))
