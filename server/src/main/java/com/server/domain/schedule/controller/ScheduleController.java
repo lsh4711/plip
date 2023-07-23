@@ -125,8 +125,8 @@ public class ScheduleController {
                 .recordsMap(map)
                 .build();
 
-        // return ResponseEntity.ok(sharedScheduleResponse);
-        return ResponseEntity.ok(scheduleResponse); // 임시 배포용
+        return ResponseEntity.ok(sharedScheduleResponse);
+        // return ResponseEntity.ok(scheduleResponse); // 임시 배포용
     }
 
     @GetMapping
