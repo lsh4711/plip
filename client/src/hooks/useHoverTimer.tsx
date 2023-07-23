@@ -1,4 +1,3 @@
-import { clear } from 'console';
 import { useEffect, useRef } from 'react';
 
 type Props = {
