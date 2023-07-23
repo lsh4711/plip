@@ -8,7 +8,6 @@ import Paragraph from '../atom/Paragraph';
 import Button from '../atom/Button';
 import LoadingSpinner from '../atom/LoadingSpinner';
 import Input from '../atom/Input';
-import useFirstThrottle from '@/hooks/useFirstThrottle';
 
 const SignupForm = () => {
   const emailRequestMutation = useEmailRequestMutation('signup');
@@ -42,9 +41,7 @@ const SignupForm = () => {
       });
   };
 
-  const wrappedOnSubmit = useFirstThrottle(onSubmit, 5000);
-
-  const emailCredentialRequest = useFirstThrottle(() => {
+  const emailCredentialRequest = () => {
     if (signupForm.formState.errors.email?.message !== undefined) return;
     if (signupForm.getValues('email') === '') return;
     if (emailRequestMutation.status === 'loading') return;
@@ -57,9 +54,9 @@ const SignupForm = () => {
       .catch(() => {
         setAuthCodeState({ disabled: true, message: '잠시 후 다시 시도해주세요' });
       });
-  }, 3000);
+  };
 
-  const sendVerificationCodeEmail = useFirstThrottle(() => {
+  const sendVerificationCodeEmail = () => {
     if (signupForm.getValues('authnumber') === '') return;
     if (signupForm.getValues('authnumber') === undefined) return;
     if (emailValidationMutation.status === 'loading') return;
@@ -77,13 +74,10 @@ const SignupForm = () => {
         setEmailRequestState({ isSuccess: false, message: '인증번호가 맞지 않습니다.' });
         setAuthCodeState({ disabled: false, message: '다시 인증을 시도하세요' });
       });
-  }, 5000);
+  };
 
   return (
-    <form
-      className=" flex w-[460px] flex-col gap-y-6"
-      onSubmit={signupForm.handleSubmit(wrappedOnSubmit)}
-    >
+    <form className=" flex w-[460px] flex-col gap-y-6" onSubmit={signupForm.handleSubmit(onSubmit)}>
       <div className="">
         <div className="flex justify-between gap-6">
           <Input
