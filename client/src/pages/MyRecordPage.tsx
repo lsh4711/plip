@@ -35,7 +35,7 @@ export default MyRecordPage;
 const mockdata: Record[] = [
   {
     content: '제주도',
-    title: '협재해수욕장',
+    placeName: '협재해수욕장',
     createdAt: '2023-06-23',
     memberId: '123',
     modifiedAt: '2023-06-24',
@@ -43,7 +43,7 @@ const mockdata: Record[] = [
   },
   {
     content: '제주도',
-    title: '협재해수욕장',
+    placeName: '협재해수욕장',
     createdAt: '2023-06-23',
     memberId: '123',
     modifiedAt: '2023-06-24',
@@ -51,7 +51,7 @@ const mockdata: Record[] = [
   },
   {
     content: '제주도',
-    title: '협재해수욕장',
+    placeName: '협재해수욕장',
     createdAt: '2023-06-23',
     memberId: '123',
     modifiedAt: '2023-06-24',
@@ -59,7 +59,7 @@ const mockdata: Record[] = [
   },
   {
     content: '제주도',
-    title: '협재해수욕장',
+    placeName: '협재해수욕장',
     createdAt: '2023-06-23',
     memberId: '123',
     modifiedAt: '2023-06-24',
@@ -67,7 +67,7 @@ const mockdata: Record[] = [
   },
   {
     content: '제주도',
-    title: '협재해수욕장',
+    placeName: '협재해수욕장',
     createdAt: '2023-06-23',
     memberId: '123',
     modifiedAt: '2023-06-24',
@@ -75,7 +75,7 @@ const mockdata: Record[] = [
   },
   {
     content: '제주도',
-    title: '협재해수욕장',
+    placeName: '협재해수욕장',
     createdAt: '2023-06-23',
     memberId: '123',
     modifiedAt: '2023-06-24',
@@ -83,7 +83,7 @@ const mockdata: Record[] = [
   },
   {
     content: '제주도',
-    title: '협재해수욕장',
+    placeName: '협재해수욕장',
     createdAt: '2023-06-23',
     memberId: '123',
     modifiedAt: '2023-06-24',
@@ -91,7 +91,7 @@ const mockdata: Record[] = [
   },
   {
     content: '제주도',
-    title: '협재해수욕장',
+    placeName: '협재해수욕장',
     createdAt: '2023-06-23',
     memberId: '123',
     modifiedAt: '2023-06-24',
@@ -99,7 +99,7 @@ const mockdata: Record[] = [
   },
   {
     content: '제주도',
-    title: '협재해수욕장',
+    placeName: '협재해수욕장',
     createdAt: '2023-06-23',
     memberId: '123',
     modifiedAt: '2023-06-24',
@@ -107,7 +107,7 @@ const mockdata: Record[] = [
   },
   {
     content: '제주도',
-    title: '협재해수욕장',
+    placeName: '협재해수욕장',
     createdAt: '2023-06-23',
     memberId: '123',
     modifiedAt: '2023-06-24',
