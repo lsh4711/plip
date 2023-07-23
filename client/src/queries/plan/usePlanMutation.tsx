@@ -14,6 +14,7 @@ const usePlanMutation = () => {
 
   return useMutation(postPlan, {
     onSuccess: (data) => {
+      console.log(data);
       queryClient.invalidateQueries(['plan']);
     },
     onError: () => {

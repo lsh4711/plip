@@ -8,6 +8,7 @@ import Button from '../atom/Button';
 import { ReactComponent as ArrowLeft } from '@/assets/icons/arrow-left.svg';
 import { ReactComponent as ArrowRight } from '@/assets/icons/arrow-right.svg';
 import useDebounce from '@/hooks/useDebounce';
+import RecordImage from '../page-components/plan-detail/RecordImage';
 
 const sliceSpeed = 100;
 
@@ -48,16 +49,14 @@ const ImageSlider = ({ imgs }: Props) => {
     <>
       <Slider ref={(slider) => (sliderRef.current = slider)} {...settings}>
         {imgs.map((img, index) => (
-          <div className="h-[300px]" key={index}>
-            <img src={img} alt="" className="h-full  w-full rounded-t-lg object-cover" />
-          </div>
+          <RecordImage key={index} imgSrc={img} />
         ))}
       </Slider>
-      <div className="mt-4 flex justify-center gap-4">
-        <Button variant={'primary'} onClick={previous} className="h-[24px] w-[24px] p-0">
+      <div className="my-4 flex justify-center gap-4 text-center ">
+        <Button variant={'primary'} onClick={previous} className=" h-[24px] w-[24px] p-0">
           <ArrowLeft />
         </Button>
-        <span>{`${currentImageIndex} / ${imgs.length}`}</span>
+        <span className="w-[50px]">{`${currentImageIndex} / ${imgs.length}`}</span>
         <Button variant={'primary'} onClick={next} className="p-0">
           <ArrowRight />
         </Button>

@@ -44,25 +44,24 @@ const Map = ({
   const { searchPlaceResults, selectedPlace } = useSelector((state: RootState) => state.place);
   const dispatch = useDispatch();
 
-  const mapDetailContextValues = useMapDetailContext();
+  const { setPlaceId } = useMapDetailContext();
 
   const [onHandleOpen, onHandleClose] = useHoverTimer({});
 
   const hoverMarkerTimer = useRef(0);
 
   const onHoverMarker = (place: ScheduledPlaceBase) => {
-    if (type === 'recording' && mapDetailContextValues) {
+    if (type === 'recording') {
+      console.log(place);
       hoverMarkerTimer.current = window.setTimeout(() => {
-        const { setPlaceId } = mapDetailContextValues;
         onHandleOpen(() => dispatch(setSelectedPlace(place)));
-        // console.log(place.schedulePlaceId);
         setPlaceId(place.schedulePlaceId!);
       }, 100);
     }
   };
 
   const onHoverOutHandler = () => {
-    if (type === 'recording' && mapDetailContextValues) {
+    if (type === 'recording') {
       clearTimeout(hoverMarkerTimer.current);
       onHandleClose(() => dispatch(setSelectedPlace(null)));
     }
@@ -147,50 +146,6 @@ const Map = ({
                   bookmark: false,
                 })
               )
-            }
-            image={{
-              src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png',
-              size: {
-                width: 48,
-                height: 48,
-              },
-              options: {
-                spriteSize: {
-                  width: 36,
-                  height: 691,
-                },
-                spriteOrigin: {
-                  x: 0,
-                  y: idx * 46,
-                },
-                offset: {
-                  x: 13,
-                  y: 37,
-                },
-              },
-            }}
-          />
-        ))}
-
-      {!!searchPlaceResults.length &&
-        searchPlaceResults.map((result, idx) => (
-          <MapMarker
-            key={result.id}
-            position={{
-              lat: parseFloat(result.y),
-              lng: parseFloat(result.x),
-            }}
-            onClick={() =>
-              setSelectedPlace({
-                apiId: parseInt(result.id),
-                name: result.place_name,
-                address: result.address_name,
-                latitude: result.y,
-                longitude: result.x,
-                phone: result.phone,
-                category: result.category_group_code as CategoryGroupCode,
-                bookmark: false,
-              })
             }
             image={{
               src: 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png',

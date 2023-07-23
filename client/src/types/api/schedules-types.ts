@@ -1,5 +1,6 @@
 import { regions } from '@/datas/regions';
 import { CategoryGroupCode } from '../mapApi/place-types';
+import { Record } from './records-types';
 
 export interface ScheduledPlace extends ScheduledPlaceBase {
   placeId: number;
@@ -26,9 +27,10 @@ export interface ScheduledPlaceBase {
 }
 
 // GET : /schedules/:id
-export interface GetScheduleResponse {
+export interface Schedule {
   scheduleId: number;
   region: (typeof regions)[number];
+  korRegion: string;
   title: string;
   content: string;
   memberCount: number;
@@ -39,6 +41,11 @@ export interface GetScheduleResponse {
   memberId: number;
   nickname: string;
   places: ScheduledPlace[][];
+}
+
+export interface GetScheduleResponse {
+  recordsMap: Record[];
+  schedule: Schedule;
 }
 
 // POST : /schedules/write

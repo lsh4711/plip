@@ -7,10 +7,12 @@ import { Link, useParams } from 'react-router-dom';
 
 import SidePanel from '@/components/common/SidePanel';
 import { TripInfo, TripSchedule } from '@/components/schedule';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
 
 import RecordPanel from '@/components/page-components/plan-detail/RecordPanel';
+import instance from '@/queries/axiosinstance';
+import { useMapDetailContext } from '@/contexts/MapDetailProvider';
 
 interface PlanDetailPageProps {}
 
@@ -20,6 +22,24 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
   const { schedules } = useSelector((state: RootState) => state.schedule);
 
   const [mapLevel, setMapLevel] = useState(8);
+
+  const { setRecords, setScheduleInfo } = useMapDetailContext();
+
+  useEffect(() => {
+    instance.get(`/api/schedules/${id}`).then((res) => {
+      console.log(res.data);
+      const schedule = res.data.schedule;
+      const records = res.data.recordsMap;
+
+      if (records) {
+        setRecords(records);
+      }
+
+      if (schedule) {
+        setScheduleInfo(schedule);
+      }
+    });
+  }, []);
 
   return (
     <div className="relative h-full w-full">

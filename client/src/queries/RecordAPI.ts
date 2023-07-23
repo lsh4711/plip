@@ -37,13 +37,19 @@ export default class RecordAPI {
         throw Error('일지 작성에 실패하였습니다.');
       }
 
-      return this.#postImages(recordUrl, formData!)
-        .then((res) => {
-          if (res.status >= 400) {
-            throw Error('사진 전송에 실패하였습니다.');
-          }
-        })
-        .catch((e) => console.error(e));
+      console.log(formData);
+
+      if (formData) {
+        return this.#postImages(recordUrl, formData!)
+          .then((res) => {
+            if (res.status >= 400) {
+              throw Error('사진 전송에 실패하였습니다.');
+            }
+          })
+          .catch((e) => console.error(e));
+      }
+
+      return;
     });
   }
 
