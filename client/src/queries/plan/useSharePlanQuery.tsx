@@ -24,7 +24,6 @@ const useSharePlanQuery = ({ planId, userId, userEmail }: RequestShareProps) => 
     queryKey: ['/schedule/share', planId, userId, userEmail],
     queryFn: () =>
       getPlan({ planId, userId, userEmail }).then((data) => {
-        console.log(data);
         dispatch(setSchedule(data.places));
         return data;
       }),

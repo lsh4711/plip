@@ -5,8 +5,6 @@ import { useMapDetailContext } from '@/contexts/MapDetailProvider';
 const RecordPanel = () => {
   const { placeId, currentRecord, scheduleInfo } = useMapDetailContext();
 
-  console.log(scheduleInfo, currentRecord);
-
   return (
     <>
       {placeId !== 0 ? (

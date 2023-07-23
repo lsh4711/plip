@@ -49,13 +49,13 @@ const MapDetailProvider = ({ children }: Props) => {
   const [currentRecord, setCurrentRecord] = useState<Record>();
 
   useEffect(() => {
-    console.log(records);
     if (records && placeId > 0 && records[placeId][0]) {
       setCurrentRecord(records[placeId][0]);
     } else {
       setCurrentRecord(undefined);
+      setPlaceId(0);
     }
-  }, [placeId]);
+  }, []);
 
   return (
     <MapDetailContext.Provider

@@ -72,7 +72,7 @@ const PlanPage = ({}: PlanPageProps) => {
         navigate(`/plan/map/${parsePlanId(res.headers.location)}`);
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
       });
   };
 

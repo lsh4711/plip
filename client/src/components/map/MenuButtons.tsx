@@ -31,7 +31,7 @@ const MenuButtons = () => {
               primaryLabel={'이동하기'}
               secondaryLabel="취소"
               onClickPrimaryButton={() => {
-                navigate('/mypage');
+                navigate('/mypage/mytrip');
                 close();
               }}
               onClickSecondaryButton={close}
