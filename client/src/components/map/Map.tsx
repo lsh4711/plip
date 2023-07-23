@@ -46,7 +46,7 @@ const Map = ({
 
   const { setPlaceId } = useMapDetailContext();
 
-  const [onHandleOpen, onHandleClose] = useHoverTimer({});
+  const [onHandleOpen, onHandleClose] = useHoverTimer({ openDelay: 500, closeDelay: 300 });
 
   const hoverMarkerTimer = useRef(0);
 
