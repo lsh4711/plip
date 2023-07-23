@@ -15,12 +15,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Component
 public class MemberDetailsService implements UserDetailsService {
-	private final MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Member findMember = memberRepository.findByEmail(username)
-			.orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
-		return new MemberDetails(findMember);
-	}
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Member findMember = memberRepository.findByEmail(username)
+            .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
+        return new MemberDetails(findMember);
+    }
 }

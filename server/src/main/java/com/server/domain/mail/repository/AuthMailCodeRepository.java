@@ -9,5 +9,5 @@ import com.server.domain.mail.entity.AuthMailCode;
 
 @Repository
 public interface AuthMailCodeRepository extends CrudRepository<AuthMailCode, String> {
-	Optional<AuthMailCode> findByEmail(String email);
+    Optional<AuthMailCode> findByEmail(String email);
 }

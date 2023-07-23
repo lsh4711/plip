@@ -17,27 +17,27 @@ import com.server.global.exception.ExceptionCode;
 @RestController
 @RequestMapping("/logs")
 public class LogController {
-	@Value("${spring.servlet.multipart.location}")
-	private String location;
+    @Value("${spring.servlet.multipart.location}")
+    private String location;
 
-	@GetMapping
-	public ResponseEntity<StringBuilder> getLog() throws IOException { //리턴 타입 맞춰줌.
-		location = location.substring(0, 15);
-		location += "/spring.log";
+    @GetMapping
+    public ResponseEntity<StringBuilder> getLog() throws IOException { //리턴 타입 맞춰줌.
+        location = location.substring(0, 15);
+        location += "/spring.log";
 
-		File file = new File(location);
+        File file = new File(location);
 
-		if (!file.exists()) {
-			throw new CustomException(ExceptionCode.LOG_NOT_FOUND);
-		}
+        if (!file.exists()) {
+            throw new CustomException(ExceptionCode.LOG_NOT_FOUND);
+        }
 
-		StringBuilder result = new StringBuilder();
-		List<String> logs = FileUtils.readLines(file, "UTF-8");
+        StringBuilder result = new StringBuilder();
+        List<String> logs = FileUtils.readLines(file, "UTF-8");
 
-		for (String log : logs) {
-			result.append(log).append("<br />");
-		}
+        for (String log : logs) {
+            result.append(log).append("<br />");
+        }
 
-		return ResponseEntity.ok(result);
-	}
+        return ResponseEntity.ok(result);
+    }
 }

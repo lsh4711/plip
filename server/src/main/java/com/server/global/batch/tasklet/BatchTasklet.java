@@ -15,32 +15,32 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class BatchTasklet implements Tasklet, StepExecutionListener {
-	private int order;
+    private int order;
 
-	public BatchTasklet(int order) {
-		this.order = order;
-	}
+    public BatchTasklet(int order) {
+        this.order = order;
+    }
 
-	@Override
-	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-		LocalDateTime now = LocalDateTime.now().withNano(0);
-		String result = String.format("BatchTasklet%d: %s", order, now);
+    @Override
+    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+        LocalDateTime now = LocalDateTime.now().withNano(0);
+        String result = String.format("BatchTasklet%d: %s", order, now);
 
-		System.out.println(result);
+        System.out.println(result);
 
-		return RepeatStatus.FINISHED;
-	}
+        return RepeatStatus.FINISHED;
+    }
 
-	@Override
-	public void beforeStep(StepExecution stepExecution) {
-		System.out.println("----------------------------------------");
-	}
+    @Override
+    public void beforeStep(StepExecution stepExecution) {
+        System.out.println("----------------------------------------");
+    }
 
-	@Override
-	@Nullable
-	public ExitStatus afterStep(StepExecution stepExecution) {
-		System.out.println("----------------------------------------");
+    @Override
+    @Nullable
+    public ExitStatus afterStep(StepExecution stepExecution) {
+        System.out.println("----------------------------------------");
 
-		return ExitStatus.COMPLETED;
-	}
+        return ExitStatus.COMPLETED;
+    }
 }

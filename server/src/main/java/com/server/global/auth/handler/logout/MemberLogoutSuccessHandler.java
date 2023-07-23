@@ -10,9 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MemberLogoutSuccessHandler implements LogoutSuccessHandler {
-	@Override
-	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
-		Authentication authentication) {
-		log.info("### Authenticated logout successfully!");
-	}
+    @Override
+    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
+        Authentication authentication) {
+        log.info("### Authenticated logout successfully!");
+    }
 }

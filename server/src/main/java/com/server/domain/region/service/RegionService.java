@@ -12,13 +12,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class RegionService {
-	private final RegionRepository regionRepository;
+    private final RegionRepository regionRepository;
 
-	public Region saveRegion(Region region) {
-		return regionRepository.save(region);
-	}
+    public Region saveRegion(Region region) {
+        return regionRepository.save(region);
+    }
 
-	public List<Region> saveRegions(List<Region> regions) {
-		return regionRepository.saveAll(regions);
-	}
+    public List<Region> saveRegions(List<Region> regions) {
+        return regionRepository.saveAll(regions);
+    }
 }

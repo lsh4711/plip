@@ -11,11 +11,11 @@ import com.google.gson.JsonSerializer;
 
 // Gson에서 LocalDate, LocalDateTime을 원하는 포맷으로 직렬화
 public class LocalDateAdapter implements JsonSerializer<LocalDate> {
-	@Override
-	public JsonElement serialize(LocalDate date,
-		Type typeOfSrc,
-		JsonSerializationContext context) {
-		return new JsonPrimitive(date
-			.format(DateTimeFormatter.ISO_LOCAL_DATE)); // "yyyy-mm-dd"
-	}
+    @Override
+    public JsonElement serialize(LocalDate date,
+        Type typeOfSrc,
+        JsonSerializationContext context) {
+        return new JsonPrimitive(date
+            .format(DateTimeFormatter.ISO_LOCAL_DATE)); // "yyyy-mm-dd"
+    }
 }

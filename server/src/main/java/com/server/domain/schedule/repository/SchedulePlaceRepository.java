@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.server.domain.schedule.entity.SchedulePlace;
 
 public interface SchedulePlaceRepository extends JpaRepository<SchedulePlace, Long> {
-	List<SchedulePlace> findByPlacePlaceId(Long placeId);
+    List<SchedulePlace> findByPlacePlaceId(Long placeId);
 }

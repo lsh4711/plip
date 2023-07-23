@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.server.domain.record.entity.Record;
 
 public interface RecordRepository extends JpaRepository<Record, Long> {
-	Page<Record> findByMemberMemberId(Pageable pageable, Long memberId);
+    Page<Record> findByMemberMemberId(Pageable pageable, Long memberId);
 
-	boolean existsByRecordIdAndMember_MemberId(long recordId, long memberId);
+    boolean existsByRecordIdAndMember_MemberId(long recordId, long memberId);
 }

@@ -29,25 +29,25 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Schedule extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long scheduleId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long scheduleId;
 
-	private String title;
-	private Integer memberCount;
-	private LocalDate startDate;
-	private LocalDate endDate;
-	private Integer period;
+    private String title;
+    private Integer memberCount;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Integer period;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "memberId")
-	private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberId")
+    private Member member;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "regionId")
-	private Region region;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "regionId")
+    private Region region;
 
-	@OrderBy(value = "days, orders")
-	@OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
-	private List<SchedulePlace> schedulePlaces;
+    @OrderBy(value = "days, orders")
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
+    private List<SchedulePlace> schedulePlaces;
 }

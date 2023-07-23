@@ -21,14 +21,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Category {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long categoryId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long categoryId;
 
-	private String code;
+    private String code;
 
-	private String name;
+    private String name;
 
-	@OneToMany(mappedBy = "category")
-	private List<Place> places;
+    @OneToMany(mappedBy = "category")
+    private List<Place> places;
 }

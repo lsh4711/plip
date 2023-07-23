@@ -11,28 +11,28 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class OAuth2TokenUtils {
-	private final OAuth2AuthorizedClientService authorizedClientService;
+    private final OAuth2AuthorizedClientService authorizedClientService;
 
-	public OAuth2AuthorizedClient getOAuth2AuthorizedClient(Authentication authentication) {
-		OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken)authentication;
-		OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
-			oauthToken.getAuthorizedClientRegistrationId(),
-			oauthToken.getName()
-		);
-		return authorizedClient;
-	}
+    public OAuth2AuthorizedClient getOAuth2AuthorizedClient(Authentication authentication) {
+        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken)authentication;
+        OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
+            oauthToken.getAuthorizedClientRegistrationId(),
+            oauthToken.getName()
+        );
+        return authorizedClient;
+    }
 
-	public String getOAuthAccessToken(OAuth2AuthorizedClient authorizedClient) {
-		return authorizedClient.getAccessToken().getTokenValue();
-	}
+    public String getOAuthAccessToken(OAuth2AuthorizedClient authorizedClient) {
+        return authorizedClient.getAccessToken().getTokenValue();
+    }
 
-	public String getOAuthRefreshToken(OAuth2AuthorizedClient authorizedClient) {
-		if (authorizedClient.getRefreshToken() != null)
-			return authorizedClient.getRefreshToken().getTokenValue();
-		return null;
-	}
+    public String getOAuthRefreshToken(OAuth2AuthorizedClient authorizedClient) {
+        if (authorizedClient.getRefreshToken() != null)
+            return authorizedClient.getRefreshToken().getTokenValue();
+        return null;
+    }
 
-	public String getOAuthRegistration(OAuth2AuthorizedClient authorizedClient) {
-		return authorizedClient.getClientRegistration().getRegistrationId();
-	}
+    public String getOAuthRegistration(OAuth2AuthorizedClient authorizedClient) {
+        return authorizedClient.getClientRegistration().getRegistrationId();
+    }
 }

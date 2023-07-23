@@ -12,11 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MemberAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-	@Override
-	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-		Authentication authentication) {
-		Member member = (Member)authentication.getPrincipal();
-		log.info("### Authenticated successfully!");
-		log.info("### 로그인 정보 이메일: " + member.getEmail());
-	}
+    @Override
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+        Authentication authentication) {
+        Member member = (Member)authentication.getPrincipal();
+        log.info("### Authenticated successfully!");
+        log.info("### 로그인 정보 이메일: " + member.getEmail());
+    }
 }

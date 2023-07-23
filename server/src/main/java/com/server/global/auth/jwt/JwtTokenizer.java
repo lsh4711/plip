@@ -34,138 +34,138 @@ import lombok.Getter;
 
 @Component
 public class JwtTokenizer {
-	@Getter
-	@Value("${jwt.key.secret}")
-	private String secretKey;
+    @Getter
+    @Value("${jwt.key.secret}")
+    private String secretKey;
 
-	@Getter
-	@Value("${jwt.access-token-expiration-minutes}")
-	private int accessTokenExpirationMinutes;
+    @Getter
+    @Value("${jwt.access-token-expiration-minutes}")
+    private int accessTokenExpirationMinutes;
 
-	@Getter
-	@Value("${jwt.refresh-token-expiration-minutes}")
-	private int refreshTokenExpirationMinutes;
+    @Getter
+    @Value("${jwt.refresh-token-expiration-minutes}")
+    private int refreshTokenExpirationMinutes;
 
-	public String encodeBase64SecretKey(String secretKey) {
-		return Encoders.BASE64.encode(secretKey.getBytes(StandardCharsets.UTF_8));
-	}
+    public String encodeBase64SecretKey(String secretKey) {
+        return Encoders.BASE64.encode(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
 
-	public String generateAccessToken(Map<String, Object> claims,
-		String subject,
-		Date expiration,
-		String base64EncodedSecretKey) {
-		Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
+    public String generateAccessToken(Map<String, Object> claims,
+        String subject,
+        Date expiration,
+        String base64EncodedSecretKey) {
+        Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
 
-		return Jwts.builder()
-			.setClaims(claims)
-			.setSubject(subject)
-			.setIssuedAt(Calendar.getInstance().getTime())
-			.setExpiration(expiration)
-			.signWith(key)
-			.compact();
-	}
+        return Jwts.builder()
+            .setClaims(claims)
+            .setSubject(subject)
+            .setIssuedAt(Calendar.getInstance().getTime())
+            .setExpiration(expiration)
+            .signWith(key)
+            .compact();
+    }
 
-	public String generateRefreshToken(String subject, Date expiration, String base64EncodedSecretKey) {
-		Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
+    public String generateRefreshToken(String subject, Date expiration, String base64EncodedSecretKey) {
+        Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
 
-		return Jwts.builder()
-			.setSubject(subject)
-			.setIssuedAt(Calendar.getInstance().getTime())
-			.setExpiration(expiration)
-			.signWith(key)
-			.compact();
-	}
+        return Jwts.builder()
+            .setSubject(subject)
+            .setIssuedAt(Calendar.getInstance().getTime())
+            .setExpiration(expiration)
+            .signWith(key)
+            .compact();
+    }
 
-	public Jws<Claims> getClaims(String jws, String base64EncodedSecretKey) {
-		Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
-		try {
-			Jws<Claims> claims = Jwts.parserBuilder()
-				.setSigningKey(key)
-				.build()
-				.parseClaimsJws(jws);
-			return claims;
-		} catch (ExpiredJwtException eje) {
-			throw eje;
-		}
+    public Jws<Claims> getClaims(String jws, String base64EncodedSecretKey) {
+        Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
+        try {
+            Jws<Claims> claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(jws);
+            return claims;
+        } catch (ExpiredJwtException eje) {
+            throw eje;
+        }
 
-	}
+    }
 
-	public Date getTokenExpiration(int expirationMinutes) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MINUTE, expirationMinutes);
-		Date expiration = calendar.getTime();
+    public Date getTokenExpiration(int expirationMinutes) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, expirationMinutes);
+        Date expiration = calendar.getTime();
 
-		return expiration;
-	}
+        return expiration;
+    }
 
-	private Key getKeyFromBase64EncodedKey(String base64EncodedSecretKey) {
-		byte[] keyBytes = Decoders.BASE64.decode(base64EncodedSecretKey);
-		Key key = Keys.hmacShaKeyFor(keyBytes);
+    private Key getKeyFromBase64EncodedKey(String base64EncodedSecretKey) {
+        byte[] keyBytes = Decoders.BASE64.decode(base64EncodedSecretKey);
+        Key key = Keys.hmacShaKeyFor(keyBytes);
 
-		return key;
-	}
+        return key;
+    }
 
-	public String getHeaderAccessToken(HttpServletRequest request) {
-		return request.getHeader("Authorization").replace("Bearer ", "");
-	}
+    public String getHeaderAccessToken(HttpServletRequest request) {
+        return request.getHeader("Authorization").replace("Bearer ", "");
+    }
 
-	public String getHeaderRefreshToken(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-		if (cookies == null)
-			throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
-		for (Cookie cookie : cookies) {
-			if (cookie.getName().equals("Refresh"))
-				return cookie.getValue();
-		}
-		throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
+    public String getHeaderRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null)
+            throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("Refresh"))
+                return cookie.getValue();
+        }
+        throw new CustomException(ExceptionCode.REFRESH_TOKEN_NOT_FOUND);
         /*return Arrays.stream(request.getCookies())
             .filter(cookie -> cookie.getName().equals("Refresh"))
             .findFirst()
             .orElseThrow(() -> new CustomException(
                 ExceptionCode.REFRESH_TOKEN_NOT_FOUND))
             .getValue();*/
-	}
+    }
 
-	public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
-		response.setHeader("Authorization", "Bearer " + accessToken);
-	}
+    public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
+        response.setHeader("Authorization", "Bearer " + accessToken);
+    }
 
-	public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
-		ResponseCookie cookie = ResponseCookie.from("Refresh", refreshToken)
-			.maxAge(60 * 60 * 24 * 3)
-			.secure(true)
-			.sameSite("None")
-			.path("/")
-			.httpOnly(true)
-			.build();
-		response.setHeader("Set-Cookie", cookie.toString());
-	}
+    public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
+        ResponseCookie cookie = ResponseCookie.from("Refresh", refreshToken)
+            .maxAge(60 * 60 * 24 * 3)
+            .secure(true)
+            .sameSite("None")
+            .path("/")
+            .httpOnly(true)
+            .build();
+        response.setHeader("Set-Cookie", cookie.toString());
+    }
 
-	public void resetHeaderRefreshToken(HttpServletResponse response) {
-		ResponseCookie cookie = ResponseCookie.from("Refresh", null)
-			.maxAge(0)
-			.secure(true)
-			.sameSite("None")
-			.path("/")
-			.httpOnly(true)
-			.build();
-		response.setHeader("Set-Cookie", cookie.toString());
-	}
+    public void resetHeaderRefreshToken(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from("Refresh", null)
+            .maxAge(0)
+            .secure(true)
+            .sameSite("None")
+            .path("/")
+            .httpOnly(true)
+            .build();
+        response.setHeader("Set-Cookie", cookie.toString());
+    }
 
-	public Map<String, Object> verifyJws(String jws) {
-		String base64EncodedSecretKey = encodeBase64SecretKey(getSecretKey());
-		Map<String, Object> claims = getClaims(jws, base64EncodedSecretKey).getBody();
+    public Map<String, Object> verifyJws(String jws) {
+        String base64EncodedSecretKey = encodeBase64SecretKey(getSecretKey());
+        Map<String, Object> claims = getClaims(jws, base64EncodedSecretKey).getBody();
 
-		return claims;
-	}
+        return claims;
+    }
 
-	public void setAuthenticationToContext(Map<String, Object> claims) {
-		List<String> roles = (List)claims.get("roles");
-		List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(roles.toArray(String[]::new));
-		Authentication authentication = new UsernamePasswordAuthenticationToken(
-			claims.get("email"),
-			claims.get("memberId"),
-			authorities);
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-	}
+    public void setAuthenticationToContext(Map<String, Object> claims) {
+        List<String> roles = (List)claims.get("roles");
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(roles.toArray(String[]::new));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+            claims.get("email"),
+            claims.get("memberId"),
+            authorities);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 }

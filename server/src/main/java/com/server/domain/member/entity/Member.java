@@ -30,60 +30,60 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 public class Member extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long memberId;
-	@Column(nullable = false)
-	private String email;
-	@Column
-	private String password;
-	@Column(nullable = false)
-	private String nickname;
-	@Enumerated(value = EnumType.STRING)
-	@Column(length = 32, columnDefinition = "varchar(32) default 'ROLE_USER'")
-	private Role role = Role.USER;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long memberId;
+    @Column(nullable = false)
+    private String email;
+    @Column
+    private String password;
+    @Column(nullable = false)
+    private String nickname;
+    @Enumerated(value = EnumType.STRING)
+    @Column(length = 32, columnDefinition = "varchar(32) default 'ROLE_USER'")
+    private Role role = Role.USER;
 
-	// 전이 용도
-	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-	private List<Schedule> schedules;
+    // 전이 용도
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Schedule> schedules;
 
-	// 전이 용도, 작동하는지 확인 필요
-	@OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
-	private KakaoToken kakaoToken;
+    // 전이 용도, 작동하는지 확인 필요
+    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private KakaoToken kakaoToken;
 
-	// 여행일지와 연관관계 설정
-	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-	private List<Record> records;
+    // 여행일지와 연관관계 설정
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Record> records;
 
-	@Builder
-	public Member(Long memberId, String email, String password, String nickname) {
-		this.memberId = memberId;
-		this.email = email;
-		this.password = password;
-		this.nickname = nickname;
-	}
+    @Builder
+    public Member(Long memberId, String email, String password, String nickname) {
+        this.memberId = memberId;
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
-	public void setRole(Role role) {
-		this.role = role;
-	}
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
-	@Getter
-	public enum Role {
-		ADMIN("ROLE_ADMIN", "ROLE_USER"), USER("ROLE_USER"), SOCIAL("ROLE_USER");
-		// SOCIAL("ROLE_USER", "ROLE_SOCIAL");
+    @Getter
+    public enum Role {
+        ADMIN("ROLE_ADMIN", "ROLE_USER"), USER("ROLE_USER"), SOCIAL("ROLE_USER");
+        // SOCIAL("ROLE_USER", "ROLE_SOCIAL");
 
-		private final String[] roles;
+        private final String[] roles;
 
-		Role(String... roles) {
-			this.roles = roles;
-		}
-	}
+        Role(String... roles) {
+            this.roles = roles;
+        }
+    }
 }

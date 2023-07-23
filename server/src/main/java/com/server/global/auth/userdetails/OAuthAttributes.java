@@ -22,51 +22,51 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 public class OAuthAttributes implements OAuth2User {
 
-	private Map<String, Object> attributes;
-	private String email;
-	private String nickname;
-	private Member.Role role;
+    private Map<String, Object> attributes;
+    private String email;
+    private String nickname;
+    private Member.Role role;
 
-	public static OAuthAttributes of(String registrationId, Map<String, Object> attributes) {
-		if (registrationId.equals("naver")) {
-			return ofNaver(attributes);
-		}
-		return ofKakao(attributes);
-	}
+    public static OAuthAttributes of(String registrationId, Map<String, Object> attributes) {
+        if (registrationId.equals("naver")) {
+            return ofNaver(attributes);
+        }
+        return ofKakao(attributes);
+    }
 
-	private static OAuthAttributes ofNaver(Map<String, Object> attributes) {
-		Map<String, Object> response = (Map<String, Object>)attributes.get("response");
+    private static OAuthAttributes ofNaver(Map<String, Object> attributes) {
+        Map<String, Object> response = (Map<String, Object>)attributes.get("response");
 
-		log.info("naver response : " + response);
+        log.info("naver response : " + response);
 
-		return OAuthAttributes.builder()
-			.email((String)response.get("email"))
-			.nickname((String)response.get("nickname"))
-			.attributes(attributes)
-			.build();
-	}
+        return OAuthAttributes.builder()
+            .email((String)response.get("email"))
+            .nickname((String)response.get("nickname"))
+            .attributes(attributes)
+            .build();
+    }
 
-	private static OAuthAttributes ofKakao(Map<String, Object> attributes) {
-		Map<String, Object> response = (Map<String, Object>)attributes.get("kakao_account");
-		Map<String, Object> profile = (Map<String, Object>)response.get("profile");
-		log.info("kakao response : " + response);
-		return OAuthAttributes.builder()
-			.email((String)response.get("email"))
-			.nickname((String)profile.get("nickname"))
-			.attributes(attributes)
-			.build();
-	}
+    private static OAuthAttributes ofKakao(Map<String, Object> attributes) {
+        Map<String, Object> response = (Map<String, Object>)attributes.get("kakao_account");
+        Map<String, Object> profile = (Map<String, Object>)response.get("profile");
+        log.info("kakao response : " + response);
+        return OAuthAttributes.builder()
+            .email((String)response.get("email"))
+            .nickname((String)profile.get("nickname"))
+            .attributes(attributes)
+            .build();
+    }
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Collection<GrantedAuthority> collectors = new ArrayList<>();
-		collectors.add(() -> "ROLE_" + getRole());
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> collectors = new ArrayList<>();
+        collectors.add(() -> "ROLE_" + getRole());
 
-		return collectors;
-	}
+        return collectors;
+    }
 
-	@Override
-	public String getName() {
-		return email;
-	}
+    @Override
+    public String getName() {
+        return email;
+    }
 }

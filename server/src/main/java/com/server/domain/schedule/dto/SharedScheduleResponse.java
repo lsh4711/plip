@@ -11,6 +11,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class SharedScheduleResponse {
-	private ScheduleResponse schedule;
-	private Map<Long, List<RecordDto.Response>> recordsMap;
+    private ScheduleResponse schedule;
+    private Map<Long, List<RecordDto.Response>> recordsMap;
 }

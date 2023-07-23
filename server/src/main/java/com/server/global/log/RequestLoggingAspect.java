@@ -23,48 +23,48 @@ import lombok.extern.slf4j.Slf4j;
 @Aspect
 @Slf4j
 public class RequestLoggingAspect {
-	private static final Logger logger = LogManager.getLogger(RequestLoggingAspect.class);
+    private static final Logger logger = LogManager.getLogger(RequestLoggingAspect.class);
 
-	@Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
-	public void restControllerClassMethods() {
-	}
+    @Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
+    public void restControllerClassMethods() {
+    }
 
-	@Before("restControllerClassMethods()")
-	public void logRequestBody(JoinPoint joinPoint) {
-		ServletRequestAttributes attributes = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
+    @Before("restControllerClassMethods()")
+    public void logRequestBody(JoinPoint joinPoint) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
 
-		if (attributes != null) {
-			HttpServletRequest request = attributes.getRequest();
+        if (attributes != null) {
+            HttpServletRequest request = attributes.getRequest();
 
-			// URL
-			String url = request.getRequestURL().toString();
+            // URL
+            String url = request.getRequestURL().toString();
 
-			// Header
-			Enumeration<String> headerNames = request.getHeaderNames();
-			Map<String, String> headers = new HashMap<>();
-			while (headerNames.hasMoreElements()) {
-				String headerName = headerNames.nextElement();
-				String headerValue = request.getHeader(headerName);
-				headers.put(headerName, headerValue);
-			}
+            // Header
+            Enumeration<String> headerNames = request.getHeaderNames();
+            Map<String, String> headers = new HashMap<>();
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement();
+                String headerValue = request.getHeader(headerName);
+                headers.put(headerName, headerValue);
+            }
 
-			Object[] args = joinPoint.getArgs();
+            Object[] args = joinPoint.getArgs();
 
-			if (args.length > 0) {
-				Object requestBody = args[0];
-				ObjectMapper objectMapper = new ObjectMapper();
-				try {
-					String requestBodyJson = objectMapper.writeValueAsString(requestBody);
-					logger.debug("URL: {}", url);
-					logger.debug("Headers: {}", headers);
-					logger.debug("Request body: {}", requestBodyJson);
-				} catch (JsonProcessingException e) {
-					logger.error("Failed to convert request body to JSON", e);
-				}
-			}
-		} else {
-			log.error("Request context is not available");
-		}
+            if (args.length > 0) {
+                Object requestBody = args[0];
+                ObjectMapper objectMapper = new ObjectMapper();
+                try {
+                    String requestBodyJson = objectMapper.writeValueAsString(requestBody);
+                    logger.debug("URL: {}", url);
+                    logger.debug("Headers: {}", headers);
+                    logger.debug("Request body: {}", requestBodyJson);
+                } catch (JsonProcessingException e) {
+                    logger.error("Failed to convert request body to JSON", e);
+                }
+            }
+        } else {
+            log.error("Request context is not available");
+        }
 
-	}
+    }
 }

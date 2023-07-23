@@ -14,39 +14,39 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class ScheduleDto {
-	@Getter
-	@Setter
-	public static class Post {
-		private String title; // optional, default: "{region} 여행 레츠고!"
-		private int memberCount; // optional, default: 1
+    @Getter
+    @Setter
+    public static class Post {
+        private String title; // optional, default: "{region} 여행 레츠고!"
+        private int memberCount; // optional, default: 1
 
-		@NotBlank
-		private String region;
+        @NotBlank
+        private String region;
 
-		@DateValid
-		private LocalDate startDate;
+        @DateValid
+        private LocalDate startDate;
 
-		@DateValid
-		private LocalDate endDate;
+        @DateValid
+        private LocalDate endDate;
 
-		// @NotNull
-		// @Size(min = 1)
-		private List<List<PlaceDto.@Valid Post>> places;
-	}
+        // @NotNull
+        // @Size(min = 1)
+        private List<List<PlaceDto.@Valid Post>> places;
+    }
 
-	@Getter
-	@Setter
-	public static class Patch {
-		private String title;
-		private Integer memberCount;
-		private String region;
+    @Getter
+    @Setter
+    public static class Patch {
+        private String title;
+        private Integer memberCount;
+        private String region;
 
-		@OptionalDateValid
-		private LocalDate startDate;
+        @OptionalDateValid
+        private LocalDate startDate;
 
-		@OptionalDateValid
-		private LocalDate endDate;
+        @OptionalDateValid
+        private LocalDate endDate;
 
-		private List<List<PlaceDto.@Valid Post>> places;
-	}
+        private List<List<PlaceDto.@Valid Post>> places;
+    }
 }

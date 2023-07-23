@@ -16,10 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class MemberAuthenticationEntryPoint implements AuthenticationEntryPoint {
-	@Override
-	public void commence(HttpServletRequest request, HttpServletResponse response,
-		AuthenticationException authException) throws IOException {
-		log.error("### MemberAuthenticationEntryPoint Error!! : " + authException.getMessage());
-		AuthenticationError.sendErrorResponse(response, authException);
-	}
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+        AuthenticationException authException) throws IOException {
+        log.error("### MemberAuthenticationEntryPoint Error!! : " + authException.getMessage());
+        AuthenticationError.sendErrorResponse(response, authException);
+    }
 }

@@ -14,9 +14,9 @@ import javax.validation.Payload;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface OptionalDateValid {
-	String message() default "날짜 형식이 올바르지 않습니다.";
+    String message() default "날짜 형식이 올바르지 않습니다.";
 
-	Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-	Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 }
