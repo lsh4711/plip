@@ -44,7 +44,7 @@ public class ChunkConfig {
     private final EntityManagerFactory entityManagerFactory;
     private final CustomJobParameter customJobParameter;
 
-    private final KakaoApiService kakaoAuth;
+    private final KakaoApiService kakaoApiService;
     private final KakaoTemplateConstructor kakaoTemplateConstructor;
 
     // @Bean(JOB_NAME + "Parameter")
@@ -116,7 +116,7 @@ public class ChunkConfig {
             String accessToken = kakaoToken.getAccessToken();
             Text textTemplate = kakaoTemplateConstructor.getScheduledTemplate(member, schedule, hour);
 
-            kakaoAuth.sendMessage(textTemplate, accessToken);
+            kakaoApiService.sendMessage(textTemplate, accessToken);
 
             return schedule;
         };
