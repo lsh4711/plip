@@ -2,7 +2,7 @@ import useEmailValidation from '@/hooks/useEmailValidation';
 import { useEmailRequestMutation, useEmailValidationMutation, useSignupMutation } from '@/queries';
 import { SignupType, signupSchema } from '@/schema/signupSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react';
+import React, { useRef } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Paragraph from '../atom/Paragraph';
 import Button from '../atom/Button';
@@ -14,6 +14,7 @@ const SignupForm = () => {
   const emailRequestMutation = useEmailRequestMutation('signup');
   const emailValidationMutation = useEmailValidationMutation();
   const signupMutation = useSignupMutation();
+  const requestRef = useRef<boolean>(false);
 
   const [isNicknameValid, setIsNicknameValid] = React.useState({
     isSuccess: true,
@@ -47,8 +48,9 @@ const SignupForm = () => {
     if (signupForm.getValues('email') === '') return;
     if (emailRequestMutation.status === 'loading') return;
     if (emailRequestMutation.status === 'success') return;
+    if (requestRef.current) return;
+    requestRef.current = true;
 
-    console.log(emailRequestMutation.status);
     emailRequestMutation
       .mutateAsync(signupForm.getValues('email'))
       .then((res) => {
@@ -82,6 +84,7 @@ const SignupForm = () => {
 
   const resetMutateEmailRequestStatus = useDebounce(() => {
     emailRequestMutation.reset();
+    requestRef.current = false;
   }, 2000);
 
   const resetAuthNumberStatus = useDebounce(() => {
