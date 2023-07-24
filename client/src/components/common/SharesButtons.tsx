@@ -15,14 +15,11 @@ const SharesButtons = ({ scheduleId }: { scheduleId: number }) => {
   useEffect(() => {
     const getHashedShareLink = async () => {
       await instance.get(`/api/schedules/${scheduleId}/share/link `).then((res) => {
-        console.log(res.data);
         setShareLink(res.data);
       });
     };
 
     getHashedShareLink();
-
-    // 이후 배포주소로 변경 필요
   }, []);
 
   return (

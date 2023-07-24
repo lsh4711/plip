@@ -45,25 +45,25 @@ const useLoginMutation = () => {
       inquireQuery.refetch().then(() => inquireQuery.refetch());
       dispatchAccesstoken({ accesstoken: data.ACCESS_TOKEN });
 
-      getToken(messaging, {
-        vapidKey: import.meta.env.VITE_FB_VAPID_KEY,
-      })
-        .then((token) => {
-          if (token) {
-            instance
-              .post('/api/pushs/write', {
-                pushToken: token,
-              })
-              .then((res) => {
-                console.log(res);
-              });
-          } else {
-            console.log('No registration token available. Request permission to generate one.');
-          }
-        })
-        .catch((err) => {
-          console.log('An error occurred while retrieving token. ', err);
-        });
+      // getToken(messaging, {
+      //   vapidKey: import.meta.env.VITE_FB_VAPID_KEY,
+      // })
+      //   .then((token) => {
+      //     if (token) {
+      //       instance
+      //         .post('/api/pushs/write', {
+      //           pushToken: token,
+      //         })
+      //         .then((res) => {
+      //           console.log(res);
+      //         });
+      //     } else {
+      //       console.log('No registration token available. Request permission to generate one.');
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log('An error occurred while retrieving token. ', err);
+      //   });
       toast({
         content: '로그인에 성공했습니다.',
         type: 'success',

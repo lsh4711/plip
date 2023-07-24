@@ -3,32 +3,41 @@ import Button from '../../atom/Button';
 import Paragraph from '../../atom/Paragraph';
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-circle.svg';
 import WriteModal from '../../common/modals/WriteModal';
-import { Schedule } from '@/types/api/schedules-types';
-import { getPlaceNameScheduleInfo } from '@/utils';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { useEffect } from 'react';
 
 type Props = {
-  id: number;
-  scheduleInfo: Schedule;
-  placeName?: string;
+  refetch: () => void;
 };
 
-const NoRecord = ({ id, scheduleInfo }: Props) => {
+const NoRecord = ({ refetch }: Props) => {
+  const { selectedPlace } = useSelector((state: RootState) => state.place);
+
+  const { schedulePlaceId, name } = selectedPlace!; // null이 될 경우?
+
   const [openModal] = useModal();
 
   const onClickHandler = () => {
     openModal(({ isOpen, close }) => (
-      <WriteModal id={id} type={'default'} isOpen={isOpen} onClose={close} />
+      <WriteModal
+        id={Number(schedulePlaceId)}
+        type={'default'}
+        isOpen={isOpen}
+        onClose={close}
+        recordRefetch={refetch}
+      />
     ));
   };
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center p-4">
       <Paragraph className="lg:text-md text-center text-sm xl:text-lg">
-        현재{' '}
-        <span className=" font-semibold text-[#3458DC]">
-          {scheduleInfo.places ? getPlaceNameScheduleInfo(id, scheduleInfo) : ''}
-        </span>
-        에 작성된 일지가 없어요😥
+        현재 <span className=" font-semibold text-[#3458DC]">{name}</span>에 작성된 일지가 없어요😥
       </Paragraph>
       <Button variant={'default'} hovercolor={'default'} onClick={onClickHandler}>
         <PlusIcon />

@@ -13,35 +13,24 @@ import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
 import RecordPanel from '@/components/page-components/plan-detail/RecordPanel';
 import instance from '@/queries/axiosinstance';
 import { useMapDetailContext } from '@/contexts/MapDetailProvider';
+import useGetRecords from '@/queries/record/useGetRecords';
 
 interface PlanDetailPageProps {}
 
 const PlanDetailPage = ({}: PlanDetailPageProps) => {
   const { id } = useParams();
-  const { data, isLoading, error } = usePlanQuery(id!);
+  // const { data, isLoading, error } = usePlanQuery(id!);
   const { schedules } = useSelector((state: RootState) => state.schedule);
+  const { selectedPlace } = useSelector((state: RootState) => state.place);
+  const { data, isLoading, error, refetch } = useGetRecords(id!);
 
   const [mapLevel, setMapLevel] = useState(8);
 
-  const { setRecords, setScheduleInfo, setPlaceId } = useMapDetailContext();
+  const { setScheduleInfo } = useMapDetailContext();
 
   useEffect(() => {
-    instance.get(`/api/schedules/${id}`).then((res) => {
-      const schedule = res.data.schedule;
-      const records = res.data.recordsMap;
-
-      console.log(records);
-
-      if (records) {
-        setRecords(records);
-      }
-
-      if (schedule) {
-        setScheduleInfo(schedule);
-      }
-
-      setPlaceId(-1);
-    });
+    setScheduleInfo(data!);
+    refetch();
   }, []);
 
   return (
@@ -62,7 +51,7 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
             showPolyline
           />
           <MenuButtons />
-          <RecordPanel />
+          {selectedPlace && <RecordPanel refetch={refetch} />}
 
           <SidePanel position={'right'}>
             <TripInfo

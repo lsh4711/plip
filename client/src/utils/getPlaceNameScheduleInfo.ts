@@ -1,7 +1,6 @@
 import { Schedule } from '@/types/api/schedules-types';
 
 const getPlacNameScheduleInfo = (placeId: number, scheduleInfo: Schedule) => {
-  console.log(scheduleInfo);
   const days = scheduleInfo.places.length;
 
   if (placeId > -1 && days > 0) {

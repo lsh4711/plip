@@ -10,13 +10,19 @@ import useModal from '@/hooks/useModal';
 import Confirm from '../Confirm';
 import useCreateRecordMutation from '@/queries/record/useCreateRecordMutation';
 import LoadingSpinner from '../../atom/LoadingSpinner';
+import useUpdateRecordMutation from '@/queries/record/useUpdateRecordMutation';
+import instance from '@/queries/axiosinstance';
+import useGetRecords from '@/queries/record/useGetRecords';
 
 export type WriteModal = {
-  id: number;
+  id: number; // schedule-place-id, record-id
   type: 'default' | 'edit';
   content?: string;
   isOpen: boolean;
   onClose: () => void;
+  imgs?: string[];
+  recordRefetch?: () => void;
+  imageRefetch?: () => void;
 };
 
 type CancelAlertProps = {
@@ -25,16 +31,25 @@ type CancelAlertProps = {
   onCloseParent: () => void;
 };
 
-const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
+const WriteModal = ({
+  type = 'default',
+  id,
+  isOpen,
+  onClose,
+  content,
+  imgs,
+  recordRefetch,
+  imageRefetch,
+}: WriteModal) => {
   const [openModal] = useModal();
-  const createRecordMutation = useCreateRecordMutation();
-  const SCHEDULE_PLACE_ID = id; // 테스트를 위한 임시 변수입니다. 요청 주소의 param으로 사용됩니다.
+
+  const recordMutation = type === 'default' ? useCreateRecordMutation() : useUpdateRecordMutation();
 
   const inputImageRef = useRef<HTMLInputElement>(document.createElement('input'));
 
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  const [preViewImgSrcs, setPreViewImgSrcs] = useState<string[]>([]);
-  const [text, setText] = useState('');
+  const [preViewImgSrcs, setPreViewImgSrcs] = useState<string[]>(imgs ? imgs : []);
+  const [text, setText] = useState(content ? content : '');
 
   const onInputText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputText = e.target.value;
@@ -79,6 +94,13 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
       files = Array.from([...imgFiles]);
     }
 
+    // 이미 파일이 추가되어 있을 경우 추가적으로 파일에 formData를 병합
+    if (uploadedImages.length > 0) {
+      files = Array.from([...uploadedImages, ...imgFiles]);
+    } else {
+      files = Array.from([...imgFiles]);
+    }
+
     // 업로드 이미지 미리보기
     let relativeImageUrls: string[] = []; // 상대 경로 이미지들을 저장
 
@@ -90,7 +112,14 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
     }
 
     setUploadedImages(resizedImages);
-    setPreViewImgSrcs(relativeImageUrls);
+
+    if (preViewImgSrcs.length > 0) {
+      const merged = preViewImgSrcs.concat(relativeImageUrls);
+      console.log(merged);
+      setPreViewImgSrcs(merged);
+    } else {
+      setPreViewImgSrcs(relativeImageUrls);
+    }
   };
 
   const onDeleteUploadedImage = (targetIndex: number) => {
@@ -99,6 +128,15 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
 
     setPreViewImgSrcs(filtered);
     setUploadedImages(filteredUploadedImages);
+
+    if (type === 'edit') {
+      const index = preViewImgSrcs[targetIndex].slice(-1);
+
+      instance
+        .delete(`/api/records/${id}/img/${index}`)
+        .then((res) => console.log(`deleted successed! ${res}`))
+        .catch((e) => console.error(e));
+    }
   };
 
   const onSubmitRecord = async () => {
@@ -117,9 +155,17 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
       }
     }
 
-    createRecordMutation
-      .mutateAsync({ param: SCHEDULE_PLACE_ID, content: text, formData: formData })
-      .then((res) => onClose());
+    recordMutation.mutateAsync({ param: id, content: text, formData: formData }).then((res) => {
+      console.log(`${type} img ${id}`);
+      if (recordRefetch && imageRefetch) {
+        recordRefetch();
+        imageRefetch();
+      } else if (recordRefetch) {
+        recordRefetch();
+      }
+
+      onClose();
+    });
   };
 
   return (
@@ -182,7 +228,7 @@ const WriteModal = ({ type, id, isOpen, onClose }: WriteModal) => {
             className="text-xs md:text-base"
             onClick={onSubmitRecord}
           >
-            {createRecordMutation.status === 'loading' ? <LoadingSpinner /> : null}
+            {recordMutation.status === 'loading' ? <LoadingSpinner /> : null}
             <span>완료</span>
           </Button>
           <Button

@@ -44,7 +44,7 @@ export interface Schedule {
 }
 
 export interface GetScheduleResponse {
-  recordsMap: Record[];
+  recordsMap: Record[][];
   schedule: Schedule;
 }
 
