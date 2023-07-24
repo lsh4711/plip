@@ -8,6 +8,7 @@ import Paragraph from '../atom/Paragraph';
 import Button from '../atom/Button';
 import LoadingSpinner from '../atom/LoadingSpinner';
 import Input from '../atom/Input';
+import useDebounce from '@/hooks/useDebounce';
 
 const SignupForm = () => {
   const emailRequestMutation = useEmailRequestMutation('signup');
@@ -45,7 +46,9 @@ const SignupForm = () => {
     if (signupForm.formState.errors.email?.message !== undefined) return;
     if (signupForm.getValues('email') === '') return;
     if (emailRequestMutation.status === 'loading') return;
+    if (emailRequestMutation.status === 'success') return;
 
+    console.log(emailRequestMutation.status);
     emailRequestMutation
       .mutateAsync(signupForm.getValues('email'))
       .then((res) => {
@@ -60,6 +63,7 @@ const SignupForm = () => {
     if (signupForm.getValues('authnumber') === '') return;
     if (signupForm.getValues('authnumber') === undefined) return;
     if (emailValidationMutation.status === 'loading') return;
+    if (emailValidationMutation.status === 'success') return;
 
     emailValidationMutation
       .mutateAsync({
@@ -76,6 +80,11 @@ const SignupForm = () => {
       });
   };
 
+  const resetMutateStatus = useDebounce(() => {
+    emailRequestMutation.reset();
+  }, 2000);
+
+  console.log(emailRequestMutation.status);
   return (
     <form className=" flex w-[460px] flex-col gap-y-6" onSubmit={signupForm.handleSubmit(onSubmit)}>
       <div className="">
@@ -83,7 +92,9 @@ const SignupForm = () => {
           <Input
             placeholder="이메일을 입력해 주세요."
             className=" flex-grow"
-            {...signupForm.register('email')}
+            {...signupForm.register('email', {
+              onChange: resetMutateStatus,
+            })}
           />
           <Button
             variant={'primary'}
