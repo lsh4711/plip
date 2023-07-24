@@ -26,7 +26,6 @@ export default class ScheduleAPI {
   };
 
   onUpdateScheduleTitle = async ({ id, title }: EditTitleProps) => {
-    console.log(title);
     return this.#updateScheduleTitle(id, title);
   };
 }

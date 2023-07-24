@@ -115,7 +115,6 @@ const WriteModal = ({
 
     if (preViewImgSrcs.length > 0) {
       const merged = preViewImgSrcs.concat(relativeImageUrls);
-      console.log(merged);
       setPreViewImgSrcs(merged);
     } else {
       setPreViewImgSrcs(relativeImageUrls);
@@ -134,7 +133,7 @@ const WriteModal = ({
 
       instance
         .delete(`/api/records/${id}/img/${index}`)
-        .then((res) => console.log(`deleted successed! ${res}`))
+        .then((res) => res)
         .catch((e) => console.error(e));
     }
   };
@@ -227,6 +226,7 @@ const WriteModal = ({
             variant={'primary'}
             className="text-xs md:text-base"
             onClick={onSubmitRecord}
+            disabled={recordMutation.status === 'loading'}
           >
             {recordMutation.status === 'loading' ? <LoadingSpinner /> : null}
             <span>완료</span>

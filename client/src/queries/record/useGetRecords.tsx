@@ -16,7 +16,6 @@ const useGetRecords = (scheduleId: string) => {
     queryKey: ['/records', scheduleId],
     queryFn: () =>
       getRecordMap(scheduleId).then((data) => {
-        console.log(data);
         dispatch(setRecords(data.recordsMap));
         dispatch(setSchedule(data.schedule.places));
         return data.schedule;

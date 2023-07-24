@@ -47,28 +47,25 @@ const Map = ({
   const { searchPlaceResults, selectedPlace } = useSelector((state: RootState) => state.place);
   const dispatch = useDispatch();
 
-  const { setPlaceId } = useMapDetailContext();
-
   const [onHandleOpen, onHandleClose] = useHoverTimer({ openDelay: 500, closeDelay: 300 });
 
   const hoverMarkerTimer = useRef(0);
 
-  const onHoverMarker = (place: ScheduledPlaceBase) => {
-    if (type === 'recording') {
-      hoverMarkerTimer.current = window.setTimeout(() => {
-        onHandleOpen(() => dispatch(setSelectedPlace(place)));
-        setPlaceId(place.schedulePlaceId!);
-        console.log(`hovered place id : ${place.schedulePlaceId}`);
-      }, 100);
-    }
-  };
+  // const onHoverMarker = (place: ScheduledPlaceBase) => {
+  //   if (type === 'recording') {
+  //     hoverMarkerTimer.current = window.setTimeout(() => {
+  //       onHandleOpen(() => dispatch(setSelectedPlace(place)));
+  //       setPlaceId(place.schedulePlaceId!);
+  //     }, 100);
+  //   }
+  // };
 
-  const onHoverOutHandler = () => {
-    if (type === 'recording') {
-      clearTimeout(hoverMarkerTimer.current);
-      onHandleClose(() => dispatch(setSelectedPlace(null)));
-    }
-  };
+  // const onHoverOutHandler = () => {
+  //   if (type === 'recording') {
+  //     clearTimeout(hoverMarkerTimer.current);
+  //     onHandleClose(() => dispatch(setSelectedPlace(null)));
+  //   }
+  // };
 
   useEffect(() => {
     if (setCenterPosition && selectedPlace) {
@@ -123,8 +120,6 @@ const Map = ({
               }}
               onClick={() => {
                 dispatch(setSelectedPlace(place));
-                console.log(place.schedulePlaceId);
-                setPlaceId(place.schedulePlaceId!);
               }}
               // onMouseOver={() => onHoverMarker(place)}
               // onMouseOut={() => onHoverOutHandler()}
