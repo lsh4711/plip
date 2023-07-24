@@ -2,7 +2,7 @@ import useEmailValidation from '@/hooks/useEmailValidation';
 import { useEmailRequestMutation, useEmailValidationMutation, useSignupMutation } from '@/queries';
 import { SignupType, signupSchema } from '@/schema/signupSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useRef } from 'react';
+import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Paragraph from '../atom/Paragraph';
 import Button from '../atom/Button';
@@ -10,11 +10,12 @@ import LoadingSpinner from '../atom/LoadingSpinner';
 import Input from '../atom/Input';
 import useDebounce from '@/hooks/useDebounce';
 
+let requestRef = false;
+
 const SignupForm = () => {
   const emailRequestMutation = useEmailRequestMutation('signup');
   const emailValidationMutation = useEmailValidationMutation();
   const signupMutation = useSignupMutation();
-  const requestRef = useRef<boolean>(false);
 
   const [isNicknameValid, setIsNicknameValid] = React.useState({
     isSuccess: true,
@@ -48,8 +49,8 @@ const SignupForm = () => {
     if (signupForm.getValues('email') === '') return;
     if (emailRequestMutation.status === 'loading') return;
     if (emailRequestMutation.status === 'success') return;
-    if (requestRef.current) return;
-    requestRef.current = true;
+    if (requestRef) return;
+    requestRef = true;
 
     emailRequestMutation
       .mutateAsync(signupForm.getValues('email'))
@@ -58,7 +59,6 @@ const SignupForm = () => {
       })
       .catch(() => {
         setAuthCodeState({ disabled: true, message: '잠시 후 다시 시도해주세요' });
-        requestRef.current = false;
       });
   };
 
@@ -85,14 +85,13 @@ const SignupForm = () => {
 
   const resetMutateEmailRequestStatus = useDebounce(() => {
     emailRequestMutation.reset();
-    requestRef.current = false;
+    requestRef = false;
   }, 2000);
 
   const resetAuthNumberStatus = useDebounce(() => {
     emailValidationMutation.reset();
   }, 2000);
 
-  console.log(emailRequestMutation.status);
   return (
     <form className=" flex w-[460px] flex-col gap-y-6" onSubmit={signupForm.handleSubmit(onSubmit)}>
       <div className="">
