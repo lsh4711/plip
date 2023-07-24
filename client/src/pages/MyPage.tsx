@@ -15,7 +15,7 @@ const MyPage = ({}: MyPageProps) => {
   const { data } = useInquireUsersQuery();
 
   return (
-    <div className=" flex flex-col">
+    <div className=" flex h-auto flex-col pb-20">
       <HeadingParagraph variant={'darkgray'} size={'md'} className="mb-6">
         회원 정보
       </HeadingParagraph>

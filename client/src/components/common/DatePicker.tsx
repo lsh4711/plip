@@ -10,7 +10,7 @@ function DatePicker({ placeholderText, selected, onChange, minDate }: Props) {
 
   return (
     <label className="flex w-full items-center rounded-lg border border-solid border-[#bbb] py-[9px] pl-[17px] text-sm md:w-52">
-      <VscCalendar className="mr-2 h-6 w-6 text-[#bbb]" />
+      <VscCalendar className="mr-2 h-6 w-6 text-[#bbb]" size={16} />
       <Picker
         dateFormat={'yyyy년 MM월 dd일'}
         placeholderText={placeholderText}
@@ -19,6 +19,9 @@ function DatePicker({ placeholderText, selected, onChange, minDate }: Props) {
         shouldCloseOnSelect={false}
         minDate={minDate}
         className="bg-transparent text-[#343539]"
+        locale="ko"
+        disabledKeyboardNavigation
+        popperPlacement="bottom"
       />
     </label>
   );
