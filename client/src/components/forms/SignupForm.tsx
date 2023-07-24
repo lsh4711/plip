@@ -83,10 +83,9 @@ const SignupForm = () => {
       });
   };
 
-  const resetMutateEmailRequestStatus = useDebounce(() => {
-    emailRequestMutation.reset();
+  const resetMutateEmailRequestStatus = () => {
     requestRef = false;
-  }, 2000);
+  };
 
   const resetAuthNumberStatus = () => {
     emailValidationMutation.reset();
