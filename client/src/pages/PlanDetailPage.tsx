@@ -23,13 +23,14 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
 
   const [mapLevel, setMapLevel] = useState(8);
 
-  const { setRecords, setScheduleInfo } = useMapDetailContext();
+  const { setRecords, setScheduleInfo, setPlaceId } = useMapDetailContext();
 
   useEffect(() => {
     instance.get(`/api/schedules/${id}`).then((res) => {
-      console.log(res.data);
       const schedule = res.data.schedule;
       const records = res.data.recordsMap;
+
+      console.log(records);
 
       if (records) {
         setRecords(records);
@@ -38,6 +39,8 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
       if (schedule) {
         setScheduleInfo(schedule);
       }
+
+      setPlaceId(-1);
     });
   }, []);
 

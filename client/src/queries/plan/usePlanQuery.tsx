@@ -20,7 +20,6 @@ const usePlanQuery = (planId: string) => {
     queryFn: () =>
       getPlan(planId).then((data) => {
         dispatch(setSchedule(data.schedule.places));
-        console.log(data.schedule);
         return data.schedule;
       }),
     useErrorBoundary: false,

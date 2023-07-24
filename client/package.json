@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@tanstack/react-query-devtools": "^4.29.19",
+    "@types/bcrypt": "^5.0.0",
     "@types/node": "^18.15.13",
     "@types/react": "^18.0.28",
     "@types/react-copy-to-clipboard": "^5.0.4",

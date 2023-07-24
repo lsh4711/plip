@@ -11,11 +11,12 @@ export interface RecordGetRequest {
 
 export interface Record {
   recordId: number | string;
-  title: string;
   content: string;
   memberId: number | string;
   createdAt: string | Date;
   modifiedAt: string | Date;
+  days?: number;
+  placeName: string;
 }
 
 //GET : /records/{record-id}

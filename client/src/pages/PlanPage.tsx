@@ -72,12 +72,12 @@ const PlanPage = ({}: PlanPageProps) => {
         navigate(`/plan/map/${parsePlanId(res.headers.location)}`);
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
       });
   };
 
   return (
-    <main className="smooth relative mt-[76px] flex h-full w-full max-w-7xl flex-col px-8 py-12 transition-all duration-300">
+    <main className="smooth relative mx-auto mt-[76px] flex h-full w-full max-w-7xl flex-col px-8 py-12 transition-all duration-300">
       <div className="flex justify-between">
         <HeadingParagraph
           size={'md'}

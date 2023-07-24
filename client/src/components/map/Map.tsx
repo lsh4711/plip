@@ -17,6 +17,7 @@ import { RootState } from '@/redux/store';
 import { ScheduledPlaceBase } from '@/types/api/schedules-types';
 import { CategoryGroupCode } from '@/types/mapApi/place-types';
 import { cn } from '@/utils';
+import usePreventZoom from '@/hooks/usePreventZoom';
 
 interface mapProps {
   type: 'scheduling' | 'recording' | 'clustering';
@@ -41,12 +42,14 @@ const Map = ({
   showPolyline = false,
   className,
 }: mapProps) => {
+  usePreventZoom();
+
   const { searchPlaceResults, selectedPlace } = useSelector((state: RootState) => state.place);
   const dispatch = useDispatch();
 
   const { setPlaceId } = useMapDetailContext();
 
-  const [onHandleOpen, onHandleClose] = useHoverTimer({});
+  const [onHandleOpen, onHandleClose] = useHoverTimer({ openDelay: 500, closeDelay: 300 });
 
   const hoverMarkerTimer = useRef(0);
 

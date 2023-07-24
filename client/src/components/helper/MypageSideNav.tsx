@@ -6,8 +6,6 @@ import { menus } from '@/datas/menus';
 interface MypageSideNavProps {}
 
 const MypageSideNav = ({}: MypageSideNavProps) => {
-  const path = useLocation();
-  console.log(path);
   return (
     <nav className="fixed left-0 top-[76px] hidden h-screen w-56 shrink-0 flex-col gap-2 border-r-2 px-2 pt-8 md:flex">
       <span className="px-4 text-sm text-zinc-400">마이페이지</span>
@@ -49,26 +47,3 @@ const MypageSideNav = ({}: MypageSideNavProps) => {
 };
 
 export default MypageSideNav;
-
-const buttonArray = [
-  {
-    subject: '나의 일정',
-    slug: '/mypage/mytrip',
-  },
-  {
-    subject: '마이페이지',
-    slug: '/mypage',
-  },
-  {
-    subject: '나의 발자취',
-    slug: '/mypage/footprint',
-  },
-  {
-    subject: '북마크',
-    slug: '/mypage/bookmark',
-  },
-  {
-    subject: '나의 일지',
-    slug: '/mypage/myrecord',
-  },
-];
