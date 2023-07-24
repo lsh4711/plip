@@ -85,7 +85,7 @@ const Header = () => {
         )}
         <Link to="/">
           <div className="flex items-center gap-2">
-            <LogoIcon width={35} height={35} />
+            <LogoIcon aria-label="back to home page" width={35} height={35} />
             <span className="gradient-text hidden text-xl font-bold md:block">PliP</span>
           </div>
         </Link>
