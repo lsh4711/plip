@@ -77,7 +77,7 @@ const PlanPage = ({}: PlanPageProps) => {
   };
 
   return (
-    <main className="smooth relative mx-auto mt-[76px] flex h-full w-full max-w-7xl flex-col px-8 py-12 transition-all duration-300">
+    <main className="smooth relative mx-auto mt-[76px] flex h-auto w-full max-w-7xl flex-col px-8 pb-20 pt-12 transition-all duration-300">
       <div className="flex justify-between">
         <HeadingParagraph
           size={'md'}
