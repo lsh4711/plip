@@ -20,6 +20,10 @@ const DndContents = ({ contents, dayNumber }: DndContents) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    setPlaceList(contents);
+  }, [contents]);
+
+  useEffect(() => {
     if (isEditActionEnd) {
       dispatch(editSchedule({ dayNumber, schedule: placelist }));
       setIsEditActionEnd(false);
