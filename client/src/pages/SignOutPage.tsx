@@ -6,7 +6,7 @@ import { SIGNOUT_VALIDATION_STRING } from '@/datas/constants';
 
 const SignOutPage = () => {
   return (
-    <div className="flex flex-col">
+    <div className="flex h-auto flex-col pb-20">
       <HeadingParagraph variant={'darkgray'} size={'md'}>
         회원탈퇴
       </HeadingParagraph>
