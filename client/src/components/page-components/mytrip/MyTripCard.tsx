@@ -123,6 +123,7 @@ const MyTripCard = ({
             variant={'ring'}
             hovercolor={'default'}
             className="h-[50px] w-[120px] text-sm text-zinc-900"
+            onClick={() => alert('🚧준비중입니당!!')}
           >
             여행일지
           </Button>
