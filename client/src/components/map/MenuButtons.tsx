@@ -9,6 +9,7 @@ import { useState } from 'react';
 import Confirm from '../common/Confirm';
 import RoundButton from '../common/RoundButton';
 import SharesButtons from '../common/SharesButtons';
+import instance from '@/queries/axiosinstance';
 
 const MenuButtons = () => {
   const navigate = useNavigate();

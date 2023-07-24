@@ -55,10 +55,10 @@ const Map = ({
 
   const onHoverMarker = (place: ScheduledPlaceBase) => {
     if (type === 'recording') {
-      console.log(place);
       hoverMarkerTimer.current = window.setTimeout(() => {
         onHandleOpen(() => dispatch(setSelectedPlace(place)));
         setPlaceId(place.schedulePlaceId!);
+        console.log(`hovered place id : ${place.schedulePlaceId}`);
       }, 100);
     }
   };
@@ -121,9 +121,13 @@ const Map = ({
                   height: 32,
                 },
               }}
-              onClick={() => dispatch(setSelectedPlace(place))}
-              onMouseOver={() => onHoverMarker(place)}
-              onMouseOut={() => onHoverOutHandler()}
+              onClick={() => {
+                dispatch(setSelectedPlace(place));
+                console.log(place.schedulePlaceId);
+                setPlaceId(place.schedulePlaceId!);
+              }}
+              // onMouseOver={() => onHoverMarker(place)}
+              // onMouseOut={() => onHoverOutHandler()}
             />
           ))
         )}

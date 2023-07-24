@@ -1,5 +1,6 @@
 import { Record } from '@/types/api/records-types';
 import { Schedule } from '@/types/api/schedules-types';
+import { captureRejectionSymbol } from 'events';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { createContext } from 'react';
 
@@ -23,6 +24,7 @@ type ContextProps = {
 
 const initScheduleInfo = {} as Schedule;
 const initRecords = {} as RecordMapProps;
+// const initRecord = {} as Record;
 
 const MapDetailContext = createContext<ContextProps>({
   placeId: 0,
@@ -52,12 +54,12 @@ const MapDetailProvider = ({ children }: Props) => {
   const [currentRecord, setCurrentRecord] = useState<Record>();
 
   useEffect(() => {
-    if (records && placeId > 0 && records[placeId][0]) {
-      setCurrentRecord(records[placeId][0]);
-    } else {
-      setCurrentRecord(undefined);
-      // setPlaceId(-1);
-    }
+    console.log('map detail provider');
+    // if (records && placeId > 0 && records[placeId][0]) {
+    //   setCurrentRecord(records[placeId][0]);
+    // } else {
+    //   setCurrentRecord(undefined);
+    // }
   }, [placeId]);
 
   return (

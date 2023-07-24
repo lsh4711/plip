@@ -12,7 +12,7 @@ const MyRecordPage = ({}: MyRecordPageProps) => {
   if (auth.isRedirect) return auth.naviComponent;
 
   useEffect(() => {
-    instance.get('/api/records', { withCredentials: true }).then((data) => console.log(data));
+    instance.get('/api/records').then((data) => console.log(data));
   }, []);
 
   return (
