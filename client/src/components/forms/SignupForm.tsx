@@ -80,8 +80,12 @@ const SignupForm = () => {
       });
   };
 
-  const resetMutateStatus = useDebounce(() => {
+  const resetMutateEmailRequestStatus = useDebounce(() => {
     emailRequestMutation.reset();
+  }, 2000);
+
+  const resetAuthNumberStatus = useDebounce(() => {
+    emailValidationMutation.reset();
   }, 2000);
 
   console.log(emailRequestMutation.status);
@@ -93,7 +97,7 @@ const SignupForm = () => {
             placeholder="이메일을 입력해 주세요."
             className=" flex-grow"
             {...signupForm.register('email', {
-              onChange: resetMutateStatus,
+              onChange: resetMutateEmailRequestStatus,
             })}
           />
           <Button
@@ -123,7 +127,9 @@ const SignupForm = () => {
             placeholder="인증번호를 입력해 주세요."
             className=" flex-grow"
             disabled={authCodeState.disabled}
-            {...signupForm.register('authnumber')}
+            {...signupForm.register('authnumber', {
+              onChange: resetAuthNumberStatus,
+            })}
           />
 
           <Button
