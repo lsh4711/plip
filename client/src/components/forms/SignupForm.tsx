@@ -88,9 +88,9 @@ const SignupForm = () => {
     requestRef = false;
   }, 2000);
 
-  const resetAuthNumberStatus = useDebounce(() => {
+  const resetAuthNumberStatus = () => {
     emailValidationMutation.reset();
-  }, 2000);
+  };
 
   return (
     <form className=" flex w-[460px] flex-col gap-y-6" onSubmit={signupForm.handleSubmit(onSubmit)}>
