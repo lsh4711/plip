@@ -13,7 +13,7 @@ const config = {
 };
 
 const app = initializeApp(config);
-const messaging = getMessaging();
+export const messaging = getMessaging();
 
 export const getFCMToken = () => {
   getToken(messaging, {
