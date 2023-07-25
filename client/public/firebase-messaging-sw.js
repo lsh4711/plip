@@ -1,14 +1,14 @@
-importScripts("https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js");
-importScripts("https://www.gstatic.com/firebasejs/10.0.0/firebase-messaging-compat.js");
+importScripts('https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.0.0/firebase-messaging-compat.js');
 
 const config = {
-  apiKey: "AIzaSyBbvdZQf6To6CgoCKdakV8_MN5gQcS8zMo",
-  authDomain: "test-bc584.firebaseapp.com",
-  projectId: "test-bc584",
-  storageBucket: "test-bc584.appspot.com",
-  messagingSenderId: "298406541244",
-  appId: "1:298406541244:web:c79dfe11d95664bd899db9",
-  measurementId: "G-RB9C934VXH"
+  apiKey: import.meta.env.VITE_FB_API_KEY,
+  authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FB_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FB_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FB_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FB_APP_ID,
+  measurementId: import.meta.env.VITE_FB_MEASUREMENT_ID,
 };
 
 firebase.initializeApp(config);

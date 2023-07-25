@@ -24,12 +24,10 @@ const OauthRedirect = () => {
   const dispatchAccesstoken = useSetAccessToken();
   setAccessTokenToHeader(token);
   dispatchAccesstoken({ accesstoken: token });
-
-  inquireQuery.refetch();
-
-  console.log('카카오 로그인');
   const messaging = getMessaging();
   getFCMToken(messaging);
+
+  inquireQuery.refetch();
 
   return <Navigate to={'/'} replace />;
 };
