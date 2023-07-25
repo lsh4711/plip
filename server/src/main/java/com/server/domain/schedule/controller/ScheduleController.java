@@ -65,6 +65,8 @@ public class ScheduleController {
     @PostMapping("/write")
     public ResponseEntity postSchedule(@Valid @RequestBody ScheduleDto.Post postDto) {
         Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
+        schedule.setStartDate(schedule.getStartDate().plusDays(1)); // 핫픽스용
+        schedule.setEndDate(schedule.getEndDate().plusDays(1)); // 핫픽스용
         Schedule savedSchedule = scheduleService.saveSchedule(schedule);
         long scheduleId = savedSchedule.getScheduleId();
         URI location = UriCreator.createUri("/api/schedules", scheduleId);
