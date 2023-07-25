@@ -1,5 +1,6 @@
+import instance from '@/queries/axiosinstance';
 import { initializeApp } from 'firebase/app';
-import { getMessaging } from 'firebase/messaging';
+import { Messaging, getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 const config = {
   apiKey: import.meta.env.VITE_FB_API_KEY,
@@ -13,3 +14,26 @@ const config = {
 
 const app = initializeApp(config);
 export const messaging = getMessaging();
+
+export const getFCMToken = (msg: Messaging) => {
+  getToken(msg, {
+    vapidKey: import.meta.env.VITE_FB_VAPID_KEY,
+  })
+    .then((token) => {
+      if (token) {
+        instance
+          .post('/api/pushs/write', {
+            pushToken: token,
+          })
+          .then((res) => {
+            console.log(res);
+            // console.log(token);
+          });
+      } else {
+        console.log('No registration token available. Request permission to generate one.');
+      }
+    })
+    .catch((err) => {
+      console.log('An error occurred while retrieving token. ', err);
+    });
+};

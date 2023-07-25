@@ -6,10 +6,14 @@ import { KAKAO_OAUTH_ACCESS_TOKEN } from '@/datas/constants';
 import useSetAccessToken from '@/hooks/useSetAccessToken';
 import addBearer from '@/utils/auth/addBearer';
 import useInquireUsersQuery from '@/queries/auth/useInquireUsersQuery';
+import { getFCMToken } from '@/utils/fcm';
+import { getMessaging } from 'firebase/messaging';
 
 const getAccesstokenToQueryString = (callback: URLSearchParams) => {
   const token = callback.get(KAKAO_OAUTH_ACCESS_TOKEN);
+
   if (typeof token !== 'string') return EMPTY_TOKEN;
+
   return token;
 };
 
@@ -20,7 +24,12 @@ const OauthRedirect = () => {
   const dispatchAccesstoken = useSetAccessToken();
   setAccessTokenToHeader(token);
   dispatchAccesstoken({ accesstoken: token });
+
   inquireQuery.refetch();
+
+  console.log('카카오 로그인');
+  const messaging = getMessaging();
+  getFCMToken(messaging);
 
   return <Navigate to={'/'} replace />;
 };

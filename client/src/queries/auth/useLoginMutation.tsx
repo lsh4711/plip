@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { LoginType } from '@/schema/loginSchema';
-import { getToken } from 'firebase/messaging';
-import { messaging } from '@/utils/fcm';
+import { getFCMToken } from '@/utils/fcm';
 
 import useToast from '@/hooks/useToast';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +9,7 @@ import useSetAccessToken from '@/hooks/useSetAccessToken';
 import useSuccessFailToast from '@/hooks/useSuccessFailToast';
 import instance from '../axiosinstance';
 import useInquireUsersQuery from './useInquireUsersQuery';
+import { getMessaging } from 'firebase/messaging';
 
 const postLogin = async (loginData: LoginType) => {
   const response = await instance.post(
@@ -44,26 +44,9 @@ const useLoginMutation = () => {
       navigate('/');
       inquireQuery.refetch().then(() => inquireQuery.refetch());
       dispatchAccesstoken({ accesstoken: data.ACCESS_TOKEN });
+      const messaging = getMessaging();
+      getFCMToken(messaging);
 
-      getToken(messaging, {
-        vapidKey: import.meta.env.VITE_FB_VAPID_KEY,
-      })
-        .then((token) => {
-          if (token) {
-            instance
-              .post('/api/pushs/write', {
-                pushToken: token,
-              })
-              .then((res) => {
-                console.log(res);
-              });
-          } else {
-            console.log('No registration token available. Request permission to generate one.');
-          }
-        })
-        .catch((err) => {
-          console.log('An error occurred while retrieving token. ', err);
-        });
       toast({
         content: '로그인에 성공했습니다.',
         type: 'success',

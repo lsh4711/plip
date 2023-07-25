@@ -5,9 +5,11 @@ import '@/utils/fcm.ts';
 import useToast from './hooks/useToast';
 import { messaging } from '@/utils/fcm';
 import { onMessage } from 'firebase/messaging';
+import { requestPermission } from './utils/browser/requestNotification';
 
 export default function App() {
   const toast = useToast();
+  requestPermission();
 
   /**
    * 푸시 알림 관련 함수입니다.
