@@ -43,8 +43,6 @@ public class ScheduleService {
     private String shareSecretKey;
 
     public Schedule saveSchedule(Schedule schedule) {
-        schedule.setStartDate(schedule.getStartDate().plusDays(1)); // 핫픽스용
-        schedule.setEndDate(schedule.getEndDate().plusDays(1)); // 핫픽스용
         return scheduleRepository.save(schedule);
     }
 
