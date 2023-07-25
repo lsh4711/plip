@@ -21,13 +21,13 @@ export const getFCMToken = (msg: Messaging) => {
   })
     .then((token) => {
       if (token) {
+        console.log(token);
         instance
           .post('/api/pushs/write', {
             pushToken: token,
           })
           .then((res) => {
             console.log(res);
-            // console.log(token);
           });
       } else {
         console.log('No registration token available. Request permission to generate one.');
