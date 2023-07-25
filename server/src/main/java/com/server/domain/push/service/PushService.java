@@ -24,18 +24,26 @@ public class PushService {
     private final PushRepository pushRepository;
 
     public Push savePush(Push push) {
+        String token = push.getPushToken();
         Member member = push.getMember();
         Push foundPush = member.getPush();
 
-        if (foundPush == null) {
-            return pushRepository.save(push);
+        if (foundPush != null) {
+            foundPush.setPushToken(token);
+            return pushRepository.save(foundPush);
         }
 
-        String token = push.getPushToken();
+        String nickname = member.getNickname();
+        PushMessage pushMessage = PushMessage.builder()
+                .token(token)
+                .title(String.format("%s님의 가입을 환영합니다!", nickname))
+                .body("PliP과 함께 여행 일정을 작성하러 가볼까요?")
+                .build();
 
-        foundPush.setPushToken(token);
+        pushRepository.save(push);
+        sendPush(pushMessage);
 
-        return pushRepository.save(foundPush);
+        return push;
     }
 
     @Async
