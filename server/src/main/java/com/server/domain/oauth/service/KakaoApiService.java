@@ -61,7 +61,7 @@ public class KakaoApiService {
 
         String accessToken = kakaoToken.getAccessToken();
         Feed feedTemplate = kakaoTemplateConstructor
-                .getPostTemplate(schedule, member);
+                .getPostScheduleTemplate(schedule, member);
 
         sendMessage(feedTemplate, accessToken);
     }
