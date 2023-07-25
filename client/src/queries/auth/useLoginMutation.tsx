@@ -44,8 +44,7 @@ const useLoginMutation = () => {
       navigate('/');
       inquireQuery.refetch().then(() => inquireQuery.refetch());
       dispatchAccesstoken({ accesstoken: data.ACCESS_TOKEN });
-      const messaging = getMessaging();
-      getFCMToken(messaging);
+      getFCMToken();
 
       toast({
         content: '로그인에 성공했습니다.',
