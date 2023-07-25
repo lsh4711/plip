@@ -4,11 +4,13 @@ import com.server.global.utils.CustomRandom;
 
 import lombok.Builder;
 
+@Builder
 public class KakaoTemplate {
     @Builder
     public static class Feed {
         @Builder.Default //초기화 표현식을 기본값으로 설정 추가
         private String object_type = "feed";
+
         // private Object item_content;
         private Content content;
         // private Social social;
