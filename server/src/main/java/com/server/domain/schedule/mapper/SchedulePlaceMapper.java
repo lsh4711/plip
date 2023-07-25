@@ -30,9 +30,9 @@ public abstract class SchedulePlaceMapper {
     @Mapping(source = "schedulePlace.schedulePlaceId", target = "schedulePlaceId")
     public abstract PlaceResponse schedulePlaceToPlaceResponse(SchedulePlace schedulePlace, Place place);
 
-    public List<List<PlaceResponse>> schedulePlacesToPlaceResponseLists(List<SchedulePlace> schedulePlaces,
-            Schedule schedule) {
+    public List<List<PlaceResponse>> schedulePlacesToPlaceResponseLists(Schedule schedule) {
         int period = schedule.getPeriod();
+        List<SchedulePlace> schedulePlaces = schedule.getSchedulePlaces();
         List<List<PlaceResponse>> placeResponseLists = new ArrayList<>();
 
         // 최적화 가능

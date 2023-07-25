@@ -74,7 +74,6 @@ public class ScheduleController {
         scheduleService.sendKakaoMessage(savedSchedule); // 카카오 메시지
         mailService.sendScheduleMail(savedSchedule); // 이메일
 
-
         return ResponseEntity.created(location).build();
     }
 
@@ -102,7 +101,7 @@ public class ScheduleController {
         updatedSchedule.setSchedulePlaces(updatedSchedulePlaces);
 
         List<List<PlaceResponse>> placeResponseLists = schedulePlaceMapper
-                .schedulePlacesToPlaceResponseLists(updatedSchedulePlaces, updatedSchedule);
+                .schedulePlacesToPlaceResponseLists(updatedSchedule);
         ScheduleResponse scheduleResponse = scheduleMapper
                 .scheduleToScheduleResponse(updatedSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
@@ -116,7 +115,7 @@ public class ScheduleController {
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
 
         List<List<PlaceResponse>> placeResponseLists = schedulePlaceMapper
-                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
+                .schedulePlacesToPlaceResponseLists(foundSchedule);
         ScheduleResponse scheduleResponse = scheduleMapper
                 .scheduleToScheduleResponse(foundSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
@@ -142,7 +141,7 @@ public class ScheduleController {
         for (Schedule schedule : foundSchedules) {
             List<SchedulePlace> schedulePlaces = schedule.getSchedulePlaces();
             List<List<PlaceResponse>> placeResponseLists = schedulePlaceMapper
-                    .schedulePlacesToPlaceResponseLists(schedulePlaces, schedule);
+                    .schedulePlacesToPlaceResponseLists(schedule);
             ScheduleResponse scheduleResponse = scheduleMapper
                     .scheduleToScheduleResponse(schedule);
             scheduleResponse.setPlaces(placeResponseLists);
@@ -161,7 +160,7 @@ public class ScheduleController {
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
 
         List<List<PlaceResponse>> placeResponseLists = schedulePlaceMapper
-                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
+                .schedulePlacesToPlaceResponseLists(foundSchedule);
         ScheduleResponse scheduleResponse = scheduleMapper
                 .scheduleToScheduleResponse(foundSchedule);
         scheduleResponse.setPlaces(placeResponseLists);
@@ -184,7 +183,7 @@ public class ScheduleController {
         Schedule foundSchedule = scheduleService.findScheduleOfAuthMember(scheduleId);
         List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
         List<List<PlaceResponse>> placeResponseLists = schedulePlaceMapper
-                .schedulePlacesToPlaceResponseLists(schedulePlaces, foundSchedule);
+                .schedulePlacesToPlaceResponseLists(foundSchedule);
 
         return ResponseEntity.ok(placeResponseLists); // size 정보는 없는 상태
     }

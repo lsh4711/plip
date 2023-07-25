@@ -31,10 +31,6 @@ public abstract class PlaceMapper {
     public abstract SchedulePlace placeToSchedulePlace(Place place, Schedule schedule);
 
     public List<SchedulePlace> placesToSchedulePlaces(List<Place> places, Schedule schedule) { // 나중에 수정
-        if (places == null) {
-            return new ArrayList<>();
-        }
-
         List<SchedulePlace> schedulePlaces = new ArrayList<>();
 
         for (int i = 0; i < places.size(); i++) {

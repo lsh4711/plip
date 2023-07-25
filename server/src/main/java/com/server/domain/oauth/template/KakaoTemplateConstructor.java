@@ -91,6 +91,7 @@ public class KakaoTemplateConstructor {
         Feed feed = Feed.builder()
                 .object_type("feed")
                 .content(content)
+                .button_title("일정 보기")
                 .build();
 
         return feed;

@@ -1,6 +1,5 @@
 package com.server.global.test.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
@@ -17,14 +16,7 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushFcmOptions;
-import com.server.domain.member.entity.Member;
-import com.server.domain.member.repository.MemberRepository;
-import com.server.domain.oauth.entity.KakaoToken;
-import com.server.domain.oauth.service.KakaoApiService;
-import com.server.domain.oauth.template.KakaoTemplateConstructor;
-import com.server.domain.oauth.template.KakaoTemplateObject.Text;
 import com.server.domain.record.service.StorageService;
-import com.server.domain.schedule.entity.Schedule;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/test")
 public class TestController { // 테스트 용이므로 비즈니스 로직도 함께 있습니다.
     private final StorageService StorageService;
-
-    private final MemberRepository memberRepository;
-    private final KakaoApiService kakaoApiService;
-    private final KakaoTemplateConstructor kakaoTemplateConstructor;
 
     @GetMapping
     public ModelAndView getTest() {
@@ -58,15 +46,6 @@ public class TestController { // 테스트 용이므로 비즈니스 로직도 �
 
     @GetMapping("/send")
     public ResponseEntity kakaoTrigger() {
-        Member member = memberRepository.findByEmail("dowkwlp@gmail.com").get();
-        List<Schedule> schedules = member.getSchedules();
-        Schedule schedule = schedules.get(0);
-        KakaoToken kakaoToken = member.getKakaoToken();
-        String accessToken = kakaoToken.getAccessToken();
-        Text textTemplate = kakaoTemplateConstructor.getScheduledTemplate(member, schedule, 22);
-
-        kakaoApiService.sendMessage(textTemplate, accessToken);
-
         return ResponseEntity.ok("완료");
     }
 
