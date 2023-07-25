@@ -2,6 +2,7 @@ package com.server.domain.oauth.template;
 
 import com.server.global.utils.CustomRandom;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 public class KakaoTemplate {
@@ -55,10 +56,11 @@ public class KakaoTemplate {
                 + CustomRandom.getRandomRegion();
 
         @Builder.Default
-        private Link link = Link.builder().url(null).build();
+        private Link link = Link.builder().build();
     }
 
     @Builder
+    @AllArgsConstructor
     public static class Link {
         @Builder.Default
         private String web_url = "https://plip.netlify.app/";
