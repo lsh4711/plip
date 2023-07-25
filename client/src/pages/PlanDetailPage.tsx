@@ -11,7 +11,6 @@ import { useEffect, useState } from 'react';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
 
 import RecordPanel from '@/components/page-components/plan-detail/RecordPanel';
-import instance from '@/queries/axiosinstance';
 import { useMapDetailContext } from '@/contexts/MapDetailProvider';
 import useGetRecords from '@/queries/record/useGetRecords';
 
