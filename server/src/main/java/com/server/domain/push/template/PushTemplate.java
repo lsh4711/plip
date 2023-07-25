@@ -19,7 +19,8 @@ public class PushTemplate {
     private String body = "테스트 메시지";
 
     @Builder.Default
-    private String imageUrl;
+    private String imageUrl = "https://teamdev.shop/files/images?region="
+            + CustomRandom.getRandomRegion();
 
     @Builder.Default
     private String url = "https://plip.netlify.app/";

@@ -4,7 +4,6 @@ import com.server.global.utils.CustomRandom;
 
 import lombok.Builder;
 
-@Builder
 public class KakaoTemplate {
     @Builder
     public static class Feed {
@@ -22,6 +21,7 @@ public class KakaoTemplate {
     public static class Text {
         @Builder.Default
         private String object_type = "text";
+
         private String text;
         private Link link = Link.builder().build();
         private String button_title;
@@ -31,6 +31,7 @@ public class KakaoTemplate {
     public static class Location {
         @Builder.Default
         private String object_type = "location";
+
         private String address;
         private String address_title;
         private Content content;
@@ -54,7 +55,7 @@ public class KakaoTemplate {
                 + CustomRandom.getRandomRegion();
 
         @Builder.Default
-        private Link link = Link.builder().build();
+        private Link link = Link.builder().url(null).build();
     }
 
     @Builder
@@ -65,13 +66,14 @@ public class KakaoTemplate {
         @Builder.Default
         private String mobile_web_url = "https://plip.netlify.app/";
 
+        // private String android_execution_params = "";
+        // private String ios_execution_params = "";
+
         @Builder
         public Link(String url) {
             this.web_url = url;
             this.mobile_web_url = url;
         }
-        // private String android_execution_params = "";
-        // private String ios_execution_params = "";
     }
 
     @Builder
