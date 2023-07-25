@@ -24,8 +24,7 @@ const OauthRedirect = () => {
   const dispatchAccesstoken = useSetAccessToken();
   setAccessTokenToHeader(token);
   dispatchAccesstoken({ accesstoken: token });
-  const messaging = getMessaging();
-  getFCMToken(messaging);
+  getFCMToken();
 
   inquireQuery.refetch();
 

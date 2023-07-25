@@ -13,15 +13,15 @@ const config = {
 };
 
 const app = initializeApp(config);
-export const messaging = getMessaging();
+const messaging = getMessaging();
 
-export const getFCMToken = (msg: Messaging) => {
-  getToken(msg, {
+export const getFCMToken = () => {
+  getToken(messaging, {
     vapidKey: import.meta.env.VITE_FB_VAPID_KEY,
   })
     .then((token) => {
+      console.log(token);
       if (token) {
-        console.log(token);
         instance
           .post('/api/pushs/write', {
             pushToken: token,
