@@ -14,7 +14,6 @@ import com.server.domain.member.mapper.MemberMapper;
 import com.server.domain.member.repository.MemberRepository;
 import com.server.domain.oauth.service.KakaoApiService;
 import com.server.domain.oauth.template.KakaoTemplateConstructor;
-import com.server.domain.oauth.template.KakaoTemplateObject.Feed;
 
 import lombok.RequiredArgsConstructor;
 
@@ -47,8 +46,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             memberRepository.save(member);
 
             // 비동기 알림 전송
-            Feed feedTemplate = kakaoTemplateConstructor.getWelcomeTemplate(member);
-            kakaoApiService.sendMessage(feedTemplate, accessToken); // 카카오 메시지
+            kakaoApiService.sendWelcomeMessage(member, accessToken); // 카카오 메시지
             mailService.sendMail(attributes.getEmail(), "welcome"); // 메일
         }
     }

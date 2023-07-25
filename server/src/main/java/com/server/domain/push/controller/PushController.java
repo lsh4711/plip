@@ -28,8 +28,8 @@ public class PushController {
         Push push = pushMapper.postDtoToPush(postdto);
         Push savedPush = pushService.savePush(push);
 
-        URI location = UriCreator.createUri("/api/pushs",
-            savedPush.getPushId());
+        long pushId = savedPush.getPushId();
+        URI location = UriCreator.createUri("/api/pushs", pushId);
 
         return ResponseEntity.created(location).build();
     }

@@ -1,23 +1,14 @@
 package com.server.domain.schedule.service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.server.domain.member.entity.Member;
-import com.server.domain.oauth.entity.KakaoToken;
-import com.server.domain.oauth.service.KakaoApiService;
-import com.server.domain.oauth.template.KakaoTemplateConstructor;
-import com.server.domain.oauth.template.KakaoTemplateObject.Feed;
-import com.server.domain.push.entity.Push;
-import com.server.domain.push.entity.PushMessage;
 import com.server.domain.push.service.PushService;
-import com.server.domain.region.entity.Region;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.repository.ScheduleRepository;
 import com.server.global.exception.CustomException;
@@ -31,9 +22,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
-
-    private final KakaoApiService kakaoApiService;
-    private final KakaoTemplateConstructor kakaoTemplateConstructor;
 
     private final PushService pushService;
 
@@ -122,11 +110,12 @@ public class ScheduleService {
         return shareUrl;
     }
 
-    public void deleteSchedule(long scheduleId) {
-        long memberId = AuthUtil.getMemberId();
+    public Schedule deleteSchedule(long scheduleId) {
+        Schedule schedule = findScheduleOfAuthMember(scheduleId);
 
-        verify(scheduleId, memberId);
         scheduleRepository.deleteById(scheduleId);
+
+        return schedule;
     }
 
     public void verify(long scheduleId, long memberId) {
@@ -137,60 +126,5 @@ public class ScheduleService {
             throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
         }
 
-    }
-
-    @Async
-    public void sendKakaoMessage(Schedule schedule) {
-        Member member = schedule.getMember();
-        KakaoToken kakaoToken = member.getKakaoToken();
-
-        if (kakaoToken == null) {
-            return; // or throw CustomExcepion
-        }
-
-        String accessToken = kakaoToken.getAccessToken();
-        Feed feedTemplate = kakaoTemplateConstructor
-                .getPostTemplate(schedule, member);
-
-        kakaoApiService.sendMessage(feedTemplate, accessToken);
-    }
-
-    @Async
-    public void sendPushMessage(Schedule schedule) {
-        // Member
-        Member member = schedule.getMember();
-        String nickname = member.getNickname();
-        Push push = member.getPush();
-
-        if (push == null) {
-            return;
-        }
-
-        // Schedule
-        long scheduleId = schedule.getScheduleId();
-        Region region = schedule.getRegion();
-        String engName = region.getEngName();
-        String korName = region.getKorName();
-        LocalDate startDate = schedule.getStartDate();
-        LocalDate endDate = schedule.getEndDate();
-        int period = schedule.getPeriod();
-        String term = period == 1 ? "당일치기" : String.format("%d박 %d일", period - 1, period);
-
-        // PushMessage
-        String token = push.getPushToken();
-        String title = String.format("%s님의 %s 여행 일정입니다.", nickname, korName);
-        String body = String.format("기간: %s \n~ %s (%s)", startDate, endDate, term);
-        String shareUrl = createShareUrl(scheduleId, member);
-
-        PushMessage pushMessage = PushMessage.builder()
-                .token(token)
-                .title(title)
-                .body(body)
-                .region(engName)
-                // .imageUrl(null)
-                .url(shareUrl)
-                .build();
-
-        pushService.sendPush(pushMessage);
     }
 }

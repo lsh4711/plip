@@ -22,11 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.server.domain.mail.service.MailService;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.service.MemberService;
+import com.server.domain.oauth.service.KakaoApiService;
 import com.server.domain.place.dto.PlaceDto;
 import com.server.domain.place.dto.PlaceResponse;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.mapper.PlaceMapper;
 import com.server.domain.place.service.PlaceService;
+import com.server.domain.push.service.PushService;
 import com.server.domain.record.dto.RecordDto;
 import com.server.domain.schedule.dto.ScheduleDto;
 import com.server.domain.schedule.dto.ScheduleResponse;
@@ -58,6 +60,8 @@ public class ScheduleController {
     private final SchedulePlaceService schedulePlaceService;
     private final SchedulePlaceMapper schedulePlaceMapper;
 
+    private final PushService pushService;
+    private final KakaoApiService kakaoApiService;
     private final MailService mailService;
 
     // 비어있는 일정 생성 용도
@@ -66,13 +70,14 @@ public class ScheduleController {
     public ResponseEntity postSchedule(@Valid @RequestBody ScheduleDto.Post postDto) {
         Schedule schedule = scheduleMapper.postDtoToSchedule(postDto);
         Schedule savedSchedule = scheduleService.saveSchedule(schedule);
+
         long scheduleId = savedSchedule.getScheduleId();
         URI location = UriCreator.createUri("/api/schedules", scheduleId);
 
         // 비동기 알림 전송
-        scheduleService.sendPushMessage(savedSchedule); // 웹 푸시
-        scheduleService.sendKakaoMessage(savedSchedule); // 카카오 메시지
-        mailService.sendScheduleMail(savedSchedule); // 이메일
+        pushService.sendPostScheduleMessage(savedSchedule); // 웹 푸시
+        kakaoApiService.sendPostScheduleMessage(savedSchedule); // 카카오 메시지
+        mailService.sendPostScheduleMail(savedSchedule); // 이메일
 
         return ResponseEntity.created(location).build();
     }
@@ -129,7 +134,6 @@ public class ScheduleController {
                 .build();
 
         return ResponseEntity.ok(sharedScheduleResponse);
-        // return ResponseEntity.ok(scheduleResponse); // 임시 배포용
     }
 
     @GetMapping
@@ -139,7 +143,6 @@ public class ScheduleController {
         List<ScheduleResponse> scheduleResponses = new ArrayList<>();
 
         for (Schedule schedule : foundSchedules) {
-            List<SchedulePlace> schedulePlaces = schedule.getSchedulePlaces();
             List<List<PlaceResponse>> placeResponseLists = schedulePlaceMapper
                     .schedulePlacesToPlaceResponseLists(schedule);
             ScheduleResponse scheduleResponse = scheduleMapper
@@ -157,7 +160,6 @@ public class ScheduleController {
             @RequestParam("id") long memberId,
             @RequestParam String code) {
         Schedule foundSchedule = scheduleService.findSharedSchedule(scheduleId, memberId, code);
-        List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
 
         List<List<PlaceResponse>> placeResponseLists = schedulePlaceMapper
                 .schedulePlacesToPlaceResponseLists(foundSchedule);
@@ -181,7 +183,6 @@ public class ScheduleController {
     @GetMapping("/{scheduleId}/places")
     public ResponseEntity getPlacesByScheduleId(@PathVariable long scheduleId) {
         Schedule foundSchedule = scheduleService.findScheduleOfAuthMember(scheduleId);
-        List<SchedulePlace> schedulePlaces = foundSchedule.getSchedulePlaces();
         List<List<PlaceResponse>> placeResponseLists = schedulePlaceMapper
                 .schedulePlacesToPlaceResponseLists(foundSchedule);
 
@@ -190,7 +191,11 @@ public class ScheduleController {
 
     @DeleteMapping("/{scheduleId}")
     public ResponseEntity deleteSchedule(@PathVariable long scheduleId) {
-        scheduleService.deleteSchedule(scheduleId);
+        Schedule schedule = scheduleService.deleteSchedule(scheduleId);
+
+        // pushService.sendPostScheduleMessage(null); // 웹 푸시
+        // kakaoApiService.sendPostScheduleMessage(null); // 카카오 메시지
+        // mailService.sendPostScheduleMail(null); // 이메일
 
         return ResponseEntity.noContent().build();
     }

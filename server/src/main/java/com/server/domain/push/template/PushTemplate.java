@@ -1,32 +1,33 @@
-package com.server.domain.push.entity;
+package com.server.domain.push.template;
 
 import com.server.global.utils.CustomRandom;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+@Builder
 @Getter
-public class PushMessage {
+@AllArgsConstructor
+public class PushTemplate {
     private String token;
-    private String title;
-    private String body;
+
+    @Builder.Default
+    private String title = "[PliP]";
+
+    @Builder.Default
+    private String body = "테스트 메시지";
+
+    @Builder.Default
     private String imageUrl;
-    private String url;
+
+    @Builder.Default
+    private String url = "https://plip.netlify.app/";
 
     @Builder
-    public PushMessage(String token, String title, String body,
+    public PushTemplate(String token, String title, String body,
             String region, String imageUrl, String url) {
         this.token = token;
-
-        if (title == null) {
-            title = "[PliP]";
-        }
-        this.title = title;
-
-        if (body == null) {
-            body = "테스트 메시지";
-        }
-        this.body = body;
 
         if (region == null && imageUrl == null) {
             region = CustomRandom.getRandomRegion();
@@ -37,9 +38,5 @@ public class PushMessage {
             this.imageUrl = imageUrl;
         }
 
-        if (url == null) {
-            url = "https://plip.netlify.app/";
-        }
-        this.url = url;
     }
 }

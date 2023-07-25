@@ -22,8 +22,8 @@ import org.springframework.context.annotation.Configuration;
 import com.server.domain.member.entity.Member;
 import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.oauth.service.KakaoApiService;
+import com.server.domain.oauth.template.KakaoTemplate.Text;
 import com.server.domain.oauth.template.KakaoTemplateConstructor;
-import com.server.domain.oauth.template.KakaoTemplateObject.Text;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.global.batch.parameter.CustomJobParameter;
 

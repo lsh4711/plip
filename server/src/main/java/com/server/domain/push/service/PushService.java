@@ -11,8 +11,10 @@ import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushFcmOptions;
 import com.server.domain.member.entity.Member;
 import com.server.domain.push.entity.Push;
-import com.server.domain.push.entity.PushMessage;
 import com.server.domain.push.repository.PushRepository;
+import com.server.domain.push.template.PushTemplate;
+import com.server.domain.push.template.PushTemplateConstructor;
+import com.server.domain.schedule.entity.Schedule;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PushService {
     private final PushRepository pushRepository;
+    private final PushTemplateConstructor pushTemplateConstructor;
 
     public Push savePush(Push push) {
         String token = push.getPushToken();
@@ -32,37 +35,23 @@ public class PushService {
             foundPush.setPushToken(token);
             return pushRepository.save(foundPush);
         }
-
-        String nickname = member.getNickname();
-        PushMessage pushMessage = PushMessage.builder()
-                .token(token)
-                .title(String.format("%s님의 가입을 환영합니다!", nickname))
-                .body("PliP과 함께 여행 일정을 작성하러 가볼까요?")
-                .build();
-
         pushRepository.save(push);
-        sendPush(pushMessage);
+        sendWelcomeMessage(token, member);
 
         return push;
     }
 
     @Async
-    public void sendPush(PushMessage pushMessage) {
-        String token = pushMessage.getToken();
-        String title = pushMessage.getTitle();
-        String body = pushMessage.getBody();
-        String imageUrl = pushMessage.getImageUrl();
-        String url = pushMessage.getUrl();
-
+    public void sendPush(PushTemplate pushTemplate) {
         Message requestMessage = Message.builder()
-                .setToken(token)
+                .setToken(pushTemplate.getToken())
                 .setNotification(Notification.builder()
-                        .setTitle(title)
-                        .setBody(body)
-                        .setImage(imageUrl)
+                        .setTitle(pushTemplate.getTitle())
+                        .setBody(pushTemplate.getBody())
+                        .setImage(pushTemplate.getImageUrl())
                         .build())
                 .setWebpushConfig(WebpushConfig.builder()
-                        .setFcmOptions(WebpushFcmOptions.withLink(url))
+                        .setFcmOptions(WebpushFcmOptions.withLink(pushTemplate.getUrl()))
                         .build())
                 .build();
 
@@ -73,5 +62,30 @@ public class PushService {
             // throw new CustomException(ExceptionCode.PUSH_FAILD);
         }
 
+    }
+
+    @Async
+    public void sendWelcomeMessage(String token, Member member) {
+        String nickname = member.getNickname();
+        PushTemplate pushTemplate = pushTemplateConstructor
+                .getWelcomeTemplate(token, nickname);
+
+        sendPush(pushTemplate);
+    }
+
+    @Async
+    public void sendPostScheduleMessage(Schedule schedule) {
+        // Member
+        Member member = schedule.getMember();
+        Push push = member.getPush();
+
+        if (push == null) {
+            return;
+        }
+
+        PushTemplate pushTemplate = pushTemplateConstructor
+                .getPostScheduleTemplate(schedule, member, push);
+
+        sendPush(pushTemplate);
     }
 }

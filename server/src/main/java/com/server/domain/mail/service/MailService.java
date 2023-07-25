@@ -93,7 +93,7 @@ public class MailService {
 
     //일정에 관한 이메일 전송
     @Async
-    public void sendScheduleMail(Schedule schedule) {
+    public void sendPostScheduleMail(Schedule schedule) {
         long scheduleId = schedule.getScheduleId();
         Member member = schedule.getMember();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
