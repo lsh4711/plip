@@ -165,6 +165,7 @@ public class Init {
                 .member(Member.builder().memberId(1L).build())
                 .accessToken("asdasdasd")
                 .build();
+
         kakaoTokenOauthService.saveTestToken(kakaoToken);
     }
 }
