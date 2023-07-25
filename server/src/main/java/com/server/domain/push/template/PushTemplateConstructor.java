@@ -12,6 +12,7 @@ import com.server.domain.push.entity.Push;
 import com.server.domain.region.entity.Region;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.service.ScheduleService;
+import com.server.global.utils.CustomRandom;
 
 @Component
 public class PushTemplateConstructor {
@@ -55,9 +56,8 @@ public class PushTemplateConstructor {
         PushTemplate pushTemplate = PushTemplate.builder()
                 .token(push.getPushToken())
                 .title(String.format("%s님의 %s 여행 일정입니다.", nickname, korName))
-                .body(String.format("기간: %s \n~ %s (%s)", startDate, endDate, term))
-                .region(engName)
-                // .imageUrl(null)
+                .body(String.format("기간: %s ~ %s (%s)", startDate, endDate, term))
+                .imageUrl(CustomRandom.getCustomRegionUrl(engName))
                 .url(shareUrl)
                 .build();
 

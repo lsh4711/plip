@@ -31,4 +31,12 @@ public class CustomRandom {
 
         return format;
     }
+
+    public static String getRandomRegionUrl() {
+        return "https://teamdev.shop/files/images?region=" + getRandomRegion();
+    }
+
+    public static String getCustomRegionUrl(String region) {
+        return "https://teamdev.shop/files/images?region=" + region;
+    }
 }

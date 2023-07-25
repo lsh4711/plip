@@ -2,7 +2,6 @@ package com.server.domain.oauth.template;
 
 import com.server.global.utils.CustomRandom;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 public class KakaoTemplate {
@@ -60,7 +59,6 @@ public class KakaoTemplate {
     }
 
     @Builder
-    @AllArgsConstructor
     public static class Link {
         @Builder.Default
         private String web_url = "https://plip.netlify.app/";
@@ -70,12 +68,6 @@ public class KakaoTemplate {
 
         // private String android_execution_params = "";
         // private String ios_execution_params = "";
-
-        @Builder
-        public Link(String url) {
-            this.web_url = url;
-            this.mobile_web_url = url;
-        }
     }
 
     @Builder

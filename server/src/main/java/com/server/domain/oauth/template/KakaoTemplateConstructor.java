@@ -57,7 +57,8 @@ public class KakaoTemplateConstructor {
         // Link
         String shareUrl = scheduleService.createShareUrl(scheduleId, member);
         Link link = Link.builder()
-                .url(shareUrl)
+                .web_url(shareUrl)
+                .mobile_web_url(shareUrl)
                 .build();
 
         Content content = Content.builder()
@@ -105,7 +106,8 @@ public class KakaoTemplateConstructor {
         }
 
         Link link = Link.builder()
-                .url(shareUrl)
+                .web_url(shareUrl)
+                .mobile_web_url(shareUrl)
                 .build();
 
         Text textTemplate = Text.builder()
