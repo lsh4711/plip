@@ -20,14 +20,13 @@ export const getFCMToken = () => {
     vapidKey: import.meta.env.VITE_FB_VAPID_KEY,
   })
     .then((token) => {
-      console.log(token);
       if (token) {
         instance
           .post('/api/pushs/write', {
             pushToken: token,
           })
           .then((res) => {
-            console.log(res);
+            // console.log(res);
           });
       } else {
         console.log('No registration token available. Request permission to generate one.');

@@ -9,7 +9,6 @@ import useSetAccessToken from '@/hooks/useSetAccessToken';
 import useSuccessFailToast from '@/hooks/useSuccessFailToast';
 import instance from '../axiosinstance';
 import useInquireUsersQuery from './useInquireUsersQuery';
-import { getMessaging } from 'firebase/messaging';
 
 const postLogin = async (loginData: LoginType) => {
   const response = await instance.post(
