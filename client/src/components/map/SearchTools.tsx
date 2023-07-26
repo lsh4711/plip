@@ -30,6 +30,7 @@ const SearchTools = ({ currentLng, currentLat }: Props) => {
     setInput('');
     setKeyword(null);
     setSearchCenterPosition({ lat: currentLat, lng: currentLng });
+    setCategoryCode('');
     dispatch(setSelectedPlace(null));
     dispatch(setSearchPlaceResults([]));
   };
@@ -44,6 +45,9 @@ const SearchTools = ({ currentLng, currentLat }: Props) => {
             value={input}
             onChange={(e) => {
               setInput(e.target.value);
+            }}
+            onClick={() => {
+              if (categoryCode) onResetSearch();
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
