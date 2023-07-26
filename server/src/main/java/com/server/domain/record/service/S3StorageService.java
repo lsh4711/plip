@@ -128,6 +128,12 @@ public class S3StorageService implements StorageService {
 
     }
 
+    public void resetRecordImageStorage() {
+        String dirName = BUCKET_IMAGE_PATH;
+
+        s3Client.deleteObject(bucketName, dirName);
+    }
+
     private int getNewIndex(String dirName) {
         ListObjectsV2Result result = s3Client.listObjectsV2(bucketName, dirName);
         List<S3ObjectSummary> objectSummaries = result.getObjectSummaries();

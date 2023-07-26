@@ -3,6 +3,7 @@ package com.server.global.test.controller;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,10 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushFcmOptions;
+import com.server.domain.record.service.S3StorageService;
 import com.server.domain.record.service.StorageService;
+import com.server.global.exception.CustomException;
+import com.server.global.exception.ExceptionCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RequestMapping("/test")
 public class TestController { // 테스트 용이므로 비즈니스 로직도 함께 있습니다.
-    private final StorageService StorageService;
+    private final StorageService storageService;
 
     @GetMapping
     public ModelAndView getTest() {
@@ -34,12 +38,12 @@ public class TestController { // 테스트 용이므로 비즈니스 로직도 �
     }
 
     @GetMapping("/delete")
-    public ResponseEntity test() {
-        for (int i = 0; i <= 15; i++) {
-            for (int j = 0; j <= 15; j++) {
-                StorageService.deleteImgs(j, i);
-            }
+    public ResponseEntity test(Authentication authentication) {
+        if (!authentication.getName().equals("admin@naver.com")) {
+            throw new CustomException(ExceptionCode.FORBIDDEN);
         }
+
+        ((S3StorageService)storageService).resetRecordImageStorage();
 
         return ResponseEntity.ok("삭제 완료");
     }
