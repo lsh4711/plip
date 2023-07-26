@@ -11,7 +11,6 @@ import useModal from '@/hooks/useModal';
 import usePlanMutation from '@/queries/plan/usePlanMutation';
 import { getFormatDateString, getTripPeriod, getTripTitleWithRegion } from '@/utils/date';
 import parsePlanId from '@/utils/parsePlanId';
-import syncDate from '@/utils/date/syncDate';
 
 interface PlanPageProps {}
 
@@ -60,8 +59,6 @@ const PlanPage = ({}: PlanPageProps) => {
   };
 
   const createPlan = () => {
-    console.log(`${startDate} ~ ${endDate}`);
-
     mutation
       .mutateAsync({
         title: getTripTitleWithRegion(selectedRegion!),
