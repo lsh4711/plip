@@ -30,6 +30,7 @@ const SearchTools = ({ currentLng, currentLat }: Props) => {
     setInput('');
     setKeyword(null);
     setSearchCenterPosition({ lat: currentLat, lng: currentLng });
+    setCategoryCode('');
     dispatch(setSelectedPlace(null));
     dispatch(setSearchPlaceResults([]));
   };
@@ -45,6 +46,9 @@ const SearchTools = ({ currentLng, currentLat }: Props) => {
             onChange={(e) => {
               setInput(e.target.value);
             }}
+            onClick={() => {
+              if (categoryCode) onResetSearch();
+            }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 dispatch(setSelectedPlace(null));
@@ -59,6 +63,7 @@ const SearchTools = ({ currentLng, currentLat }: Props) => {
             {CategoryNames.map((categoryName, idx) => (
               <RoundButton
                 key={idx}
+                title={`${categories[categoryName].name} 검색하기`}
                 onClick={() => {
                   setInput(categories[categoryName].name);
                   setKeyword(categories[categoryName].name);
