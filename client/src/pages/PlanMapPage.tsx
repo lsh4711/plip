@@ -16,6 +16,7 @@ import { setIsStale } from '@/redux/slices/scheduleSlice';
 import { RootState } from '@/redux/store';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
 import LoadingPage from './LoadingPage';
+import { useQueryClient } from '@tanstack/react-query';
 
 const PlanMapPage = () => {
   const { id } = useParams();
@@ -24,6 +25,8 @@ const PlanMapPage = () => {
 
   const navigate = useNavigate();
   const toast = useToast();
+  const queryClient = useQueryClient();
+
   const [openModal] = useModal();
   const [mapLevel, setMapLevel] = useState(8);
   const [centerPosition, setCenterPosition] = useState({
