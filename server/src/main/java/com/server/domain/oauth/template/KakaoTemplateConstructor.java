@@ -92,7 +92,7 @@ public class KakaoTemplateConstructor {
         String shareUrl = null;
 
         if (hour == 22) {
-            message = String.format("%s님! %s 여행은 즐거우셨나요?!",
+            message = String.format("%s님! %s 여행은 즐거우셨나요?",
                 nickname,
                 korName);
             button_title = "일지 작성하러 가기";
@@ -139,7 +139,7 @@ public class KakaoTemplateConstructor {
 
     // 이벤트용
     public Feed getNoticeTemplate(String nickname, String title, String message) {
-        String eventManualUrl = "https:/teamdev.shop/events";
+        String eventManualUrl = "https://teamdev.shop/events";
 
         Link link = Link.builder()
                 .web_url(eventManualUrl)

@@ -88,7 +88,7 @@ public class PushTemplateConstructor {
                 .title(title)
                 .body(String.format("%s님 %s", nickname, message))
                 .imageUrl("https://teamdev.shop/files/images/gifts?id=999")
-                .url("https:/teamdev.shop/events")
+                .url("https://teamdev.shop/events")
                 .build();
 
         return pushTemplate;
