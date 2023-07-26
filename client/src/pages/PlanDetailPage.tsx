@@ -2,7 +2,7 @@ import { Button } from '@/components';
 import { Map, MenuButtons, ZoomButtons } from '@/components/map';
 import { usePlanQuery } from '@/queries/plan';
 import { RootState } from '@/redux/store';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 
 import SidePanel from '@/components/common/SidePanel';
@@ -13,6 +13,7 @@ import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
 import RecordPanel from '@/components/page-components/plan-detail/RecordPanel';
 import { useMapDetailContext } from '@/contexts/MapDetailProvider';
 import useGetRecords from '@/queries/record/useGetRecords';
+import { setSelectedPlace } from '@/redux/slices/placeSlice';
 
 interface PlanDetailPageProps {}
 
@@ -27,8 +28,11 @@ const PlanDetailPage = ({}: PlanDetailPageProps) => {
 
   const { setScheduleInfo } = useMapDetailContext();
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     setScheduleInfo(data!);
+    dispatch(setSelectedPlace(null));
     refetch();
   }, []);
 
