@@ -6,7 +6,6 @@ import LoadingSpinner from '@/components/atom/LoadingSpinner';
 import MyTripCard from '@/components/page-components/mytrip/MyTripCard';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import useMyTripQuery from '@/queries/mytrip/useMyTripQuery';
-import { useEffect } from 'react';
 
 const MyTripPage = () => {
   const auth = useAuthRedirect();
