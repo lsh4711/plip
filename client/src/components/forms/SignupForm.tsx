@@ -8,14 +8,12 @@ import Paragraph from '../atom/Paragraph';
 import Button from '../atom/Button';
 import LoadingSpinner from '../atom/LoadingSpinner';
 import Input from '../atom/Input';
-import useDebounce from '@/hooks/useDebounce';
-
-let requestRef = false;
 
 const SignupForm = () => {
   const emailRequestMutation = useEmailRequestMutation('signup');
   const emailValidationMutation = useEmailValidationMutation();
   const signupMutation = useSignupMutation();
+  const requestRef = React.useRef(false);
 
   const [isNicknameValid, setIsNicknameValid] = React.useState({
     isSuccess: true,
@@ -48,9 +46,9 @@ const SignupForm = () => {
     if (signupForm.formState.errors.email?.message !== undefined) return;
     if (signupForm.getValues('email') === '') return;
     if (emailRequestMutation.status === 'loading') return;
-    if (emailRequestMutation.status === 'success') return;
-    if (requestRef) return;
-    requestRef = true;
+    if (requestRef.current) return;
+
+    requestRef.current = true;
 
     emailRequestMutation
       .mutateAsync(signupForm.getValues('email'))
@@ -84,7 +82,8 @@ const SignupForm = () => {
   };
 
   const resetMutateEmailRequestStatus = () => {
-    requestRef = false;
+    requestRef.current = false;
+    console.log(requestRef);
   };
 
   const resetAuthNumberStatus = () => {
