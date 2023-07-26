@@ -19,7 +19,7 @@ const MypageForm = () => {
   const editForm = useForm<EditUserType>({
     mode: 'all',
     defaultValues: {
-      nickname: data?.data.data.nickname,
+      nickname: data?.nickname,
       password: '',
       checkpassword: '',
     },
@@ -64,7 +64,7 @@ const MypageForm = () => {
 
       <div className="flex flex-col md:flex-row md:items-center md:gap-4">
         <span className="w-24 text-sm text-[#4568DC] md:text-end">이메일</span>
-        <div className="flex flex-grow text-[#343539]">{data?.data.data.email}</div>
+        <div className="flex flex-grow text-[#343539]">{data?.email}</div>
       </div>
 
       <div className="flex flex-col">
@@ -77,7 +77,7 @@ const MypageForm = () => {
               {...editForm.register('nickname')}
             />
           ) : (
-            <div className="flex flex-grow text-[#343539]">{data?.data.data.nickname}</div>
+            <div className="flex flex-grow text-[#343539]">{data?.nickname}</div>
           )}
         </div>
 

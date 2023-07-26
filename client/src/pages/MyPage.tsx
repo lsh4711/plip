@@ -22,7 +22,7 @@ const MyPage = ({}: MyPageProps) => {
       <div className="flex flex-col items-center justify-center">
         <Avatar size={84} imgSrc="" />
         <Paragraph variant={'black'} className="mt-2">
-          {data?.data.data.nickname}
+          {data?.nickname}
         </Paragraph>
         <MypageForm />
       </div>
