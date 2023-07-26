@@ -28,7 +28,7 @@ public class EventController {
         String nickname = gift.getNickname();
         String message = null;
         if (ranking <= 50) {
-            message = String.format("%s님 축하드립니다! %d등이십니다 ㅎㅎ",
+            message = String.format("%s님 축하드립니다! %d등입니다. ㅎㅎ",
                 nickname,
                 ranking);
         } else {
