@@ -3,6 +3,8 @@ package com.server.domain.member.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+import com.server.domain.member.entity.Member;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -59,5 +61,6 @@ public class MemberDto {
         private Long memberId;
         private String email;
         private String nickname;
+        private Member.Role role;
     }
 }

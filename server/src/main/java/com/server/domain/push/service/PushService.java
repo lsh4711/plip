@@ -58,7 +58,7 @@ public class PushService {
         try {
             FirebaseMessaging.getInstance().send(requestMessage);
         } catch (FirebaseMessagingException e) {
-            log.error("### 푸시 에러", e.getMessage());
+            log.error("### 푸시 에러: ", e.getMessage());
             // throw new CustomException(ExceptionCode.PUSH_FAILD);
         }
 
@@ -88,4 +88,28 @@ public class PushService {
 
         sendPush(pushTemplate);
     }
+
+    // public String sendPush(String token) {
+    //     Message message = Message.builder()
+    //             .setToken(token)
+    //             .setNotification(Notification.builder()
+    //                     .setTitle("제목")
+    //                     .setBody("내용")
+    //                     .setImage("https://teamdev.shop/files/images/test?name=test")
+    //                     .build())
+    //             .setWebpushConfig(WebpushConfig.builder()
+    //                     .setFcmOptions(WebpushFcmOptions.withLink("https://teamdev.shop/"))
+    //                     .build())
+    //             .build();
+
+    //     try {
+    //         String response = FirebaseMessaging.getInstance().send(message);
+    //     } catch (FirebaseMessagingException e) {
+    //         log.error("### 푸시 에러", e.getMessage());
+    //         ExceptionCode
+    //         return ResponseEntity.internalServerError().body("푸시 알림 전송 실패");
+    //     }
+
+    //     return ResponseEntity.ok("푸시 알림 전송 성공");
+    // }
 }

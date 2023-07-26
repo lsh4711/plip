@@ -211,7 +211,8 @@ public class MemberControllerTest {
                             .responseFields(
                                 fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("회원 닉네임"),
                                 fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
-                                fieldWithPath("data.email").type(JsonFieldType.STRING).description("회원 이메일"))
+                                fieldWithPath("data.email").type(JsonFieldType.STRING).description("회원 이메일"),
+                                fieldWithPath("data.role").type(JsonFieldType.STRING).description("회원 권한"))
                             .build())));
     }
 
