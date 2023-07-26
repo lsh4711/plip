@@ -22,8 +22,6 @@ export interface ScheduledPlaceBase {
   placeId?: number;
   scheduleId?: number;
   schedulePlaceId?: number;
-
-  // TODO phone 추가 필요
 }
 
 // GET : /schedules/:id
