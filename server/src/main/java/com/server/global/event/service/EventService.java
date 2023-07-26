@@ -70,10 +70,10 @@ public class EventService {
         return gift;
     }
 
-    String findGiftCodeImage(long giftId) {
+    byte[] findGiftCodeImage(long giftId) {
         if (giftId > 1) {
-            return fileService.getBase64EncodedImage(String.format("%s/0.jpg", giftDir));
+            return fileService.getImage(String.format("%s/0.jpg", giftDir));
         }
-        return fileService.getBase64EncodedImage(String.format("%s/%d.jpg", giftDir, giftId));
+        return fileService.getImage(String.format("%s/%d.jpg", giftDir, giftId));
     }
 }

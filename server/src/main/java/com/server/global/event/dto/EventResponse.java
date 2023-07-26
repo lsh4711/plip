@@ -9,7 +9,7 @@ public class EventResponse {
     private long ranking;
     private String nickname;
     private String message;
-    private String giftCodeImage;
+    private byte[] giftCodeImage;
 
     public void setMessage(String message) {
         this.message = message;

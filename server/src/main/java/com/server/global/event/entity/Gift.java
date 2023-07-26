@@ -29,13 +29,13 @@ public class Gift {
 
     // url 노출을 막고 요청 횟수를 줄이기위해 파일까지 한번에 전송
     @Transient
-    private String giftCodeImage;
+    private byte[] giftCodeImage;
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
-    public void setGiftCodeImage(String giftCodeImage) {
+    public void setGiftCodeImage(byte[] giftCodeImage) {
         this.giftCodeImage = giftCodeImage;
     }
 }
