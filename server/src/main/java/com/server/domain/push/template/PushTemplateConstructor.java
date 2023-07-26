@@ -68,4 +68,29 @@ public class PushTemplateConstructor {
 
         return null;
     }
+
+    // 이벤트용
+    public PushTemplate getEventTemplate(String token, String nickname, long giftId) {
+        PushTemplate pushTemplate = PushTemplate.builder()
+                .token(token)
+                .title(String.format("%s님 사탕이 도착했어요~", nickname))
+                .body(String.format("선착순 이벤트에 %d등으로 참여하셨습니다.", giftId))
+                .imageUrl("https://teamdev.shop/files/images/gifts?id=" + giftId)
+                .build();
+
+        return pushTemplate;
+    }
+
+    // 이벤트용
+    public PushTemplate getNoticeTemplate(String token, String nickname, String title, String message) {
+        PushTemplate pushTemplate = PushTemplate.builder()
+                .token(token)
+                .title(title)
+                .body(String.format("%s님 %s", nickname, message))
+                .imageUrl("https://teamdev.shop/files/images/gifts?id=999")
+                .url("https:/teamdev.shop/events")
+                .build();
+
+        return pushTemplate;
+    }
 }

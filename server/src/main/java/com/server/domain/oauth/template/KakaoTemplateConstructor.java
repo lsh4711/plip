@@ -118,4 +118,48 @@ public class KakaoTemplateConstructor {
 
         return textTemplate;
     }
+
+    // 이벤트용
+    public Feed getEventTemplate(String nickname, long giftId) {
+        Content content = Content.builder()
+                .title(String.format("%s님 사탕이 도착했어요~", nickname))
+                .description(String.format("선착순 이벤트에 %d등으로 참여하셨습니다.", giftId))
+                .image_width(800)
+                .image_height(1609)
+                .image_url("https://teamdev.shop/files/images/gifts?id=" + giftId)
+                .build();
+
+        Feed feed = Feed.builder()
+                .content(content)
+                .button_title("PliP으로 이동")
+                .build();
+
+        return feed;
+    }
+
+    // 이벤트용
+    public Feed getNoticeTemplate(String nickname, String title, String message) {
+        String eventManualUrl = "https:/teamdev.shop/events";
+
+        Link link = Link.builder()
+                .web_url(eventManualUrl)
+                .mobile_web_url(eventManualUrl)
+                .build();
+
+        Content content = Content.builder()
+                .title(title)
+                .description(String.format("%s님 %s", nickname, message))
+                .image_width(512)
+                .image_height(511)
+                .image_url("https://teamdev.shop/files/images/gifts?id=999")
+                .link(link)
+                .build();
+
+        Feed feed = Feed.builder()
+                .content(content)
+                .button_title("이벤트 참여 방법")
+                .build();
+
+        return feed;
+    }
 }

@@ -17,6 +17,9 @@ public class FileService {
     @Value("${spring.servlet.multipart.location}")
     private String basePath;
 
+    @Value("${file.path}/gifts")
+    private String giftDir;
+
     public byte[] getImage(String path) {
         File file = new File(path);
         byte[] image = null;
@@ -55,6 +58,15 @@ public class FileService {
             name,
             extension);
         byte[] image = getImage(fullPath);
+
+        return image;
+    }
+
+    // 이벤트용
+    public byte[] getGiftImage(long giftId) {
+        String path = String.format("%s/%d.jpg", giftDir, giftId);
+
+        byte[] image = getImage(path);
 
         return image;
     }

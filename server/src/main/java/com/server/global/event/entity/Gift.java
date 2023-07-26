@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import com.server.global.audit.BaseEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Gift {
+public class Gift extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long giftId;
@@ -27,7 +29,6 @@ public class Gift {
 
     private String nickname;
 
-    // url 노출을 막고 요청 횟수를 줄이기위해 파일까지 한번에 전송
     @Transient
     private byte[] giftCodeImage;
 

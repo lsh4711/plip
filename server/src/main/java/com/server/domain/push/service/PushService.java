@@ -1,5 +1,7 @@
 package com.server.domain.push.service;
 
+import java.util.List;
+
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -87,6 +89,34 @@ public class PushService {
                 .getPostScheduleTemplate(schedule, member, push);
 
         sendPush(pushTemplate);
+    }
+
+    // 이벤트용
+    @Async
+    public void sendEventMessage(Member member, Push push, long giftId) {
+        String token = push.getPushToken();
+        String nickname = member.getNickname();
+
+        PushTemplate pushTemplate = pushTemplateConstructor
+                .getEventTemplate(token, nickname, giftId);
+
+        sendPush(pushTemplate);
+    }
+
+    // 이벤트용
+    @Async
+    public void sendNoticeMessage(String title, String message) {
+        List<Push> pushs = pushRepository.findAll();
+
+        for (Push push : pushs) {
+            Member member = push.getMember();
+            String nickname = member.getNickname();
+            String token = push.getPushToken();
+            PushTemplate pushTemplate = pushTemplateConstructor
+                    .getNoticeTemplate(token, nickname, title, message);
+            sendPush(pushTemplate);
+        }
+
     }
 
     // public String sendPush(String token) {

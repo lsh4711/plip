@@ -1,5 +1,6 @@
 package com.server.global.file;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,5 +36,16 @@ public class FileController {
                 // .contentType(MediaType.IMAGE_JPEG)
                 .header("Content-Type", "image/" + extension)
                 .body(base64EncodedImage);
+    }
+
+    // 이벤트용
+    @GetMapping("/gifts")
+    public ResponseEntity getImage(@RequestParam("id") long giftId) {
+        byte[] image = fileService.getGiftImage(giftId);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                // .header("Content-Type", "image/jpeg")
+                .body(image);
     }
 }

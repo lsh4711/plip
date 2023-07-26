@@ -1,5 +1,7 @@
 package com.server.domain.oauth.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
@@ -10,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.google.gson.Gson;
 import com.server.domain.member.entity.Member;
 import com.server.domain.oauth.entity.KakaoToken;
+import com.server.domain.oauth.repository.KakaoTokenRepository;
 import com.server.domain.oauth.template.KakaoTemplate.Feed;
 import com.server.domain.oauth.template.KakaoTemplateConstructor;
 import com.server.domain.schedule.entity.Schedule;
@@ -19,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class KakaoApiService {
+    private final KakaoTokenRepository kakaoTokenRepository;
+
     private final KakaoTemplateConstructor kakaoTemplateConstructor;
 
     @Value("${kakao.api-key}")
@@ -64,5 +69,33 @@ public class KakaoApiService {
                 .getPostScheduleTemplate(schedule, member);
 
         sendMessage(feedTemplate, accessToken);
+    }
+
+    // 이벤트용
+    @Async
+    public void sendEventMessage(Member member, KakaoToken kakaoToken, long giftId) {
+        String nickname = member.getNickname();
+        String accessToken = kakaoToken.getAccessToken();
+
+        Feed feedTemplate = kakaoTemplateConstructor
+                .getEventTemplate(nickname, giftId);
+
+        sendMessage(feedTemplate, accessToken);
+    }
+
+    // 이벤트용
+    @Async
+    public void sendNoticeMessage(String title, String message) {
+        List<KakaoToken> kakaoTokens = kakaoTokenRepository.findAll();
+
+        for (KakaoToken kakaoToken : kakaoTokens) {
+            Member member = kakaoToken.getMember();
+            String nickname = member.getNickname();
+            String accessToken = kakaoToken.getAccessToken();
+            Feed feedTemplate = kakaoTemplateConstructor
+                    .getNoticeTemplate(nickname, title, message);
+            sendMessage(feedTemplate, accessToken);
+        }
+
     }
 }
