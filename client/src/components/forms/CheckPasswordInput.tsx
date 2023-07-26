@@ -1,13 +1,13 @@
 import { UseFormReturn } from 'react-hook-form';
 
 import { Input, Paragraph } from '@/components';
-import { EditUserType } from '@/schema/editUserSchema';
+import { ChangePasswordType } from '@/schema/changePasswordSchema';
 
-interface MyPageEditInputProps {
-  returnForm: UseFormReturn<EditUserType, any, undefined>;
+interface CheckPasswordInputProps {
+  returnForm: UseFormReturn<ChangePasswordType, any, undefined>;
 }
 
-const MyPageEditInput = ({ returnForm }: MyPageEditInputProps) => {
+const CheckPasswordInput = ({ returnForm }: CheckPasswordInputProps) => {
   return (
     <>
       <div className="flex flex-col">
@@ -30,4 +30,4 @@ const MyPageEditInput = ({ returnForm }: MyPageEditInputProps) => {
   );
 };
 
-export default MyPageEditInput;
+export default CheckPasswordInput;
