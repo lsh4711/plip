@@ -11,7 +11,7 @@ import useDebounce from '@/hooks/useDebounce';
 import useModal from '@/hooks/useModal';
 import useToast from '@/hooks/useToast';
 import { useEditPlanMutation, usePlanQuery } from '@/queries/plan';
-import { setSearchPlaceResults } from '@/redux/slices/placeSlice';
+import { setSearchPlaceResults, setSelectedPlace } from '@/redux/slices/placeSlice';
 import { setIsStale } from '@/redux/slices/scheduleSlice';
 import { RootState } from '@/redux/store';
 import { getRegionCenterLat, getRegionCenterLng } from '@/utils/map';
@@ -80,6 +80,7 @@ const PlanMapPage = () => {
   useEffect(() => {
     return () => {
       dispatch(setSearchPlaceResults([]));
+      dispatch(setSelectedPlace(null));
     };
   }, []);
 
