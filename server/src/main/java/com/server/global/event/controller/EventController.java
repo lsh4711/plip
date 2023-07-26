@@ -23,20 +23,13 @@ public class EventController {
     public ResponseEntity getGift() {
         Gift gift = eventService.getGift();
         EventResponse eventResponse = giftMapper.giftToEventResponse(gift);
-
         long ranking = eventResponse.getRanking();
-        String nickname = gift.getNickname();
-        String message = null;
+
         if (ranking <= 50) {
-            message = String.format("%s님 축하드립니다! %d등입니다. ㅎㅎ",
-                nickname,
-                ranking);
+            eventResponse.setWin(true);
         } else {
-            message = String.format("%s님 죄송합니다.. %d등으로 오셔서 사탕이 모두 소진 되었습니다..ㅠ",
-                nickname,
-                ranking);
+            eventResponse.setWin(false);
         }
-        eventResponse.setMessage(message);
 
         return ResponseEntity.ok(eventResponse);
     }

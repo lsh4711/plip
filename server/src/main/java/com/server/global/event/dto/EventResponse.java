@@ -8,10 +8,10 @@ import lombok.Getter;
 public class EventResponse {
     private long ranking;
     private String nickname;
-    private String message;
     private byte[] giftCodeImage;
+    private boolean win;
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setWin(boolean message) {
+        this.win = win;
     }
 }
