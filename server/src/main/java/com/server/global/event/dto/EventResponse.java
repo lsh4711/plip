@@ -11,7 +11,7 @@ public class EventResponse {
     private byte[] giftCodeImage;
     private boolean win;
 
-    public void setWin(boolean message) {
+    public void setWin(boolean win) {
         this.win = win;
     }
 }
