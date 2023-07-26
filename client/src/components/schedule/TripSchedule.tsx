@@ -64,7 +64,7 @@ function TripSchedule({ startDate, places }: Props) {
             hovercolor={'default'}
             hoveropacity={'active'}
             onClick={() => setIsEditMode(!isEditMode)}
-            className="text-xs font-medium"
+            className=" bg-[#e5f0ff] text-xs font-medium text-[#4568DC]"
           >
             일정 편집하기
           </Button>
