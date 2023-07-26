@@ -28,7 +28,7 @@ public class EventService {
     @Value("${file.path}/gifts")
     private String giftDir;
 
-    public String getGift() {
+    public Gift getGift() {
         // Member
         Member member = AuthUtil.getMember(memberService);
         String email = member.getEmail();
@@ -45,17 +45,20 @@ public class EventService {
 
         if (gift != null) {
             long giftId = gift.getGiftId();
-            return findGiftCodeImage(giftId);
+            gift.setGiftCodeImage(findGiftCodeImage(giftId));
+            return gift;
         }
 
         gift = Gift.builder()
                 .email(email)
                 .build();
+
         giftRepository.save(gift);
 
         long giftId = gift.getGiftId();
+        gift.setGiftCodeImage(findGiftCodeImage(giftId));
 
-        return findGiftCodeImage(giftId);
+        return gift;
     }
 
     String findGiftCodeImage(long giftId) {

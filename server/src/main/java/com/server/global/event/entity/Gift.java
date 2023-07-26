@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -19,4 +20,12 @@ public class Gift {
 
     @Column(unique = true)
     private String email;
+
+    // url 노출을 막고 요청 횟수를 줄이기위해 파일까지 한번에 전송
+    @Transient
+    private String giftCodeImage;
+
+    public void setGiftCodeImage(String giftCodeImage) {
+        this.giftCodeImage = giftCodeImage;
+    }
 }

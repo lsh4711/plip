@@ -5,6 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.server.global.event.dto.EventResponse;
+import com.server.global.event.entity.Gift;
+import com.server.global.event.mapper.GiftMapper;
 import com.server.global.event.service.EventService;
 
 import lombok.RequiredArgsConstructor;
@@ -14,11 +17,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/events")
 public class EventController {
     private final EventService eventService;
+    private final GiftMapper giftMapper;
 
     @GetMapping("/gifts")
     public ResponseEntity getGift() {
-        String gift = eventService.getGift();
+        Gift gift = eventService.getGift();
+        EventResponse eventResponse = giftMapper.giftToEventResponse(gift);
 
-        return ResponseEntity.ok(gift);
+        return ResponseEntity.ok(eventResponse);
     }
 }
