@@ -32,25 +32,34 @@ public class EventService {
         // Member
         Member member = AuthUtil.getMember(memberService);
         String email = member.getEmail();
+        String nickname = member.getNickname();
 
         // Token
         Push push = member.getPush();
         KakaoToken kakaoToken = member.getKakaoToken();
 
-        if (push == null || kakaoToken == null) {
-            throw new CustomException(ExceptionCode.EVENT_CONDITION_INVALID);
+        if (push == null && kakaoToken == null) {
+            throw new CustomException(ExceptionCode.EVENT_TOKENS_NOT_FOUND);
+        }
+        if (push == null) {
+            throw new CustomException(ExceptionCode.EVENT_PUSH_TOKEN_NOT_FOUND);
+        }
+        if (kakaoToken == null) {
+            throw new CustomException(ExceptionCode.EVENT_KAKAO_TOKEN_NOT_FOUND);
         }
 
         Gift gift = giftRepository.findByEmail(email);
 
         if (gift != null) {
             long giftId = gift.getGiftId();
+            gift.setNickname(nickname);
             gift.setGiftCodeImage(findGiftCodeImage(giftId));
-            return gift;
+            return giftRepository.save(gift);
         }
 
         gift = Gift.builder()
                 .email(email)
+                .nickname(nickname)
                 .build();
 
         giftRepository.save(gift);
