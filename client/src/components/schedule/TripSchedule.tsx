@@ -20,9 +20,15 @@ function TripSchedule({ startDate, places }: Props) {
   const { schedules } = useSelector((state: RootState) => state.schedule);
   const [isEditMode, setIsEditMode] = useState(false);
   const isPlanningPage = useMatch('/plan/map/:id');
+  const [scheduleBeforeEdit, setScheduleBeforeEdit] = useState<ScheduledPlaceBase[][]>();
 
   const toast = useToast();
   const mutation = useEditPlanMutation(id!);
+
+  const hasChanges = () => {
+    return JSON.stringify(scheduleBeforeEdit) !== JSON.stringify(schedules);
+  };
+
   const patchSchedule = () =>
     mutation
       .mutateAsync({
@@ -52,7 +58,7 @@ function TripSchedule({ startDate, places }: Props) {
             size={'full'}
             hovercolor={'default'}
             hoveropacity={'active'}
-            onClick={() => patchSchedule()}
+            onClick={() => (hasChanges() ? patchSchedule() : setIsEditMode(false))}
             className="text-xs font-medium"
           >
             편집 완료하기
@@ -63,7 +69,10 @@ function TripSchedule({ startDate, places }: Props) {
             size={'full'}
             hovercolor={'default'}
             hoveropacity={'active'}
-            onClick={() => setIsEditMode(!isEditMode)}
+            onClick={() => {
+              setScheduleBeforeEdit(schedules);
+              setIsEditMode(!isEditMode);
+            }}
             className=" bg-[#e5f0ff] text-xs font-medium text-[#4568DC]"
           >
             일정 편집하기
