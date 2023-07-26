@@ -118,6 +118,7 @@ public class StubData {
                     .memberId(1L)
                     .email("testtest@naver.com")
                     .nickname("테스트수정계정")
+                    .role(Member.Role.USER)
                     .build();
         }
     }
