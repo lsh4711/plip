@@ -10,17 +10,16 @@ import org.springframework.stereotype.Service;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
+import io.jsonwebtoken.io.Encoders;
+
 @Service
 public class FileService {
     @Value("${spring.servlet.multipart.location}")
     private String basePath;
 
-    public byte[] getImageByRegion(String region) {
+    public byte[] getImage(String path) {
+        File file = new File(path);
         byte[] image = null;
-        String fullPath = String.format("%s/%s.webp",
-            basePath,
-            region);
-        File file = new File(fullPath);
 
         if (file.exists()) {
             try {
@@ -33,21 +32,29 @@ public class FileService {
         return image;
     }
 
+    public String getBase64EncodedImage(String path) {
+        byte[] image = getImage(path);
+        String encodedImage = Encoders.BASE64.encode(image);
+
+        return encodedImage;
+    }
+
+    public byte[] getImageByRegion(String region) {
+        String fullPath = String.format("%s/%s.webp",
+            basePath,
+            region);
+        byte[] image = getImage(fullPath);
+
+        return image;
+    }
+
+    // 테스트용
     public byte[] getImageByName(String name, String extension) {
-        byte[] image = null;
         String fullPath = String.format("%s/%s.%s",
             basePath,
             name,
             extension);
-        File file = new File(fullPath);
-
-        if (file.exists()) {
-            try {
-                image = FileUtils.readFileToByteArray(file);
-            } catch (IOException e) {
-                throw new CustomException(ExceptionCode.IMAGE_NOT_FOUND);
-            }
-        }
+        byte[] image = getImage(fullPath);
 
         return image;
     }
