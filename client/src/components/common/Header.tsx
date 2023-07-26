@@ -56,7 +56,7 @@ const AfterLogin = ({ isHome }: AfterHeaderProps) => {
         ref={ref}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {inquireQuery.data?.data.data.nickname} 님
+        {inquireQuery.data?.nickname} 님
         <ArrowDownIcon width={18} height={18} transform={isOpen ? 'rotate(180)' : ''} />
         {isOpen && <DropDownMenus />}
       </div>

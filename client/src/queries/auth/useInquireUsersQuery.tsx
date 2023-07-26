@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
 import instance from '../axiosinstance';
+import { UserGetRequest } from '@/types/api/users-types';
 
 interface User {
-  data: { email: string; nickname: string };
+  data: Omit<UserGetRequest, 'memberId'>;
 }
 
 const useInquireUsersQuery = () => {
@@ -20,6 +21,7 @@ const useInquireUsersQuery = () => {
     suspense: true,
     retry: 3,
     enabled: false,
+    select: (data) => data.data.data,
   });
   return inquireUsers;
 };

@@ -22,6 +22,7 @@ export interface UserGetRequest {
   memberId: number;
   email: string;
   nickname: string;
+  role: 'ADMIN' | 'SOCIAL' | 'USER';
 }
 
 //PATCH : /users

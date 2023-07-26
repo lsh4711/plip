@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 
 import { HeadingParagraph, Paragraph } from '@/components';
 import Avatar from '@/components/common/Avatar';
-import MypageForm from '@/components/forms/MypageForm';
+import ChangeNicknameForm from '@/components/forms/ChangeNicknameForm';
+import ChangePasswordForm from '@/components/forms/ChangePasswordForm';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import useInquireUsersQuery from '@/queries/auth/useInquireUsersQuery';
 
@@ -19,15 +20,31 @@ const MyPage = ({}: MyPageProps) => {
       <HeadingParagraph variant={'darkgray'} size={'md'} className="mb-6">
         회원 정보
       </HeadingParagraph>
+
+      <HeadingParagraph variant={'darkgray'} size={'sm'}>
+        프로필
+      </HeadingParagraph>
       <div className="flex flex-col items-center justify-center">
         <Avatar size={84} imgSrc="" />
         <Paragraph variant={'black'} className="mt-2">
-          {data?.data.data.nickname}
+          {data?.nickname}
         </Paragraph>
-        <MypageForm />
+        <ChangeNicknameForm />
       </div>
+
+      {data?.role === 'USER' && (
+        <>
+          <HeadingParagraph variant={'darkgray'} size={'sm'} className="mt-12">
+            비밀번호 변경
+          </HeadingParagraph>
+          <div className="flex flex-col items-center justify-center">
+            <ChangePasswordForm />
+          </div>
+        </>
+      )}
+
       <div className="flex justify-end">
-        <Link to="/mypage/signout" className="text-sm text-[#bbb] hover:text-red-400">
+        <Link to="/mypage/signout" className="mt-12 text-sm text-[#bbb] hover:text-red-400">
           회원 탈퇴하기
         </Link>
       </div>
