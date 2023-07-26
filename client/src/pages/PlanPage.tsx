@@ -11,6 +11,7 @@ import useModal from '@/hooks/useModal';
 import usePlanMutation from '@/queries/plan/usePlanMutation';
 import { getFormatDateString, getTripPeriod, getTripTitleWithRegion } from '@/utils/date';
 import parsePlanId from '@/utils/parsePlanId';
+import syncDate from '@/utils/date/syncDate';
 
 interface PlanPageProps {}
 
@@ -59,13 +60,15 @@ const PlanPage = ({}: PlanPageProps) => {
   };
 
   const createPlan = () => {
+    console.log(`${startDate} ~ ${endDate}`);
+
     mutation
       .mutateAsync({
         title: getTripTitleWithRegion(selectedRegion!),
         region: selectedRegion!,
         content: null,
-        startDate: startDate!,
-        endDate: endDate!,
+        startDate: syncDate(startDate as Date),
+        endDate: syncDate(endDate as Date),
         places: null,
       })
       .then((res) => {
@@ -116,7 +119,10 @@ const PlanPage = ({}: PlanPageProps) => {
           <DatePicker
             placeholderText="오는 날 선택"
             selected={endDate}
-            onChange={(date) => setEndDate(date)}
+            onChange={(date) => {
+              console.log(date);
+              setEndDate(date);
+            }}
             minDate={startDate}
           />
           {startDate && endDate && (
