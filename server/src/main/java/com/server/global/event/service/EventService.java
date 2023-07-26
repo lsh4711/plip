@@ -71,7 +71,7 @@ public class EventService {
     }
 
     byte[] findGiftCodeImage(long giftId) {
-        if (giftId > 1) {
+        if (giftId > 50) {
             return fileService.getImage(String.format("%s/0.jpg", giftDir));
         }
         return fileService.getImage(String.format("%s/%d.jpg", giftDir, giftId));

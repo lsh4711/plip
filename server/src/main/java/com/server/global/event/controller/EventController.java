@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.server.global.event.dto.EventResponse;
 import com.server.global.event.entity.Gift;
@@ -18,6 +19,11 @@ import lombok.RequiredArgsConstructor;
 public class EventController {
     private final EventService eventService;
     private final GiftMapper giftMapper;
+
+    @GetMapping
+    public ModelAndView getTest() {
+        return new ModelAndView("event.html");
+    }
 
     @GetMapping("/gifts")
     public ResponseEntity getGift() {
