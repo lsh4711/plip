@@ -87,3 +87,55 @@
     height: 0;
   }
 }
+
+@-webkit-keyframes fly {
+  0% {
+    top: 30%;
+    left: 0%;
+  }
+  25% {
+    top: 60%;
+    left: 25%;
+  }
+  50% {
+    top: 30%;
+    left: 50%;
+  }
+  75% {
+    top: 60%;
+    left: 75%;
+  }
+  100% {
+    top: 30%;
+    left: 100%;
+  }
+}
+
+@keyframes fly {
+  0% {
+    top: 30%;
+    left: 0%;
+  }
+  25% {
+    top: 60%;
+    left: 25%;
+  }
+  50% {
+    top: 30%;
+    left: 50%;
+  }
+  75% {
+    top: 60%;
+    left: 75%;
+  }
+  100% {
+    top: 30%;
+    left: 100%;
+  }
+}
+
+.flying {
+  -webkit-animation: fly 4s linear 0s infinite;
+  -moz-animation: fly 4s linear 0s infinite;
+  animation: fly 4s linear 0s infinite;
+}

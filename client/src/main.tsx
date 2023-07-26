@@ -33,6 +33,8 @@ const FootPrintPage = lazy(() => import('./pages/FootPrintPage'));
 const PlanMapPage = lazy(() => import('./pages/PlanMapPage'));
 const PlanDetailPage = lazy(() => import('./pages/PlanDetailPage'));
 const Bookmark = lazy(() => import('./pages/Bookmark'));
+const EventPage = lazy(() => import('./pages/EventPage'));
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -46,6 +48,7 @@ const router = createBrowserRouter([
       { path: 'login/password', element: <ResetPasswordPage /> },
       { path: 'plan', element: <PlanPage /> },
       { path: 'loading', element: <LoadingPage /> },
+      { path: 'event', element: <EventPage /> },
       {
         path: 'mypage/',
         element: <MypageLayout />,
