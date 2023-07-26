@@ -15,7 +15,7 @@ type Props = {
 const maxTitleLength = 30;
 
 const GridItem = ({ id, title, content, editable }: Props) => {
-  const [isEdit, setIsEdit] = useState(!editable);
+  const [isEdit, setIsEdit] = useState(false);
   const [text, setText] = useState(
     editable && (content as String).length === 0
       ? '여행의 이름을 지어주세요~!'
