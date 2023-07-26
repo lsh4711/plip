@@ -65,17 +65,10 @@ const MyTripCard = ({
     ));
   };
 
-  const getDdayString = (): string => {
-    const dDay = getDday(startDate);
-    let str = dDay > 0 ? `D+${dDay}` : `D-${Math.abs(dDay)}`;
-
-    return str;
-  };
-
   return (
     <div className="relatvie mt-4 flex h-[220px] w-full gap-16 rounded-lg border p-4 drop-shadow-lg">
       <span className="absolute left-0 top-0 z-30 h-[40px] w-[40px] items-center rounded-[100%] border bg-[#4568DC] text-center text-[8px] leading-[36px]  text-white">
-        {getDdayString()}
+        {getDday(startDate)}
       </span>
       <div id="img" className="relative mr-4 shrink-0 ">
         <img
