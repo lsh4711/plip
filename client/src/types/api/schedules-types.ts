@@ -53,8 +53,8 @@ export interface PostScheduleRequest {
   title: string;
   content: string | null;
   region: (typeof regions)[number];
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   places: ScheduledPlace[][] | null;
 }
 

@@ -67,8 +67,8 @@ const PlanPage = ({}: PlanPageProps) => {
         title: getTripTitleWithRegion(selectedRegion!),
         region: selectedRegion!,
         content: null,
-        startDate: syncDate(startDate as Date),
-        endDate: syncDate(endDate as Date),
+        startDate: getFormatDateString(startDate!, false, 'dash'),
+        endDate: getFormatDateString(endDate!, false, 'dash'),
         places: null,
       })
       .then((res) => {
