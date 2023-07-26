@@ -114,16 +114,14 @@ const PlanPage = ({}: PlanPageProps) => {
                 setEndDate(date);
               }
             }}
+            minDate={new Date()}
           />
           <span className="text-xs text-white md:mx-4 md:text-[#343539]">~</span>
           <DatePicker
             placeholderText="오는 날 선택"
             selected={endDate}
-            onChange={(date) => {
-              console.log(date);
-              setEndDate(date);
-            }}
-            minDate={startDate}
+            onChange={(date) => setEndDate(date)}
+            minDate={startDate || new Date()}
           />
           {startDate && endDate && (
             <span className="mt-2 text-[#343539] md:ml-4">{`(${getTripPeriod(
