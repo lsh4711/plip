@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,7 +56,7 @@ public class Init {
     // S3
     private final StorageService storageService;
 
-    @PostConstruct
+    // @PostConstruct
     public void init() {
         List<Category> categories = new ArrayList<>();
         ArrayHashMap categoryMap = new ArrayHashMap("category");

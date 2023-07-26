@@ -32,7 +32,7 @@ spring:
     # generate-ddl: true
     properties:
       hibernate:
-        ddl-auto: create-drop
+        # ddl-auto: create-drop
         format_sql: true
         default_batch_fetch_size: 1000 # N+1
         # show_sql: true
@@ -41,8 +41,10 @@ spring:
         # use_sql_comments: true
     # defer-datasource-initialization: true
   # sql:
-    # init:
-      # mode: always
+  #   init:
+  #     mode: always
+  #     data-locations:
+
   servlet:
     multipart:
       enabled: true
