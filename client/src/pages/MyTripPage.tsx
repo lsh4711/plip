@@ -14,7 +14,7 @@ const MyTripPage = () => {
   const { data, isLoading, error } = useMyTripQuery();
 
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex h-auto w-full flex-col pb-20">
       <HeadingParagraph variant={'darkgray'} size={'md'} className="mb-4">
         나의 일정
       </HeadingParagraph>

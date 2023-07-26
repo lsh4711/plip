@@ -11,7 +11,6 @@ import useModal from '@/hooks/useModal';
 import usePlanMutation from '@/queries/plan/usePlanMutation';
 import { getFormatDateString, getTripPeriod, getTripTitleWithRegion } from '@/utils/date';
 import parsePlanId from '@/utils/parsePlanId';
-import syncDate from '@/utils/date/syncDate';
 
 interface PlanPageProps {}
 
@@ -60,15 +59,13 @@ const PlanPage = ({}: PlanPageProps) => {
   };
 
   const createPlan = () => {
-    console.log(`${startDate} ~ ${endDate}`);
-
     mutation
       .mutateAsync({
         title: getTripTitleWithRegion(selectedRegion!),
         region: selectedRegion!,
         content: null,
-        startDate: syncDate(startDate as Date),
-        endDate: syncDate(endDate as Date),
+        startDate: getFormatDateString(startDate!, false, 'dash'),
+        endDate: getFormatDateString(endDate!, false, 'dash'),
         places: null,
       })
       .then((res) => {
@@ -80,7 +77,7 @@ const PlanPage = ({}: PlanPageProps) => {
   };
 
   return (
-    <main className="smooth relative mx-auto mt-[76px] flex h-full w-full max-w-7xl flex-col px-8 py-12 transition-all duration-300">
+    <main className="smooth relative mx-auto mt-[76px] flex h-auto w-full max-w-7xl flex-col px-8 pb-20 pt-12 transition-all duration-300">
       <div className="flex justify-between">
         <HeadingParagraph
           size={'md'}
@@ -114,16 +111,14 @@ const PlanPage = ({}: PlanPageProps) => {
                 setEndDate(date);
               }
             }}
+            minDate={new Date()}
           />
           <span className="text-xs text-white md:mx-4 md:text-[#343539]">~</span>
           <DatePicker
             placeholderText="오는 날 선택"
             selected={endDate}
-            onChange={(date) => {
-              console.log(date);
-              setEndDate(date);
-            }}
-            minDate={startDate}
+            onChange={(date) => setEndDate(date)}
+            minDate={startDate || new Date()}
           />
           {startDate && endDate && (
             <span className="mt-2 text-[#343539] md:ml-4">{`(${getTripPeriod(

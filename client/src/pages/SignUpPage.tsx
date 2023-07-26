@@ -4,7 +4,7 @@ import OauthUI from '@/components/helper/OauthUI';
 
 const SignUpPage = () => {
   return (
-    <main className="mx-auto mt-40 flex max-w-[1024px] flex-col  ">
+    <main className="mx-auto mt-40 flex max-w-[1024px] flex-col pb-20  ">
       <div className="flex flex-col items-center justify-center">
         <div className="mb-10">
           <HeadingParagraph variant={'darkgray'} size="lg" className=" text-center">

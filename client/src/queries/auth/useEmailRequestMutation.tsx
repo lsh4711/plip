@@ -15,6 +15,7 @@ const useEmailRequestMutation = (type: 'pw' | 'signup') => {
     mutationFn: (email: string) => postEmailRequest(email),
     onSuccess: mutateHandler.onSuccess('이메일 요청 전송에 성공했습니다.'),
     onError: mutateHandler.onError('이메일 요청 전송에 실패했습니다.'),
+    
   });
 
   return emailRequest;
