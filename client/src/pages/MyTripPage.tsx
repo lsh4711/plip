@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { ReactComponent as PlusIcon } from '@/assets/icons/plus-circle.svg';
 import { Button, HeadingParagraph, Paragraph, SortingToolbar } from '@/components';
@@ -11,7 +11,7 @@ const MyTripPage = () => {
   const auth = useAuthRedirect();
   if (auth.isRedirect) return auth.naviComponent;
 
-  const { data, isLoading, error } = useMyTripQuery();
+  const { data, isLoading, isFetching, error, refetch } = useMyTripQuery();
 
   return (
     <div className="flex h-auto w-full flex-col pb-20">
@@ -25,7 +25,7 @@ const MyTripPage = () => {
         }`}
       >
         {isLoading && <LoadingSpinner />}
-        {!isLoading && data!.length > 0 ? (
+        {!isFetching && !isLoading && data!.length > 0 ? (
           data!.map((item) => <MyTripCard key={item.scheduleId} {...item} />)
         ) : (
           <Link to="/plan" className=" flex flex-col items-center justify-center gap-2">
