@@ -59,6 +59,7 @@ const SearchTools = ({ currentLng, currentLat }: Props) => {
             {CategoryNames.map((categoryName, idx) => (
               <RoundButton
                 key={idx}
+                title={`${categories[categoryName].name} 검색하기`}
                 onClick={() => {
                   setInput(categories[categoryName].name);
                   setKeyword(categories[categoryName].name);
