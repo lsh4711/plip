@@ -77,7 +77,7 @@ const Header = () => {
       }`}
     >
       <nav className="m-auto flex h-full items-center justify-between">
-        {!isHome && (
+        {!isHome && isLogin && (
           <span ref={ref} className="cursor-pointer md:hidden" onClick={() => setIsOpen(!isOpen)}>
             <CgMenu size={25} color="#343539" />
             {isOpen && <DropDownMenus variant={'mobile'} />}
