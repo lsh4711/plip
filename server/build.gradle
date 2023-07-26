@@ -53,7 +53,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     // runtimeOnly 'com.h2database:h2'
-    // testImplementation 'com.h2database:h2' // 추가됨
+    testImplementation 'com.h2database:h2' // 추가됨
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
