@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -66,7 +68,10 @@ public class S3StorageService implements StorageService {
     //이미지 여러 개 조회
     @Override
     public List<String> getImgs(long recordId, long userId) {
-        String dirName = BUCKET_IMAGE_PATH + "/" + userId + "/" + recordId;
+        String dirName = String.format("%s/%d/%d/",
+            BUCKET_IMAGE_PATH,
+            userId,
+            recordId);
 
         List<String> urls = new ArrayList<>();
 
@@ -123,6 +128,20 @@ public class S3StorageService implements StorageService {
             listObjectsRequest.setContinuationToken(listObjectsResult.getNextContinuationToken());
         } while (listObjectsResult.isTruncated());
 
+    }
+
+    public void resetRecordImageStorage() {
+        ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request().withBucketName(bucketName)
+                .withPrefix(BUCKET_IMAGE_PATH + "/");
+        ListObjectsV2Result listObjectsV2Result = s3Client.listObjectsV2(listObjectsV2Request);
+        ListIterator<S3ObjectSummary> listIterator = listObjectsV2Result.getObjectSummaries().listIterator();
+
+        while (listIterator.hasNext()) {
+            S3ObjectSummary objectSummary = listIterator.next();
+            DeleteObjectRequest request = new DeleteObjectRequest(bucketName, objectSummary.getKey());
+            s3Client.deleteObject(request);
+            // System.out.println("Deleted " + objectSummary.getKey());
+        }
     }
 
     private int getNewIndex(String dirName) {

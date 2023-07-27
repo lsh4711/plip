@@ -19,6 +19,7 @@ public enum ExceptionCode {
     PASSWORD_INVALID("비밀번호가 맞지 않습니다.", 400),
     UNKNOWN_USER("알 수 없는 사용자입니다.", 400),
     LOGOUT_USER("로그아웃된 유저입니다.", 401),
+    FORBIDDEN("권한이 없습니다.", 403),
 
     // 회원
     MEMBER_NOT_FOUND("해당 회원을 찾을 수 없습니다.", 404),
@@ -50,6 +51,11 @@ public enum ExceptionCode {
 
     // 공유
     SHARE_CODE_INVALID("코드가 일치하지 않습니다.", 400),
+
+    // 토큰(이벤트) - 임시
+    EVENT_TOKENS_NOT_FOUND("푸시 알림을 허용해 주시고 카카오로 로그인해주세요!", 400),
+    EVENT_PUSH_TOKEN_NOT_FOUND("푸시 알림을 허용해 주세요!", 400),
+    EVENT_KAKAO_TOKEN_NOT_FOUND("카카오로 로그인 해주세요!", 400),
 
     END("마무리", 200);
 

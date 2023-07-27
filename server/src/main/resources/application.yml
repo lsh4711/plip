@@ -5,30 +5,46 @@ server:
     key-store-type: PKCS12
     key-store-password: ${KEY_STORE_PASSWORD}
 spring:
+  config.activate.on-profile: default
   batch:
     job:
       enabled: false
   #   jdbc:
   #     initialize-schema: always # 작동하는지 확인 필요
-  config.activate.on-profile: default
   redis:
     host: localhost
     port: 6379
-  h2:
-    console:
-      enabled: true
-      path: /h2
-      settings:
-        web-allow-others: true
+  # h2: 
+  #   console:
+  #     enabled: true
+  #     path: /h2
+  #     settings:
+  #       web-allow-others: true
+  # datasource:
+  #   url: jdbc:h2:mem:test
   datasource:
-    url: jdbc:h2:mem:test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SQL_URL}
+    username: ${SQL_USERNAME}
+    password: ${SQL_PASSWORD}
   jpa:
     show-sql: true
+    # generate-ddl: true
     properties:
       hibernate:
-        ddl-auto: create
+        # ddl-auto: create-drop
         format_sql: true
         default_batch_fetch_size: 1000 # N+1
+        # show_sql: true
+        # format_sql: true
+        # highlight_sql: true
+        # use_sql_comments: true
+    # defer-datasource-initialization: true
+  # sql:
+  #   init:
+  #     mode: always
+  #     data-locations:
+
   servlet:
     multipart:
       enabled: true

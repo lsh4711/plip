@@ -3,11 +3,11 @@ package com.server.global.test.controller;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,22 +17,40 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushFcmOptions;
+import com.server.domain.record.service.S3StorageService;
+import com.server.domain.record.service.StorageService;
+import com.server.global.exception.CustomException;
+import com.server.global.exception.ExceptionCode;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/test")
-public class TestController {
+public class TestController { // 테스트 용이므로 비즈니스 로직도 함께 있습니다.
+    private final StorageService storageService;
 
     @GetMapping
     public ModelAndView getTest() {
         return new ModelAndView("test.html");
     }
 
-    @GetMapping("/code")
-    public ResponseEntity test(@RequestParam String code) {
-        return ResponseEntity.ok("asd");
+    @GetMapping("/delete")
+    public ResponseEntity test(Authentication authentication) {
+        if (!authentication.getName().equals("admin@naver.com")) {
+            throw new CustomException(ExceptionCode.FORBIDDEN);
+        }
+
+        ((S3StorageService)storageService).resetRecordImageStorage();
+
+        return ResponseEntity.ok("삭제 완료");
+    }
+
+    @GetMapping("/send")
+    public ResponseEntity kakaoTrigger() {
+        return ResponseEntity.ok("완료");
     }
 
     @PostMapping("/push")

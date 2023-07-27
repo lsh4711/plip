@@ -30,6 +30,11 @@ env:
 
   # share
   SHARE_SECRET_KEY: ${{ secrets.SHARE_SECRET_KEY }}
+
+  # MySQL
+  SQL_URL: ${{ secrets.SQL_URL }}
+  SQL_USERNAME: ${{ secrets.SQL_USERNAME }}
+  SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
   
 jobs:
   build:

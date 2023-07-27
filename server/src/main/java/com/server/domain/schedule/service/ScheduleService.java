@@ -4,16 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.server.domain.member.entity.Member;
-import com.server.domain.member.service.MemberService;
-import com.server.domain.oauth.entity.KakaoToken;
-import com.server.domain.oauth.service.KakaoApiService;
-import com.server.domain.oauth.template.KakaoTemplateConstructor;
-import com.server.domain.oauth.template.KakaoTemplateObject.Feed;
+import com.server.domain.push.service.PushService;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.repository.ScheduleRepository;
 import com.server.global.exception.CustomException;
@@ -28,10 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
-    private final MemberService memberService;
-
-    private final KakaoApiService kakaoApiService;
-    private final KakaoTemplateConstructor kakaoTemplateConstructor;
+    private final PushService pushService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -95,13 +87,11 @@ public class ScheduleService {
         return schedule;
     }
 
-    public String createShareUrl(long scheduleId) {
-        long memberId = AuthUtil.getMemberId();
+    public String createShareUrl(long scheduleId, Member member) {
+        long memberId = member.getMemberId();
+        String email = member.getEmail();
 
         verify(scheduleId, memberId);
-
-        Member member = memberService.findMember(memberId);
-        String email = member.getEmail();
 
         String raw = String.format("%d/%s/%s",
             memberId,
@@ -118,11 +108,12 @@ public class ScheduleService {
         return shareUrl;
     }
 
-    public void deleteSchedule(long scheduleId) {
-        long memberId = AuthUtil.getMemberId();
+    public Schedule deleteSchedule(long scheduleId) {
+        Schedule schedule = findScheduleOfAuthMember(scheduleId);
 
-        verify(scheduleId, memberId);
         scheduleRepository.deleteById(scheduleId);
+
+        return schedule;
     }
 
     public void verify(long scheduleId, long memberId) {
@@ -133,21 +124,5 @@ public class ScheduleService {
             throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
         }
 
-    }
-
-    @Async
-    public void sendKakaoMessage(Schedule schedule) {
-        Member member = schedule.getMember();
-        KakaoToken kakaoToken = member.getKakaoToken();
-
-        if (kakaoToken == null) {
-            return; // or throw CustomExcepion
-        }
-
-        String accessToken = kakaoToken.getAccessToken();
-        Feed feedTemplate = kakaoTemplateConstructor
-                .getPostTemplate(schedule, member);
-
-        kakaoApiService.sendMessage(feedTemplate, accessToken);
     }
 }

@@ -1,5 +1,7 @@
 package com.server.domain.oauth.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
@@ -8,14 +10,22 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.google.gson.Gson;
-import com.server.domain.oauth.template.KakaoTemplateObject;
-import com.server.domain.oauth.template.KakaoTemplateObject.Link;
+import com.server.domain.member.entity.Member;
+import com.server.domain.oauth.entity.KakaoToken;
+import com.server.domain.oauth.repository.KakaoTokenRepository;
+import com.server.domain.oauth.template.KakaoTemplate.Feed;
+import com.server.domain.oauth.template.KakaoTemplateConstructor;
+import com.server.domain.schedule.entity.Schedule;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class KakaoApiService {
+    private final KakaoTokenRepository kakaoTokenRepository;
+
+    private final KakaoTemplateConstructor kakaoTemplateConstructor;
+
     @Value("${kakao.api-key}")
     private String apiKey;
 
@@ -28,35 +38,64 @@ public class KakaoApiService {
         String body = gson.toJson(template);
 
         String result = WebClient.create(messageApiUrl)
-            .post()
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .header("Authorization", "Bearer " + accessToken)
-            .body(BodyInserters.fromFormData("template_object", body))
-            .retrieve()
-            .bodyToMono(String.class)
-            .block();
+                .post()
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header("Authorization", "Bearer " + accessToken)
+                .body(BodyInserters.fromFormData("template_object", body))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
     }
 
-    // test
-    public String sendTextMessage(String accessToken, String message) {
-        KakaoTemplateObject.Text bodyBuilder = KakaoTemplateObject.Text.builder()
-            .object_type("text")
-            .text(message)
-            .link(new Link())
-            .build();
-        String body = gson.toJson(bodyBuilder);
+    @Async
+    public void sendWelcomeMessage(Member member, String accessToken) {
+        Feed feedTemplate = kakaoTemplateConstructor.getWelcomeTemplate(member);
 
-        String result = WebClient.create(messageApiUrl)
-            .post()
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .header("Authorization", "Bearer " + accessToken)
-            .body(BodyInserters.fromFormData("template_object", body))
-            .retrieve()
-            .bodyToMono(String.class)
-            .block();
+        sendMessage(feedTemplate, accessToken);
+    }
 
-        return message;
+    @Async
+    public void sendPostScheduleMessage(Schedule schedule) {
+        Member member = schedule.getMember();
+        KakaoToken kakaoToken = member.getKakaoToken();
+
+        if (kakaoToken == null) {
+            return; // or throw CustomExcepion
+        }
+
+        String accessToken = kakaoToken.getAccessToken();
+        Feed feedTemplate = kakaoTemplateConstructor
+                .getPostScheduleTemplate(schedule, member);
+
+        sendMessage(feedTemplate, accessToken);
+    }
+
+    // 이벤트용
+    @Async
+    public void sendEventMessage(Member member, KakaoToken kakaoToken, long giftId) {
+        String nickname = member.getNickname();
+        String accessToken = kakaoToken.getAccessToken();
+
+        Feed feedTemplate = kakaoTemplateConstructor
+                .getEventTemplate(nickname, giftId);
+
+        sendMessage(feedTemplate, accessToken);
+    }
+
+    // 이벤트용
+    @Async
+    public void sendNoticeMessage(String title, String message) {
+        List<KakaoToken> kakaoTokens = kakaoTokenRepository.findAll();
+
+        for (KakaoToken kakaoToken : kakaoTokens) {
+            Member member = kakaoToken.getMember();
+            String nickname = member.getNickname();
+            String accessToken = kakaoToken.getAccessToken();
+            Feed feedTemplate = kakaoTemplateConstructor
+                    .getNoticeTemplate(nickname, title, message);
+            sendMessage(feedTemplate, accessToken);
+        }
+
     }
 }

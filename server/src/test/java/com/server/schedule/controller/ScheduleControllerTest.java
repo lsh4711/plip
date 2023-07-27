@@ -16,13 +16,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -45,11 +43,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.server.domain.mail.service.MailService;
 import com.server.domain.member.service.MemberService;
+import com.server.domain.oauth.service.KakaoApiService;
 import com.server.domain.place.dto.PlaceDto;
 import com.server.domain.place.dto.PlaceResponse;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.mapper.PlaceMapper;
 import com.server.domain.place.service.PlaceService;
+import com.server.domain.push.service.PushService;
 import com.server.domain.record.dto.RecordDto;
 import com.server.domain.schedule.dto.ScheduleDto;
 import com.server.domain.schedule.dto.ScheduleResponse;
@@ -82,15 +82,12 @@ public class ScheduleControllerTest {
 
     // @Autowired
     private final Gson gson = new GsonBuilder()
-        // .setPrettyPrinting()
-        .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-        .create();
+            // .setPrettyPrinting()
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .create();
 
     @MockBean
     private MemberService memberService;
-
-    @MockBean
-    private MailService mailService;
 
     @MockBean
     private ScheduleMapper scheduleMapper;
@@ -110,18 +107,20 @@ public class ScheduleControllerTest {
     @MockBean
     private SchedulePlaceMapper schedulePlaceMapper;
 
-    private String token;
+    @MockBean
+    private PushService pushService;
 
-    private LocalDateTime now;
+    @MockBean
+    private KakaoApiService kakaoApiService;
+
+    @MockBean
+    private MailService mailService;
+
+    private String token;
 
     @BeforeAll
     public void init() {
         token = StubData.MockSecurity.getValidAccessToken(jwtTokenizer.getSecretKey());
-    }
-
-    @BeforeEach
-    public void setTime() {
-        now = LocalDateTime.now().withNano(0);
     }
 
     @Test
@@ -135,15 +134,16 @@ public class ScheduleControllerTest {
 
         given(scheduleMapper.postDtoToSchedule(Mockito.any(ScheduleDto.Post.class))).willReturn(new Schedule());
         given(scheduleService.saveSchedule(Mockito.any(Schedule.class))).willReturn(schedule);
-        doNothing().when(scheduleService).sendKakaoMessage(Mockito.any(Schedule.class));
-        doNothing().when(mailService).sendScheduleMail(Mockito.any(Schedule.class));
+        doNothing().when(pushService).sendPostScheduleMessage(Mockito.any(Schedule.class));
+        doNothing().when(kakaoApiService).sendPostScheduleMessage(Mockito.any(Schedule.class));
+        doNothing().when(mailService).sendPostScheduleMail(Mockito.any(Schedule.class));
 
         // when
         ResultActions actions = mockMvc.perform(
             post(BASE_URL + "/write")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .content(requestBody)
-                .contentType(MediaType.APPLICATION_JSON));
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .content(requestBody)
+                    .contentType(MediaType.APPLICATION_JSON));
 
         // then
         actions
@@ -195,33 +195,33 @@ public class ScheduleControllerTest {
         ScheduleResponse scheduleResponse = MockSchedule.scheduleResponse;
         List<List<PlaceResponse>> placeResponseLists = MockPlace.placeResponseLists;
 
-        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.<SchedulePlace>anyList(),
-            Mockito.any(Schedule.class))).willReturn(placeResponseLists);
+        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.any(Schedule.class)))
+                .willReturn(placeResponseLists);
         given(scheduleMapper.scheduleToScheduleResponse(Mockito.any(Schedule.class)))
                 .willReturn(scheduleResponse);
 
         // when
         ResultActions actions = mockMvc.perform(
             patch(BASE_URL + "/{scheduleId}/edit", 1)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .content(requestBody)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON));
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .content(requestBody)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON));
 
         // then
         actions
-            .andExpect(status().isOk())
-            .andDo(
-                document("여행 일정 수정",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    resource(
-                        ResourceSnippetParameters.builder()
-                            .tag("Schedule")
-                            .description("여행 일정 수정")
-                            // .requestFields(List.of())
-                            // .responseFields(List.of())
-                            .build())));
+                .andExpect(status().isOk())
+                .andDo(
+                    document("여행 일정 수정",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                    .tag("Schedule")
+                                    .description("여행 일정 수정")
+                                    // .requestFields(List.of())
+                                    // .responseFields(List.of())
+                                    .build())));
     }
 
     @Test
@@ -237,8 +237,8 @@ public class ScheduleControllerTest {
         ScheduleResponse scheduleResponse = MockSchedule.scheduleResponse;
         List<List<PlaceResponse>> placeResponseLists = MockPlace.placeResponseLists;
 
-        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.<SchedulePlace>anyList(),
-            Mockito.any(Schedule.class))).willReturn(placeResponseLists);
+        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.any(Schedule.class)))
+                .willReturn(placeResponseLists);
         given(scheduleMapper.scheduleToScheduleResponse(Mockito.any(Schedule.class)))
                 .willReturn(scheduleResponse);
 
@@ -251,23 +251,23 @@ public class ScheduleControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
             get(BASE_URL + "/{scheduleId}", 1)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .accept(MediaType.APPLICATION_JSON));
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .accept(MediaType.APPLICATION_JSON));
 
         // then
         actions
-            .andExpect(status().isOk())
-            .andDo(
-                document("여행 일정 조회",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    resource(
-                        ResourceSnippetParameters.builder()
-                            .tag("Schedule")
-                            .description("여행 일정 조회")
-                            // .requestFields(List.of())
-                            // .responseFields(List.of())
-                            .build())));
+                .andExpect(status().isOk())
+                .andDo(
+                    document("여행 일정 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                    .tag("Schedule")
+                                    .description("여행 일정 조회")
+                                    // .requestFields(List.of())
+                                    // .responseFields(List.of())
+                                    .build())));
     }
 
     @Test
@@ -283,8 +283,8 @@ public class ScheduleControllerTest {
         ScheduleResponse scheduleResponse = MockSchedule.scheduleResponse;
         List<List<PlaceResponse>> placeResponseLists = MockPlace.placeResponseLists;
 
-        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.<SchedulePlace>anyList(),
-            Mockito.any(Schedule.class))).willReturn(placeResponseLists);
+        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.any(Schedule.class)))
+                .willReturn(placeResponseLists);
         given(scheduleMapper.scheduleToScheduleResponse(Mockito.any(Schedule.class)))
                 .willReturn(scheduleResponse);
 
@@ -324,8 +324,8 @@ public class ScheduleControllerTest {
         ScheduleResponse scheduleResponse = MockSchedule.scheduleResponse;
         List<List<PlaceResponse>> placeResponseLists = MockPlace.placeResponseLists;
 
-        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.<SchedulePlace>anyList(),
-            Mockito.any(Schedule.class))).willReturn(placeResponseLists);
+        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.any(Schedule.class)))
+                .willReturn(placeResponseLists);
         given(scheduleMapper.scheduleToScheduleResponse(Mockito.any(Schedule.class)))
                 .willReturn(scheduleResponse);
 
@@ -368,41 +368,41 @@ public class ScheduleControllerTest {
         // ScheduleResponse
         List<List<PlaceResponse>> placeResponseLists = MockPlace.placeResponseLists;
 
-        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.<SchedulePlace>anyList(),
-            Mockito.any(Schedule.class))).willReturn(placeResponseLists);
+        given(schedulePlaceMapper.schedulePlacesToPlaceResponseLists(Mockito.any(Schedule.class)))
+                .willReturn(placeResponseLists);
 
         // when
         ResultActions actions = mockMvc.perform(
             get(BASE_URL + "/{scheduleId}/places", 1)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .accept(MediaType.APPLICATION_JSON));
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .accept(MediaType.APPLICATION_JSON));
 
         // then
         actions
-            .andExpect(status().isOk())
-            .andDo(
-                document("여행 일정의 여행지 조회",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    resource(
-                        ResourceSnippetParameters.builder()
-                            .tag("Schedule")
-                            .description("여행 일정의 여행지 조회")
-                            // .requestFields(List.of())
-                            // .responseFields(List.of())
-                            .build())));
+                .andExpect(status().isOk())
+                .andDo(
+                    document("여행 일정의 여행지 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                    .tag("Schedule")
+                                    .description("여행 일정의 여행지 조회")
+                                    // .requestFields(List.of())
+                                    // .responseFields(List.of())
+                                    .build())));
     }
 
     @Test
     @DisplayName("여행 일정 삭제")
     void deleteScheduleTest() throws Exception {
-        // given
-        doNothing().when(scheduleService).deleteSchedule(1);
+        // given4
+        given(scheduleService.deleteSchedule(Mockito.anyLong())).willReturn(null);
 
         // when
         ResultActions actions = mockMvc.perform(
             delete(BASE_URL + "/{scheduleId}", 1)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
 
         // then
         actions

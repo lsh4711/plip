@@ -32,6 +32,10 @@ public class SchedulePlaceService {
 
     public List<SchedulePlace> updateSchedulePlaces(List<SchedulePlace> updateSchedulePlaces,
             List<SchedulePlace> schedulePlaces) {
+        if (updateSchedulePlaces.size() == 0) {
+            return schedulePlaces;
+        }
+
         List<SchedulePlace> updatedSchedulePlaces = new ArrayList<>();
         Map<Long, SchedulePlace> map = schedulePlaces.stream()
                 .collect(Collectors.toMap(SchedulePlace::getSchedulePlaceId,
@@ -63,8 +67,8 @@ public class SchedulePlaceService {
     // 추가
     public SchedulePlace findSchedulePlaceById(Long schedulePlaceId) {
         return schedulePlaceRepository.findById(schedulePlaceId)
-            .orElseThrow(() -> new CustomException(
-                ExceptionCode.SCHEDULE_PLACE_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(
+                    ExceptionCode.SCHEDULE_PLACE_NOT_FOUND));
     }
 
     // 변경 장소에 없는 장소만 삭제

@@ -52,7 +52,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     compileOnly 'org.projectlombok:lombok'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
-    runtimeOnly 'com.h2database:h2'
+    // runtimeOnly 'com.h2database:h2'
     testImplementation 'com.h2database:h2' // 추가됨
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
@@ -76,6 +76,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-aop' //aop 추가
 
     implementation 'com.google.firebase:firebase-admin:9.2.0' // firebase
+
+	implementation 'mysql:mysql-connector-java:8.0.33' // MySQL
 }
 
 tasks.named('test') {
