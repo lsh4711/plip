@@ -36,6 +36,7 @@ public class KakaoApiService {
 
     private final String messageApiUrl = "https://kapi.kakao.com/v2/api/talk/memo/default/send";
     private final String tokenRenewalApiUri = "https://kauth.kakao.com/oauth/token";
+    private final String unlinkKakaoApiUri = "https://kapi.kakao.com/v1/user/unlink";
 
     private final Gson gson;
 
@@ -111,5 +112,15 @@ public class KakaoApiService {
             .block();
 
         return message;
+    }
+
+    public void unlinkKaKaoService(String accessToken){
+        WebClient.create(unlinkKakaoApiUri)
+            .post()
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .header("Authorization", "Bearer " + accessToken)
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
     }
 }
