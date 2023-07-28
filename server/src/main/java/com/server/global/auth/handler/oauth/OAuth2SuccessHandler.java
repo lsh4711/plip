@@ -47,7 +47,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         if (oAuth2TokenUtils.getOAuthRegistration(oAuth2AuthorizedClient).equals("kakao")) {
             String accessTokenValue = oAuth2TokenUtils.getOAuthAccessToken(oAuth2AuthorizedClient);
             String refreshTokenValue = oAuth2TokenUtils.getOAuthRefreshToken(oAuth2AuthorizedClient);
-            kakaoTokenOauthService.saveToken(accessTokenValue, refreshTokenValue, findMember);
+            kakaoTokenOauthService.saveOrUpdateToken(accessTokenValue, refreshTokenValue, findMember);
         }
         redirect(request, response, findMember);
     }

@@ -9,17 +9,24 @@ import org.springframework.transaction.annotation.Transactional;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.entity.Member.Role;
 import com.server.domain.member.repository.MemberRepository;
+import com.server.domain.oauth.entity.KakaoToken;
+import com.server.domain.oauth.repository.KakaoTokenRepository;
+import com.server.domain.oauth.service.KakaoApiService;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final KakaoApiService kakaoApiService;
+    private final KakaoTokenRepository kakaoTokenRepository;
 
     public Member createMember(Member member) {
         checkExistEmail(member);
@@ -45,8 +52,17 @@ public class MemberService {
             throw new CustomException(ExceptionCode.EMAIL_EXISTS);
     }
 
+    // TODO: NAVER와 KAKAO를 분리해야 하는 방법을 찾아야겠음
     public void deleteMember(String email) {
         Member member = findMemberByEmail(email);
+        if (member.getRole().equals(Role.SOCIAL)) {
+            Optional<KakaoToken> kakaoToken = kakaoTokenRepository.findByMember(member);
+            if (kakaoToken.isEmpty()) {
+                log.error("토큰을 찾을 수 없다. 네이버인 것 같으니 정보만 삭제하고 리턴 처리");
+            } else {
+                kakaoApiService.unlinkKaKaoService(kakaoToken.get().getAccessToken());
+            }
+        }
         memberRepository.delete(member);
     }
 
