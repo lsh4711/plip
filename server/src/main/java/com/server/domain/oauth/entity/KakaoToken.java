@@ -34,7 +34,8 @@ public class KakaoToken extends BaseEntity {
     @JoinColumn(name = "memberId")
     private Member member;
 
-    public void setAccessToken(String accessToken) {
+    public void updateToken(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }
