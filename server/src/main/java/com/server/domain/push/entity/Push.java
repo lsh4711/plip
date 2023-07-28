@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotBlank;
 
 import com.server.domain.member.entity.Member;
 import com.server.global.audit.BaseEntity;
@@ -25,6 +26,7 @@ public class Push extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pushId;
 
+    @NotBlank
     private String pushToken;
 
     @OneToOne

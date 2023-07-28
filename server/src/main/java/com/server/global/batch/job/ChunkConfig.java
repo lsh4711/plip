@@ -22,8 +22,8 @@ import org.springframework.context.annotation.Configuration;
 import com.server.domain.member.entity.Member;
 import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.oauth.service.KakaoApiService;
+import com.server.domain.oauth.template.KakaoTemplate.Text;
 import com.server.domain.oauth.template.KakaoTemplateConstructor;
-import com.server.domain.oauth.template.KakaoTemplateObject.Text;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.global.batch.parameter.CustomJobParameter;
 
@@ -44,7 +44,7 @@ public class ChunkConfig {
     private final EntityManagerFactory entityManagerFactory;
     private final CustomJobParameter customJobParameter;
 
-    private final KakaoApiService kakaoAuth;
+    private final KakaoApiService kakaoApiService;
     private final KakaoTemplateConstructor kakaoTemplateConstructor;
 
     // @Bean(JOB_NAME + "Parameter")
@@ -57,8 +57,8 @@ public class ChunkConfig {
     @Bean
     public Job customJob() {
         Job customJob = jobBuilderFactory.get(JOB_NAME)
-            .start(customStep())
-            .build();
+                .start(customStep())
+                .build();
 
         return customJob;
     }
@@ -67,15 +67,15 @@ public class ChunkConfig {
     @JobScope
     public Step customStep() {
         Step customStep = stepBuilderFactory.get(JOB_NAME + "Step")
-            .<Schedule, Schedule>chunk(chunkSize)
-            .reader(customReader())
-            .processor(customProcessor())
-            .writer(customWriter())
-            // .faultTolerant()
-            // .retry(Exception.class) // 알림 전송 실패 시
-            // .noRollback(Exception.class) // test
-            // .retryLimit(2) // 3번까지 시도(청크의 처음부터 시작), 보냈던 알림이 다시 전송된다.
-            .build();
+                .<Schedule, Schedule>chunk(chunkSize)
+                .reader(customReader())
+                .processor(customProcessor())
+                .writer(customWriter())
+                // .faultTolerant()
+                // .retry(Exception.class) // 알림 전송 실패 시
+                // .noRollback(Exception.class) // test
+                // .retryLimit(2) // 3번까지 시도(청크의 처음부터 시작), 보냈던 알림이 다시 전송된다.
+                .build();
 
         return customStep;
     }
@@ -83,19 +83,23 @@ public class ChunkConfig {
     @Bean
     @StepScope
     public JpaPagingItemReader<Schedule> customReader() {
+        int hour = customJobParameter.getHour();
         LocalDate date = customJobParameter.getDate();
+
+        String column = hour != 22 ? "startDate" : "endDate";
+        String queryString = String.format(
+            "SELECT s FROM Schedule s WHERE s.%s = :date AND s.member.kakaoToken IS NOT NULL ORDER BY id", column);
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("date", date);
 
         JpaPagingItemReader<Schedule> reader = new JpaPagingItemReaderBuilder<Schedule>()
-            .name(JOB_NAME + "Reader")
-            .entityManagerFactory(entityManagerFactory)
-            .pageSize(chunkSize)
-            .queryString(
-                "SELECT s FROM Schedule s WHERE s.startDate = :date AND s.member.kakaoToken IS NOT NULL ORDER BY id") // 정렬 필수
-            .parameterValues(parameters)
-            .build();
+                .name(JOB_NAME + "Reader")
+                .entityManagerFactory(entityManagerFactory)
+                .pageSize(chunkSize)
+                .queryString(queryString) // 정렬 필수
+                .parameterValues(parameters)
+                .build();
 
         return reader;
     }
@@ -110,9 +114,9 @@ public class ChunkConfig {
             Member member = schedule.getMember();
             KakaoToken kakaoToken = member.getKakaoToken();
             String accessToken = kakaoToken.getAccessToken();
-            Text textTemplate = kakaoTemplateConstructor.getStartTemplate(member, schedule, hour);
+            Text textTemplate = kakaoTemplateConstructor.getScheduledTemplate(member, schedule, hour);
 
-            kakaoAuth.sendMessage(textTemplate, accessToken);
+            kakaoApiService.sendMessage(textTemplate, accessToken);
 
             return schedule;
         };

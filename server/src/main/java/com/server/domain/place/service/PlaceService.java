@@ -26,7 +26,7 @@ public class PlaceService {
     // apiId를 기준으로 중복 방지
     public List<Place> savePlaceLists(List<List<Place>> placeLists) {
         if (placeLists == null) {
-            return null;
+            return new ArrayList<>();
         }
 
         List<Place> newPlaces = new ArrayList<>();

@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,10 +12,11 @@ import com.server.domain.category.service.CategoryService;
 import com.server.domain.member.entity.Member;
 import com.server.domain.member.entity.Member.Role;
 import com.server.domain.member.service.MemberService;
-import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.oauth.service.KakaoTokenOauthService;
 import com.server.domain.place.entity.Place;
 import com.server.domain.place.service.PlaceService;
+import com.server.domain.record.service.S3StorageService;
+import com.server.domain.record.service.StorageService;
 import com.server.domain.region.entity.Region;
 import com.server.domain.region.service.RegionService;
 import com.server.domain.schedule.entity.Schedule;
@@ -54,7 +53,10 @@ public class Init {
     // KakaoToken
     private final KakaoTokenOauthService kakaoTokenOauthService;
 
-    @PostConstruct
+    // S3
+    private final StorageService storageService;
+
+    // @PostConstruct
     public void init() {
         List<Category> categories = new ArrayList<>();
         ArrayHashMap categoryMap = new ArrayHashMap("category");
@@ -161,10 +163,6 @@ public class Init {
             schedulePlaceService.saveSchedulePlace(schedulePlace);
         }
 
-        KakaoToken kakaoToken = KakaoToken.builder()
-                .member(Member.builder().memberId(1L).build())
-                .accessToken("asdasdasd")
-                .build();
-        kakaoTokenOauthService.saveTestToken(kakaoToken);
+        ((S3StorageService)storageService).resetRecordImageStorage();
     }
 }

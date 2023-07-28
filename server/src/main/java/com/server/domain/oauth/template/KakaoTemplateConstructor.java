@@ -1,69 +1,36 @@
 package com.server.domain.oauth.template;
 
 import java.time.LocalDate;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.server.domain.member.entity.Member;
-import com.server.domain.oauth.template.KakaoTemplateObject.Content;
-import com.server.domain.oauth.template.KakaoTemplateObject.Feed;
-import com.server.domain.oauth.template.KakaoTemplateObject.Link;
-import com.server.domain.oauth.template.KakaoTemplateObject.Text;
+import com.server.domain.oauth.template.KakaoTemplate.Content;
+import com.server.domain.oauth.template.KakaoTemplate.Feed;
+import com.server.domain.oauth.template.KakaoTemplate.Link;
+import com.server.domain.oauth.template.KakaoTemplate.Text;
 import com.server.domain.region.entity.Region;
 import com.server.domain.schedule.entity.Schedule;
+import com.server.domain.schedule.service.ScheduleService;
 
 @Component
 public class KakaoTemplateConstructor {
     @Lazy
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Value("${share.key}")
-    private String shareSecretKey;
-
-    private static final String[] REGION_LIST = { // 임시
-        "busan", "chungbuk", "chungnam", "daegu", "daejeon", "gangwon", "gwangju", "gyeongbuk", "gyeonggi", "gyeongnam",
-        "incheon", "jeju", "jeonbuk", "jeonnam", "seoul", "ulsan"};
+    private ScheduleService scheduleService;
 
     public Feed getWelcomeTemplate(Member member) {
-        // Member
-        long memberId = member.getMemberId();
-        String email = member.getEmail();
         String nickname = member.getNickname();
 
-        // Feed
-        // String basesUrl = "https://plip.netlify.app/login";
-        // String token = "test";
-        // String shareUrl = String.format("%s?token=",
-        //     basesUrl,
-        //     token);
-
-        // test
-        Random random = new Random();
-        int idx = random.nextInt(16);
-        String region = REGION_LIST[idx];
-
-        String baseUrl = "https://plip.netlify.app/";
-        Link link = Link.builder()
-                .web_url(baseUrl)
-                .mobile_web_url(baseUrl)
-                .build();
         Content content = Content.builder()
                 .title(String.format("%s님의 가입을 환영합니다!", nickname))
-                // .description("PliP과 함께 여행 일정을 작성하러 가볼까요?\n*이 메시지는 타인에게 공유하지 마세요!*")
                 .description("PliP과 함께 여행 일정을 작성하러 가볼까요?")
-                .image_width(600)
-                .image_height(400)
-                .image_url("https://teamdev.shop/files/images?region=" + region)
-                .link(link)
+                // .description("PliP과 함께 여행 일정을 작성하러 가볼까요?\n*이 메시지는 타인에게 공유하지 마세요!*")
                 .build();
+
         Feed feed = Feed.builder()
-                .object_type("feed")
                 .content(content)
                 .button_title("PilP으로 이동")
                 .build();
@@ -71,10 +38,8 @@ public class KakaoTemplateConstructor {
         return feed;
     }
 
-    public Feed getPostTemplate(Schedule schedule, Member member) {
+    public Feed getPostScheduleTemplate(Schedule schedule, Member member) {
         // Member
-        long memberId = member.getMemberId();
-        String email = member.getEmail();
         String nickname = member.getNickname();
 
         // Schedule
@@ -89,40 +54,30 @@ public class KakaoTemplateConstructor {
         String engName = region.getEngName();
         String korName = region.getKorName();
 
-        // Feed
-        String basesUrl = "https://plip.netlify.app/plan/detail";
-        String code = String.format("%d/%s/%s",
-            memberId,
-            email,
-            shareSecretKey);
-        String encodedCode = passwordEncoder.encode(code)
-                .replace("{bcrypt}$2a$10$", "");
-        String shareUrl = String.format("%s/%d/share?id=%d&code=%s",
-            basesUrl,
-            scheduleId,
-            memberId,
-            encodedCode);
-        Link link = Link.builder().web_url(shareUrl).mobile_web_url(shareUrl).build();
+        // Link
+        String shareUrl = scheduleService.createShareUrl(scheduleId, member);
+        Link link = Link.builder()
+                .web_url(shareUrl)
+                .mobile_web_url(shareUrl)
+                .build();
+
         Content content = Content.builder()
                 .title(String.format("%s님의 %s 여행 일정입니다.", nickname, korName))
                 .description(String.format("기간: %s \n~ %s (%s)", startDate, endDate, term))
-                .image_width(600)
-                .image_height(400)
                 .image_url("https://teamdev.shop/files/images?region=" + engName)
                 .link(link)
                 .build();
+
         Feed feed = Feed.builder()
-                .object_type("feed")
                 .content(content)
+                .button_title("일정 보기")
                 .build();
 
         return feed;
     }
 
-    public Text getStartTemplate(Member member, Schedule schedule, int hour) {
+    public Text getScheduledTemplate(Member member, Schedule schedule, int hour) {
         // Member
-        long memberId = member.getMemberId();
-        String email = member.getEmail();
         String nickname = member.getNickname();
 
         // Schedule
@@ -130,38 +85,81 @@ public class KakaoTemplateConstructor {
 
         // Region
         Region region = schedule.getRegion();
-        String korRegion = region.getKorName();
+        String korName = region.getKorName();
+
         String message;
         String button_title = null;
+        String shareUrl = null;
 
-        // Text
         if (hour == 22) {
-            message = String.format("%s님! 여행은 즐거우셨나요?!", nickname);
+            message = String.format("%s님! %s 여행은 즐거우셨나요?",
+                nickname,
+                korName);
             button_title = "일지 작성하러 가기";
         } else {
             String prefix = hour == 7 ? "오늘" : "내일";
             message = String.format("%s님! %s은 설레는 %s 여행날이에요!",
                 nickname,
                 prefix,
-                korRegion);
+                korName);
+            shareUrl = scheduleService.createShareUrl(scheduleId, member);
         }
 
-        String basesUrl = "https://plip.netlify.app/plan/detail";
-        String shareUrl = String.format("%s/%d/share?id=%d&email=%s",
-            basesUrl,
-            scheduleId,
-            memberId,
-            email);
         Link link = Link.builder()
                 .web_url(shareUrl)
                 .mobile_web_url(shareUrl)
                 .build();
+
         Text textTemplate = Text.builder()
-                .object_type("text")
                 .text(message)
+                .button_title(button_title)
                 .link(link)
                 .build();
 
         return textTemplate;
+    }
+
+    // 이벤트용
+    public Feed getEventTemplate(String nickname, long giftId) {
+        Content content = Content.builder()
+                .title(String.format("%s님 사탕이 도착했어요~", nickname))
+                .description(String.format("선착순 이벤트에 %d등으로 참여하셨습니다.", giftId))
+                .image_width(800)
+                .image_height(1609)
+                .image_url("https://teamdev.shop/files/images/gifts?id=" + giftId)
+                .build();
+
+        Feed feed = Feed.builder()
+                .content(content)
+                .button_title("PliP으로 이동")
+                .build();
+
+        return feed;
+    }
+
+    // 이벤트용
+    public Feed getNoticeTemplate(String nickname, String title, String message) {
+        String eventManualUrl = "https://teamdev.shop/events";
+
+        Link link = Link.builder()
+                .web_url(eventManualUrl)
+                .mobile_web_url(eventManualUrl)
+                .build();
+
+        Content content = Content.builder()
+                .title(title)
+                .description(String.format("%s님 %s", nickname, message))
+                .image_width(512)
+                .image_height(511)
+                .image_url("https://teamdev.shop/files/images/gifts?id=999")
+                .link(link)
+                .build();
+
+        Feed feed = Feed.builder()
+                .content(content)
+                .button_title("이벤트 참여 방법")
+                .build();
+
+        return feed;
     }
 }

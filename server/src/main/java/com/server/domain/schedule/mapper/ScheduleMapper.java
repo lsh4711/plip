@@ -4,10 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.server.domain.member.repository.MemberRepository;
@@ -17,6 +15,7 @@ import com.server.domain.schedule.dto.ScheduleDto;
 import com.server.domain.schedule.dto.ScheduleResponse;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.global.utils.AuthUtil;
+import com.server.global.utils.CustomRandom;
 
 @Mapper(componentModel = "spring", imports = {AuthUtil.class, ChronoUnit.class})
 public abstract class ScheduleMapper {
@@ -37,7 +36,7 @@ public abstract class ScheduleMapper {
     @Mapping(target = "memberCount", expression = "java(1)")
     @Mapping(target = "period", expression = "java((int)ChronoUnit.DAYS.between(postDto.getStartDate(), postDto.getEndDate()) + 1)")
     @Mapping(target = "region", expression = "java(regionRepository.findByEngName(postDto.getRegion()))")
-    @Mapping(target = "title", expression = "java(String.format(\"%s 여행 레츠고!\", schedule.getRegion().getKorName()))")
+    @Mapping(target = "title", expression = "java(createTitle(schedule.getRegion()))")
     public abstract Schedule postDtoToSchedule(ScheduleDto.Post postDto);
 
     // 확장시 쓰임
@@ -52,35 +51,30 @@ public abstract class ScheduleMapper {
     @Mapping(target = "region", ignore = true)
     @Mapping(target = "startDate", ignore = true)
     @Mapping(target = "endDate", ignore = true)
+    @Mapping(target = "title", expression = "java(toTitle(patchDto.getTitle()))")
     public abstract Schedule patchDtoToSchedule(ScheduleDto.Patch patchDto, long scheduleId);
 
-    @AfterMapping
-    void checkTitle(@MappingTarget Schedule schedule) {
-        String title = schedule.getTitle();
-        if (title != null && title.length() == 0) {
-            schedule.setTitle(null);
+    String createTitle(Region region) {
+        String format = CustomRandom.getRandomTitleFormat();
+        String korName = region.getKorName();
+
+        return String.format(format, korName);
+    }
+
+    String toTitle(String title) {
+        if (title != null && title.length() > 0) {
+            return title;
         }
 
+        return null;
     }
 
     int toMemberCount(int memberCount) {
-        if (memberCount > 0) {
-            return memberCount;
+        if (memberCount <= 0) {
+            return 1;
         }
 
-        return 1;
-    }
-
-    String toTitle(String title, Region region) {
-        if (title == null) {
-            return null;
-        }
-        if (title.length() > 0) {
-            return title;
-        }
-        String korName = region.getKorName();
-
-        return String.format("", korName);
+        return memberCount;
     }
 
     @Mapping(source = "member.memberId", target = "memberId")
