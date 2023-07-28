@@ -18,7 +18,6 @@ public class KakaoTokenOauthService {
     private final KakaoTokenRepository kakaoTokenRepository;
 
     public void saveOrUpdateToken(String accessToken, String refreshToken, Member member) {
-
         Optional<KakaoToken> findToken = kakaoTokenRepository.findByMember(member);
         if (findToken.isEmpty()) {
             KakaoToken token = KakaoToken.builder()

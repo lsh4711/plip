@@ -36,7 +36,7 @@ public class KakaoApiService {
 
     private final KakaoTokenOauthService kakaoTokenOauthService;
 
-    @Value("${kakao.api-key}")
+    @Value("${KAKAO_CLIENT_ID}")
     private String apiKey;
     @Value("${KAKAO_CLIENT_SECRET}")
     private String apiSecret;
