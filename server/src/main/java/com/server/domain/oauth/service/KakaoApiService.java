@@ -36,9 +36,9 @@ public class KakaoApiService {
 
     private final KakaoTokenOauthService kakaoTokenOauthService;
 
-    @Value("${KAKAO_CLIENT_ID}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String apiKey;
-    @Value("${KAKAO_CLIENT_SECRET}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
     private String apiSecret;
 
     private final String messageApiUrl = "https://kapi.kakao.com/v2/api/talk/memo/default/send";
