@@ -5,7 +5,7 @@
 
 - **Project**: [PliP](https://plip.netlify.app/)
 
-- **Development Duration**: `2023.06.28~2023.07.27`
+- **Development Duration**: `2023.06.28 ~ 2023.07.27`
 - **Expansion**: `2023.07.29 ~`
 
 ## 👪Team
@@ -13,14 +13,12 @@
 | 이진유<br>(FE Reader)                               |   성지현                                               | 유길종                                                 |
 |--------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------|
 | [@22yuu](https://github.com/22yuu)    | [@jhsung23](https://github.com/jhsung23)          | [@XionWCFM](https://github.com/XionWCFM)                  |               |
-| |  | | 
-|                                                  |       |                                                     |
+| `2023.06.28 ~` | `2023.06.28 ~` | `2023.06.28 ~` |
 ### Backend
-| 이수희<br>(Team Reader)                                                | 박지인                                                   | 윤다영                              |
+| 이수희<br>(Team Reader)                                                | 윤다영                                                   | 박지인                              |
 |---------------------------------------------------|-------------------------------------------------------|-----------------------------------------------------|
-| [@lsh4711](https://github.com/lsh4711)    | [@jeein2222](https://github.com/jeein2222)        | [@dayoungee](https://github.com/dayoungee)          |
-|  | |  |
-|                                                   |                                                       |       |
+| [@lsh4711](https://github.com/lsh4711)    | [@dayoungee](https://github.com/dayoungee)        | [@jeein2222](https://github.com/jeein2222)          |
+| `2023.06.28 ~` | `2023.06.28 ~` |`2023.06.28~07.27`|
 
 ## ✍Tech Stack
 
