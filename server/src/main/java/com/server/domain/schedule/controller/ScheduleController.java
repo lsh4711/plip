@@ -83,6 +83,7 @@ public class ScheduleController {
     }
 
     // 일정 채우기 & 편집
+    // *임시로 예전 로직 다시 사용*
     @Transactional
     @PatchMapping("/{scheduleId}/edit")
     public ResponseEntity patchSchedule(@PathVariable long scheduleId,
@@ -98,10 +99,12 @@ public class ScheduleController {
 
         // SchedulePlace
         List<SchedulePlace> schedulePlaces = updatedSchedule.getSchedulePlaces(); // 기존 (개인)장소 목록
+        schedulePlaceService.deleteSchedulePlaces(schedulePlaces);
+
         List<SchedulePlace> updateSchedulePlaces = placeMapper
                 .placesToSchedulePlaces(places, updatedSchedule); // 변경할 (개인)장소 목록
         List<SchedulePlace> updatedSchedulePlaces = schedulePlaceService
-                .updateSchedulePlaces(updateSchedulePlaces, schedulePlaces); // 3. (개인)장소 갱신
+                .saveSchedulePlaces(updateSchedulePlaces);
 
         updatedSchedule.setSchedulePlaces(updatedSchedulePlaces);
 
