@@ -11,10 +11,6 @@ const Home = () => {
   return (
     <>
       <div className="landing h-full w-full bg-[url('../assets/imgs/gyeonggi.webp')] bg-cover bg-center bg-no-repeat">
-        {/* 임시 기프티콘 이벤트 버튼 (TODO 추후 삭제) */}
-        <button className="flying absolute h-32 w-32" onClick={() => navigate('/event')}>
-          <img src="/present.webp" draggable={false} />
-        </button>
         <div className="z-50 flex h-full w-full flex-col items-center justify-end bg-black/50 px-10 pb-6 pt-[76px] sm:items-start sm:pb-10">
           <Paragraph
             size={'md'}
