@@ -3,7 +3,7 @@
 
 - **Team name**: 코벤져스
 
-- **Project**: [사이트 이름]
+- **Project**: [PliP]
 
 - **Development Duration**: `2023.06.28~2023.07.27`
 
@@ -30,16 +30,16 @@
 
 
 ## Docs
-**Team Page**: [Notion URL](https://www.notion.so/codestates/20ddc860e647488c97b9698ab1f558d2)
+[**Team Page**](https://www.notion.so/codestates/20ddc860e647488c97b9698ab1f558d2)
 
-**Develop Page**: [Notion URL](https://www.notion.so/codestates/5ff609e18a9a4bff87b6f8539a31dcb2)
+[**Develop Page**](https://www.notion.so/codestates/5ff609e18a9a4bff87b6f8539a31dcb2)
 
 ### Figma
-
+[**Figma**]([https://teamde](https://www.figma.com/file/X9Dv6VA5QX4LKgrGFkYmxw/%EC%A7%80%ED%98%84%EB%B3%B4%EC%9C%A0%ED%8C%80?type=design&node-id=116-204&mode=design&t=SGL9vFegagcFj1ls-0)https://www.figma.com/file/X9Dv6VA5QX4LKgrGFkYmxw/%EC%A7%80%ED%98%84%EB%B3%B4%EC%9C%A0%ED%8C%80?type=design&node-id=116-204&mode=design&t=SGL9vFegagcFj1ls-0)
 
 ### Spring REST Docs with SwaggerUI
-**Docs**: [Docs](https://teamdev.shop:8000)
+[**API Docs**](https://teamdev.shop)
 
 
 ### ERD Diagram
-
+[**ERD Cloud**](https://www.erdcloud.com/d/QBcuKs8MqxfjY5bv3)
