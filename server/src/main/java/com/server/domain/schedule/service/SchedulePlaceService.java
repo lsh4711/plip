@@ -26,8 +26,8 @@ public class SchedulePlaceService {
         schedulePlaceRepository.save(schedulePlace);
     }
 
-    public void saveSchedulePlaces(List<SchedulePlace> schedulePlaces) {
-        schedulePlaceRepository.saveAll(schedulePlaces);
+    public List<SchedulePlace> saveSchedulePlaces(List<SchedulePlace> schedulePlaces) {
+        return schedulePlaceRepository.saveAll(schedulePlaces);
     }
 
     public List<SchedulePlace> updateSchedulePlaces(List<SchedulePlace> updateSchedulePlaces,
@@ -71,7 +71,8 @@ public class SchedulePlaceService {
                     ExceptionCode.SCHEDULE_PLACE_NOT_FOUND));
     }
 
-    // 변경 장소에 없는 장소만 삭제
+    // 기존: 변경 장소에 없는 장소만 삭제
+    // 현재: 모두 삭제
     public void deleteSchedulePlaces(Collection<SchedulePlace> schedulePlaces) {
         schedulePlaceRepository.deleteAll(schedulePlaces);
     }
