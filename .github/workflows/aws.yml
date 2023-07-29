@@ -2,7 +2,10 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - master
+      - release
+      - 'be/dev'
 
 permissions:
   contents: read
@@ -38,7 +41,6 @@ env:
   
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
