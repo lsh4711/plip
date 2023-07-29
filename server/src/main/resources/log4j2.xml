@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="INFO">
+    <Properties>
+        <Property name="LOG_PATTERN">%d{HH:mm:ss.SSSZ} [%t] %-5level %logger{36} - %msg%n</Property>
+    </Properties>
+    <Appenders>
+        <Console name="ConsoleLog" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}" charset="UTF-8"/>
+        </Console>
+        <RollingFile name="FileLog"
+                     fileName="./logs/spring.log"
+                     filePattern="./logs/spring-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10000KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20" fileIndex="min"/>
+        </RollingFile>
+        <RollingFile name="RequestLog"
+                     fileName="./logs/request.log"
+                     filePattern="./logs/request-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10000KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20" fileIndex="min"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <!-- <Root level="DEBUG"> -->
+        <Root level="INFO">
+            <AppenderRef ref="ConsoleLog"/>
+            <AppenderRef ref="FileLog"/>
+        </Root>
+        <Logger name="com.server.global.log.RequestLoggingAspect" level="DEBUG" additivity="false">
+            <AppenderRef ref="RequestLog"/>
+            <AppenderRef ref="FileLog"/>
+        </Logger>
+    </Loggers>
+</Configuration>

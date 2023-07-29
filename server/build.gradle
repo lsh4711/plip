@@ -1,81 +1,117 @@
 buildscript {
-	ext {
-		restdocsApiSpecVersion = '0.15.1'
-	}
+    ext {
+        restdocsApiSpecVersion = '0.15.1'
+    }
 }
 
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '2.7.13'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-	id 'org.asciidoctor.jvm.convert' version '3.3.2'
-	id 'com.epages.restdocs-api-spec' version "${restdocsApiSpecVersion}"
-	id 'org.hidetake.swagger.generator' version '2.18.2'
+    id 'java'
+    id 'org.springframework.boot' version '2.7.13'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'com.epages.restdocs-api-spec' version "${restdocsApiSpecVersion}"
+    id 'org.hidetake.swagger.generator' version '2.18.2'
 }
 
 group = 'com'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '11'
+    sourceCompatibility = '11'
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    all { //기타 로깅 스타터의 모든 발생을 Log4j2 스타터로 대체
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 ext {
-	set('snippetsDir', file("build/generated-snippets"))
+    set('snippetsDir', file("build/generated-snippets"))
 }
 
 dependencies {
-	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	compileOnly 'org.projectlombok:lombok'
-	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-	runtimeOnly 'com.h2database:h2'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'io.projectreactor:reactor-test'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testImplementation 'com.epages:restdocs-api-spec-mockmvc:' + restdocsApiSpecVersion
+    implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'com.google.code.gson:gson'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    compileOnly 'org.projectlombok:lombok'
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    // runtimeOnly 'com.h2database:h2'
+    testImplementation 'com.h2database:h2' // 추가됨
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:' + restdocsApiSpecVersion
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    testImplementation 'org.mockito:mockito-inline'
+
+    implementation 'commons-io:commons-io:2.13.0'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE' // s3 버킷 사용
+    implementation 'org.springframework.boot:spring-boot-starter-batch:2.7.13'
+
+    // log
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2' //log4j2 추가
+    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.79.Final:osx-aarch_64' //m2에서 애플리케이션 실행 오류로 추가
+    implementation 'org.springframework.boot:spring-boot-starter-aop' //aop 추가
+
+    implementation 'com.google.firebase:firebase-admin:9.2.0' // firebase
+
+	implementation 'mysql:mysql-connector-java:8.0.33' // MySQL
 }
 
 tasks.named('test') {
-	//outputs.dir snippetsDir
-	useJUnitPlatform()
+    outputs.dir snippetsDir
+    useJUnitPlatform()
 }
 
 tasks.withType(GenerateSwaggerUI) {
-	dependsOn 'openapi3'
+    dependsOn 'openapi3'
 
-	delete file('src/main/resources/static/docs/')
-	copy {
-		from "build/resources/main/static/docs"
-		into "src/main/resources/static/docs/"
-
-	}
+    delete file('src/main/resources/static/docs/')
+    copy {
+        from "build/resources/main/static/docs"
+        into "src/main/resources/static/docs/"
+    }
 }
 
-bootJar{
-	dependsOn(':openapi3')
+bootJar {
+    dependsOn(':openapi3')
+    archivesBaseName = 'teamdev'
+    archiveFileName = 'teamdev.jar'
+    archiveVersion = "0.0.0"
 }
 
 openapi3 {
-	server = "http://localhost:8080"
-	title = "코벤져스 API 문서"
-	description = "Spring REST Docs with SwaggerUI."
-	version = "0.0.1"
-	outputFileNamePrefix = 'open-api-3.0.1'
-	format = 'json'
-	outputDirectory = 'build/resources/main/static/docs'
+    servers = [ 
+        {url = 'https://teamdev.shop'},
+        {url = 'https://localhost:8080'}
+    ]
+    title = "코벤져스 API 문서"
+    // description = "Spring REST Docs with SwaggerUI."
+    description = "admin: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoiYWRtaW4iLCJtZW1iZXJJZCI6MSwic3ViIjoiYWRtaW4iLCJpYXQiOjE2ODkwMDQyOTEsImV4cCI6MTY5MTYzMjI4NH0.RU3k5t3V95_0xAvLSNTYqKmfIOM1y-jkqABRcGbNP5Iao92MR3ZnAjRHjlJ3dT-_j8shLbLxrPVNP08YaDr-pA<br /><br />test: eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImVtYWlsIjoidGVzdEBuYXZlci5jb20iLCJtZW1iZXJJZCI6NSwic3ViIjoidGVzdEBuYXZlci5jb20iLCJpYXQiOjE2ODk0OTc3NzEsImV4cCI6MTY5MjEyNTc3MX0.QMC-1_oBAnZYz-yzYJ-wgVs6B5mPu8oxfF-CfXaz5uhhonqilXai4qw7IG1rXMh8G1DjGoUobtNi8iWLsRu02Q"
+    version = "0.0.1"
+    outputFileNamePrefix = 'open-api-3.0.1'
+    format = 'json'
+    outputDirectory = 'build/resources/main/static/docs'
 }

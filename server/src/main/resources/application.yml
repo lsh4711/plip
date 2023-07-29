@@ -1,16 +1,113 @@
+server:
+  port: 8080
+  ssl:
+    key-store: classpath:aws.p12
+    key-store-type: PKCS12
+    key-store-password: ${KEY_STORE_PASSWORD}
 spring:
-  h2:
-    console:
-      enabled: true
-      path: /h2
+  config.activate.on-profile: default
+  batch:
+    job:
+      enabled: false
+  #   jdbc:
+  #     initialize-schema: always # 작동하는지 확인 필요
+  redis:
+    host: localhost
+    port: 6379
+  # h2:
+  #   console:
+  #     enabled: true
+  #     path: /h2
+  #     settings:
+  #       web-allow-others: true
+  # datasource:
+  #   url: jdbc:h2:mem:test
   datasource:
-    url: jdbc:h2:mem:test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SQL_URL}
+    username: ${SQL_USERNAME}
+    password: ${SQL_PASSWORD}
   jpa:
     show-sql: true
+    # generate-ddl: true
     properties:
       hibernate:
-        ddl-auto: create
+        # ddl-auto: create-drop
         format_sql: true
+        default_batch_fetch_size: 1000 # N+1
+        # show_sql: true
+        # format_sql: true
+        # highlight_sql: true
+        # use_sql_comments: true
+    # defer-datasource-initialization: true
+  # sql:
+  #   init:
+  #     mode: always
+  #     data-locations:
+
+  servlet:
+    multipart:
+      enabled: true
+      location: ${IMAGE_STORAGE_LOCATION}
+      maxFileSize: 10MB
+      maxRequestSize: 10MB
+    web:
+      resources:
+        static-locations: classpath:/
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+  security:
+    oauth2:
+      client:
+        registration:
+          naver:
+            client-id: ${NAVER_CLIENT_ID}
+            client-secret: ${NAVER_CLIENT_SECRET}
+            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            scope: name,email,profile_image
+            client-name: Naver
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            client-authentication-method: POST
+            scope: profile_nickname, account_email, talk_message
+            client-name: Kakao
+
+        provider:
+          naver:
+            authorization-uri: https://nid.naver.com/oauth2.0/authorize
+            token-uri: https://nid.naver.com/oauth2.0/token
+            user-info-uri: https://openapi.naver.com/v1/nid/me
+            user-name-attribute: response
+
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+jwt:
+  key:
+    secret: ${JWT_SECRET_KEY}
+  access-token-expiration-minutes: ${ACCESS_EXPIRATION_MINUTES}
+  refresh-token-expiration-minutes: ${REFRESH_EXPIRATION_MINUTES}
+
+share:
+  key: ${SHARE_SECRET_KEY}
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
@@ -19,3 +116,28 @@ springdoc:
     url: /docs/open-api-3.0.1.json
     path: /docs/swagger
 
+kakao:
+  redirect-url: ${REDIRECT_URL8000}
+  api-key: ${API_KEY}
+file:
+  path: ${FILE_LOCATION}
+
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY2}
+      secret-key: ${AWS_SECRET_ACCESS_KEY2}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+application:
+  bucket:
+    name: jeein-bucket
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    # org.springframework.web: WARN
