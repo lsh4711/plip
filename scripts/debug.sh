@@ -28,4 +28,4 @@ JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,ad
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 source ~/.bashrc
 echo "> DEPLOY_JAR 배포"    >> $LOG_PATH/deploy.log
-nohup java -jar $DEPLOY_JAR ${JAVA_OPTS} >> $LOG_PATH/deploy.log 2>$LOG_PATH/deploy_err.log &
+nohup java ${JAVA_OPTS} -jar $DEPLOY_JAR >> $LOG_PATH/deploy.log 2>$LOG_PATH/deploy_err.log &
