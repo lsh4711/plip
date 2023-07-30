@@ -13,8 +13,8 @@ plugins {
     id 'org.hidetake.swagger.generator' version '2.18.2'
 }
 
-group = 'com'
-version = '0.0.1-SNAPSHOT'
+// group = 'com'
+// version = '0.0.1-SNAPSHOT'
 
 java {
     sourceCompatibility = '11'
@@ -88,24 +88,34 @@ tasks.named('test') {
 tasks.withType(GenerateSwaggerUI) {
     dependsOn 'openapi3'
 
-    delete file('src/main/resources/static/docs/')
-    copy {
-        from "build/resources/main/static/docs"
-        into "src/main/resources/static/docs/"
-    }
+    // delete file('build/resources/main/static/docs/')
+    // copy {
+    //     from "build/resources/main/static/docs"
+    //     into "src/main/resources/static/docs/"
+    // }
 }
 
 bootJar {
     dependsOn(':openapi3')
-    archivesBaseName = 'teamdev'
-    archiveFileName = 'teamdev.jar'
-    archiveVersion = "0.0.0"
+    archivesBaseName = 'plip'
+    archiveVersion = "0.2"
+    // archiveFileName = 'teamdev.jar'
 }
 
 openapi3 {
     servers = [ 
-        {url = 'https://teamdev.shop'},
-        {url = 'https://localhost:8080'}
+        {
+            url = 'https://teamdev.shop'
+            description = '배포 서버'
+        },
+        {
+            url = 'https://teamdev.shop:8888'
+            description = '개발 서버'
+        },
+        {
+            url = 'https://localhost:8080'
+            description = '로컬 서버'
+        }
     ]
     title = "코벤져스 API 문서"
     // description = "Spring REST Docs with SwaggerUI."
@@ -113,5 +123,5 @@ openapi3 {
     version = "0.0.1"
     outputFileNamePrefix = 'open-api-3.0.1'
     format = 'json'
-    outputDirectory = 'build/resources/main/static/docs'
+    outputDirectory = 'src/main/resources/static/docs'
 }
