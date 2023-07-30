@@ -139,5 +139,7 @@ application:
 
 logging:
   level:
-    org.springframework.web: DEBUG
+    org:
+      springframework.web: DEBUG
+      hibernate.SQL: DEBUG
     # org.springframework.web: WARN
