@@ -21,7 +21,7 @@ else
 fi
 
 JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.accesslog.enabled=true"
-JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.basedir=/home/ec2-user/logs/plip"
+JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.basedir=."
 JAVA_OPTS="${JAVA_OPTS} --logging.file.path=/home/ec2-user/logs/plip/"
 JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:4711"
 
