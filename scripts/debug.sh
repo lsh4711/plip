@@ -1,7 +1,7 @@
 #!/bin/bash
 BUILD_JAR=$(ls /home/ec2-user/action/plip/server/build/libs/plip-0.2.jar)
 JAR_NAME=$(basename $BUILD_JAR)
-LOG_PATH=/home/ec2-user/logs/plip/
+LOG_PATH=/home/ec2-user/logs/plip
 
 echo "> 현재 시간: $(date)" >> $LOG_PATH/deploy.log
 echo "> build 파일명: $JAR_NAME" >> $LOG_PATH/deploy.log
