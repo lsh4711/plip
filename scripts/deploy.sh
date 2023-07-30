@@ -1,7 +1,7 @@
 #!/bin/bash
 BUILD_JAR=$(ls /home/ec2-user/action/plip/server/build/libs/plip-0.2.jar)
 JAR_NAME=$(basename $BUILD_JAR)
-LOG_PATH=/home/ec2-user/logs/plip
+LOG_PATH=/home/ec2-user/logs/plip/
 
 echo "> 현재 시간: $(date)" >> $LOG_PATH/deploy.log
 echo "> build 파일명: $JAR_NAME" >> $LOG_PATH/deploy.log
@@ -21,10 +21,11 @@ else
 fi
 
 JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.accesslog.enabled=true"
-JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.basedir=/home/ec2-user/logs/plip"
-JAVA_OPTS="${JAVA_OPTS} --logging.file.path=/home/ec2-user/logs/plip/"
+JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.basedir=/home/ec2-user/logs/plip/"
+
+JAR_OPTS="${JAR_OPTS} --logging.file.path=/home/ec2-user/logs/plip/"
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 source ~/.bashrc
 echo "> DEPLOY_JAR 배포"    >> $LOG_PATH/deploy.log
-nohup java -jar $DEPLOY_JAR ${JAVA_OPTS} >> $LOG_PATH/deploy.log 2>$LOG_PATH/deploy_err.log &
+nohup java ${JAVA_OPTS} -jar $DEPLOY_JAR ${JAR_OPTS} >> $LOG_PATH/deploy.log 2>$LOG_PATH/deploy_err.log &
