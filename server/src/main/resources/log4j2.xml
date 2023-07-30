@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Configuration status="INFO">
     <Properties>
+        <Property name="LOG_PATH">${sys:LOG_PATH}</Property>
         <Property name="LOG_PATTERN">%d{HH:mm:ss.SSSZ} [%t] %-5level %logger{36} - %msg%n</Property>
     </Properties>
     <Appenders>
@@ -8,8 +9,8 @@
             <PatternLayout pattern="${LOG_PATTERN}" charset="UTF-8"/>
         </Console>
         <RollingFile name="FileLog"
-                     fileName="./logs/spring.log"
-                     filePattern="./logs/spring-%d{yyyy-MM-dd}-%i.log">
+                     fileName="${LOG_PATH}/spring.log"
+                     filePattern="${LOG_PATH}/spring-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
@@ -18,8 +19,8 @@
             <DefaultRolloverStrategy max="20" fileIndex="min"/>
         </RollingFile>
         <RollingFile name="RequestLog"
-                     fileName="./logs/request.log"
-                     filePattern="./logs/request-%d{yyyy-MM-dd}-%i.log">
+                     fileName="${LOG_PATH}/request.log"
+                     filePattern="${LOG_PATH}/request-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1"/>
