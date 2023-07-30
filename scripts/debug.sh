@@ -21,11 +21,11 @@ else
 fi
 
 JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.accesslog.enabled=true"
-JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.basedir=."
-JAVA_OPTS="${JAVA_OPTS} --logging.file.path=/home/ec2-user/logs/plip/"
-JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:4711"
+JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.basedir=/home/ec2-user/logs/plip/"
+# JAVA_OPTS="${JAVA_OPTS} --logging.file.path=/home/ec2-user/logs/plip/"
+# JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:4711"
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 source ~/.bashrc
 echo "> DEPLOY_JAR 배포"    >> $LOG_PATH/deploy.log
-nohup java ${JAVA_OPTS} -jar $DEPLOY_JAR >> $LOG_PATH/deploy.log 2>$LOG_PATH/deploy_err.log &
+nohup java ${JAVA_OPTS} -jar $DEPLOY_JAR --logging.file.path=/home/ec2-user/logs/plip/ -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:4711 >> $LOG_PATH/deploy.log 2>$LOG_PATH/deploy_err.log &
