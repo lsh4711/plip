@@ -15,6 +15,6 @@ public class DocController {
 
     @GetMapping
     public void getDocs(HttpServletResponse response) throws IOException {
-        response.sendRedirect(url + "/docs/swagger-ui/index.html");
+        response.sendRedirect(url + ":8888/docs/swagger-ui/index.html");
     }
 }
