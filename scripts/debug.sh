@@ -24,9 +24,9 @@ JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.accesslog.enabled=true"
 JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.accesslog.directory=access-logs"
 JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.accesslog.prefix=access"
 JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.basedir=/home/ec2-user/logs/plip/"
+JAVA_OPTS="${JAVA_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:4711"
 
 JAR_OPTS="${JAR_OPTS} --logging.file.path=/home/ec2-user/logs/plip/"
-JAR_OPTS="${JAR_OPTS} -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:4711"
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 source ~/.bashrc
