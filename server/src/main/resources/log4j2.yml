@@ -5,7 +5,7 @@ Configuration:
   Properties:
     Property:
       - name: log-path
-        value: ${env:LOG_PATH}
+        value: ${sys:LOG_PATH}
       - name: log-pattern
         value: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t][%l] - %m%n"
 
