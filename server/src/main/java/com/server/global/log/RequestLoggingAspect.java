@@ -59,9 +59,9 @@ public class RequestLoggingAspect {
                 objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
                 try {
                     String requestBodyJson = objectMapper.writeValueAsString(requestBody);
-                    logger.debug("URL: {}", url);
-                    logger.debug("Headers: {}", headers);
-                    logger.debug("Request body: {}", requestBodyJson);
+                    logger.info("URL: {}", url);
+                    logger.info("Headers: {}", headers);
+                    logger.info("Request body: {}", requestBodyJson);
                 } catch (JsonProcessingException e) {
                     logger.error("Failed to convert request body to JSON", e);
                 }

@@ -137,6 +137,9 @@ application:
   bucket:
     name: jeein-bucket
 
+log:
+  path: ${LOG_PATH}
+
 logging:
   config: classpath:log4j2.yml
   level:

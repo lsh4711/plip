@@ -114,7 +114,7 @@ openapi3 {
             description = '개발 서버'
         },
         {
-            url = 'https://localhost:8080'
+            url = 'https://localhost:8888'
             description = '로컬 서버'
         }
     ]
