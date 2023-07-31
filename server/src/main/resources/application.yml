@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8888
   ssl:
     key-store: classpath:aws.p12
     key-store-type: PKCS12
@@ -137,7 +137,13 @@ application:
   bucket:
     name: jeein-bucket
 
+log:
+  path: ${LOG_PATH}
+
 logging:
+  config: classpath:log4j2.yml
   level:
-    org.springframework.web: DEBUG
+    org:
+      springframework.web: DEBUG
+      hibernate.SQL: DEBUG
     # org.springframework.web: WARN

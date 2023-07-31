@@ -1,0 +1,74 @@
+Configuration:
+  name: Config
+  status: INFO
+
+  Properties:
+    Property:
+      - name: log-path
+        value: ${env:LOG_PATH}
+      - name: log-pattern
+        value: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t][%l] - %m%n"
+
+  Appenders:
+    Console:
+      name: Console
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "[%-5level] %d{HH:mm:ss.SSS} [%t][%l] - %m%n"
+
+    RollingFile:
+      - name: RollingFile_Spring
+        fileName: ${log-path}/spring.log
+        filePattern: ${log-path}/spring-logs/spring-%d{yyyy-MM-dd}-%i.log.gz
+        PatternLayout:
+          pattern: ${log-pattern}
+        Policies:
+          TimeBasedTriggeringPolicy:
+            Interval: 1
+            modulate: true
+          SizeBasedTriggeringPolicy:
+            size: 10000KB
+        DefaultRollOverStrategy:
+          max: 30
+          fileIndex: max
+          Delete:
+            basePath: ${log-path}/spring-logs/
+            maxDepth: 1
+            IfAccumulatedFileCount: 
+              exceeds: 30
+
+      - name: RollingFile_Request
+        fileName: ${log-path}/request.log
+        filePattern: ${log-path}/request-logs/request-%d{yyyy-MM-dd}-%i.log.gz
+        PatternLayout:
+          pattern: ${log-pattern}
+        Policies:
+          TimeBasedTriggeringPolicy:
+            Interval: 1
+            modulate: true
+          SizeBasedTriggeringPolicy:
+            size: 10000KB
+        DefaultRollOverStrategy:
+          max: 30
+          fileIndex: max
+          Delete: 
+            basePath: ${log-path}/request-logs/
+            maxDepth: 1
+            IfAccumulatedFileCount:
+              exceeds: 30
+
+  Loggers:
+    Root:
+      level: info
+      AppenderRef:
+        - ref: Console
+        - ref: RollingFile_Spring
+        # - ref: RollingFile_Request
+    Logger:
+      - name: com.server.global.log.RequestLoggingAspect
+        additivity: false
+        level: info
+        AppenderRef:
+          - ref: Console
+          # - ref: RollingFile_Spring
+          - ref: RollingFile_Request

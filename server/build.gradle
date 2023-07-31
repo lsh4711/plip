@@ -21,7 +21,7 @@ java {
 }
 
 configurations {
-    all { //기타 로깅 스타터의 모든 발생을 Log4j2 스타터로 대체
+    all { // Logback을 비활성화하고 Log4j2를 사용
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
     compileOnly {
@@ -71,8 +71,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-batch:2.7.13'
 
     // log
-    implementation 'org.springframework.boot:spring-boot-starter-log4j2' //log4j2 추가
-    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.79.Final:osx-aarch_64' //m2에서 애플리케이션 실행 오류로 추가
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2' // log4j2
+    // implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
+
     implementation 'org.springframework.boot:spring-boot-starter-aop' //aop 추가
 
     implementation 'com.google.firebase:firebase-admin:9.2.0' // firebase
@@ -88,11 +89,11 @@ tasks.named('test') {
 tasks.withType(GenerateSwaggerUI) {
     dependsOn 'openapi3'
 
-    // delete file('build/resources/main/static/docs/')
-    // copy {
-    //     from "build/resources/main/static/docs"
-    //     into "src/main/resources/static/docs/"
-    // }
+    delete file('src/main/resources/static/docs/')
+    copy {
+        from "build/resources/main/static/docs"
+        into "src/main/resources/static/docs/"
+    }
 }
 
 bootJar {
@@ -113,7 +114,7 @@ openapi3 {
             description = '개발 서버'
         },
         {
-            url = 'https://localhost:8080'
+            url = 'https://localhost:8888'
             description = '로컬 서버'
         }
     ]
@@ -123,5 +124,5 @@ openapi3 {
     version = "0.0.1"
     outputFileNamePrefix = 'open-api-3.0.1'
     format = 'json'
-    outputDirectory = 'src/main/resources/static/docs'
+    outputDirectory = 'build/resources/main/static/docs'
 }
