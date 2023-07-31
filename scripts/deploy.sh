@@ -21,6 +21,8 @@ else
 fi
 
 JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.accesslog.enabled=true"
+JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.accesslog.directory=access-logs"
+JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.accesslog.prefix=access"
 JAVA_OPTS="${JAVA_OPTS} -Dserver.tomcat.basedir=/home/ec2-user/logs/plip/"
 
 JAR_OPTS="${JAR_OPTS} --logging.file.path=/home/ec2-user/logs/plip/"

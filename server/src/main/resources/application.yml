@@ -138,6 +138,7 @@ application:
     name: jeein-bucket
 
 logging:
+  config: classpath:log4j2.yml
   level:
     org:
       springframework.web: DEBUG

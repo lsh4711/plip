@@ -17,13 +17,15 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Aspect
 @Slf4j
 public class RequestLoggingAspect {
-    private static final Logger logger = LogManager.getLogger(RequestLoggingAspect.class);
+    private final Logger logger = LogManager.getLogger(RequestLoggingAspect.class);
 
     @Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
     public void restControllerClassMethods() {
@@ -53,6 +55,8 @@ public class RequestLoggingAspect {
             if (args.length > 0) {
                 Object requestBody = args[0];
                 ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.registerModule(new JavaTimeModule());
+                objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
                 try {
                     String requestBodyJson = objectMapper.writeValueAsString(requestBody);
                     logger.debug("URL: {}", url);
