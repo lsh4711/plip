@@ -39,6 +39,9 @@ env:
   SQL_URL: ${{ secrets.SQL_URL }}
   SQL_USERNAME: ${{ secrets.SQL_USERNAME }}
   SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
+
+  # log
+  LOG_PATH: ${{ secrets.LOG_PATH }}
   
 jobs:
   build:
