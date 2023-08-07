@@ -25,6 +25,7 @@ spring:
         url: ${ACTUATOR_SERVER}
         instance:
           name: plip-dev
+          service-url: ${REDIRECT_URL8000}:8888
   batch:
     job:
       enabled: false
