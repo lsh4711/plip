@@ -42,6 +42,10 @@ env:
 
   # log
   LOG_PATH: ${{ secrets.LOG_PATH }}
+
+  # monitoring
+  ACTUATOR_PATH: ${{ secrets.ACTUATOR_PATH }}
+  ACTUATOR_SERVER: ${{ secrets.ACTUATOR_SERVER }}
   
 jobs:
   build:

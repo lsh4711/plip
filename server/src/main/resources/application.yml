@@ -4,8 +4,27 @@ server:
     key-store: classpath:aws.p12
     key-store-type: PKCS12
     key-store-password: ${KEY_STORE_PASSWORD}
+    
+# management.info.env.enabled: true
+management:
+  server:
+    port: 8889
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: ${ACTUATOR_PATH}
+      exposure:
+        include: "*"
 spring:
   config.activate.on-profile: default
+  boot:
+    admin:
+      client:
+        url: ${ACTUATOR_SERVER}
+        instance:
+          name: plip-dev
   batch:
     job:
       enabled: false

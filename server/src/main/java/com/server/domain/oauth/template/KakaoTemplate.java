@@ -51,8 +51,7 @@ public class KakaoTemplate {
         private int image_height = 400;
 
         @Builder.Default
-        private String image_url = "https://teamdev.shop/files/images?region="
-                + CustomRandom.getRandomRegion();
+        private String image_url = CustomRandom.getRandomRegionUrl();
 
         @Builder.Default
         private Link link = Link.builder().build();
