@@ -109,8 +109,9 @@ public class RecordController {
             storageService.deleteImgs(recordId, userId);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error occurred while deleting images: " + e.getMessage());
+            return ResponseEntity.noContent().build(); // hotfix: 임시용, 나중에 s3 연결해야함
+            // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                // .body("Error occurred while deleting images: " + e.getMessage());
         }
 
     }
