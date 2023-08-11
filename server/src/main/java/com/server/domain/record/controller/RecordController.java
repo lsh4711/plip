@@ -1,6 +1,7 @@
 package com.server.domain.record.controller;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -165,8 +166,13 @@ public class RecordController {
                 .build();
             return ResponseEntity.status(HttpStatus.OK).body(imageResponseDto);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error occurred while loading images: " + e.getMessage());
+            ImageResponseDto response = ImageResponseDto.builder() // hotfix: 임시용, 나중에 s3 연결해야함
+                .size(0)
+                .images(new ArrayList<>())
+                .build();
+            return ResponseEntity.ok(response);
+            // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                // .body("Error occurred while loading images: " + e.getMessage());
         }
 
     }
