@@ -17,8 +17,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.server.domain.member.repository.MemberRepository;
-import com.server.domain.oauth.service.KakaoTokenOauthService;
 import com.server.domain.token.service.RedisUtils;
 import com.server.global.auth.handler.login.MemberAuthenticationEntryPoint;
 import com.server.global.auth.handler.logout.MemberLogoutHandler;
@@ -28,7 +26,6 @@ import com.server.global.auth.jwt.DelegateTokenUtil;
 import com.server.global.auth.jwt.JwtTokenizer;
 import com.server.global.auth.userdetails.CustomOAuth2UserService;
 import com.server.global.auth.utils.AccessTokenRenewalUtil;
-import com.server.global.auth.utils.OAuth2TokenUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,14 +33,14 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity(debug = false)
 public class SecurityConfig {
-    private final JwtTokenizer jwtTokenizer;
     private final AccessTokenRenewalUtil accessTokenRenewalUtil;
     private final DelegateTokenUtil delegateTokenUtil;
+    private final JwtTokenizer jwtTokenizer;
+
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final CustomOAuth2UserService oAuth2UserService;
-    private final MemberRepository memberRepository;
+
     private final RedisUtils redisUtils;
-    private final OAuth2TokenUtils oAuth2TokenUtils;
-    private final KakaoTokenOauthService kakaoTokenOauthService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -67,9 +64,7 @@ public class SecurityConfig {
                         .userInfoEndpoint()
                         .userService(oAuth2UserService)
                         .and()
-                        .successHandler(
-                            new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer,
-                                oAuth2TokenUtils, kakaoTokenOauthService)))
+                        .successHandler(oAuth2SuccessHandler))
                 .apply(customFilterConfigurers())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize

@@ -140,9 +140,13 @@ springdoc:
 kakao:
   redirect-url: ${REDIRECT_URL8000}
   api-key: ${API_KEY}
+
 file:
   path: ${FILE_LOCATION}
 
+url:
+  client: ${CLIENT_URL}
+  server: ${SERVER_URL}
 
 cloud:
   aws:

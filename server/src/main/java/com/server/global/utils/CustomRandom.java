@@ -2,8 +2,13 @@ package com.server.global.utils;
 
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public class CustomRandom {
     private static final Random random = new Random();
+
+    @Value("${url.server}")
+    private static String serverUrl;
 
     private static final String[] REGION_LIST = { // 임시
         "busan", "chungbuk", "chungnam", "daegu", "daejeon", "gangwon", "gwangju", "gyeongbuk", "gyeonggi", "gyeongnam",
@@ -33,10 +38,10 @@ public class CustomRandom {
     }
 
     public static String getRandomRegionUrl() {
-        return "https://teamdev.shop/files/images?region=" + getRandomRegion();
+        return String.format("%s/files/images?region=%s", serverUrl, getRandomRegion());
     }
 
     public static String getCustomRegionUrl(String region) {
-        return "https://teamdev.shop/files/images?region=" + region;
+        return String.format("%s/files/images?region=%s", serverUrl, region);
     }
 }
