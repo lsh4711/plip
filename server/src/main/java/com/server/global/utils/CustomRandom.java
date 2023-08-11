@@ -3,12 +3,18 @@ package com.server.global.utils;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CustomRandom {
     private static final Random random = new Random();
 
-    @Value("${url.server}")
     private static String serverUrl;
+
+    @Value("${url.server}")
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl = serverUrl;
+    }
 
     private static final String[] REGION_LIST = { // 임시
         "busan", "chungbuk", "chungnam", "daegu", "daejeon", "gangwon", "gwangju", "gyeongbuk", "gyeonggi", "gyeongnam",
