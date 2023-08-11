@@ -93,6 +93,10 @@ kakao:
 file:
   path: test
 
+url:
+  client: ${CLIENT_URL}
+  server: ${SERVER_URL}
+
 cloud:
   aws:
     credentials:
