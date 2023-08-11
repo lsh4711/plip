@@ -23,7 +23,8 @@ public class PushTemplateConstructor {
     @Value("${share.key}")
     private String shareSecretKey;
 
-    private String baseUrl = "https://plip.netlify.app/";
+    @Value("${url.server}")
+    private String serverUrl;
 
     public PushTemplate getWelcomeTemplate(String token, String nickname) {
         PushTemplate pushTemplate = PushTemplate.builder()
@@ -75,7 +76,7 @@ public class PushTemplateConstructor {
                 .token(token)
                 .title(String.format("%s님 사탕이 도착했어요~", nickname))
                 .body(String.format("선착순 이벤트에 %d등으로 참여하셨습니다.", giftId))
-                .imageUrl("https://teamdev.shop/files/images/gifts?id=" + giftId)
+                .imageUrl(String.format("%s/files/images/gifts?id=%d", serverUrl, giftId))
                 .build();
 
         return pushTemplate;
@@ -87,8 +88,8 @@ public class PushTemplateConstructor {
                 .token(token)
                 .title(title)
                 .body(String.format("%s님 %s", nickname, message))
-                .imageUrl("https://teamdev.shop/files/images/gifts?id=999")
-                .url("https://teamdev.shop/events")
+                .imageUrl(serverUrl + "/files/images/gifts?id=999")
+                .url(serverUrl + "/events")
                 .build();
 
         return pushTemplate;

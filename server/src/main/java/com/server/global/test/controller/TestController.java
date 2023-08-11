@@ -2,6 +2,7 @@ package com.server.global.test.controller;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/test")
 public class TestController { // 테스트 용이므로 비즈니스 로직도 함께 있습니다.
     private final StorageService storageService;
+
+    @Value("${url.server}")
+    private String serverUrl;
 
     @GetMapping
     public ModelAndView getTest() {
@@ -62,10 +66,10 @@ public class TestController { // 테스트 용이므로 비즈니스 로직도 �
                 .setNotification(Notification.builder()
                         .setTitle("제목")
                         .setBody("내용")
-                        .setImage("https://teamdev.shop/files/images/test?name=test")
+                        .setImage(serverUrl + "/files/images/test?name=test")
                         .build())
                 .setWebpushConfig(WebpushConfig.builder()
-                        .setFcmOptions(WebpushFcmOptions.withLink("https://teamdev.shop/"))
+                        .setFcmOptions(WebpushFcmOptions.withLink(serverUrl))
                         .build())
                 .build();
 

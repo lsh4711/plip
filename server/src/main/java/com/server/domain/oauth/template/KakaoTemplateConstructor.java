@@ -3,6 +3,7 @@ package com.server.domain.oauth.template;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +15,16 @@ import com.server.domain.oauth.template.KakaoTemplate.Text;
 import com.server.domain.region.entity.Region;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.domain.schedule.service.ScheduleService;
+import com.server.global.utils.CustomRandom;
 
 @Component
 public class KakaoTemplateConstructor {
     @Lazy
     @Autowired
     private ScheduleService scheduleService;
+
+    @Value("${url.server}")
+    private String serverUrl;
 
     public Feed getWelcomeTemplate(Member member) {
         String nickname = member.getNickname();
@@ -64,7 +69,7 @@ public class KakaoTemplateConstructor {
         Content content = Content.builder()
                 .title(String.format("%s님의 %s 여행 일정입니다.", nickname, korName))
                 .description(String.format("기간: %s \n~ %s (%s)", startDate, endDate, term))
-                .image_url("https://teamdev.shop/files/images?region=" + engName)
+                .image_url(CustomRandom.getCustomRegionUrl(engName))
                 .link(link)
                 .build();
 
@@ -126,7 +131,7 @@ public class KakaoTemplateConstructor {
                 .description(String.format("선착순 이벤트에 %d등으로 참여하셨습니다.", giftId))
                 .image_width(800)
                 .image_height(1609)
-                .image_url("https://teamdev.shop/files/images/gifts?id=" + giftId)
+                .image_url(String.format("%s/files/images/gifts?id=%d", serverUrl, giftId))
                 .build();
 
         Feed feed = Feed.builder()
@@ -139,7 +144,7 @@ public class KakaoTemplateConstructor {
 
     // 이벤트용
     public Feed getNoticeTemplate(String nickname, String title, String message) {
-        String eventManualUrl = "https://teamdev.shop/events";
+        String eventManualUrl = serverUrl + "/events";
 
         Link link = Link.builder()
                 .web_url(eventManualUrl)
@@ -151,7 +156,7 @@ public class KakaoTemplateConstructor {
                 .description(String.format("%s님 %s", nickname, message))
                 .image_width(512)
                 .image_height(511)
-                .image_url("https://teamdev.shop/files/images/gifts?id=999")
+                .image_url(serverUrl + "/files/images/gifts?id=999")
                 .link(link)
                 .build();
 
