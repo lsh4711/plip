@@ -20,11 +20,9 @@
 | [@lsh4711](https://github.com/lsh4711)    | [@dayoungee](https://github.com/dayoungee)        | [@jeein2222](https://github.com/jeein2222)          |
 | `2023.06.28 ~` | `2023.06.28 ~` |`2023.06.28~07.27`|
 
-## ✍Tech Stack
-
 </br>
 
-## 💻 Stacks Used
+## ✍Tech Stack
 ### Back-end
 |   Java   |   Spring   |   Spring Boot   |   Spring Security   |   MySQL   |   AWS   |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
@@ -47,7 +45,8 @@
 | <img alt="github logo" src="https://techstack-generator.vercel.app/github-icon.svg" width="65" height="65"> | <img alt="Discord logo" src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/62595384e89d1d54d704ece7_3437c10597c1526c3dbd98c737c2bcae.svg" height="65" width="65"> | <img alt="Notion logo" src="https://www.notion.so/cdn-cgi/image/format=auto,width=640,quality=100/front-static/shared/icons/notion-app-icon-3d.png" height="65" width="65"> |
 
 </br>
-## Docs
+## 📃Docs
+
 [**Team Page**](https://www.notion.so/codestates/20ddc860e647488c97b9698ab1f558d2)
 
 [**Develop Page**](https://www.notion.so/codestates/5ff609e18a9a4bff87b6f8539a31dcb2)
