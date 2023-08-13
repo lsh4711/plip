@@ -65,8 +65,52 @@ public class PushTemplateConstructor {
         return pushTemplate;
     }
 
-    public PushTemplate getDeleteScheduleTemplate(Schedule schedule) {
+    public PushTemplate getScheduledTemplate(Schedule schedule,
+            Member member,
+            Push push,
+            int hour) {
+        // Member
+        String nickname = member.getNickname();
 
+        // Schedule
+        long scheduleId = schedule.getScheduleId();
+
+        // Region
+        Region region = schedule.getRegion();
+        String engName = region.getEngName();
+        String korName = region.getKorName();
+
+        String title;
+        String body;
+        String shareUrl = null;
+
+        if (hour == 22) {
+            title = String.format("%s님! %s 여행은 즐거우셨나요?",
+                nickname,
+                korName);
+            body = "클릭하여 일지를 작성하러 가볼까요?";
+        } else {
+            String prefix = hour == 7 ? "오늘" : "내일";
+            title = String.format("%s님! %s은 설레는 %s 여행날이에요!",
+                nickname,
+                prefix,
+                korName);
+            body = "클릭 시 일정 상세 정보로 이동합니다.";
+            shareUrl = scheduleService.createShareUrl(scheduleId, member);
+        }
+
+        PushTemplate pushTemplate = PushTemplate.builder()
+                .token(push.getPushToken())
+                .title(title)
+                .body(body)
+                .imageUrl(CustomRandom.getCustomRegionUrl(engName))
+                .url(shareUrl)
+                .build();
+
+        return pushTemplate;
+    }
+
+    public PushTemplate getDeleteScheduleTemplate(Schedule schedule) {
         return null;
     }
 

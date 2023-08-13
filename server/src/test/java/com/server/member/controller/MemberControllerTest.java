@@ -220,7 +220,7 @@ public class MemberControllerTest {
     @DisplayName("회원을 탈퇴한다.")
     void deleteMember() throws Exception {
         //given
-        doNothing().when(service).deleteMember(Mockito.anyString());
+        doNothing().when(service).deleteMember();
         //when
         ResultActions actions = mockMvc.perform(
                 delete(MEMBER_DEFULT_URI)

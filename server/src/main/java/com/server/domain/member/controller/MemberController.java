@@ -62,8 +62,9 @@ public class MemberController {
 
     @DeleteMapping
     public ResponseEntity<?> deleteMember(HttpServletResponse response, Principal principal) {
-        memberService.deleteMember(principal.getName());
+        memberService.deleteMember();
         jwtTokenizer.resetHeaderRefreshToken(response);
+
         return ResponseEntity.noContent().build();
     }
 

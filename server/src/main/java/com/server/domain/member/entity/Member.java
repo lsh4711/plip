@@ -40,6 +40,8 @@ public class Member extends BaseEntity {
     private String password;
     @Column(nullable = false)
     private String nickname;
+
+    @Builder.Default
     @Enumerated(value = EnumType.STRING)
     @Column(length = 32, columnDefinition = "varchar(32) default 'ROLE_USER'")
     private Role role = Role.USER;
@@ -60,11 +62,12 @@ public class Member extends BaseEntity {
     private List<Record> records;
 
     @Builder
-    public Member(Long memberId, String email, String password, String nickname) {
+    public Member(Long memberId, String email, String password, String nickname, Role role) {
         this.memberId = memberId;
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.role = role;
     }
 
     @Getter
@@ -87,9 +90,5 @@ public class Member extends BaseEntity {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 }

@@ -30,7 +30,7 @@ public class TaskletConfig {
     @Bean
     public Step batchStep1(int order) {
         Step customStep1 = stepBuilderFactory.get("stepName1")
-            .tasklet(new BatchTasklet(order)) // Tasklet 설정
+            .tasklet(new BatchTasklet(order))
             .build();
 
         return customStep1;
@@ -39,7 +39,7 @@ public class TaskletConfig {
     @Bean
     public Step batchStep2(int order) {
         Step customStep2 = stepBuilderFactory.get("stepName2")
-            .tasklet(new BatchTasklet(order)) // Tasklet 설정
+            .tasklet(new BatchTasklet(order))
             .build();
 
         return customStep2;
@@ -48,7 +48,7 @@ public class TaskletConfig {
     @Bean
     public Step batchStep3(int order) {
         Step customStep3 = stepBuilderFactory.get("stepName3")
-            .tasklet(new BatchTasklet(order)) // Tasklet 설정
+            .tasklet(new BatchTasklet(order))
             .build();
 
         return customStep3;

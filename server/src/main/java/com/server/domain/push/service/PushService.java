@@ -2,6 +2,8 @@ package com.server.domain.push.service;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PushService {
     private final PushRepository pushRepository;
     private final PushTemplateConstructor pushTemplateConstructor;
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     public Push savePush(Push push) {
         String token = push.getPushToken();
@@ -91,12 +94,25 @@ public class PushService {
         sendPush(pushTemplate);
     }
 
+    @Async
+    public void sendScheduledMessage(Schedule schedule, Member member, int hour) {
+        Push push = member.getPush();
+
+        if (push == null) {
+            return;
+        }
+
+        PushTemplate pushTemplate = pushTemplateConstructor
+                .getScheduledTemplate(schedule, member, push, hour);
+
+        sendPush(pushTemplate);
+    }
+
     // 이벤트용
     @Async
     public void sendEventMessage(Member member, Push push, long giftId) {
         String token = push.getPushToken();
         String nickname = member.getNickname();
-
         PushTemplate pushTemplate = pushTemplateConstructor
                 .getEventTemplate(token, nickname, giftId);
 
@@ -118,28 +134,4 @@ public class PushService {
         }
 
     }
-
-    // public String sendPush(String token) {
-    //     Message message = Message.builder()
-    //             .setToken(token)
-    //             .setNotification(Notification.builder()
-    //                     .setTitle("제목")
-    //                     .setBody("내용")
-    //                     .setImage("https://teamdev.shop/files/images/test?name=test")
-    //                     .build())
-    //             .setWebpushConfig(WebpushConfig.builder()
-    //                     .setFcmOptions(WebpushFcmOptions.withLink("https://teamdev.shop/"))
-    //                     .build())
-    //             .build();
-
-    //     try {
-    //         String response = FirebaseMessaging.getInstance().send(message);
-    //     } catch (FirebaseMessagingException e) {
-    //         log.error("### 푸시 에러", e.getMessage());
-    //         ExceptionCode
-    //         return ResponseEntity.internalServerError().body("푸시 알림 전송 실패");
-    //     }
-
-    //     return ResponseEntity.ok("푸시 알림 전송 성공");
-    // }
 }

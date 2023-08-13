@@ -1,18 +1,19 @@
 package com.server.token.controller;
 
-import static com.epages.restdocs.apispec.ResourceDocumentation.*;
-import static org.mockito.BDDMockito.*;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -35,7 +36,6 @@ import com.server.helper.StubData;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TokenControllerTest {
     private final String TOKEN_DEFULT_URI = "/api/tokens";
     @Autowired
@@ -43,7 +43,7 @@ public class TokenControllerTest {
     @Autowired
     private JwtTokenizer jwtTokenizer;
     @MockBean
-    AccessTokenRenewalUtil accessTokenRenewalUtil;
+    private AccessTokenRenewalUtil accessTokenRenewalUtil;
 
     @Test
     @DisplayName("리프레쉬 토큰으로 엑세스 토큰을 재발급합니다.")

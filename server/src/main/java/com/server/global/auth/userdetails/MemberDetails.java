@@ -13,8 +13,11 @@ import lombok.Getter;
 @Getter
 public final class MemberDetails extends Member implements UserDetails {
     public MemberDetails(Member member) {
-        super(member.getMemberId(), member.getEmail(), member.getPassword(), member.getPassword());
-        super.setRole(member.getRole());
+        super(member.getMemberId(),
+            member.getEmail(),
+            member.getPassword(),
+            member.getPassword(),
+            member.getRole());
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.server.domain.oauth.repository.KakaoTokenRepository;
 import com.server.domain.oauth.service.KakaoApiService;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
+import com.server.global.utils.AuthUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +35,7 @@ public class MemberService {
 
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);
-        if (member.getRole() == null) { //TODO:로직
-            member.setRole(Role.USER);
-        }
+
         return memberRepository.save(member);
     }
 
@@ -53,8 +52,9 @@ public class MemberService {
     }
 
     // TODO: NAVER와 KAKAO를 분리해야 하는 방법을 찾아야겠음
-    public void deleteMember(String email) {
-        Member member = findMemberByEmail(email);
+    public void deleteMember() {
+        Member member = AuthUtil.getMember(this);
+
         if (member.getRole().equals(Role.SOCIAL)) {
             Optional<KakaoToken> kakaoToken = kakaoTokenRepository.findByMember(member);
             if (kakaoToken.isEmpty()) {
@@ -78,23 +78,23 @@ public class MemberService {
     @Transactional(readOnly = true)
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
-            .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
     public Member updateMember(String name, Member patchMember) {
         Member member = findMemberByEmail(name);
 
         Optional.ofNullable(patchMember.getPassword())
-            .ifPresent(password -> member.setPassword(passwordEncoder.encode(password)));
+                .ifPresent(password -> member.setPassword(passwordEncoder.encode(password)));
         Optional.ofNullable(patchMember.getNickname())
-            .ifPresent(member::setNickname);
+                .ifPresent(member::setNickname);
         return member;
     }
 
     public Member updatePassword(Member updateMember) {
         Member member = findMemberByEmail(updateMember.getEmail());
         Optional.ofNullable(updateMember.getPassword())
-            .ifPresent(password -> member.setPassword(passwordEncoder.encode(password)));
+                .ifPresent(password -> member.setPassword(passwordEncoder.encode(password)));
         return member;
     }
 }

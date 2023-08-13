@@ -41,7 +41,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -67,7 +66,6 @@ import com.server.helper.StubData;
 
 @ActiveProfiles("test")
 @SpringBootTest
-@MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -84,7 +82,7 @@ public class RecordControllerTest {
     @MockBean
     private RecordMapper mapper;
 
-    private final static String RECORD_DEFAULT_URL = "/api/records";
+    private static final String RECORD_DEFAULT_URL = "/api/records";
 
     @MockBean
     private StorageService storageService;

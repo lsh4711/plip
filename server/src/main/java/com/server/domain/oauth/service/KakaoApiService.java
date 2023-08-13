@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +19,7 @@ import com.server.domain.member.entity.Member;
 import com.server.domain.oauth.entity.KakaoToken;
 import com.server.domain.oauth.repository.KakaoTokenRepository;
 import com.server.domain.oauth.template.KakaoTemplate.Feed;
+import com.server.domain.oauth.template.KakaoTemplate.Text;
 import com.server.domain.oauth.template.KakaoTemplateConstructor;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.global.exception.CustomException;
@@ -36,6 +39,11 @@ public class KakaoApiService {
 
     private final KakaoTokenOauthService kakaoTokenOauthService;
 
+    private final Gson gson;
+
+    private final Logger logger = LogManager.getLogger(this.getClass());
+
+
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String apiKey;
     @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
@@ -45,55 +53,54 @@ public class KakaoApiService {
     private final String tokenRenewalApiUri = "https://kauth.kakao.com/oauth/token";
     private final String unlinkKakaoApiUri = "https://kapi.kakao.com/v1/user/unlink";
 
-    private final Gson gson;
 
     @Async
     public void sendMessage(Object template, String accessToken) {
         String body = gson.toJson(template);
 
         String result = WebClient.create(messageApiUrl)
-            .post()
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .header("Authorization", "Bearer " + accessToken)
-            .body(BodyInserters.fromFormData("template_object", body))
-            .retrieve()
-            .onStatus(HttpStatus::is4xxClientError, // 4xx 에러인 경우
-                clientResponse -> {
-                    renewKakaoAccessTokenAndResend(template, accessToken);
-                    return Mono.empty();
-                })
-            .bodyToMono(String.class)
-            .block(); // 메시지 전송
+                .post()
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header("Authorization", "Bearer " + accessToken)
+                .body(BodyInserters.fromFormData("template_object", body))
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, // 4xx 에러인 경우
+                    clientResponse -> {
+                        renewKakaoAccessTokenAndResend(template, accessToken);
+                        return Mono.empty();
+                    })
+                .bodyToMono(String.class)
+                .block(); // 메시지 전송
     }
 
     private void renewKakaoAccessTokenAndResend(Object template, String accessToken) {
         KakaoToken kakaoToken = kakaoTokenRepository.findByAccessToken(accessToken)
-            .orElseThrow(() -> new CustomException(ExceptionCode.ACCESS_TOKEN_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ExceptionCode.ACCESS_TOKEN_NOT_FOUND));
 
         WebClient.create(tokenRenewalApiUri)
-            .post()
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .body(BodyInserters.fromFormData("grant_type", "refresh_token")
-                .with("client_id", apiKey)
-                .with("client_secret", apiSecret)
-                .with("refresh_token", kakaoToken.getRefreshToken()))
-            .retrieve()
-            .bodyToMono(Map.class)
-            .doOnNext(tokenResponse -> {
-                log.info(tokenResponse.toString());
-                String refreshToken = (String)Optional.ofNullable(tokenResponse.get("refresh_token"))
-                    .orElseGet(kakaoToken::getRefreshToken);
-                kakaoTokenOauthService.saveOrUpdateToken(tokenResponse.get("access_token").toString(),
-                    refreshToken, kakaoToken.getMember());
-            })
-            /*.flatMap(tokenResponse -> {
-                // 토큰 갱신 후 다시 메시지 보내기
-                *//*String renewedAccessToken = tokenResponse.get("access_token").toString();
-                sendMessage(template, renewedAccessToken);*//*
-                return Mono.empty();
-            })*/
-            .block();
+                .post()
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData("grant_type", "refresh_token")
+                        .with("client_id", apiKey)
+                        .with("client_secret", apiSecret)
+                        .with("refresh_token", kakaoToken.getRefreshToken()))
+                .retrieve()
+                .bodyToMono(Map.class)
+                .doOnNext(tokenResponse -> {
+                    log.info(tokenResponse.toString());
+                    String refreshToken = (String)Optional.ofNullable(tokenResponse.get("refresh_token"))
+                            .orElseGet(kakaoToken::getRefreshToken);
+                    kakaoTokenOauthService.saveOrUpdateToken(tokenResponse.get("access_token").toString(),
+                        refreshToken, kakaoToken.getMember());
+                })
+                /*.flatMap(tokenResponse -> {
+                    // 토큰 갱신 후 다시 메시지 보내기
+                    *//*String renewedAccessToken = tokenResponse.get("access_token").toString();
+                       sendMessage(template, renewedAccessToken);*//*
+                                                                    return Mono.empty();
+                                                                    })*/
+                .block();
     }
 
     @Async
@@ -114,9 +121,24 @@ public class KakaoApiService {
 
         String accessToken = kakaoToken.getAccessToken();
         Feed feedTemplate = kakaoTemplateConstructor
-            .getPostScheduleTemplate(schedule, member);
+                .getPostScheduleTemplate(schedule, member);
 
         sendMessage(feedTemplate, accessToken);
+    }
+
+    @Async
+    public void sendScheduledMessage(Schedule schedule, Member member, int hour) {
+        KakaoToken kakaoToken = member.getKakaoToken();
+
+        if (kakaoToken == null) {
+            return; // or throw CustomExcepion
+        }
+
+        String accessToken = kakaoToken.getAccessToken();
+        Text textTemplate = kakaoTemplateConstructor
+                .getScheduledTemplate(schedule, member, hour);
+
+        sendMessage(textTemplate, accessToken);
     }
 
     // 이벤트용
@@ -126,7 +148,7 @@ public class KakaoApiService {
         String accessToken = kakaoToken.getAccessToken();
 
         Feed feedTemplate = kakaoTemplateConstructor
-            .getEventTemplate(nickname, giftId);
+                .getEventTemplate(nickname, giftId);
 
         sendMessage(feedTemplate, accessToken);
     }
@@ -141,7 +163,7 @@ public class KakaoApiService {
             String nickname = member.getNickname();
             String accessToken = kakaoToken.getAccessToken();
             Feed feedTemplate = kakaoTemplateConstructor
-                .getNoticeTemplate(nickname, title, message);
+                    .getNoticeTemplate(nickname, title, message);
             sendMessage(feedTemplate, accessToken);
         }
 
@@ -149,11 +171,11 @@ public class KakaoApiService {
 
     public void unlinkKaKaoService(String accessToken) {
         WebClient.create(unlinkKakaoApiUri)
-            .post()
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .header("Authorization", "Bearer " + accessToken)
-            .retrieve()
-            .bodyToMono(String.class)
-            .block();
+                .post()
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header("Authorization", "Bearer " + accessToken)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
     }
 }

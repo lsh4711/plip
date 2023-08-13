@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushFcmOptions;
 import com.server.domain.record.service.S3StorageService;
 import com.server.domain.record.service.StorageService;
+import com.server.global.batch.BatchScheduler;
 import com.server.global.exception.CustomException;
 import com.server.global.exception.ExceptionCode;
 
@@ -30,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/test")
-public class TestController { // 테스트 용이므로 비즈니스 로직도 함께 있습니다.
+public class TestController {
     private final StorageService storageService;
 
     @Value("${url.server}")
@@ -41,7 +43,22 @@ public class TestController { // 테스트 용이므로 비즈니스 로직도 �
         return new ModelAndView("test.html");
     }
 
-    @GetMapping("/delete")
+    private final BatchScheduler batchScheduler;
+
+    // @GetMapping("/job/{hour}")
+    public String jobTest(@PathVariable long hour) {
+        if (hour == 7) {
+            batchScheduler.runJobAt7();
+        } else if (hour == 22) {
+            batchScheduler.runJobAt22();
+        } else if (hour == 21) {
+            batchScheduler.runJobAt21();
+        }
+
+        return "성공";
+    }
+
+    // @GetMapping("/delete")
     public ResponseEntity test(Authentication authentication) {
         if (!authentication.getName().equals("admin@naver.com")) {
             throw new CustomException(ExceptionCode.FORBIDDEN);

@@ -81,7 +81,7 @@ public class KakaoTemplateConstructor {
         return feed;
     }
 
-    public Text getScheduledTemplate(Member member, Schedule schedule, int hour) {
+    public Text getScheduledTemplate(Schedule schedule, Member member, int hour) {
         // Member
         String nickname = member.getNickname();
 
