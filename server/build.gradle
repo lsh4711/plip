@@ -80,7 +80,6 @@ dependencies {
 
 	implementation 'mysql:mysql-connector-java:8.0.33' // MySQL
 
-    // implementation 'org.springframework.boot:spring-boot-starter-actuator:2.7.13'
     implementation 'de.codecentric:spring-boot-admin-starter-client:2.7.10'
 }
 

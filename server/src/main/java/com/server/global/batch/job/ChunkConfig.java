@@ -26,8 +26,6 @@ import com.server.domain.oauth.service.KakaoApiService;
 import com.server.domain.push.service.PushService;
 import com.server.domain.schedule.entity.Schedule;
 import com.server.global.batch.parameter.CustomJobParameter;
-import com.server.global.exception.CustomException;
-import com.server.global.exception.ExceptionCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -122,9 +120,9 @@ public class ChunkConfig {
         return schedule -> {
             Member member = schedule.getMember();
 
-            if (!member.getNickname().equals("이수희")) {
-                throw new CustomException(ExceptionCode.TEST_CODE);
-            }
+            // if (!member.getNickname().equals("이수희")) {
+            //     throw new CustomException(ExceptionCode.TEST_CODE);
+            // }
 
             kakaoApiService.sendScheduledMessage(schedule, member, hour);
             pushService.sendScheduledMessage(schedule, member, hour);

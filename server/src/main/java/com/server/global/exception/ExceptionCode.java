@@ -54,8 +54,8 @@ public enum ExceptionCode {
     SHARE_CODE_INVALID("코드가 일치하지 않습니다.", 400),
 
     // 토큰(이벤트) - 임시
-    EVENT_TOKENS_NOT_FOUND("푸시 알림을 허용해 주시고 카카오로 로그인해주세요!", 400),
-    EVENT_PUSH_TOKEN_NOT_FOUND("푸시 알림을 허용해 주세요!", 400),
+    EVENT_TOKENS_NOT_FOUND("푸시 알림 허용 후 카카오로 로그인해주세요!", 400),
+    EVENT_PUSH_TOKEN_NOT_FOUND("푸시 알림 허용 후 재로그인 해주세요!", 400),
     EVENT_KAKAO_TOKEN_NOT_FOUND("카카오로 로그인 해주세요!", 400),
 
     END("마무리", 200);
