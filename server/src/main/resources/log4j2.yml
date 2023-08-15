@@ -7,14 +7,14 @@ Configuration:
       - name: log-path
         value: ${env:LOG_PATH}
       - name: log-pattern
-        value: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t][%l] - %m%n"
+        value: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t][%l]%n- %m%n"
 
   Appenders:
     Console:
       name: Console
       target: SYSTEM_OUT
       PatternLayout:
-        pattern: "[%-5level] %d{HH:mm:ss.SSS} [%t][%l] - %m%n"
+        pattern: "[%-5level] %d{HH:mm:ss.SSS} [%t][%l]%n- %m%n"
 
     RollingFile:
       - name: RollingFile_Spring
