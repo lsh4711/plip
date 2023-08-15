@@ -38,6 +38,9 @@ public class RequestLoggingAspect {
         if (attributes != null) {
             HttpServletRequest request = attributes.getRequest();
 
+            // Method
+            String method = request.getMethod();
+
             // URL
             String url = request.getRequestURL().toString();
 
@@ -60,11 +63,15 @@ public class RequestLoggingAspect {
                 try {
                     // Request body
                     String requestBodyJson = objectMapper.writeValueAsString(requestBody);
-                    StringBuilder sb = new StringBuilder()
-                            .append("URL: {}\n")
+                    String content = new StringBuilder()
+                            .append("URL: [{}]{}\n")
                             .append("- Headers: {}\n")
-                            .append("- Request body: {}");
-                    logger.info(sb.toString(), url, headers, requestBodyJson);
+                            .append("- Request body: {}")
+                            .toString();
+                    logger.info(content,
+                        method, url,
+                        headers,
+                        requestBodyJson);
                 } catch (JsonProcessingException e) {
                     logger.error("Failed to convert request body to JSON", e);
                 }
