@@ -41,7 +41,7 @@ public class RequestLoggingAspect {
             // URL
             String url = request.getRequestURL().toString();
 
-            // Header
+            // Headers
             Enumeration<String> headerNames = request.getHeaderNames();
             Map<String, String> headers = new HashMap<>();
             while (headerNames.hasMoreElements()) {
@@ -58,10 +58,13 @@ public class RequestLoggingAspect {
                 objectMapper.registerModule(new JavaTimeModule());
                 objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
                 try {
+                    // Request body
                     String requestBodyJson = objectMapper.writeValueAsString(requestBody);
-                    logger.info("URL: {}", url);
-                    logger.info("Headers: {}", headers);
-                    logger.info("Request body: {}", requestBodyJson);
+                    StringBuilder sb = new StringBuilder()
+                            .append("URL: {}\n")
+                            .append("- Headers: {}\n")
+                            .append("- Request body: {}");
+                    logger.info(sb.toString(), url, headers, requestBodyJson);
                 } catch (JsonProcessingException e) {
                     logger.error("Failed to convert request body to JSON", e);
                 }
