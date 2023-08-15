@@ -1,15 +1,11 @@
 package com.server.global.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-
 import com.server.global.log.RequestLoggingAspect;
 
-@Configuration
-@EnableAspectJAutoProxy
+// @Configuration
+// @EnableAspectJAutoProxy
 public class AspectConfig {
-    @Bean
+    // @Bean
     public RequestLoggingAspect requestLoggingAspect() {
         return new RequestLoggingAspect();
     }

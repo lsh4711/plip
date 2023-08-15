@@ -12,6 +12,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -20,10 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Aspect
-@Slf4j
+@Component
 public class RequestLoggingAspect {
     private final Logger logger = LogManager.getLogger(RequestLoggingAspect.class);
 
@@ -60,6 +59,8 @@ public class RequestLoggingAspect {
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.registerModule(new JavaTimeModule());
                 objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+                // objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+                // objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
                 try {
                     // Request body
                     String requestBodyJson = objectMapper.writeValueAsString(requestBody);
@@ -77,7 +78,7 @@ public class RequestLoggingAspect {
                 }
             }
         } else {
-            log.error("Request context is not available");
+            logger.error("Request context is not available");
         }
 
     }
