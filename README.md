@@ -60,4 +60,4 @@
 [**API Docs**](https://teamdev.shop)
 
 ### ERD Diagram
-[**ERD Cloud**](https://www.erdcloud.com/d/QBcuKs8MqxfjY5bv3)
+![erd](https://github.com/user-attachments/assets/6604f7aa-d8ec-42ec-9d3b-bf849b41be5c)
