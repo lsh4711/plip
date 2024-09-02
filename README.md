@@ -60,4 +60,4 @@
 [**API Docs**](https://teamdev.shop)
 
 ### ERD Diagram
-![erd](https://github.com/user-attachments/assets/6604f7aa-d8ec-42ec-9d3b-bf849b41be5c)
+<img alt="erd" src="https://github.com/user-attachments/assets/6604f7aa-d8ec-42ec-9d3b-bf849b41be5c" style="width: 50%">
