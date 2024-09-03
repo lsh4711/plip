@@ -64,19 +64,13 @@ public class ScheduleService {
         return schedules;
     }
 
-    public Schedule findSharedSchedule(long scheduleId, long memberId, String code) {
-        Schedule schedule = scheduleRepository
-                .findByScheduleIdAndMember_MemberId(scheduleId, memberId);
+    public Schedule findSharedSchedule(long scheduleId, String code) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND));
 
-        if (schedule == null) {
-            throw new CustomException(ExceptionCode.SCHEDULE_NOT_FOUND);
-        }
-
-        Member member = schedule.getMember();
-        String email = member.getEmail();
-        String raw = String.format("%d/%s/%s",
-            memberId,
-            email,
+        String raw = String.format("%d/%d/%s",
+            schedule.getMember().getMemberId(),
+            scheduleId,
             shareSecretKey);
         String encoded = "{bcrypt}$2a$10$" + code;
 
@@ -89,23 +83,19 @@ public class ScheduleService {
 
     public String createShareUrl(long scheduleId, Member member) {
         long memberId = member.getMemberId();
-        String email = member.getEmail();
 
         verify(scheduleId, memberId);
 
-        String raw = String.format("%d/%s/%s",
+        String raw = String.format("%d/%d/%s",
             memberId,
-            email,
+            scheduleId,
             shareSecretKey);
         String code = passwordEncoder.encode(raw)
                 .replace("{bcrypt}$2a$10$", "");
 
-        String shareUrl = String.format("https://plip.netlify.app/plan/detail/%d/share?id=%d&code=%s",
+        return String.format("https://plip.netlify.app/plan/detail/%d/share?code=%s",
             scheduleId,
-            memberId,
             code);
-
-        return shareUrl;
     }
 
     public Schedule deleteSchedule(long scheduleId) {

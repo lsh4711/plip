@@ -317,8 +317,8 @@ public class ScheduleControllerTest {
         // Schedule
         Schedule schedule = MockSchedule.schedule;
 
-        given(scheduleService.findSharedSchedule(Mockito.anyLong(),
-            Mockito.anyLong(), Mockito.anyString())).willReturn(schedule);
+        given(scheduleService.findSharedSchedule(Mockito.anyLong(), Mockito.anyString()))
+                .willReturn(schedule);
 
         // ScheduleResponse
         ScheduleResponse scheduleResponse = MockSchedule.scheduleResponse;

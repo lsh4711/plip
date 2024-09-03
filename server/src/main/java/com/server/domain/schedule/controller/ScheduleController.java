@@ -157,9 +157,8 @@ public class ScheduleController {
     // 일정 공유 기능이므로 민감한 정보 노출 금지
     @GetMapping("/{scheduleId}/share")
     public ResponseEntity getSharedSchedule(@PathVariable long scheduleId,
-            @RequestParam("id") long memberId,
             @RequestParam String code) {
-        Schedule foundSchedule = scheduleService.findSharedSchedule(scheduleId, memberId, code);
+        Schedule foundSchedule = scheduleService.findSharedSchedule(scheduleId, code);
 
         List<List<PlaceResponse>> placeResponseLists = schedulePlaceMapper
                 .schedulePlacesToPlaceResponseLists(foundSchedule);
